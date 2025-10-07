@@ -48,7 +48,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                         }
                     }
                     // add column to table (if it has a name)
-                    if !table_column.get_name().is_empty() {
+                    if !table_column.name().is_empty() {
                         table.add_column(table_column);
                         table_column = TableColumn::default();
                     }
@@ -165,7 +165,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 b"tableColumn" => {
                     // add column to table (if it has a name)
-                    if !table_column.get_name().is_empty() {
+                    if !table_column.name().is_empty() {
                         table.add_column(table_column);
                         table_column = TableColumn::default();
                     }

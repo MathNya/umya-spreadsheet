@@ -106,7 +106,7 @@ pub(crate) fn read(
             }
             b"conditionalFormatting" => {
                 let mut obj = ConditionalFormatting::default();
-                obj.set_attributes(&mut reader, e, stylesheet.get_differential_formats());
+                obj.set_attributes(&mut reader, e, stylesheet.differential_formats());
                 worksheet.add_conditional_formatting_collection(obj);
             }
             b"dataValidations" => {

@@ -55,8 +55,15 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         &self.name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -69,8 +76,15 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_display_name(&self) -> &str {
+    pub fn display_name(&self) -> &str {
         &self.display_name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use display_name()")]
+    pub fn get_display_name(&self) -> &str {
+        self.display_name()
     }
 
     #[inline]
@@ -80,8 +94,15 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_area(&self) -> &(Coordinate, Coordinate) {
+    pub fn area(&self) -> &(Coordinate, Coordinate) {
         &self.area
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area()")]
+    pub fn get_area(&self) -> &(Coordinate, Coordinate) {
+        self.area()
     }
 
     #[inline]
@@ -101,8 +122,15 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_columns(&self) -> &[TableColumn] {
+    pub fn columns(&self) -> &[TableColumn] {
         &self.columns
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use columns()")]
+    pub fn get_columns(&self) -> &[TableColumn] {
+        self.columns()
     }
 
     #[inline]
@@ -112,8 +140,15 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
+    pub fn style_info(&self) -> Option<&TableStyleInfo> {
         self.style_info.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style_info()")]
+    pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
+        self.style_info()
     }
 
     #[inline]
@@ -128,13 +163,26 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_totals_row_shown(&self) -> bool {
+    pub fn totals_row_shown(&self) -> bool {
         self.totals_row_shown.value()
     }
 
     #[inline]
-    pub(crate) fn get_totals_row_shown_str(&self) -> &str {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_shown()")]
+    pub fn get_totals_row_shown(&self) -> bool {
+        self.totals_row_shown()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_shown_str(&self) -> &str {
         self.totals_row_shown.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_shown_str()")]
+    pub(crate) fn get_totals_row_shown_str(&self) -> &str {
+        self.totals_row_shown_str()
     }
 
     #[inline]
@@ -154,13 +202,26 @@ impl Table {
 
     #[inline]
     #[must_use]
-    pub fn get_totals_row_count(&self) -> u32 {
+    pub fn totals_row_count(&self) -> u32 {
         self.totals_row_count.value()
     }
 
     #[inline]
-    pub(crate) fn get_totals_row_count_str(&self) -> String {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_count()")]
+    pub fn get_totals_row_count(&self) -> u32 {
+        self.totals_row_count()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_count_str(&self) -> String {
         self.totals_row_count.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_count_str()")]
+    pub(crate) fn get_totals_row_count_str(&self) -> String {
+        self.totals_row_count_str()
     }
 
     #[inline]
@@ -207,8 +268,15 @@ impl TableColumn {
 
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.as_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -224,13 +292,26 @@ impl TableColumn {
 
     #[inline]
     #[must_use]
-    pub fn get_totals_row_label(&self) -> Option<&str> {
+    pub fn totals_row_label(&self) -> Option<&str> {
         self.totals_row_label.value()
     }
 
     #[inline]
-    pub(crate) fn get_totals_row_label_str(&self) -> &str {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_label()")]
+    pub fn get_totals_row_label(&self) -> Option<&str> {
+        self.totals_row_label()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_label_str(&self) -> &str {
         self.totals_row_label.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_label_str()")]
+    pub(crate) fn get_totals_row_label_str(&self) -> &str {
+        self.totals_row_label_str()
     }
 
     #[inline]
@@ -251,13 +332,26 @@ impl TableColumn {
 
     #[inline]
     #[must_use]
-    pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
+    pub fn totals_row_function(&self) -> &TotalsRowFunctionValues {
         self.totals_row_function.value()
     }
 
     #[inline]
-    pub(crate) fn get_totals_row_function_str(&self) -> &str {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_function()")]
+    pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
+        self.totals_row_function()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_function_str(&self) -> &str {
         self.totals_row_function.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_function_str()")]
+    pub(crate) fn get_totals_row_function_str(&self) -> &str {
+        self.totals_row_function_str()
     }
 
     #[inline]
@@ -272,8 +366,15 @@ impl TableColumn {
 
     #[inline]
     #[must_use]
-    pub fn get_calculated_column_formula(&self) -> Option<&String> {
+    pub fn calculated_column_formula(&self) -> Option<&String> {
         self.calculated_column_formula.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use calculated_column_formula()")]
+    pub fn get_calculated_column_formula(&self) -> Option<&String> {
+        self.calculated_column_formula()
     }
 
     #[inline]
@@ -336,8 +437,15 @@ impl TableStyleInfo {
 
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.as_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]

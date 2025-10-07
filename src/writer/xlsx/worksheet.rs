@@ -283,7 +283,7 @@ fn write_worksheet_features(
     write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
     for conditional_formatting in worksheet.conditional_formatting_collection() {
-        conditional_formatting.write_to(writer, stylesheet.get_differential_formats_mut());
+        conditional_formatting.write_to(writer, stylesheet.differential_formats_mut());
     }
 
     if let Some(v) = worksheet.data_validations() {

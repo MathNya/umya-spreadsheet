@@ -26,8 +26,15 @@ pub struct ToMarker {
 impl ToMarker {
     #[inline]
     #[must_use]
-    pub fn get_col(&self) -> usize {
+    pub fn col(&self) -> usize {
         self.col
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col()")]
+    pub fn get_col(&self) -> usize {
+        self.col()
     }
 
     #[inline]
@@ -38,8 +45,15 @@ impl ToMarker {
 
     #[inline]
     #[must_use]
-    pub fn get_col_off(&self) -> usize {
+    pub fn col_off(&self) -> usize {
         self.col_off
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col_off()")]
+    pub fn get_col_off(&self) -> usize {
+        self.col_off()
     }
 
     #[inline]
@@ -50,8 +64,15 @@ impl ToMarker {
 
     #[inline]
     #[must_use]
-    pub fn get_row(&self) -> usize {
+    pub fn row(&self) -> usize {
         self.row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row()")]
+    pub fn get_row(&self) -> usize {
+        self.row()
     }
 
     #[inline]
@@ -62,8 +83,15 @@ impl ToMarker {
 
     #[inline]
     #[must_use]
-    pub fn get_row_off(&self) -> usize {
+    pub fn row_off(&self) -> usize {
         self.row_off
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_off()")]
+    pub fn get_row_off(&self) -> usize {
+        self.row_off()
     }
 
     #[inline]

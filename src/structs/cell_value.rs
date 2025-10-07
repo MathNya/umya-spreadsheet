@@ -281,7 +281,7 @@ impl CellValue {
     #[inline]
     pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
         if let Some(v) = value.text() {
-            self.set_value_string(v.get_value());
+            self.set_value_string(v.value());
         }
         if let Some(v) = value.rich_text() {
             self.set_rich_text(v.clone());

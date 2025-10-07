@@ -27,8 +27,15 @@ pub struct VerticalTextAlignment {
 impl VerticalTextAlignment {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &VerticalAlignmentRunValues {
+    pub fn val(&self) -> &VerticalAlignmentRunValues {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &VerticalAlignmentRunValues {
+        self.val()
     }
 
     #[inline]

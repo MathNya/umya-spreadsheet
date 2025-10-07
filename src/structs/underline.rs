@@ -28,11 +28,18 @@ pub struct Underline {
 impl Underline {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &UnderlineValues {
+    pub fn val(&self) -> &UnderlineValues {
         if self.val.has_value() {
             return self.val.value();
         }
         &UnderlineValues::None
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &UnderlineValues {
+        self.val()
     }
 
     #[inline]

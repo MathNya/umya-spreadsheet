@@ -53,13 +53,25 @@ pub(crate) struct Stylesheet {
 
 impl Stylesheet {
     #[inline]
-    pub(crate) fn get_numbering_formats(&self) -> &NumberingFormats {
+    pub(crate) fn numbering_formats(&self) -> &NumberingFormats {
         &self.numbering_formats
     }
 
     #[inline]
-    pub(crate) fn get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+    #[deprecated(since = "3.0.0", note = "Use numbering_formats()")]
+    pub(crate) fn get_numbering_formats(&self) -> &NumberingFormats {
+        self.numbering_formats()
+    }
+
+    #[inline]
+    pub(crate) fn numbering_formats_mut(&mut self) -> &mut NumberingFormats {
         &mut self.numbering_formats
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use numbering_formats_mut()")]
+    pub(crate) fn get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+        self.numbering_formats_mut()
     }
 
     #[inline]
@@ -69,16 +81,29 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_fonts(&self) -> &Fonts {
+    pub(crate) fn fonts(&self) -> &Fonts {
         &self.fonts
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fonts()")]
+    pub(crate) fn get_fonts(&self) -> &Fonts {
+        self.fonts()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
+    pub(crate) fn fonts_mut(&mut self) -> &mut Fonts {
         &mut self.fonts
     }
 
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fonts_mut()")]
+    pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
+        self.fonts_mut()
+    }
+    
     #[inline]
     pub(crate) fn set_fonts(&mut self, value: Fonts) -> &mut Self {
         self.fonts = value;
@@ -86,14 +111,27 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_fills(&self) -> &Fills {
+    pub(crate) fn fills(&self) -> &Fills {
         &self.fills
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fills()")]
+    pub(crate) fn get_fills(&self) -> &Fills {
+        self.fills()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_fills_mut(&mut self) -> &mut Fills {
+    pub(crate) fn fills_mut(&mut self) -> &mut Fills {
         &mut self.fills
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fills_mut()")]
+    pub(crate) fn get_fills_mut(&mut self) -> &mut Fills {
+        self.fills_mut()
     }
 
     #[inline]
@@ -103,14 +141,27 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_borders(&self) -> &BordersCrate {
+    pub(crate) fn borders(&self) -> &BordersCrate {
         &self.borders
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use borders()")]
+    pub(crate) fn get_borders(&self) -> &BordersCrate {
+        self.borders()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_borders_mut(&mut self) -> &mut BordersCrate {
+    pub(crate) fn borders_mut(&mut self) -> &mut BordersCrate {
         &mut self.borders
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use borders_mut()")]
+    pub(crate) fn get_borders_mut(&mut self) -> &mut BordersCrate {
+        self.borders_mut()
     }
 
     #[inline]
@@ -120,13 +171,25 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_cell_style_formats(&self) -> &CellStyleFormats {
+    pub(crate) fn cell_style_formats(&self) -> &CellStyleFormats {
         &self.cell_style_formats
     }
 
     #[inline]
-    pub(crate) fn get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+    #[deprecated(since = "3.0.0", note = "Use cell_style_formats()")]
+    pub(crate) fn get_cell_style_formats(&self) -> &CellStyleFormats {
+        self.cell_style_formats()
+    }
+
+    #[inline]
+    pub(crate) fn cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
         &mut self.cell_style_formats
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_style_formats_mut()")]
+    pub(crate) fn get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+        self.cell_style_formats_mut()
     }
 
     #[inline]
@@ -136,13 +199,25 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_cell_formats(&self) -> &CellFormats {
+    pub(crate) fn cell_formats(&self) -> &CellFormats {
         &self.cell_formats
     }
 
     #[inline]
-    pub(crate) fn get_cell_formats_mut(&mut self) -> &mut CellFormats {
+    #[deprecated(since = "3.0.0", note = "Use cell_formats()")]
+    pub(crate) fn get_cell_formats(&self) -> &CellFormats {
+        self.cell_formats()
+    }
+
+    #[inline]
+    pub(crate) fn cell_formats_mut(&mut self) -> &mut CellFormats {
         &mut self.cell_formats
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_formats_mut()")]
+    pub(crate) fn get_cell_formats_mut(&mut self) -> &mut CellFormats {
+        self.cell_formats_mut()
     }
 
     #[inline]
@@ -152,13 +227,25 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+    pub(crate) fn cell_styles(&self) -> &CellStyles {
         &self.cell_styles
     }
 
     #[inline]
-    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+    #[deprecated(since = "3.0.0", note = "Use cell_styles()")]
+    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+        self.cell_styles()
+    }
+
+    #[inline]
+    pub(crate) fn cell_styles_mut(&mut self) -> &mut CellStyles {
         &mut self.cell_styles
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_styles_mut()")]
+    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+        self.cell_styles_mut()
     }
 
     #[inline]
@@ -168,13 +255,25 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_differential_formats(&self) -> &DifferentialFormats {
+    pub(crate) fn differential_formats(&self) -> &DifferentialFormats {
         &self.differential_formats
     }
 
     #[inline]
-    pub(crate) fn get_differential_formats_mut(&mut self) -> &mut DifferentialFormats {
+    #[deprecated(since = "3.0.0", note = "Use differential_formats()")]
+    pub(crate) fn get_differential_formats(&self) -> &DifferentialFormats {
+        self.differential_formats()
+    }
+
+    #[inline]
+    pub(crate) fn differential_formats_mut(&mut self) -> &mut DifferentialFormats {
         &mut self.differential_formats
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use differential_formats_mut()")]
+    pub(crate) fn get_differential_formats_mut(&mut self) -> &mut DifferentialFormats {
+        self.differential_formats_mut()
     }
 
     #[inline]
@@ -184,13 +283,25 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_colors(&self) -> &Colors {
+    pub(crate) fn colors(&self) -> &Colors {
         &self.colors
     }
 
     #[inline]
-    pub(crate) fn get_colors_mut(&mut self) -> &mut Colors {
+    #[deprecated(since = "3.0.0", note = "Use colors()")]
+    pub(crate) fn get_colors(&self) -> &Colors {
+        self.colors()
+    }
+
+    #[inline]
+    pub(crate) fn colors_mut(&mut self) -> &mut Colors {
         &mut self.colors
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use colors_mut()")]
+    pub(crate) fn get_colors_mut(&mut self) -> &mut Colors {
+        self.colors_mut()
     }
 
     #[inline]
@@ -200,8 +311,14 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn get_style(&self, id: usize) -> Style {
+    pub(crate) fn style(&self, id: usize) -> Style {
         self.maked_style_list.get(id).unwrap().clone()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub(crate) fn get_style(&self, id: usize) -> Style {
+        self.style(id)
     }
 
     pub(crate) fn make_style(&mut self) -> &mut Self {
@@ -214,14 +331,14 @@ impl Stylesheet {
                 .unwrap_or_default();
 
             let mut style = Style::default();
-            self.get_style_by_cell_format(&mut style, &def_cell_format, cell_format);
+            self.style_by_cell_format(&mut style, &def_cell_format, cell_format);
             self.maked_style_list.push(style);
         }
 
         self
     }
 
-    pub(crate) fn get_style_by_cell_format(
+    pub(crate) fn style_by_cell_format(
         &self,
         style: &mut Style,
         def_cell_format: &CellFormat,
@@ -322,6 +439,16 @@ impl Stylesheet {
         if let Some(v) = cell_format.protection() {
             style.set_protection(v.clone());
         }
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use style_by_cell_format()")]
+    pub(crate) fn get_style_by_cell_format(
+        &self,
+        style: &mut Style,
+        def_cell_format: &CellFormat,
+        cell_format: &CellFormat,
+    ) {
+        self.style_by_cell_format(style, def_cell_format, cell_format);
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {

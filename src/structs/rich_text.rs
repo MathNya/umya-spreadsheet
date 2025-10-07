@@ -20,7 +20,7 @@ impl RichText {
     pub fn text(&self) -> Cow<'static, str> {
         let mut text = String::new();
         for rich_text_elements in &self.rich_text_elements {
-            text = format!("{}{}", text, rich_text_elements.get_text());
+            text = format!("{}{}", text, rich_text_elements.text());
         }
         text.into()
     }
@@ -80,7 +80,7 @@ impl RichText {
     pub(crate) fn hash_code(&self) -> String {
         let mut value = String::new();
         for ele in &self.rich_text_elements {
-            write!(value, "{}", ele.get_hash_code()).unwrap();
+            write!(value, "{}", ele.hash_code()).unwrap();
         }
         format!("{:x}", md5::Md5::digest(&value))
     }

@@ -27,8 +27,14 @@ pub struct Text {
 
 impl Text {
     #[inline]
-    pub fn get_value(&self) -> &str {
+    pub fn value(&self) -> &str {
         &self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &str {
+        self.value()
     }
 
     #[inline]
@@ -38,8 +44,14 @@ impl Text {
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(&*self.value))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

@@ -44,7 +44,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_new_line(&mut writer);
 
         // table area coordinates
-        let area_coords = table.get_area();
+        let area_coords = table.area();
         let area = format!("{}:{}", area_coords.0, area_coords.1);
 
         // table start
@@ -53,15 +53,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let mut attributes: crate::structs::AttrCollection = vec![
             ("xmlns", SHEET_MAIN_NS).into(),
             ("id", &table_no_str).into(),
-            ("name", table.get_name()).into(),
-            ("displayName", table.get_display_name()).into(),
+            ("name", table.name()).into(),
+            ("displayName", table.display_name()).into(),
             ("ref", &area).into(),
         ];
 
         if table.has_totals_row_shown() {
-            attributes.push(("totalsRowShown", table.get_totals_row_shown_str()).into());
+            attributes.push(("totalsRowShown", table.totals_row_shown_str()).into());
         }
-        let totals_row_count_str = table.get_totals_row_count_str();
+        let totals_row_count_str = table.totals_row_count_str();
         if table.has_totals_row_count() {
             attributes.push(("totalsRowCount", totals_row_count_str).into());
         }
@@ -71,7 +71,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(&mut writer, "autoFilter", vec![("ref", &area).into()], true);
 
         // tableColumns
-        let cols = table.get_columns();
+        let cols = table.columns();
         write_start_tag(
             &mut writer,
             "tableColumns",
@@ -83,10 +83,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             let col_id_str = col_id.to_string();
             attributes.push(("id", &col_id_str).into());
-            attributes.push(("name", col.get_name()).into());
-            attributes.push(("totalsRowLabel", col.get_totals_row_label_str()).into());
-            attributes.push(("totalsRowFunction", col.get_totals_row_function_str()).into());
-            match col.get_calculated_column_formula() {
+            attributes.push(("name", col.name()).into());
+            attributes.push(("totalsRowLabel", col.totals_row_label_str()).into());
+            attributes.push(("totalsRowFunction", col.totals_row_function_str()).into());
+            match col.calculated_column_formula() {
                 Some(v) => {
                     write_start_tag(&mut writer, "tableColumn", attributes, false);
                     write_start_tag(&mut writer, "calculatedColumnFormula", vec![], false);
@@ -105,12 +105,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // tableStyleInfo
         if table.has_style_info() {
-            let style_info = table.get_style_info().unwrap();
+            let style_info = table.style_info().unwrap();
             write_start_tag(
                 &mut writer,
                 "tableStyleInfo",
                 vec![
-                    ("name", style_info.get_name()).into(),
+                    ("name", style_info.name()).into(),
                     (
                         "showFirstColumn",
                         &i32::from(style_info.is_show_first_col()).to_string(),

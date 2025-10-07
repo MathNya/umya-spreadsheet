@@ -232,7 +232,7 @@ impl Row {
         }
 
         if let Some(v) = get_attribute(e, b"s") {
-            let style = stylesheet.get_style(v.parse::<usize>().unwrap());
+            let style = stylesheet.style(v.parse::<usize>().unwrap());
             self.set_style(style);
         }
 

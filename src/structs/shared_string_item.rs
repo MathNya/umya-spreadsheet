@@ -113,7 +113,7 @@ impl SharedStringItem {
             "{}{}",
             self.text
                 .as_ref()
-                .map_or(String::from("NONE"), Text::get_hash_code),
+                .map_or(String::from("NONE"), Text::hash_code),
             self.rich_text
                 .as_ref()
                 .map_or(String::from("NONE"), RichText::hash_code)

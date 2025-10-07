@@ -32,8 +32,15 @@ pub struct TextElement {
 impl TextElement {
     #[inline]
     #[must_use]
+    pub fn text(&self) -> &str {
+        self.text.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
     pub fn get_text(&self) -> &str {
-        self.text.get_value()
+        self.text()
     }
 
     #[inline]
@@ -44,12 +51,19 @@ impl TextElement {
 
     #[inline]
     #[must_use]
-    pub fn get_run_properties(&self) -> Option<&Font> {
+    pub fn run_properties(&self) -> Option<&Font> {
         self.run_properties.as_deref()
     }
 
     #[inline]
-    pub fn get_run_properties_mut(&mut self) -> &mut Font {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use run_properties()")]
+    pub fn get_run_properties(&self) -> Option<&Font> {
+        self.run_properties()
+    }
+
+    #[inline]
+    pub fn run_properties_mut(&mut self) -> &mut Font {
         if self.run_properties.is_some() {
             return self.run_properties.as_mut().unwrap();
         }
@@ -58,9 +72,22 @@ impl TextElement {
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use run_properties_mut()")]
+    pub fn get_run_properties_mut(&mut self) -> &mut Font {
+        self.run_properties_mut()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
+    pub(crate) fn run_properties_crate(&mut self) -> Option<&mut Font> {
         self.run_properties.as_deref_mut()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use run_properties_crate()")]
+    pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
+        self.run_properties_crate()
     }
 
     #[inline]
@@ -71,13 +98,26 @@ impl TextElement {
 
     #[inline]
     #[must_use]
-    pub fn get_font(&self) -> Option<&Font> {
-        self.get_run_properties()
+    pub fn font(&self) -> Option<&Font> {
+        self.run_properties()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font()")]
+    pub fn get_font(&self) -> Option<&Font> {
+        self.font()
+    }
+
+    #[inline]
+    pub fn font_mut(&mut self) -> &mut Font {
+        self.run_properties_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_mut()")]
     pub fn get_font_mut(&mut self) -> &mut Font {
-        self.get_run_properties_mut()
+        self.font_mut()
     }
 
     #[inline]
@@ -85,12 +125,12 @@ impl TextElement {
         self.set_run_properties(value)
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.text.get_value(),
+                &self.text.value(),
                 match &self.run_properties {
                     Some(v) => {
                         v.hash_code()
@@ -101,6 +141,11 @@ impl TextElement {
                 },
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
