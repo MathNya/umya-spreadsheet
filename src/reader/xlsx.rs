@@ -163,6 +163,10 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                 TABLE_NS => {
                     table::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
+                // pivot table
+                PIVOT_TABLE_NS => {
+                    pivot_table::read(worksheet, relationship.get_raw_file()).unwrap();
+                }
                 _ => {}
             }
         }
