@@ -21,13 +21,14 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     loop {
         match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) | Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                b"pivotTableDefinition" | b"pivotCacheDefinition" => {
+                // Support both element names for backwards compatibility with incorrectly written files
+                b"pivotCacheDefinition" | b"pivotTableDefinition" => {
                     pivot_cache_def.set_attributes(&mut reader, e);
                 }
                 _ => (),
             },
             Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"pivotTableDefinition" | b"pivotCacheDefinition" => {
+                b"pivotCacheDefinition" | b"pivotTableDefinition" => {
                     break;
                 }
                 _ => (),
