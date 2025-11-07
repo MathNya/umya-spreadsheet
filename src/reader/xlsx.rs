@@ -85,19 +85,14 @@ pub fn read_reader<R: io::Read + io::Seek>(
     }
 
     // Read pivot cache definitions
-    eprintln!("DEBUG: Checking workbook relationships for pivot caches");
-    for (rel_id, type_value, rel_target) in &workbook_rel {
-        eprintln!("DEBUG: Relationship {} type={} target={}", rel_id, type_value, rel_target);
+    for (_, type_value, rel_target) in &workbook_rel {
         if type_value == PIVOT_CACHE_DEF_NS {
-            eprintln!("DEBUG: Found pivot cache relationship!");
             // Extract cache_id from rel_target (e.g., "pivotCache/pivotCacheDefinition1.xml" -> "1")
             let cache_id = rel_target
                 .trim_start_matches("pivotCache/pivotCacheDefinition")
                 .trim_end_matches(".xml");
-            eprintln!("DEBUG: Extracted cache_id={}", cache_id);
 
             // Read the pivot cache file
-            eprintln!("DEBUG: Reading pivot cache from {}", rel_target);
             pivot_cache::read(&mut arv, &mut book, rel_target, cache_id).ok();
         }
     }

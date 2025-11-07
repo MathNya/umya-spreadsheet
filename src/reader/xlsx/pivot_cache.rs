@@ -42,17 +42,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     // Associate the cache definition with pivot tables that use this cache_id
     if let Ok(cache_id_num) = cache_id.parse::<u32>() {
-        eprintln!("DEBUG: Looking for pivot tables with cache_id={}", cache_id_num);
-        eprintln!("DEBUG: Sheet count = {}", spreadsheet.get_sheet_count());
-
         for sheet_index in 0..spreadsheet.get_sheet_count() {
             if let Some(sheet) = spreadsheet.get_sheet_mut(&sheet_index) {
-                eprintln!("DEBUG: Sheet {} has {} pivot tables", sheet_index, sheet.get_pivot_tables().len());
                 for pivot_table in sheet.get_pivot_tables_mut() {
-                    let pt_cache_id = *pivot_table.get_pivot_table_definition().get_cache_id();
-                    eprintln!("DEBUG: Pivot table cache_id = {}", pt_cache_id);
-                    if pt_cache_id == cache_id_num {
-                        eprintln!("DEBUG: MATCH! Associating cache");
+                    if *pivot_table.get_pivot_table_definition().get_cache_id() == cache_id_num {
                         pivot_table.set_pivot_cache_definition(pivot_cache_def.clone());
                     }
                 }
