@@ -369,6 +369,30 @@ impl PivotTableDefinition {
         self
     }
 
+    /// Create a new minimal pivot table definition with required fields
+    pub fn new_simple(name: impl Into<String>, cache_id: u32, destination: impl Into<String>) -> Self {
+        let mut pivot_def = Self::default();
+
+        // Set required fields
+        pivot_def.set_name(name);
+        pivot_def.set_cache_id(cache_id);
+
+        // Set location
+        let mut location = Location::default();
+        location.set_reference(destination);
+        pivot_def.set_location(location);
+
+        // Set Excel version compatibility (Excel 2007+)
+        pivot_def.set_updated_version(3);
+        pivot_def.set_min_refreshable_version(3);
+        pivot_def.set_created_version(3);
+
+        // Enable auto-formatting by default
+        pivot_def.set_use_auto_formatting(true);
+
+        pivot_def
+    }
+
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,

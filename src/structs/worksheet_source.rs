@@ -27,6 +27,16 @@ impl WorksheetSource {
         self
     }
 
+    /// Create a new worksheet source with sheet name and range
+    pub fn new_simple(sheet: impl Into<String>, reference: impl Into<String>) -> Self {
+        let mut ws_source = Self::default();
+        let mut address = Address::default();
+        address.set_sheet_name(sheet);
+        address.get_range_mut().set_range(reference);
+        ws_source.set_address(address);
+        ws_source
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
