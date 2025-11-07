@@ -1521,17 +1521,17 @@ impl Worksheet {
     }
 
     #[inline]
-    pub(crate) fn add_pivot_table(&mut self, pivot_table: PivotTable) {
+    pub fn add_pivot_table(&mut self, pivot_table: PivotTable) {
         self.pivot_tables.push(pivot_table);
     }
 
     #[inline]
-    pub(crate) fn get_pivot_tables(&self) -> &[PivotTable] {
+    pub fn get_pivot_tables(&self) -> &[PivotTable] {
         &self.pivot_tables
     }
 
     #[inline]
-    pub(crate) fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
+    pub fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
         &mut self.pivot_tables
     }
 

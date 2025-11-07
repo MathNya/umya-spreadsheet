@@ -671,7 +671,7 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
+    pub fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
             let val3_up = format!("xl/{}", &val3);
@@ -689,7 +689,7 @@ impl Spreadsheet {
     }
 
     #[inline]
-    pub(crate) fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
+    pub fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
         self.pivot_caches.push((
             value.0.into_boxed_str(),
             value.1.into_boxed_str(),
@@ -699,7 +699,7 @@ impl Spreadsheet {
     }
 
     #[inline]
-    pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
+    pub fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
             if &**val1 == &key {
                 *val3 = value.clone().into_boxed_str()
