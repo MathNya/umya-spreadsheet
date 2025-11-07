@@ -40,11 +40,13 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     }
 
     // Associate the cache definition with pivot tables that use this cache_id
-    for sheet_index in 0..spreadsheet.get_sheet_count() {
-        if let Some(sheet) = spreadsheet.get_sheet_mut(&sheet_index) {
-            for pivot_table in sheet.get_pivot_tables_mut() {
-                if pivot_table.get_pivot_table_definition().get_cache_id().to_string() == cache_id {
-                    pivot_table.set_pivot_cache_definition(pivot_cache_def.clone());
+    if let Ok(cache_id_num) = cache_id.parse::<u32>() {
+        for sheet_index in 0..spreadsheet.get_sheet_count() {
+            if let Some(sheet) = spreadsheet.get_sheet_mut(&sheet_index) {
+                for pivot_table in sheet.get_pivot_tables_mut() {
+                    if *pivot_table.get_pivot_table_definition().get_cache_id() == cache_id_num {
+                        pivot_table.set_pivot_cache_definition(pivot_cache_def.clone());
+                    }
                 }
             }
         }
