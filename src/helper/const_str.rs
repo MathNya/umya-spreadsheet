@@ -67,6 +67,8 @@ pub(crate) const SHEETML_AC_NS: &str =
     "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac";
 pub(crate) const TABLE_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
+pub(crate) const PIVOT_TABLE_NS: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable";
 pub(crate) const THEME_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
 pub(crate) const VBA_PROJECT_NS: &str =
@@ -112,6 +114,10 @@ pub(crate) const STYLES_TYPE: &str =
 pub(crate) const THEME_TYPE: &str = "application/vnd.openxmlformats-officedocument.theme+xml";
 pub(crate) const TABLE_TYPE: &str =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
+pub(crate) const PIVOT_TABLE_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml";
+pub(crate) const PIVOT_CACHE_DEF_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml";
 pub(crate) const VBA_TYPE: &str = "application/vnd.ms-office.vbaProject";
 pub(crate) const VML_DRAWING_TYPE: &str =
     "application/vnd.openxmlformats-officedocument.vmlDrawing";
