@@ -20,7 +20,7 @@ impl CacheField {
         self.name.get_value_str()
     }
 
-    pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
