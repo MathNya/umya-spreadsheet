@@ -20,6 +20,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     excel_no_list: &[String],
     printer_settings_no: &str,
     table_no_list: &[String],
+    pivot_table_no_list: &[String],
+    pivot_cache_no_list: &[String],
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
@@ -100,6 +102,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         r_id += 1;
     }
+
+    // write pivot table relationships
+    for pivot_table_no in pivot_table_no_list.iter() {
+        is_write = write_relationship(
+            &mut writer,
+            &r_id.to_string(),
+            PIVOT_TABLE_NS,
+            format!("../pivotTables/pivotTable{}.xml", pivot_table_no).as_str(),
+            "",
+        );
+        r_id += 1;
+    }
+
+    // write pivot cache relationships (handled at workbook level, not worksheet level)
+    // Pivot caches are referenced from the workbook, not individual worksheets
+    let _ = pivot_cache_no_list; // Suppress unused warning
 
     // Write ole_objects
     let mut excel_no_list = excel_no_list.iter();

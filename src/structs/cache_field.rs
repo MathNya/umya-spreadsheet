@@ -20,7 +20,7 @@ impl CacheField {
         self.name.get_value_str()
     }
 
-    pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
@@ -74,10 +74,10 @@ impl CacheField {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // pivotField
+        // cacheField
         write_start_tag(
             writer,
-            "pivotField",
+            "cacheField",
             vec![
                 ("name", self.name.get_value_str()),
                 ("numFmtId", &self.number_format_id.get_value_string()),
@@ -88,6 +88,6 @@ impl CacheField {
         // sharedItems
         self.shared_items.write_to(writer);
 
-        write_end_tag(writer, "pivotField");
+        write_end_tag(writer, "cacheField");
     }
 }

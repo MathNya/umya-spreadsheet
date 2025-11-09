@@ -24,6 +24,7 @@ mod doc_props_core;
 mod doc_props_custom;
 pub(crate) mod drawing;
 mod jsa_project_bin;
+mod pivot_cache;
 mod pivot_table;
 mod rels;
 mod shared_strings;
@@ -81,6 +82,19 @@ pub fn read_reader<R: io::Read + io::Seek>(
 
     if with_sheet_read {
         book.read_sheet_collection();
+    }
+
+    // Read pivot cache definitions
+    for (_, type_value, rel_target) in &workbook_rel {
+        if type_value == PIVOT_CACHE_DEF_NS {
+            // Extract cache_id from rel_target (e.g., "pivotCache/pivotCacheDefinition1.xml" -> "1")
+            let cache_id = rel_target
+                .trim_start_matches("pivotCache/pivotCacheDefinition")
+                .trim_end_matches(".xml");
+
+            // Read the pivot cache file
+            pivot_cache::read(&mut arv, &mut book, rel_target, cache_id).ok();
+        }
     }
 
     Ok(book)
@@ -162,6 +176,10 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                 // table
                 TABLE_NS => {
                     table::read(worksheet, relationship.get_raw_file()).unwrap();
+                }
+                // pivot table
+                PIVOT_TABLE_NS => {
+                    pivot_table::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 _ => {}
             }

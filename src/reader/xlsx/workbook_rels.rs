@@ -28,10 +28,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     .map(|t| t.to_owned())
                     .unwrap_or(target_value);
                 if type_value == PIVOT_CACHE_DEF_NS {
-                    spreadsheet.update_pivot_caches(id_value, target_value);
-                } else {
-                    result.push((id_value, type_value, target_value));
+                    spreadsheet.update_pivot_caches(id_value.clone(), target_value.clone());
                 }
+                result.push((id_value, type_value, target_value));
             }
         },
         Event::Eof => break,

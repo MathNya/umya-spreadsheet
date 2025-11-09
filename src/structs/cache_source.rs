@@ -40,6 +40,14 @@ impl CacheSource {
         self
     }
 
+    /// Create a new worksheet cache source
+    pub fn new_worksheet(worksheet_source: WorksheetSource) -> Self {
+        let mut cache_source = Self::default();
+        cache_source.set_type(SourceValues::Worksheet);
+        cache_source.set_worksheet_source_mut(worksheet_source);
+        cache_source
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

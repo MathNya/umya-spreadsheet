@@ -671,16 +671,34 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
+    pub fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
             let val3_up = format!("xl/{}", &val3);
+
+            // Check if this cache is referenced by any worksheet's pivot cache definitions (for existing files)
+            let mut found_in_raw_data = false;
             for worksheet in self.get_sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
                     if &val3_up == pivot_cache_definition
                         && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
                     {
                         result.push((val1.to_string(), val2.to_string(), val3.to_string()));
+                        found_in_raw_data = true;
+                        break;
+                    }
+                }
+                if found_in_raw_data {
+                    break;
+                }
+            }
+
+            // If not found in raw data, check if any worksheet has pivot tables (for newly created pivot tables)
+            if !found_in_raw_data {
+                for worksheet in self.get_sheet_collection_no_check() {
+                    if !worksheet.get_pivot_tables().is_empty() && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3) {
+                        result.push((val1.to_string(), val2.to_string(), val3.to_string()));
+                        break;
                     }
                 }
             }
@@ -689,7 +707,7 @@ impl Spreadsheet {
     }
 
     #[inline]
-    pub(crate) fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
+    pub fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
         self.pivot_caches.push((
             value.0.into_boxed_str(),
             value.1.into_boxed_str(),
@@ -699,7 +717,7 @@ impl Spreadsheet {
     }
 
     #[inline]
-    pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
+    pub fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
             if &**val1 == &key {
                 *val3 = value.clone().into_boxed_str()
