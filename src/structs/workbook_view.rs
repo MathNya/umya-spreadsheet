@@ -49,8 +49,15 @@ impl Default for WorkbookView {
 impl WorkbookView {
     #[inline]
     #[must_use]
-    pub fn get_active_tab(&self) -> u32 {
+    pub fn active_tab(&self) -> u32 {
         self.active_tab.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_tab()")]
+    pub fn get_active_tab(&self) -> u32 {
+        self.active_tab()
     }
 
     #[inline]
@@ -61,8 +68,15 @@ impl WorkbookView {
 
     #[inline]
     #[must_use]
-    pub fn get_x_window(&self) -> i32 {
+    pub fn x_window(&self) -> i32 {
         self.x_window.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use x_window()")]
+    pub fn get_x_window(&self) -> i32 {
+        self.x_window()
     }
 
     #[inline]
@@ -73,8 +87,15 @@ impl WorkbookView {
 
     #[inline]
     #[must_use]
-    pub fn get_y_window(&self) -> i32 {
+    pub fn y_window(&self) -> i32 {
         self.y_window.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use y_window()")]
+    pub fn get_y_window(&self) -> i32 {
+        self.y_window()
     }
 
     #[inline]
@@ -85,8 +106,15 @@ impl WorkbookView {
 
     #[inline]
     #[must_use]
-    pub fn get_window_width(&self) -> i32 {
+    pub fn window_width(&self) -> i32 {
         self.window_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use window_width()")]
+    pub fn get_window_width(&self) -> i32 {
+        self.window_width()
     }
 
     #[inline]
@@ -97,8 +125,15 @@ impl WorkbookView {
 
     #[inline]
     #[must_use]
-    pub fn get_window_height(&self) -> i32 {
+    pub fn window_height(&self) -> i32 {
         self.window_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use window_height()")]
+    pub fn get_window_height(&self) -> i32 {
+        self.window_height()
     }
 
     #[inline]
@@ -109,8 +144,15 @@ impl WorkbookView {
 
     #[inline]
     #[must_use]
-    pub fn get_tab_ratio(&self) -> i32 {
+    pub fn tab_ratio(&self) -> i32 {
         self.tab_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tab_ratio()")]
+    pub fn get_tab_ratio(&self) -> i32 {
+        self.tab_ratio()
     }
 
     #[inline]

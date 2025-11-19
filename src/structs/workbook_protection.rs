@@ -43,8 +43,15 @@ pub struct WorkbookProtection {
 impl WorkbookProtection {
     #[inline]
     #[must_use]
-    pub fn get_workbook_algorithm_name(&self) -> &str {
+    pub fn workbook_algorithm_name(&self) -> &str {
         self.workbook_algorithm_name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_algorithm_name()")]
+    pub fn get_workbook_algorithm_name(&self) -> &str {
+        self.workbook_algorithm_name()
     }
 
     #[inline]
@@ -55,8 +62,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_hash_value(&self) -> &str {
+    pub fn workbook_hash_value(&self) -> &str {
         self.workbook_hash_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_hash_value()")]
+    pub fn get_workbook_hash_value(&self) -> &str {
+        self.workbook_hash_value()
     }
 
     #[inline]
@@ -67,8 +81,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_salt_value(&self) -> &str {
+    pub fn workbook_salt_value(&self) -> &str {
         self.workbook_salt_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_salt_value()")]
+    pub fn get_workbook_salt_value(&self) -> &str {
+        self.workbook_salt_value()
     }
 
     #[inline]
@@ -79,8 +100,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_spin_count(&self) -> u32 {
+    pub fn workbook_spin_count(&self) -> u32 {
         self.workbook_spin_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_spin_count()")]
+    pub fn get_workbook_spin_count(&self) -> u32 {
+        self.workbook_spin_count()
     }
 
     #[inline]
@@ -91,8 +119,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_password_raw(&self) -> &str {
+    pub fn workbook_password_raw(&self) -> &str {
         self.workbook_password.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_password_raw()")]
+    pub fn get_workbook_password_raw(&self) -> &str {
+        self.workbook_password_raw()
     }
 
     #[inline]
@@ -109,8 +144,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_revisions_algorithm_name(&self) -> &str {
+    pub fn revisions_algorithm_name(&self) -> &str {
         self.revisions_algorithm_name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revisions_algorithm_name()")]
+    pub fn get_revisions_algorithm_name(&self) -> &str {
+        self.revisions_algorithm_name()
     }
 
     #[inline]
@@ -121,8 +163,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_revisions_hash_value(&self) -> &str {
+    pub fn revisions_hash_value(&self) -> &str {
         self.revisions_hash_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revisions_hash_value()")]
+    pub fn get_revisions_hash_value(&self) -> &str {
+        self.revisions_hash_value()
     }
 
     #[inline]
@@ -133,8 +182,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_revisions_salt_value(&self) -> &str {
+    pub fn revisions_salt_value(&self) -> &str {
         self.revisions_salt_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revisions_salt_value()")]
+    pub fn get_revisions_salt_value(&self) -> &str {
+        self.revisions_salt_value()
     }
 
     #[inline]
@@ -145,8 +201,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_revisions_spin_count(&self) -> u32 {
+    pub fn revisions_spin_count(&self) -> u32 {
         self.revisions_spin_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revisions_spin_count()")]
+    pub fn get_revisions_spin_count(&self) -> u32 {
+        self.revisions_spin_count()
     }
 
     #[inline]
@@ -157,8 +220,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_revisions_password_raw(&self) -> &str {
+    pub fn revisions_password_raw(&self) -> &str {
         self.revisions_password.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revisions_password_raw()")]
+    pub fn get_revisions_password_raw(&self) -> &str {
+        self.revisions_password_raw()
     }
 
     #[inline]
@@ -175,8 +245,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_lock_revision(&self) -> bool {
+    pub fn lock_revision(&self) -> bool {
         self.lock_revision.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use lock_revision()")]
+    pub fn get_lock_revision(&self) -> bool {
+        self.lock_revision()
     }
 
     #[inline]
@@ -187,8 +264,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_lock_structure(&self) -> bool {
+    pub fn lock_structure(&self) -> bool {
         self.lock_structure.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use lock_structure()")]
+    pub fn get_lock_structure(&self) -> bool {
+        self.lock_structure()
     }
 
     #[inline]
@@ -199,8 +283,15 @@ impl WorkbookProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_lock_windows(&self) -> bool {
+    pub fn lock_windows(&self) -> bool {
         self.lock_windows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use lock_windows()")]
+    pub fn get_lock_windows(&self) -> bool {
+        self.lock_windows()
     }
 
     #[inline]

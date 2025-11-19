@@ -28,7 +28,7 @@ impl Visible {
     #[inline]
     #[must_use]
     pub fn value(&self) -> Option<bool> {
-        self.value.get_value()
+        self.value.value()
     }
 
     #[inline]
@@ -74,7 +74,7 @@ impl Visible {
         // x:Visible
         if self.value.has_value() {
             write_start_tag(writer, "x:Visible", vec![], false);
-            write_text_node(writer, self.value.get_value_string2());
+            write_text_node(writer, self.value.value_string2());
             write_end_tag(writer, "x:Visible");
         } else {
             write_start_tag(writer, "x:Visible", vec![], true);

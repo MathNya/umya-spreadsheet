@@ -89,7 +89,7 @@ impl Shape {
 
     #[must_use]
     pub fn filled(&self) -> bool {
-        self.filled.get_value()
+        self.filled.value()
     }
 
     #[must_use]
@@ -121,7 +121,7 @@ impl Shape {
 
     #[must_use]
     pub fn stroked(&self) -> bool {
-        self.stroked.get_value()
+        self.stroked.value()
     }
 
     #[must_use]
@@ -480,13 +480,13 @@ impl Shape {
             attributes.push(("style", self.style.value_str()).into());
         }
         if self.filled.has_value() {
-            attributes.push(("filled", self.filled.get_value_string()).into());
+            attributes.push(("filled", self.filled.value_string()).into());
         }
         if self.fill_color.has_value() {
             attributes.push(("fillcolor", self.fill_color.value_str()).into());
         }
         if self.stroked.has_value() {
-            attributes.push(("stroked", self.stroked.get_value_string()).into());
+            attributes.push(("stroked", self.stroked.value_string()).into());
         }
         if self.stroke_color.has_value() {
             attributes.push(("strokecolor", self.stroke_color.value_str()).into());

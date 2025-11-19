@@ -658,7 +658,7 @@ impl Workbook {
     #[inline]
     #[must_use]
     pub fn active_sheet(&self) -> &Worksheet {
-        let index = self.workbook_view().get_active_tab();
+        let index = self.workbook_view().active_tab();
         self.sheet(index as usize).unwrap()
     }
 
@@ -674,7 +674,7 @@ impl Workbook {
     /// * `&mut Worksheet` - Work sheet.
     #[inline]
     pub fn active_sheet_mut(&mut self) -> &mut Worksheet {
-        let index = self.workbook_view().get_active_tab();
+        let index = self.workbook_view().active_tab();
         self.sheet_mut(index as usize).unwrap()
     }
 

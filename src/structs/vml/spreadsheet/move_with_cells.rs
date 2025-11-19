@@ -28,7 +28,7 @@ impl MoveWithCells {
     #[inline]
     #[must_use]
     pub fn value(&self) -> Option<bool> {
-        self.value.get_value()
+        self.value.value()
     }
 
     #[inline]
@@ -74,7 +74,7 @@ impl MoveWithCells {
         // x:MoveWithCells
         if self.value.has_value() {
             write_start_tag(writer, "x:MoveWithCells", vec![], false);
-            write_text_node(writer, self.value.get_value_string2());
+            write_text_node(writer, self.value.value_string2());
             write_end_tag(writer, "x:MoveWithCells");
         } else {
             write_start_tag(writer, "x:MoveWithCells", vec![], true);

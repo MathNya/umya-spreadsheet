@@ -27,7 +27,7 @@ pub struct Shadow {
 impl Shadow {
     #[must_use]
     pub fn on(&self) -> bool {
-        self.on.get_value()
+        self.on.value()
     }
 
     #[must_use]
@@ -59,7 +59,7 @@ impl Shadow {
 
     #[must_use]
     pub fn obscured(&self) -> bool {
-        self.obscured.get_value()
+        self.obscured.value()
     }
 
     #[must_use]
@@ -87,13 +87,13 @@ impl Shadow {
         // v:shadow
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.on.has_value() {
-            attributes.push(("on", self.on.get_value_string()).into());
+            attributes.push(("on", self.on.value_string()).into());
         }
         if self.color.has_value() {
             attributes.push(("color", self.color.value_str()).into());
         }
         if self.obscured.has_value() {
-            attributes.push(("obscured", self.obscured.get_value_string()).into());
+            attributes.push(("obscured", self.obscured.value_string()).into());
         }
         write_start_tag(writer, "v:shadow", attributes, true);
     }

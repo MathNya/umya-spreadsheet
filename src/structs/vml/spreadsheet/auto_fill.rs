@@ -28,7 +28,7 @@ impl AutoFill {
     #[inline]
     #[must_use]
     pub fn value(&self) -> Option<bool> {
-        self.value.get_value()
+        self.value.value()
     }
 
     #[inline]
@@ -74,7 +74,7 @@ impl AutoFill {
         // x:AutoFill
         if self.value.has_value() {
             write_start_tag(writer, "x:AutoFill", vec![], false);
-            write_text_node(writer, self.value.get_value_string2());
+            write_text_node(writer, self.value.value_string2());
             write_end_tag(writer, "x:AutoFill");
         } else {
             write_start_tag(writer, "x:AutoFill", vec![], true);

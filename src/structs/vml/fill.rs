@@ -71,7 +71,7 @@ impl Fill {
     #[inline]
     #[must_use]
     pub fn on(&self) -> bool {
-        self.on.get_value()
+        self.on.value()
     }
 
     #[inline]
@@ -179,7 +179,7 @@ impl Fill {
             attributes.push(("color2", self.color_2.value_str()).into());
         }
         if self.on.has_value() {
-            attributes.push(("on", self.on.get_value_string()).into());
+            attributes.push(("on", self.on.value_string()).into());
         }
         if self.focus_size.has_value() {
             attributes.push(("focussize", self.focus_size.value_str()).into());
