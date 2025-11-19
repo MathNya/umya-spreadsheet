@@ -2162,3 +2162,17 @@ fn issue_293() {
     let path = std::path::Path::new("./tests/result_files/r_issue_293.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_296() {
+    let path = std::path::Path::new("./tests/test_files/issue_296.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let sheet1 = book.get_sheet_by_name("Sheet1").unwrap(); 
+    if let Some(auto_filter) = sheet1.get_auto_filter() {
+        println!( "auto_filter for from_sheet {} is {:?}", sheet1.get_name(), auto_filter );
+    }
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_296.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
