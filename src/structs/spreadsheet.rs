@@ -696,7 +696,9 @@ impl Spreadsheet {
             // If not found in raw data, check if any worksheet has pivot tables (for newly created pivot tables)
             if !found_in_raw_data {
                 for worksheet in self.get_sheet_collection_no_check() {
-                    if !worksheet.get_pivot_tables().is_empty() && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3) {
+                    if !worksheet.get_pivot_tables().is_empty()
+                        && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
+                    {
                         result.push((val1.to_string(), val2.to_string(), val3.to_string()));
                         break;
                     }

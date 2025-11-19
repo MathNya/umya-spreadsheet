@@ -17,7 +17,7 @@ pub struct DataField {
     fie_id: UInt32Value,
     base_fie_id: Int32Value,
     base_item: UInt32Value,
-    subtotal: UInt32Value,  // Aggregation function: 0=sum, 1=count, 2=average, 3=max, 4=min, 5=product, 7=stdDev, 9=var
+    subtotal: UInt32Value, // Aggregation function: 0=sum, 1=count, 2=average, 3=max, 4=min, 5=product, 7=stdDev, 9=var
 }
 impl DataField {
     #[inline]

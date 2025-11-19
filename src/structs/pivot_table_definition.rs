@@ -370,7 +370,11 @@ impl PivotTableDefinition {
     }
 
     /// Create a new minimal pivot table definition with required fields
-    pub fn new_simple(name: impl Into<String>, cache_id: u32, destination: impl Into<String>) -> Self {
+    pub fn new_simple(
+        name: impl Into<String>,
+        cache_id: u32,
+        destination: impl Into<String>,
+    ) -> Self {
         let mut pivot_def = Self::default();
 
         // Set required fields

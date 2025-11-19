@@ -24,7 +24,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_new_line(&mut writer);
 
         // Write pivot table definition
-        pivot_table.get_pivot_table_definition().write_to(&mut writer);
+        pivot_table
+            .get_pivot_table_definition()
+            .write_to(&mut writer);
 
         let pivot_table_no = writer_mng.next_pivot_table_no();
         writer_mng.add_file_at_pivot_table(writer, pivot_table_no)?;
