@@ -2168,11 +2168,29 @@ fn issue_296() {
     let path = std::path::Path::new("./tests/test_files/issue_296.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let sheet1 = book.get_sheet_by_name("Sheet1").unwrap(); 
+    let sheet1 = book.get_sheet_by_name("Sheet1").unwrap();
     if let Some(auto_filter) = sheet1.get_auto_filter() {
-        println!( "auto_filter for from_sheet {} is {:?}", sheet1.get_name(), auto_filter );
+        println!(
+            "auto_filter for from_sheet {} is {:?}",
+            sheet1.get_name(),
+            auto_filter
+        );
     }
 
     let path = std::path::Path::new("./tests/result_files/r_issue_296.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_297() {
+    let path = std::path::Path::new("./tests/test_files/issue_297.xlsx");
+    let mut from_book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let from_sheet = from_book.get_sheet_by_name("Sheet1").unwrap();
+    let mut to_book = umya_spreadsheet::new_file_empty_worksheet();
+    let to_sheet = from_sheet.clone();
+    let _ = to_book.add_sheet(to_sheet).expect("error when add_sheet");
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_297.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&to_book, path);
 }
