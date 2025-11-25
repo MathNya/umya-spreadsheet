@@ -42,10 +42,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     .map(ToOwned::to_owned)
                     .unwrap_or(target_value);
                 if type_value == PIVOT_CACHE_DEF_NS {
-                    wb.update_pivot_caches(&id_value, &target_value);
-                } else {
-                    result.push((id_value, type_value, target_value));
+                    wb.update_pivot_caches(id_value.as_str(), target_value.as_str());
                 }
+                result.push((id_value, type_value, target_value));
             }
         },
         Event::Eof => break,

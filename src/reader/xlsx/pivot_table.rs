@@ -10,7 +10,6 @@ use crate::structs::{
     raw::RawFile,
 };
 
-#[allow(dead_code)]
 pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
     let data = std::io::Cursor::new(pivot_table_file.file_data());
     let mut reader = Reader::from_reader(data);

@@ -26,6 +26,7 @@ pub struct DataField {
     fie_id:      UInt32Value,
     base_fie_id: Int32Value,
     base_item:   UInt32Value,
+    subtotal: UInt32Value,  // Aggregation function: 0=sum, 1=count, 2=average, 3=max, 4=min, 5=product, 7=stdDev, 9=var
 }
 impl DataField {
     #[inline]
@@ -42,8 +43,7 @@ impl DataField {
     }
 
     #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
@@ -105,6 +105,25 @@ impl DataField {
         self
     }
 
+    #[must_use]
+    #[inline]
+    pub fn subtotal(&self) -> u32 {
+        self.subtotal.value()
+    }
+
+    #[must_use]
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use subtotal()")]
+    pub fn get_subtotal(&self) -> u32 {
+        self.subtotal()
+    }
+
+    #[inline]
+    pub fn set_subtotal(&mut self, value: u32) -> &mut Self {
+        self.subtotal.set_value(value);
+        self
+    }
+
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -115,6 +134,7 @@ impl DataField {
         set_string_from_xml!(self, e, fie_id, "fld");
         set_string_from_xml!(self, e, base_fie_id, "baseField");
         set_string_from_xml!(self, e, base_item, "baseItem");
+        set_string_from_xml!(self, e, subtotal, "subtotal");
     }
 
     #[inline]
@@ -129,6 +149,7 @@ impl DataField {
                 ("fld", self.fie_id.value_string().as_str()).into(),
                 ("baseField", self.base_fie_id.value_string().as_str()).into(),
                 ("baseItem", self.base_item.value_string().as_str()).into(),
+                ("subtotal", self.subtotal.value_string().as_str()).into(),
             ],
             true,
         );

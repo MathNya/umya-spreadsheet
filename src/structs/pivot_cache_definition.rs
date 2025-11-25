@@ -243,6 +243,22 @@ impl PivotCacheDefinition {
         self
     }
 
+    /// Create a new minimal pivot cache definition with required fields
+    pub fn new_simple(id: impl Into<String>, cache_source: CacheSource) -> Self {
+        let mut cache_def = Self::default();
+
+        // Set required fields
+        cache_def.set_id(id);
+        cache_def.set_cache_source(cache_source);
+
+        // Set Excel version compatibility (Excel 2007+)
+        cache_def.set_created_version(3);
+        cache_def.set_refreshed_version(3);
+        cache_def.set_min_refreshable_version(3);
+
+        cache_def
+    }
+    
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -280,18 +296,18 @@ impl PivotCacheDefinition {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"pivotTableDefinition" {
+                if e.name().into_inner() == b"pivotCacheDefinition" {
                     return
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "pivotTableDefinition")
+            Event::Eof => panic!("Error: Could not find {} end element", "pivotCacheDefinition")
         );
     }
 
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // pivotTableDefinition
+        // pivotCacheDefinition
         let mut attributes: crate::structs::AttrCollection = vec![
             ("xmlns", SHEET_MAIN_NS).into(),
             ("xmlns:r", REL_OFC_NS).into(),
@@ -333,7 +349,7 @@ impl PivotCacheDefinition {
             attributes.push(("recordCount", &record_count_str).into());
         }
 
-        write_start_tag(writer, "pivotTableDefinition", attributes, false);
+        write_start_tag(writer, "pivotCacheDefinition", attributes, false);
 
         // cacheSource
         self.cache_source.write_to(writer);
@@ -341,6 +357,6 @@ impl PivotCacheDefinition {
         // cacheFields
         self.cache_fields.write_to(writer);
 
-        write_end_tag(writer, "pivotTableDefinition");
+        write_end_tag(writer, "pivotCacheDefinition");
     }
 }

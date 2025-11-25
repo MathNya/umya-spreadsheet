@@ -28,6 +28,8 @@ mod embeddings;
 mod jsa_project_bin;
 mod media;
 mod person;
+mod pivot_cache;
+mod pivot_table;
 mod printer_settings;
 mod rels;
 mod shared_strings;
@@ -142,6 +144,10 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
             // Add tables
             let table_no_list = table::write(worksheet, &mut writer_manager)?;
 
+            // Add pivot tables and caches
+            let pivot_table_no_list = pivot_table::write(worksheet, &mut writer_manager)?;
+            let pivot_cache_no_list = pivot_cache::write(worksheet, &mut writer_manager)?;
+
             // Add worksheet relationships
             worksheet_rels::write(
                 worksheet,
@@ -154,6 +160,8 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
                 &excel_no_list,
                 &printer_settings_no,
                 &table_no_list,
+                &pivot_table_no_list,
+                &pivot_cache_no_list,
                 &mut writer_manager,
             )
         })?;

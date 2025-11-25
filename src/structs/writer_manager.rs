@@ -22,6 +22,8 @@ use crate::{
         SHEET_TYPE,
         STYLES_TYPE,
         TABLE_TYPE,
+        PIVOT_TABLE_TYPE,
+        PIVOT_CACHE_DEF_TYPE,
         THEME_TYPE,
         VBA_TYPE,
         WORKBOOK_MACRO_TYPE,
@@ -42,6 +44,8 @@ pub struct WriterManager<'a, W: io::Seek + io::Write> {
     arv:      &'a mut zip::ZipWriter<W>,
     is_light: bool,
     table_no: i32,
+    pivot_table_no: i32,
+    pivot_cache_no: i32,
 }
 
 impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
@@ -52,6 +56,8 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             arv,
             is_light: false,
             table_no: 0,
+            pivot_table_no: 0,
+            pivot_cache_no: 0,
         }
     }
 
@@ -77,6 +83,18 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     pub fn next_table_no(&mut self) -> i32 {
         self.table_no += 1;
         self.table_no
+    }
+
+    #[inline]
+    pub fn next_pivot_table_no(&mut self) -> i32 {
+        self.pivot_table_no += 1;
+        self.pivot_table_no
+    }
+
+    #[inline]
+    pub fn next_pivot_cache_no(&mut self) -> i32 {
+        self.pivot_cache_no += 1;
+        self.pivot_cache_no
     }
 
     #[inline]
@@ -241,6 +259,28 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     }
 
     #[inline]
+    pub(crate) fn add_file_at_pivot_table(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+        pivot_table_no: i32,
+    ) -> Result<i32, XlsxError> {
+        let file_path = format!("xl/pivotTables/pivotTable{pivot_table_no}.xml");
+        self.add_writer(&file_path, writer)?;
+        Ok(pivot_table_no)
+    }
+
+    #[inline]
+    pub(crate) fn add_file_at_pivot_cache(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+        pivot_cache_no: i32,
+    ) -> Result<i32, XlsxError> {
+        let file_path = format!("xl/pivotCache/pivotCacheDefinition{pivot_cache_no}.xml");
+        self.add_writer(&file_path, writer)?;
+        Ok(pivot_cache_no)
+    }
+
+    #[inline]
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
         let extension = format!(".{extension}");
         self.files.iter().any(|file| file.ends_with(&extension))
@@ -271,6 +311,16 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             // Override table
             if file.starts_with("/xl/tables/table") {
                 content_type = TABLE_TYPE;
+            }
+
+            // Override pivot table
+            if file.starts_with("/xl/pivotTables/pivotTable") {
+                content_type = PIVOT_TABLE_TYPE;
+            }
+
+            // Override pivot cache
+            if file.starts_with("/xl/pivotCache/pivotCacheDefinition") {
+                content_type = PIVOT_CACHE_DEF_TYPE;
             }
 
             // Override comments
