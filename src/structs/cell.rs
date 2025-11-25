@@ -91,7 +91,7 @@ impl Cell {
 
     #[inline]
     pub fn set_cell_value(&mut self, value: CellValue) -> &mut Self {
-        self.cell_value = Box::new(value);
+        *self.cell_value = value;
         self
     }
 
@@ -121,7 +121,7 @@ impl Cell {
 
     #[inline]
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = Box::new(value);
+        *self.style = value;
         self
     }
 

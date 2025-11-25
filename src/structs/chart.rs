@@ -297,7 +297,7 @@ impl Chart {
 
     #[inline]
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = Box::new(value);
+        *self.two_cell_anchor = value;
         self
     }
 

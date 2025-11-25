@@ -199,7 +199,7 @@ impl Row {
 
     #[inline]
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = Box::new(value);
+        *self.style = value;
         self
     }
 
