@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum LayoutTargetValues {
+    #[default]
     Inner,
     Outer,
-}
-impl Default for LayoutTargetValues {
-    fn default() -> Self {
-        Self::Inner
-    }
 }
 impl EnumTrait for LayoutTargetValues {
     fn value_string(&self) -> &str {

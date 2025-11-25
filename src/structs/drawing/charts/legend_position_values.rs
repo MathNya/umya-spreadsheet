@@ -1,18 +1,14 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum LegendPositionValues {
+    #[default]
     Bottom,
     Left,
     Right,
     Top,
     TopRight,
-}
-impl Default for LegendPositionValues {
-    fn default() -> Self {
-        Self::Bottom
-    }
 }
 impl EnumTrait for LegendPositionValues {
     fn value_string(&self) -> &str {

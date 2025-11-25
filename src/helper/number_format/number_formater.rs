@@ -104,7 +104,7 @@ fn format_straight_numeric_value(
     }
     if right.len() != right_value.len() {
         if right_value == "0" {
-            right_value = right.to_string();
+            right_value.clone_from(right);
         } else if right.len() > right_value.len() {
             let pow = 10i32.pow(num_traits::cast(right.len()).unwrap());
             right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
@@ -129,7 +129,7 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
 
     for mask in masks.iter().rev() {
         post_decimal_masks.push(mask);
-        decimal_count -= mask.to_string().len();
+        decimal_count -= mask.clone().len();
         if decimal_count == 0 {
             break;
         }

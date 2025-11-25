@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum OrientationValues {
+    #[default]
     MaxMin,
     MinMax,
-}
-impl Default for OrientationValues {
-    fn default() -> Self {
-        Self::MaxMin
-    }
 }
 impl EnumTrait for OrientationValues {
     fn value_string(&self) -> &str {

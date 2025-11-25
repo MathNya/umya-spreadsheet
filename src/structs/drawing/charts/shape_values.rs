@@ -1,19 +1,15 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum ShapeValues {
     Box,
+    #[default]
     Cone,
     ConeToMax,
     Cylinder,
     Pyramid,
     PyramidToMaximum,
-}
-impl Default for ShapeValues {
-    fn default() -> Self {
-        Self::Cone
-    }
 }
 impl EnumTrait for ShapeValues {
     fn value_string(&self) -> &str {

@@ -1,16 +1,12 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum RadarStyleValues {
     Filled,
     Marker,
+    #[default]
     Standard,
-}
-impl Default for RadarStyleValues {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 impl EnumTrait for RadarStyleValues {
     fn value_string(&self) -> &str {

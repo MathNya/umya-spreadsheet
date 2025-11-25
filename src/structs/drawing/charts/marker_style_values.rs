@@ -1,8 +1,9 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum MarkerStyleValues {
+    #[default]
     Auto,
     Circle,
     Dash,
@@ -15,11 +16,6 @@ pub enum MarkerStyleValues {
     Star,
     Triangle,
     X,
-}
-impl Default for MarkerStyleValues {
-    fn default() -> Self {
-        Self::Auto
-    }
 }
 impl EnumTrait for MarkerStyleValues {
     fn value_string(&self) -> &str {

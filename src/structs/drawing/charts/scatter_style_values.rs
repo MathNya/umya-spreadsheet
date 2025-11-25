@@ -1,18 +1,14 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum ScatterStyleValues {
+    #[default]
     Line,
     LineMarker,
     Marker,
     Smooth,
     SmoothMarker,
-}
-impl Default for ScatterStyleValues {
-    fn default() -> Self {
-        Self::Line
-    }
 }
 impl EnumTrait for ScatterStyleValues {
     fn value_string(&self) -> &str {

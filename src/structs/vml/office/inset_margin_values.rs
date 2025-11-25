@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum InsetMarginValues {
+    #[default]
     Auto,
     Custom,
-}
-impl Default for InsetMarginValues {
-    fn default() -> Self {
-        Self::Auto
-    }
 }
 impl EnumTrait for InsetMarginValues {
     fn value_string(&self) -> &str {

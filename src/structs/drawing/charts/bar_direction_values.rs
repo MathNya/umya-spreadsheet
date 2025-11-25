@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum BarDirectionValues {
+    #[default]
     Bar,
     Column,
-}
-impl Default for BarDirectionValues {
-    fn default() -> Self {
-        Self::Bar
-    }
 }
 impl EnumTrait for BarDirectionValues {
     fn value_string(&self) -> &str {

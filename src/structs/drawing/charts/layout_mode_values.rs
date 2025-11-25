@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum LayoutModeValues {
+    #[default]
     Edge,
     Factor,
-}
-impl Default for LayoutModeValues {
-    fn default() -> Self {
-        Self::Edge
-    }
 }
 impl EnumTrait for LayoutModeValues {
     fn value_string(&self) -> &str {

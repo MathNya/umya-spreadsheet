@@ -411,7 +411,7 @@ impl CellFormula {
                     Some(v) => {
                         format!("{start_col}:{v}")
                     }
-                    None => start_col.to_string(),
+                    None => start_col.clone(),
                 };
                 attributes.push(("ref", &reference_str).into());
             }

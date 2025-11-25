@@ -1,17 +1,13 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum TickLabelPositionValues {
+    #[default]
     High,
     Low,
     NextTo,
     None,
-}
-impl Default for TickLabelPositionValues {
-    fn default() -> Self {
-        Self::High
-    }
 }
 impl EnumTrait for TickLabelPositionValues {
     fn value_string(&self) -> &str {

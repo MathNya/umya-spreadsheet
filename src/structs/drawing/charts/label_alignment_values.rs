@@ -1,16 +1,12 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum LabelAlignmentValues {
+    #[default]
     Center,
     Left,
     Right,
-}
-impl Default for LabelAlignmentValues {
-    fn default() -> Self {
-        Self::Center
-    }
 }
 impl EnumTrait for LabelAlignmentValues {
     fn value_string(&self) -> &str {

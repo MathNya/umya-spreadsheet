@@ -1,17 +1,13 @@
 use std::str::FromStr;
 
 use super::EnumTrait;
-#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Default)]
 pub enum SourceValues {
     Consolidation,
     External,
     Scenario,
+    #[default]
     Worksheet,
-}
-impl Default for SourceValues {
-    fn default() -> Self {
-        Self::Worksheet
-    }
 }
 impl EnumTrait for SourceValues {
     fn value_string(&self) -> &str {

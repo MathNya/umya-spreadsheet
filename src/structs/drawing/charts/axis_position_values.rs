@@ -1,17 +1,13 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum AxisPositionValues {
+    #[default]
     Bottom,
     Left,
     Right,
     Top,
-}
-impl Default for AxisPositionValues {
-    fn default() -> Self {
-        Self::Bottom
-    }
 }
 impl EnumTrait for AxisPositionValues {
     fn value_string(&self) -> &str {

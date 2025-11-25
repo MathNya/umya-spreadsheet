@@ -1,16 +1,12 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum DisplayBlanksAsValues {
     Gap,
+    #[default]
     Span,
     Zero,
-}
-impl Default for DisplayBlanksAsValues {
-    fn default() -> Self {
-        Self::Span
-    }
 }
 impl EnumTrait for DisplayBlanksAsValues {
     fn value_string(&self) -> &str {

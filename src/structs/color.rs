@@ -362,10 +362,10 @@ impl Color {
                 if let Some(tint) = self.tint {
                     return calc_tint(v, tint).into();
                 }
-                return v.to_string().into();
+                return v.clone().into();
             }
         }
-        self.argb_str().to_string().into()
+        self.argb_str().clone().into()
     }
 
     #[must_use]

@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum CrossBetweenValues {
+    #[default]
     Between,
     MidpointCategory,
-}
-impl Default for CrossBetweenValues {
-    fn default() -> Self {
-        Self::Between
-    }
 }
 impl EnumTrait for CrossBetweenValues {
     fn value_string(&self) -> &str {

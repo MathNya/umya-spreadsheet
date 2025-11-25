@@ -1,16 +1,12 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum CrossesValues {
+    #[default]
     AutoZero,
     Maximum,
     Minimum,
-}
-impl Default for CrossesValues {
-    fn default() -> Self {
-        Self::AutoZero
-    }
 }
 impl EnumTrait for CrossesValues {
     fn value_string(&self) -> &str {

@@ -1,17 +1,13 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum ConnectValues {
     Custom,
+    #[default]
     None,
     Rectangle,
     Segments,
-}
-impl Default for ConnectValues {
-    fn default() -> Self {
-        Self::None
-    }
 }
 impl EnumTrait for ConnectValues {
     fn value_string(&self) -> &str {

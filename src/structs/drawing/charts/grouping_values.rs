@@ -1,16 +1,12 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum GroupingValues {
+    #[default]
     PercentStacked,
     Stacked,
     Standard,
-}
-impl Default for GroupingValues {
-    fn default() -> Self {
-        Self::PercentStacked
-    }
 }
 impl EnumTrait for GroupingValues {
     fn value_string(&self) -> &str {

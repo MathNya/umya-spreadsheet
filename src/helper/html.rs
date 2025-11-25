@@ -85,7 +85,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFl
                 }
 
                 let mut elm: HfdElement = HfdElement::default();
-                elm.name = element.name.to_string();
+                elm.name.clone_from(&element.name);
 
                 elm.attributes = element
                     .attributes

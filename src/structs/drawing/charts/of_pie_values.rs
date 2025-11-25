@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use super::super::super::EnumTrait;
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum OfPieValues {
     Bar,
+    #[default]
     Pie,
-}
-impl Default for OfPieValues {
-    fn default() -> Self {
-        Self::Pie
-    }
 }
 impl EnumTrait for OfPieValues {
     fn value_string(&self) -> &str {
