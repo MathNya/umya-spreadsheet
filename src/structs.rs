@@ -60,7 +60,7 @@ mod fill;
 pub use self::fill::*;
 
 mod borders;
-pub(crate) use self::borders::*;
+pub use self::borders::*;
 
 mod border;
 pub use self::border::*;
