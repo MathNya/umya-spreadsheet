@@ -1,30 +1,55 @@
-use super::Outline;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Outline;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LineStyleList {
-    outline_collection: ThinVec<Outline>,
+    outline_collection: Vec<Outline>,
 }
 
 impl LineStyleList {
     #[inline]
-    pub fn get_outline_collection(&self) -> &[Outline] {
+    #[must_use]
+    pub fn outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }
 
     #[inline]
-    pub fn get_outline_collection_mut(&mut self) -> &mut ThinVec<Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_collection()")]
+    pub fn get_outline_collection(&self) -> &[Outline] {
+        self.outline_collection()
+    }
+
+    #[inline]
+    pub fn outline_collection_mut(&mut self) -> &mut Vec<Outline> {
         &mut self.outline_collection
     }
 
     #[inline]
-    pub fn set_outline_collection(&mut self, value: impl Into<ThinVec<Outline>>) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use outline_collection_mut()")]
+    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
+        self.outline_collection_mut()
+    }
+
+    #[inline]
+    pub fn set_outline_collection(&mut self, value: impl Into<Vec<Outline>>) -> &mut Self {
         self.outline_collection = value.into();
         self
     }

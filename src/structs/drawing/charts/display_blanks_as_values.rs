@@ -1,18 +1,15 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum DisplayBlanksAsValues {
     Gap,
+    #[default]
     Span,
     Zero,
 }
-impl Default for DisplayBlanksAsValues {
-    fn default() -> Self {
-        Self::Span
-    }
-}
 impl EnumTrait for DisplayBlanksAsValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Gap => "gap",
             Self::Span => "span",
@@ -22,6 +19,7 @@ impl EnumTrait for DisplayBlanksAsValues {
 }
 impl FromStr for DisplayBlanksAsValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "gap" => Ok(Self::Gap),

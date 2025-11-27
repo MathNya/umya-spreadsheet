@@ -1,3 +1,3 @@
 pub trait EnumTrait {
-    fn get_value_string(&self) -> &str;
+    fn value_string(&self) -> &str;
 }

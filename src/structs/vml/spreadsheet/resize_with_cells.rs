@@ -1,10 +1,23 @@
-use crate::reader::driver::*;
-use crate::structs::TrueFalseBlankValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::TrueFalseBlankValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ResizeWithCells {
@@ -13,8 +26,16 @@ pub struct ResizeWithCells {
 
 impl ResizeWithCells {
     #[inline]
-    pub fn get_value(&self) -> Option<&bool> {
-        self.value.get_value()
+    #[must_use]
+    pub fn value(&self) -> Option<bool> {
+        self.value.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> Option<bool> {
+        self.value()
     }
 
     #[inline]
@@ -53,7 +74,7 @@ impl ResizeWithCells {
         // x:SizeWithCells
         if self.value.has_value() {
             write_start_tag(writer, "x:SizeWithCells", vec![], false);
-            write_text_node(writer, self.value.get_value_string2());
+            write_text_node(writer, self.value.value_string2());
             write_end_tag(writer, "x:SizeWithCells");
         } else {
             write_start_tag(writer, "x:SizeWithCells", vec![], true);

@@ -1,18 +1,15 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum RadarStyleValues {
     Filled,
     Marker,
+    #[default]
     Standard,
 }
-impl Default for RadarStyleValues {
-    fn default() -> Self {
-        Self::Standard
-    }
-}
 impl EnumTrait for RadarStyleValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Filled => "filled",
             Self::Marker => "marker",
@@ -22,6 +19,7 @@ impl EnumTrait for RadarStyleValues {
 }
 impl FromStr for RadarStyleValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "filled" => Ok(Self::Filled),

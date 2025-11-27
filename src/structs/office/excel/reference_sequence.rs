@@ -1,32 +1,58 @@
 // xm:sqref
-use crate::reader::driver::*;
-use crate::structs::Coordinate;
-use crate::structs::Range;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
-use thin_vec::ThinVec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    structs::Range,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
-    value: ThinVec<Range>,
+    value: Vec<Range>,
 }
 impl ReferenceSequence {
     #[inline]
-    pub fn get_value(&self) -> &[Range] {
+    #[must_use]
+    pub fn value(&self) -> &[Range] {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut ThinVec<Range> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &[Range] {
+        self.value()
+    }
+
+    #[inline]
+    pub fn value_mut(&mut self) -> &mut Vec<Range> {
         &mut self.value
     }
 
     #[inline]
-    pub fn set_value(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use value_mut()")]
+    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
+        self.value_mut()
+    }
+
+    #[inline]
+    pub fn set_value(&mut self, value: impl Into<Vec<Range>>) -> &mut Self {
         self.value = value.into();
         self
     }
@@ -53,12 +79,20 @@ impl ReferenceSequence {
     }
 
     #[inline]
-    pub fn get_sqref(&self) -> String {
+    #[must_use]
+    pub fn sqref(&self) -> String {
         self.value
             .iter()
-            .map(|range| range.get_range())
+            .map(Range::range)
             .collect::<Vec<String>>()
             .join(" ")
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sqref()")]
+    pub fn get_sqref(&self) -> String {
+        self.sqref()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -73,14 +107,12 @@ impl ReferenceSequence {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xm:sqref" => {
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"xm:sqref" {
                         self.set_sqref(value);
-                        value = String::new();
                         return;
                     }
-                    _ => (),
-                },
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:sqref"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
@@ -92,7 +124,7 @@ impl ReferenceSequence {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
-        write_text_node(writer, &self.get_sqref());
+        write_text_node(writer, self.sqref());
         write_end_tag(writer, "xm:sqref");
     }
 }

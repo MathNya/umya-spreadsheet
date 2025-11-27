@@ -1,25 +1,44 @@
 // brk
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        BooleanValue,
+        UInt32Value,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Break {
-    id: UInt32Value,
-    max: UInt32Value,
-    min: UInt32Value,
+    id:                UInt32Value,
+    max:               UInt32Value,
+    min:               UInt32Value,
     manual_page_break: BooleanValue,
 }
 
 impl Break {
     #[inline]
-    pub fn get_id(&self) -> &u32 {
-        self.id.get_value()
+    #[must_use]
+    pub fn id(&self) -> u32 {
+        self.id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> u32 {
+        self.id()
     }
 
     #[inline]
@@ -29,8 +48,16 @@ impl Break {
     }
 
     #[inline]
-    pub fn get_max(&self) -> &u32 {
-        self.max.get_value()
+    #[must_use]
+    pub fn max(&self) -> u32 {
+        self.max.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use max()")]
+    pub fn get_max(&self) -> u32 {
+        self.max()
     }
 
     #[inline]
@@ -40,8 +67,16 @@ impl Break {
     }
 
     #[inline]
-    pub fn get_manual_page_break(&self) -> &bool {
-        self.manual_page_break.get_value()
+    #[must_use]
+    pub fn manual_page_break(&self) -> bool {
+        self.manual_page_break.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manual_page_break()")]
+    pub fn get_manual_page_break(&self) -> bool {
+        self.manual_page_break()
     }
 
     #[inline]
@@ -62,25 +97,26 @@ impl Break {
         set_string_from_xml!(self, e, manual_page_break, "man");
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // brk
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let id = self.id.get_value_string();
-        attributes.push(("id", &id));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let id = self.id.value_string();
+        attributes.push(("id", &id).into());
 
-        let max = self.max.get_value_string();
+        let max = self.max.value_string();
         if self.max.has_value() {
-            attributes.push(("max", &max));
+            attributes.push(("max", &max).into());
         }
 
-        let min = self.min.get_value_string();
+        let min = self.min.value_string();
         if self.min.has_value() {
-            attributes.push(("min", &min));
+            attributes.push(("min", &min).into());
         }
 
-        let manual_page_break = self.manual_page_break.get_value_string();
+        let manual_page_break = self.manual_page_break.value_string();
         if self.manual_page_break.has_value() {
-            attributes.push(("man", manual_page_break));
+            attributes.push(("man", manual_page_break).into());
         }
         write_start_tag(writer, "brk", attributes, true);
     }

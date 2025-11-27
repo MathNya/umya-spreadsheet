@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum PaneValues {
     BottomLeft,
@@ -15,7 +16,7 @@ impl Default for PaneValues {
 }
 impl EnumTrait for PaneValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::BottomLeft => "bottomLeft",
             Self::BottomRight => "bottomRight",

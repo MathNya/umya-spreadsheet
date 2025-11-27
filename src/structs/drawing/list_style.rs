@@ -1,29 +1,59 @@
 // a:lstStyle
-use super::EffectList;
-use super::TextParagraphPropertiesType;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    EffectList,
+    TextParagraphPropertiesType,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ListStyle {
-    effect_list: Option<Box<EffectList>>,
+    effect_list:                    Option<Box<EffectList>>,
     text_paragraph_properties_type: HashMap<Box<str>, Box<TextParagraphPropertiesType>>,
 }
 
 impl ListStyle {
     #[inline]
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    #[must_use]
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
     #[inline]
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    #[inline]
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     #[inline]
@@ -33,19 +63,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_default_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn default_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("def")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_default_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_paragraph_properties()")]
+    pub fn get_default_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.default_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn default_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("def")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_paragraph_properties_mut()")]
+    pub fn get_default_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.default_paragraph_properties_mut()
     }
 
     #[inline]
@@ -59,19 +102,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level1_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level1_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv1")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level1_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level1_paragraph_properties()")]
+    pub fn get_level1_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level1_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level1_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv1")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level1_paragraph_properties_mut()")]
+    pub fn get_level1_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level1_paragraph_properties_mut()
     }
 
     #[inline]
@@ -85,19 +141,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level2_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level2_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv2")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level2_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level2_paragraph_properties()")]
+    pub fn get_level2_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level2_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level2_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv2")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level2_paragraph_properties_mut()")]
+    pub fn get_level2_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level2_paragraph_properties_mut()
     }
 
     #[inline]
@@ -111,19 +180,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level3_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level3_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv3")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level3_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level3_paragraph_properties()")]
+    pub fn get_level3_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level3_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level3_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv3")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level3_paragraph_properties_mut()")]
+    pub fn get_level3_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level3_paragraph_properties_mut()
     }
 
     #[inline]
@@ -137,19 +219,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level4_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level4_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv4")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level4_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level4_paragraph_properties()")]
+    pub fn get_level4_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level4_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level4_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv4")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level4_paragraph_properties_mut()")]
+    pub fn get_level4_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level4_paragraph_properties_mut()
     }
 
     #[inline]
@@ -163,19 +258,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level5_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level5_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv5")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level5_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level5_paragraph_properties()")]
+    pub fn get_level5_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level5_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level5_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv5")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level5_paragraph_properties_mut()")]
+    pub fn get_level5_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level5_paragraph_properties_mut()
     }
 
     #[inline]
@@ -189,19 +297,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level6_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level6_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv6")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level6_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level6_paragraph_properties()")]
+    pub fn get_level6_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level6_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level6_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv6")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level6_paragraph_properties_mut()")]
+    pub fn get_level6_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level6_paragraph_properties_mut()
     }
 
     #[inline]
@@ -215,19 +336,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level7_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level7_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv7")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level7_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level7_paragraph_properties()")]
+    pub fn get_level7_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level7_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level7_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv7")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level7_paragraph_properties_mut()")]
+    pub fn get_level7_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level7_paragraph_properties_mut()
     }
 
     #[inline]
@@ -241,19 +375,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level8_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level8_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv8")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level8_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level8_paragraph_properties()")]
+    pub fn get_level8_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level8_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level8_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv8")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level8_paragraph_properties_mut()")]
+    pub fn get_level8_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level8_paragraph_properties_mut()
     }
 
     #[inline]
@@ -267,19 +414,32 @@ impl ListStyle {
     }
 
     #[inline]
-    pub fn get_level9_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+    pub fn level9_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv9")
             .map(Box::as_ref)
     }
 
     #[inline]
-    pub fn get_level9_paragraph_properties_mut(
-        &mut self,
-    ) -> Option<&mut TextParagraphPropertiesType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use level9_paragraph_properties()")]
+    pub fn get_level9_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
+        self.level9_paragraph_properties()
+    }
+
+    #[inline]
+    pub fn level9_paragraph_properties_mut(&mut self) -> Option<&mut TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get_mut("lv9")
             .map(Box::as_mut)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use level9_paragraph_properties_mut()")]
+    pub fn get_level9_paragraph_properties_mut(
+        &mut self,
+    ) -> Option<&mut TextParagraphPropertiesType> {
+        self.level9_paragraph_properties_mut()
     }
 
     #[inline]
@@ -378,83 +538,53 @@ impl ListStyle {
         write_start_tag(writer, "a:lstStyle", vec![], is_empty);
 
         // a:defPPr
-        match &self.text_paragraph_properties_type.get("def") {
-            Some(v) => {
-                v.write_to_default(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("def") {
+            v.write_to_default(writer);
         }
 
         // a:lvl1pPr
-        match &self.text_paragraph_properties_type.get("lv1") {
-            Some(v) => {
-                v.write_to_lvl1(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv1") {
+            v.write_to_lvl1(writer);
         }
 
         // a:lvl2pPr
-        match &self.text_paragraph_properties_type.get("lv2") {
-            Some(v) => {
-                v.write_to_lvl2(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv2") {
+            v.write_to_lvl2(writer);
         }
 
         // a:lvl3pPr
-        match &self.text_paragraph_properties_type.get("lv3") {
-            Some(v) => {
-                v.write_to_lvl3(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv3") {
+            v.write_to_lvl3(writer);
         }
 
         // a:lvl4pPr
-        match &self.text_paragraph_properties_type.get("lv4") {
-            Some(v) => {
-                v.write_to_lvl4(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv4") {
+            v.write_to_lvl4(writer);
         }
 
         // a:lvl5pPr
-        match &self.text_paragraph_properties_type.get("lv5") {
-            Some(v) => {
-                v.write_to_lvl5(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv5") {
+            v.write_to_lvl5(writer);
         }
 
         // a:lvl6pPr
-        match &self.text_paragraph_properties_type.get("lv6") {
-            Some(v) => {
-                v.write_to_lvl6(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv6") {
+            v.write_to_lvl6(writer);
         }
 
         // a:lvl7pPr
-        match &self.text_paragraph_properties_type.get("lv7") {
-            Some(v) => {
-                v.write_to_lvl7(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv7") {
+            v.write_to_lvl7(writer);
         }
 
         // a:lvl8pPr
-        match &self.text_paragraph_properties_type.get("lv8") {
-            Some(v) => {
-                v.write_to_lvl8(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv8") {
+            v.write_to_lvl8(writer);
         }
 
         // a:lvl9pPr
-        match &self.text_paragraph_properties_type.get("lv9") {
-            Some(v) => {
-                v.write_to_lvl9(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv9") {
+            v.write_to_lvl9(writer);
         }
 
         if !is_empty {

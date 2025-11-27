@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum SheetViewValues {
     Normal,
@@ -14,7 +15,7 @@ impl Default for SheetViewValues {
 }
 impl EnumTrait for SheetViewValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Normal => "normal",
             Self::PageBreakPreview => "pageBreakPreview",

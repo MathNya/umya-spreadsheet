@@ -1,45 +1,79 @@
 // xdr:spPr
-use super::super::BlipFill;
-use super::super::EffectList;
-use super::super::ExtensionList;
-use super::super::NoFill;
-use super::super::Outline;
-use super::super::PresetGeometry;
-use super::super::SolidFill;
-use super::super::Transform2D;
-use crate::drawing::BlackWhiteModeValues;
-use crate::drawing::GradientFill;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use crate::EnumValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    BlipFill,
+    EffectList,
+    ExtensionList,
+    NoFill,
+    Outline,
+    PresetGeometry,
+    SolidFill,
+    Transform2D,
+};
+use crate::{
+    EnumValue,
+    drawing::{
+        BlackWhiteModeValues,
+        GradientFill,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Option<Box<Transform2D>>,
-    preset_geometry: PresetGeometry,
-    blip_fill: Option<Box<BlipFill>>,
-    solid_fill: Option<Box<SolidFill>>,
-    gradient_fill: Option<Box<GradientFill>>,
-    outline: Option<Box<Outline>>,
-    effect_list: Option<Box<EffectList>>,
-    no_fill: Option<NoFill>,
-    extension_list: Option<ExtensionList>,
+    transform2d:      Option<Box<Transform2D>>,
+    preset_geometry:  PresetGeometry,
+    blip_fill:        Option<Box<BlipFill>>,
+    solid_fill:       Option<Box<SolidFill>>,
+    gradient_fill:    Option<Box<GradientFill>>,
+    outline:          Option<Box<Outline>>,
+    effect_list:      Option<Box<EffectList>>,
+    no_fill:          Option<NoFill>,
+    extension_list:   Option<ExtensionList>,
     black_white_mode: EnumValue<BlackWhiteModeValues>,
 }
 impl ShapeProperties {
     #[inline]
-    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+    #[must_use]
+    pub fn transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_deref()
     }
 
     #[inline]
-    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform2d()")]
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d()
+    }
+
+    #[inline]
+    pub fn transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform2d_mut()")]
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d_mut()
     }
 
     #[inline]
@@ -49,13 +83,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_geometry(&self) -> &PresetGeometry {
+    #[must_use]
+    pub fn geometry(&self) -> &PresetGeometry {
         &self.preset_geometry
     }
 
     #[inline]
-    pub fn get_geometry_mut(&mut self) -> &mut PresetGeometry {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use geometry()")]
+    pub fn get_geometry(&self) -> &PresetGeometry {
+        self.geometry()
+    }
+
+    #[inline]
+    pub fn geometry_mut(&mut self) -> &mut PresetGeometry {
         &mut self.preset_geometry
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use geometry_mut()")]
+    pub fn get_geometry_mut(&mut self) -> &mut PresetGeometry {
+        self.geometry_mut()
     }
 
     #[inline]
@@ -65,13 +113,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_blip_fill(&self) -> Option<&BlipFill> {
+    #[must_use]
+    pub fn blip_fill(&self) -> Option<&BlipFill> {
         self.blip_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill()")]
+    pub fn get_blip_fill(&self) -> Option<&BlipFill> {
+        self.blip_fill()
+    }
+
+    #[inline]
+    pub fn blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
         self.blip_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill_mut()")]
+    pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
+        self.blip_fill_mut()
     }
 
     #[inline]
@@ -81,13 +143,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    #[must_use]
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -97,13 +173,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+    #[must_use]
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
         self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill_mut()
     }
 
     #[inline]
@@ -113,13 +203,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_outline(&self) -> Option<&Outline> {
+    #[must_use]
+    pub fn outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
 
     #[inline]
-    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline()")]
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline()
+    }
+
+    #[inline]
+    pub fn outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outline_mut()")]
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline_mut()
     }
 
     #[inline]
@@ -129,13 +233,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    #[must_use]
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
     #[inline]
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    #[inline]
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     #[inline]
@@ -145,13 +263,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    #[must_use]
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    #[inline]
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     #[inline]
@@ -161,13 +293,27 @@ impl ShapeProperties {
     }
 
     #[inline]
-    pub fn get_extension_list(&self) -> Option<&ExtensionList> {
+    #[must_use]
+    pub fn extension_list(&self) -> Option<&ExtensionList> {
         self.extension_list.as_ref()
     }
 
     #[inline]
-    pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extension_list()")]
+    pub fn get_extension_list(&self) -> Option<&ExtensionList> {
+        self.extension_list()
+    }
+
+    #[inline]
+    pub fn extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
         self.extension_list.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extension_list_mut()")]
+    pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
+        self.extension_list_mut()
     }
 
     #[inline]
@@ -177,8 +323,16 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn black_white_mode(&self) -> &BlackWhiteModeValues {
+        self.black_white_mode.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use black_white_mode()")]
     pub fn get_black_white_mode(&self) -> &BlackWhiteModeValues {
-        self.black_white_mode.get_value()
+        self.black_white_mode()
     }
 
     #[inline]
@@ -233,8 +387,8 @@ impl ShapeProperties {
                         self.set_effect_list(effect_list);
                     }
                     b"a:extLst" => {
-                        let mut obj = ExtensionList::default();
-                        obj.set_attributes(reader, e);
+                        let obj = ExtensionList::default();
+                        ExtensionList::set_attributes(reader, e);
                         self.set_extension_list(obj);
                     }
                     _ => (),
@@ -242,8 +396,8 @@ impl ShapeProperties {
             },
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:noFill" {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e, true);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e, true);
                     self.set_no_fill(obj);
                 }
             },
@@ -262,9 +416,9 @@ impl ShapeProperties {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:spPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.black_white_mode.has_value() {
-            attributes.push(("bwMode", self.black_white_mode.get_hash_string()));
+            attributes.push(("bwMode", self.black_white_mode.hash_string()).into());
         }
         write_start_tag(writer, "xdr:spPr", attributes, false);
 
@@ -286,14 +440,9 @@ impl ShapeProperties {
             v.write_to(writer);
         }
 
-        // a:gradFill
-        if let Some(v) = &self.gradient_fill {
-            v.write_to(writer);
-        }
-
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:ln

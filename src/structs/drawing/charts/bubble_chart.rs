@@ -1,37 +1,62 @@
 // c:bubbleChart
-use super::AreaChartSeries;
-use super::AreaChartSeriesList;
-use super::AxisId;
-use super::BubbleScale;
-use super::DataLabels;
-use super::ShowNegativeBubbles;
-use super::VaryColors;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    AreaChartSeries,
+    AreaChartSeriesList,
+    AxisId,
+    BubbleScale,
+    DataLabels,
+    ShowNegativeBubbles,
+    VaryColors,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BubbleChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    bubble_scale: BubbleScale,
-    show_negative_bubbles: ShowNegativeBubbles,
-    axis_id: ThinVec<AxisId>,
+    data_labels:            DataLabels,
+    bubble_scale:           BubbleScale,
+    show_negative_bubbles:  ShowNegativeBubbles,
+    axis_id:                Vec<AxisId>,
 }
 
 impl BubbleChart {
-    pub fn get_vary_colors(&self) -> &VaryColors {
+    #[must_use]
+    pub fn vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
 
-    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vary_colors()")]
+    pub fn get_vary_colors(&self) -> &VaryColors {
+        self.vary_colors()
+    }
+
+    pub fn vary_colors_mut(&mut self) -> &mut VaryColors {
         &mut self.vary_colors
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use vary_colors_mut()")]
+    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+        self.vary_colors_mut()
     }
 
     pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut BubbleChart {
@@ -39,12 +64,24 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+    #[must_use]
+    pub fn area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list()")]
+    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+        self.area_chart_series_list()
+    }
+
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         &mut self.area_chart_series_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
     }
 
     pub fn set_area_chart_series_list(&mut self, value: AreaChartSeriesList) -> &mut Self {
@@ -52,12 +89,24 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_data_labels(&self) -> &DataLabels {
+    #[must_use]
+    pub fn data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> &DataLabels {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> &mut DataLabels {
         &mut self.data_labels
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut BubbleChart {
@@ -65,12 +114,24 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_bubble_scale(&self) -> &BubbleScale {
+    #[must_use]
+    pub fn bubble_scale(&self) -> &BubbleScale {
         &self.bubble_scale
     }
 
-    pub fn get_bubble_scale_mut(&mut self) -> &mut BubbleScale {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bubble_scale()")]
+    pub fn get_bubble_scale(&self) -> &BubbleScale {
+        self.bubble_scale()
+    }
+
+    pub fn bubble_scale_mut(&mut self) -> &mut BubbleScale {
         &mut self.bubble_scale
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bubble_scale_mut()")]
+    pub fn get_bubble_scale_mut(&mut self) -> &mut BubbleScale {
+        self.bubble_scale_mut()
     }
 
     pub fn set_bubble_scale(&mut self, value: BubbleScale) -> &mut BubbleChart {
@@ -78,12 +139,24 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_show_negative_bubbles(&self) -> &ShowNegativeBubbles {
+    #[must_use]
+    pub fn show_negative_bubbles(&self) -> &ShowNegativeBubbles {
         &self.show_negative_bubbles
     }
 
-    pub fn get_show_negative_bubbles_mut(&mut self) -> &mut ShowNegativeBubbles {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_negative_bubbles()")]
+    pub fn get_show_negative_bubbles(&self) -> &ShowNegativeBubbles {
+        self.show_negative_bubbles()
+    }
+
+    pub fn show_negative_bubbles_mut(&mut self) -> &mut ShowNegativeBubbles {
         &mut self.show_negative_bubbles
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use show_negative_bubbles_mut()")]
+    pub fn get_show_negative_bubbles_mut(&mut self) -> &mut ShowNegativeBubbles {
+        self.show_negative_bubbles_mut()
     }
 
     pub fn set_show_negative_bubbles(&mut self, value: ShowNegativeBubbles) -> &mut BubbleChart {
@@ -91,15 +164,27 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_axis_id(&self) -> &[AxisId] {
+    #[must_use]
+    pub fn axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use axis_id()")]
+    pub fn get_axis_id(&self) -> &[AxisId] {
+        self.axis_id()
+    }
+
+    pub fn axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut BubbleChart {
+    #[deprecated(since = "3.0.0", note = "Use axis_id_mut()")]
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+        self.axis_id_mut()
+    }
+
+    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut BubbleChart {
         self.axis_id = value.into();
         self
     }
@@ -121,7 +206,7 @@ impl BubbleChart {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
+                        self.area_chart_series_list_mut()
                             .add_area_chart_series(obj);
                         }
                     b"c:dLbls" => {
@@ -158,7 +243,7 @@ impl BubbleChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:bubbleChart
         write_start_tag(writer, "c:bubbleChart", vec![], false);
 
@@ -166,8 +251,8 @@ impl BubbleChart {
         self.vary_colors.write_to(writer);
 
         // c:ser
-        for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+        for v in self.area_chart_series_list.area_chart_series() {
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

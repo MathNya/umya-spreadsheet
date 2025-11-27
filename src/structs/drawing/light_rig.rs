@@ -1,26 +1,52 @@
 // a:lightRig
-use super::super::EnumValue;
-use super::LightRigDirectionValues;
-use super::LightRigValues;
-use super::Rotation;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::EnumValue,
+    LightRigDirectionValues,
+    LightRigValues,
+    Rotation,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LightRig {
-    rig: EnumValue<LightRigValues>,
+    rig:        EnumValue<LightRigValues>,
     definition: EnumValue<LightRigDirectionValues>,
-    rotation: Option<Box<Rotation>>,
+    rotation:   Option<Box<Rotation>>,
 }
 
 impl LightRig {
     #[inline]
+    #[must_use]
+    pub fn rig(&self) -> &LightRigValues {
+        self.rig.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rig()")]
     pub fn get_rig(&self) -> &LightRigValues {
-        self.rig.get_value()
+        self.rig()
     }
 
     #[inline]
@@ -30,8 +56,16 @@ impl LightRig {
     }
 
     #[inline]
+    #[must_use]
+    pub fn definition(&self) -> &LightRigDirectionValues {
+        self.definition.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use definition()")]
     pub fn get_definition(&self) -> &LightRigDirectionValues {
-        self.definition.get_value()
+        self.definition()
     }
 
     #[inline]
@@ -41,13 +75,27 @@ impl LightRig {
     }
 
     #[inline]
-    pub fn get_rotation(&self) -> Option<&Rotation> {
+    #[must_use]
+    pub fn rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
 
     #[inline]
-    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation()
+    }
+
+    #[inline]
+    pub fn rotation_mut(&mut self) -> Option<&mut Rotation> {
         self.rotation.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rotation_mut()")]
+    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+        self.rotation_mut()
     }
 
     #[inline]
@@ -94,8 +142,8 @@ impl LightRig {
             writer,
             "a:lightRig",
             vec![
-                ("rig", self.rig.get_value_string()),
-                ("dir", self.definition.get_value_string()),
+                ("rig", self.rig.value_string()).into(),
+                ("dir", self.definition.value_string()).into(),
             ],
             !with_inner,
         );

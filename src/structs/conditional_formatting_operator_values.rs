@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum ConditionalFormattingOperatorValues {
     BeginsWith,
@@ -23,7 +24,7 @@ impl Default for ConditionalFormattingOperatorValues {
 }
 impl EnumTrait for ConditionalFormattingOperatorValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::BeginsWith => "beginsWith",
             Self::Between => "between",

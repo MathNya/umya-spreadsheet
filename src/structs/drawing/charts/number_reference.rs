@@ -1,28 +1,51 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:numRef
 use super::Formula;
 use super::NumberingCache;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::{
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberReference {
-    formula: Formula,
+    formula:         Formula,
     numbering_cache: NumberingCache,
 }
 
 impl NumberReference {
-    pub fn get_formula(&self) -> &Formula {
+    #[must_use]
+    pub fn formula(&self) -> &Formula {
         &self.formula
     }
 
-    pub fn get_formula_mut(&mut self) -> &mut Formula {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> &Formula {
+        self.formula()
+    }
+
+    pub fn formula_mut(&mut self) -> &mut Formula {
         &mut self.formula
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
+    pub fn get_formula_mut(&mut self) -> &mut Formula {
+        self.formula_mut()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut NumberReference {
@@ -30,12 +53,24 @@ impl NumberReference {
         self
     }
 
-    pub fn get_numbering_cache(&self) -> &NumberingCache {
+    #[must_use]
+    pub fn numbering_cache(&self) -> &NumberingCache {
         &self.numbering_cache
     }
 
-    pub fn get_numbering_cache_mut(&mut self) -> &mut NumberingCache {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use numbering_cache()")]
+    pub fn get_numbering_cache(&self) -> &NumberingCache {
+        self.numbering_cache()
+    }
+
+    pub fn numbering_cache_mut(&mut self) -> &mut NumberingCache {
         &mut self.numbering_cache
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use numbering_cache_mut()")]
+    pub fn get_numbering_cache_mut(&mut self) -> &mut NumberingCache {
+        self.numbering_cache_mut()
     }
 
     pub fn set_numbering_cache(&mut self, value: NumberingCache) -> &mut NumberReference {
@@ -68,7 +103,7 @@ impl NumberReference {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:numRef
         write_start_tag(writer, "c:numRef", vec![], false);
 
@@ -77,7 +112,7 @@ impl NumberReference {
 
         // c:numCache
         self.numbering_cache
-            .write_to(writer, self.get_formula().get_address(), spreadsheet);
+            .write_to(writer, self.formula().address(), wb);
 
         write_end_tag(writer, "c:numRef");
     }

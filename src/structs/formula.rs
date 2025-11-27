@@ -1,37 +1,74 @@
 // formula
-use super::Address;
-use super::StringValue;
-use crate::helper::address::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Address,
+    StringValue,
+};
+use crate::{
+    helper::address::is_address,
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Formula {
-    address: Address,
+    address:      Address,
     string_value: StringValue,
 }
 
 impl Formula {
     #[inline]
-    pub fn get_address(&self) -> &Address {
+    #[must_use]
+    pub fn address(&self) -> &Address {
         &self.address
     }
 
     #[inline]
-    pub fn get_address_mut(&mut self) -> &mut Address {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> &Address {
+        self.address()
+    }
+
+    #[inline]
+    pub fn address_mut(&mut self) -> &mut Address {
         &mut self.address
     }
 
     #[inline]
-    pub fn get_address_str(&self) -> String {
+    #[deprecated(since = "3.0.0", note = "Use address_mut()")]
+    pub fn get_address_mut(&mut self) -> &mut Address {
+        self.address_mut()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn address_str(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_str().to_string();
+            return self.string_value.value_str().to_string();
         }
-        self.address.get_address()
+        self.address.address()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address_str()")]
+    pub fn get_address_str(&self) -> String {
+        self.address_str()
     }
 
     #[inline]
@@ -82,7 +119,7 @@ impl Formula {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // formula
         write_start_tag(writer, "formula", vec![], false);
-        write_text_node(writer, self.get_address_str());
+        write_text_node(writer, self.address_str());
         write_end_tag(writer, "formula");
     }
 }

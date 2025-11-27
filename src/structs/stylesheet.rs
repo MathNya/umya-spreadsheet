@@ -1,207 +1,344 @@
 // styleSheet
-use super::BordersCrate;
-use super::CellFormat;
-use super::CellFormats;
-use super::CellStyleFormats;
-use super::CellStyles;
-use super::Colors;
-use super::DifferentialFormats;
-use super::Fills;
-use super::Fonts;
-use super::NumberingFormats;
-use super::Protection;
-use super::Style;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BordersCrate,
+    CellFormat,
+    CellFormats,
+    CellStyleFormats,
+    CellStyles,
+    Colors,
+    DifferentialFormats,
+    Fills,
+    Fonts,
+    NumberingFormats,
+    Style,
+};
+use crate::{
+    helper::const_str::{
+        MC_NS,
+        SHEET_MAIN_NS,
+        SHEET_MS_MAIN_NS,
+        SHEETML_AC_NS,
+    },
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Stylesheet {
-    numbering_formats: NumberingFormats,
-    fonts: Fonts,
-    fills: Fills,
-    borders: BordersCrate,
-    cell_style_formats: CellStyleFormats,
-    cell_formats: CellFormats,
-    cell_styles: CellStyles,
+    numbering_formats:    NumberingFormats,
+    fonts:                Fonts,
+    fills:                Fills,
+    borders:              BordersCrate,
+    cell_style_formats:   CellStyleFormats,
+    cell_formats:         CellFormats,
+    cell_styles:          CellStyles,
     differential_formats: DifferentialFormats,
-    colors: Colors,
-    maked_style_list: ThinVec<Style>,
+    colors:               Colors,
+    maked_style_list:     Vec<Style>,
 }
 
 impl Stylesheet {
     #[inline]
-    pub(crate) fn _get_numbering_formats(&self) -> &NumberingFormats {
+    pub(crate) fn numbering_formats(&self) -> &NumberingFormats {
         &self.numbering_formats
     }
 
     #[inline]
-    pub(crate) fn _get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+    #[deprecated(since = "3.0.0", note = "Use numbering_formats()")]
+    pub(crate) fn get_numbering_formats(&self) -> &NumberingFormats {
+        self.numbering_formats()
+    }
+
+    #[inline]
+    pub(crate) fn numbering_formats_mut(&mut self) -> &mut NumberingFormats {
         &mut self.numbering_formats
     }
 
     #[inline]
-    pub(crate) fn _set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use numbering_formats_mut()")]
+    pub(crate) fn get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+        self.numbering_formats_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
         self.numbering_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_fonts(&self) -> &Fonts {
+    pub(crate) fn fonts(&self) -> &Fonts {
         &self.fonts
     }
 
     #[inline]
-    pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
+    #[deprecated(since = "3.0.0", note = "Use fonts()")]
+    pub(crate) fn get_fonts(&self) -> &Fonts {
+        self.fonts()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn fonts_mut(&mut self) -> &mut Fonts {
         &mut self.fonts
     }
 
     #[inline]
-    pub(crate) fn _set_fonts(&mut self, value: Fonts) -> &mut Self {
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fonts_mut()")]
+    pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
+        self.fonts_mut()
+    }
+    
+    #[inline]
+    pub(crate) fn set_fonts(&mut self, value: Fonts) -> &mut Self {
         self.fonts = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_fills(&self) -> &Fills {
+    pub(crate) fn fills(&self) -> &Fills {
         &self.fills
     }
 
     #[inline]
-    pub(crate) fn get_fills_mut(&mut self) -> &mut Fills {
+    #[deprecated(since = "3.0.0", note = "Use fills()")]
+    pub(crate) fn get_fills(&self) -> &Fills {
+        self.fills()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn fills_mut(&mut self) -> &mut Fills {
         &mut self.fills
     }
 
     #[inline]
-    pub(crate) fn _set_fills(&mut self, value: Fills) -> &mut Self {
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fills_mut()")]
+    pub(crate) fn get_fills_mut(&mut self) -> &mut Fills {
+        self.fills_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_fills(&mut self, value: Fills) -> &mut Self {
         self.fills = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_borders(&self) -> &BordersCrate {
+    pub(crate) fn borders(&self) -> &BordersCrate {
         &self.borders
     }
 
     #[inline]
-    pub(crate) fn get_borders_mut(&mut self) -> &mut BordersCrate {
+    #[deprecated(since = "3.0.0", note = "Use borders()")]
+    pub(crate) fn get_borders(&self) -> &BordersCrate {
+        self.borders()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn borders_mut(&mut self) -> &mut BordersCrate {
         &mut self.borders
     }
 
     #[inline]
-    pub(crate) fn _set_borders(&mut self, value: BordersCrate) -> &mut Self {
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use borders_mut()")]
+    pub(crate) fn get_borders_mut(&mut self) -> &mut BordersCrate {
+        self.borders_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_borders(&mut self, value: BordersCrate) -> &mut Self {
         self.borders = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_cell_style_formats(&self) -> &CellStyleFormats {
+    pub(crate) fn cell_style_formats(&self) -> &CellStyleFormats {
         &self.cell_style_formats
     }
 
     #[inline]
-    pub(crate) fn _get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+    #[deprecated(since = "3.0.0", note = "Use cell_style_formats()")]
+    pub(crate) fn get_cell_style_formats(&self) -> &CellStyleFormats {
+        self.cell_style_formats()
+    }
+
+    #[inline]
+    pub(crate) fn cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
         &mut self.cell_style_formats
     }
 
     #[inline]
-    pub(crate) fn _set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use cell_style_formats_mut()")]
+    pub(crate) fn get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+        self.cell_style_formats_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
         self.cell_style_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_cell_formats(&self) -> &CellFormats {
+    pub(crate) fn cell_formats(&self) -> &CellFormats {
         &self.cell_formats
     }
 
     #[inline]
-    pub(crate) fn _get_cell_formats_mut(&mut self) -> &mut CellFormats {
+    #[deprecated(since = "3.0.0", note = "Use cell_formats()")]
+    pub(crate) fn get_cell_formats(&self) -> &CellFormats {
+        self.cell_formats()
+    }
+
+    #[inline]
+    pub(crate) fn cell_formats_mut(&mut self) -> &mut CellFormats {
         &mut self.cell_formats
     }
 
     #[inline]
-    pub(crate) fn _set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use cell_formats_mut()")]
+    pub(crate) fn get_cell_formats_mut(&mut self) -> &mut CellFormats {
+        self.cell_formats_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
         self.cell_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_cell_styles(&self) -> &CellStyles {
+    pub(crate) fn cell_styles(&self) -> &CellStyles {
         &self.cell_styles
     }
 
     #[inline]
-    pub(crate) fn _get_cell_styles_mut(&mut self) -> &mut CellStyles {
+    #[deprecated(since = "3.0.0", note = "Use cell_styles()")]
+    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+        self.cell_styles()
+    }
+
+    #[inline]
+    pub(crate) fn cell_styles_mut(&mut self) -> &mut CellStyles {
         &mut self.cell_styles
     }
 
     #[inline]
-    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use cell_styles_mut()")]
+    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+        self.cell_styles_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
         self.cell_styles = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_differential_formats(&self) -> &DifferentialFormats {
+    pub(crate) fn differential_formats(&self) -> &DifferentialFormats {
         &self.differential_formats
     }
 
     #[inline]
-    pub(crate) fn get_differential_formats_mut(&mut self) -> &mut DifferentialFormats {
+    #[deprecated(since = "3.0.0", note = "Use differential_formats()")]
+    pub(crate) fn get_differential_formats(&self) -> &DifferentialFormats {
+        self.differential_formats()
+    }
+
+    #[inline]
+    pub(crate) fn differential_formats_mut(&mut self) -> &mut DifferentialFormats {
         &mut self.differential_formats
     }
 
     #[inline]
-    pub(crate) fn _set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use differential_formats_mut()")]
+    pub(crate) fn get_differential_formats_mut(&mut self) -> &mut DifferentialFormats {
+        self.differential_formats_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
         self.differential_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn _get_colors(&self) -> &Colors {
+    pub(crate) fn colors(&self) -> &Colors {
         &self.colors
     }
 
     #[inline]
-    pub(crate) fn _get_colors_mut(&mut self) -> &mut Colors {
+    #[deprecated(since = "3.0.0", note = "Use colors()")]
+    pub(crate) fn get_colors(&self) -> &Colors {
+        self.colors()
+    }
+
+    #[inline]
+    pub(crate) fn colors_mut(&mut self) -> &mut Colors {
         &mut self.colors
     }
 
     #[inline]
-    pub(crate) fn _set_colors(&mut self, value: Colors) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use colors_mut()")]
+    pub(crate) fn get_colors_mut(&mut self) -> &mut Colors {
+        self.colors_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_colors(&mut self, value: Colors) -> &mut Self {
         self.colors = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_style(&self, id: usize) -> Style {
+    pub(crate) fn style(&self, id: usize) -> Style {
         self.maked_style_list.get(id).unwrap().clone()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub(crate) fn get_style(&self, id: usize) -> Style {
+        self.style(id)
+    }
+
     pub(crate) fn make_style(&mut self) -> &mut Self {
-        for cell_format in self.cell_formats.get_cell_format() {
+        for cell_format in self.cell_formats.cell_format() {
             let def_cell_format = self
                 .cell_style_formats
-                .get_cell_format()
-                .get(*cell_format.get_format_id() as usize)
+                .cell_format()
+                .get(cell_format.format_id() as usize)
                 .cloned()
                 .unwrap_or_default();
 
             let mut style = Style::default();
-            self.get_style_by_cell_format(&mut style, &def_cell_format, cell_format);
+            self.style_by_cell_format(&mut style, &def_cell_format, cell_format);
             self.maked_style_list.push(style);
         }
 
         self
     }
 
-    pub(crate) fn get_style_by_cell_format(
+    pub(crate) fn style_by_cell_format(
         &self,
         style: &mut Style,
         def_cell_format: &CellFormat,
@@ -210,14 +347,14 @@ impl Stylesheet {
         // number_format
         let mut apply = true;
         if def_cell_format.has_apply_number_format() {
-            apply = *def_cell_format.get_apply_number_format();
+            apply = def_cell_format.apply_number_format();
         }
         if cell_format.has_apply_number_format() {
-            apply = *cell_format.get_apply_number_format();
+            apply = cell_format.apply_number_format();
         }
         if apply {
-            let id = cell_format.get_number_format_id();
-            if let Some(obj) = self.numbering_formats.get_numbering_format().get(id) {
+            let id = cell_format.number_format_id();
+            if let Some(obj) = self.numbering_formats.numbering_format().get(&id) {
                 style.set_numbering_format(obj.clone());
             }
         }
@@ -225,61 +362,61 @@ impl Stylesheet {
         // font
         let mut apply = true;
         if def_cell_format.has_apply_font() {
-            apply = *def_cell_format.get_apply_font();
+            apply = def_cell_format.apply_font();
         }
         if cell_format.has_apply_font() {
-            apply = *cell_format.get_apply_font();
+            apply = cell_format.apply_font();
         }
         if apply {
-            let id = *cell_format.get_font_id() as usize;
-            let obj = self.fonts.get_font().get(id).unwrap();
+            let id = cell_format.font_id() as usize;
+            let obj = self.fonts.font().get(id).unwrap();
             style.set_font(obj.clone());
         }
 
         // fill
         let mut apply = true;
         if def_cell_format.has_apply_fill() {
-            apply = *def_cell_format.get_apply_fill();
+            apply = def_cell_format.apply_fill();
         }
         if cell_format.has_apply_fill() {
-            apply = *cell_format.get_apply_fill();
+            apply = cell_format.apply_fill();
         }
         if apply {
-            let id = *cell_format.get_fill_id() as usize;
-            let obj = self.fills.get_fill().get(id).unwrap();
+            let id = cell_format.fill_id() as usize;
+            let obj = self.fills.fill().get(id).unwrap();
             style.set_fill(obj.clone());
         }
 
         // borders
         let mut apply = true;
         if def_cell_format.has_apply_border() {
-            apply = *def_cell_format.get_apply_border();
+            apply = def_cell_format.apply_border();
         }
         if cell_format.has_apply_border() {
-            apply = *cell_format.get_apply_border();
+            apply = cell_format.apply_border();
         }
         if apply {
-            let id = *cell_format.get_border_id() as usize;
-            let obj = self.borders.get_borders().get(id).unwrap();
+            let id = cell_format.border_id() as usize;
+            let obj = self.borders.borders().get(id).unwrap();
             style.set_borders(obj.clone());
         }
 
         // format_id
-        style.set_format_id(*cell_format.get_format_id());
+        style.set_format_id(cell_format.format_id());
 
         // alignment
         let mut apply = true;
         if def_cell_format.has_apply_alignment() {
-            apply = *def_cell_format.get_apply_alignment();
+            apply = def_cell_format.apply_alignment();
         }
         if cell_format.has_apply_alignment() {
-            apply = *cell_format.get_apply_alignment();
+            apply = cell_format.apply_alignment();
         }
         if apply {
-            if let Some(v) = def_cell_format.get_alignment() {
+            if let Some(v) = def_cell_format.alignment() {
                 style.set_alignment(v.clone());
             }
-            if let Some(v) = cell_format.get_alignment() {
+            if let Some(v) = cell_format.alignment() {
                 style.set_alignment(v.clone());
             }
         }
@@ -287,21 +424,31 @@ impl Stylesheet {
         // protection
         let mut apply = true;
         if def_cell_format.has_apply_protection() {
-            apply = *def_cell_format.get_apply_protection();
+            apply = def_cell_format.apply_protection();
         }
         if cell_format.has_apply_protection() {
-            apply = *cell_format.get_apply_protection();
+            apply = cell_format.apply_protection();
         }
         if !apply {
             return;
         }
 
-        if let Some(v) = def_cell_format.get_protection() {
+        if let Some(v) = def_cell_format.protection() {
             style.set_protection(v.clone());
         }
-        if let Some(v) = cell_format.get_protection() {
+        if let Some(v) = cell_format.protection() {
             style.set_protection(v.clone());
         }
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use style_by_cell_format()")]
+    pub(crate) fn get_style_by_cell_format(
+        &self,
+        style: &mut Style,
+        def_cell_format: &CellFormat,
+        cell_format: &CellFormat,
+    ) {
+        self.style_by_cell_format(style, def_cell_format, cell_format);
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
@@ -330,28 +477,28 @@ impl Stylesheet {
         cell_format.set_border_id(border_id);
         cell_format.set_format_id(format_id);
 
-        if style.get_numbering_format().is_some() {
+        if style.numbering_format().is_some() {
             cell_format.set_apply_number_format(true);
         }
 
-        if style.get_font().is_some() {
+        if style.font().is_some() {
             cell_format.set_apply_font(true);
         }
 
-        if style.get_fill().is_some() {
+        if style.fill().is_some() {
             cell_format.set_apply_fill(true);
         }
 
-        if style.get_borders().is_some() {
+        if style.borders().is_some() {
             cell_format.set_apply_border(true);
         }
 
-        if let Some(v) = style.get_alignment() {
+        if let Some(v) = style.alignment() {
             cell_format.set_alignment(v.clone());
             cell_format.set_apply_alignment(true);
         }
 
-        if let Some(v) = style.get_protection() {
+        if let Some(v) = style.protection() {
             cell_format.set_protection(v.clone());
             cell_format.set_apply_protection(true);
         }
@@ -362,9 +509,9 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
-        let style = Style::get_default_value();
+        let style = Style::default_value();
         self.set_style(&style);
-        let style = Style::get_default_value_2();
+        let style = Style::default_value_2();
         self.set_style(&style);
         self
     }
@@ -374,7 +521,7 @@ impl Stylesheet {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        self.numbering_formats.get_build_in_formats();
+        self.numbering_formats.build_in_formats();
 
         xml_read_loop!(
             reader,
@@ -425,10 +572,10 @@ impl Stylesheet {
             writer,
             "styleSheet",
             vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("xmlns:mc", MC_NS),
-                ("mc:Ignorable", "x14ac"),
-                ("xmlns:x14ac", SHEETML_AC_NS),
+                ("xmlns", SHEET_MAIN_NS).into(),
+                ("xmlns:mc", MC_NS).into(),
+                ("mc:Ignorable", "x14ac").into(),
+                ("xmlns:x14ac", SHEETML_AC_NS).into(),
             ],
             false,
         );
@@ -465,9 +612,9 @@ impl Stylesheet {
             writer,
             "tableStyles",
             vec![
-                ("count", "0"),
-                ("defaultTableStyle", "TableStyleMedium2"),
-                ("defaultPivotStyle", "PivotStyleMedium9"),
+                ("count", "0").into(),
+                ("defaultTableStyle", "TableStyleMedium2").into(),
+                ("defaultPivotStyle", "PivotStyleMedium9").into(),
             ],
             true,
         );
@@ -480,8 +627,8 @@ impl Stylesheet {
             writer,
             "ext",
             vec![
-                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}"),
-                ("xmlns:x14", SHEET_MS_MAIN_NS),
+                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").into(),
+                ("xmlns:x14", SHEET_MS_MAIN_NS).into(),
             ],
             false,
         );
@@ -490,7 +637,7 @@ impl Stylesheet {
         write_start_tag(
             writer,
             "x14:slicerStyles",
-            vec![("defaultSlicerStyle", "SlicerStyleLight1")],
+            vec![("defaultSlicerStyle", "SlicerStyleLight1").into()],
             true,
         );
 

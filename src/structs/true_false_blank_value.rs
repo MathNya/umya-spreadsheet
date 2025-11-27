@@ -4,19 +4,37 @@ pub struct TrueFalseBlankValue {
 }
 impl TrueFalseBlankValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> Option<&bool> {
-        self.value.as_ref()
+    pub(crate) fn value(&self) -> Option<bool> {
+        self.value
     }
 
     #[inline]
-    pub(crate) fn _get_value_str(&self) -> &str {
-        self.get_value().map_or("", |v| if *v { "t" } else { "f" })
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
+    pub(crate) fn get_value(&self) -> Option<bool> {
+        self.value()
     }
 
     #[inline]
+    pub(crate) fn value_str(&self) -> &str {
+        self.value().map_or("", |v| if v { "t" } else { "f" })
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
+    pub(crate) fn get_value_str(&self) -> &str {
+        self.value_str()
+    }
+
+    #[inline]
+    pub(crate) fn value_string2(&self) -> &str {
+        self.value()
+            .map_or("", |v| if v { "True" } else { "False" })
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string2(&self) -> &str {
-        self.get_value()
-            .map_or("", |v| if *v { "True" } else { "False" })
+        self.value_string2()
     }
 
     #[inline]
@@ -37,10 +55,16 @@ impl TrueFalseBlankValue {
     }
 
     #[inline]
-    pub(crate) fn _get_hash_string(&self) -> &str {
+    pub(crate) fn hash_string(&self) -> &str {
         if self.has_value() {
-            return self._get_value_str();
+            return self.value_str();
         }
         "empty!!"
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> &str {
+        self.hash_string()
     }
 }

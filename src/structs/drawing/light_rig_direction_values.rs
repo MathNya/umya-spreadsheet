@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum LightRigDirectionValues {
     Bottom,
@@ -19,7 +20,7 @@ impl Default for LightRigDirectionValues {
 }
 impl EnumTrait for LightRigDirectionValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bottom => "b",
             Self::BottomLeft => "bl",

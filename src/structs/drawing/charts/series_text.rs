@@ -1,11 +1,24 @@
 // c:tx
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::StringValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SeriesText {
@@ -13,8 +26,15 @@ pub struct SeriesText {
 }
 
 impl SeriesText {
+    #[must_use]
+    pub fn value(&self) -> &str {
+        self.value.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
     pub fn get_value(&self) -> &str {
-        self.value.get_value_str()
+        self.value()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -47,7 +67,7 @@ impl SeriesText {
 
         // c:v
         write_start_tag(writer, "c:v", vec![], false);
-        write_text_node(writer, self.value.get_value_str());
+        write_text_node(writer, self.value.value_str());
         write_end_tag(writer, "c:v");
 
         write_end_tag(writer, "c:tx");

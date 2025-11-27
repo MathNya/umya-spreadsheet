@@ -1,29 +1,57 @@
 // xdr:graphicFrame
-use super::super::super::StringValue;
-use super::super::Graphic;
-use super::NonVisualGraphicFrameProperties;
-use super::Transform;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::{
+        super::StringValue,
+        Graphic,
+    },
+    NonVisualGraphicFrameProperties,
+    Transform,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicFrame {
-    r#macro: StringValue,
+    r#macro:                             StringValue,
     non_visual_graphic_frame_properties: NonVisualGraphicFrameProperties,
-    transform: Transform,
-    graphic: Graphic,
+    transform:                           Transform,
+    graphic:                             Graphic,
 }
 
 impl GraphicFrame {
     #[inline]
+    #[must_use]
+    pub fn r#macro(&self) -> &str {
+        self.r#macro.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use macro()")]
     pub fn get_macro(&self) -> &str {
-        self.r#macro.get_value_str()
+        self.r#macro()
     }
 
     #[inline]
@@ -33,15 +61,34 @@ impl GraphicFrame {
     }
 
     #[inline]
-    pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
+    #[must_use]
+    pub fn non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_properties
     }
 
     #[inline]
-    pub fn get_non_visual_graphic_frame_properties_mut(
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_graphic_frame_properties()")]
+    pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
+        self.non_visual_graphic_frame_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_graphic_frame_properties_mut(
         &mut self,
     ) -> &mut NonVisualGraphicFrameProperties {
         &mut self.non_visual_graphic_frame_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_graphic_frame_properties_mut()"
+    )]
+    pub fn get_non_visual_graphic_frame_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualGraphicFrameProperties {
+        self.non_visual_graphic_frame_properties_mut()
     }
 
     #[inline]
@@ -54,13 +101,27 @@ impl GraphicFrame {
     }
 
     #[inline]
-    pub fn get_transform(&self) -> &Transform {
+    #[must_use]
+    pub fn transform(&self) -> &Transform {
         &self.transform
     }
 
     #[inline]
-    pub fn get_transform_mut(&mut self) -> &mut Transform {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform()")]
+    pub fn get_transform(&self) -> &Transform {
+        self.transform()
+    }
+
+    #[inline]
+    pub fn transform_mut(&mut self) -> &mut Transform {
         &mut self.transform
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform_mut()")]
+    pub fn get_transform_mut(&mut self) -> &mut Transform {
+        self.transform_mut()
     }
 
     #[inline]
@@ -70,13 +131,27 @@ impl GraphicFrame {
     }
 
     #[inline]
-    pub fn get_graphic(&self) -> &Graphic {
+    #[must_use]
+    pub fn graphic(&self) -> &Graphic {
         &self.graphic
     }
 
     #[inline]
-    pub fn get_graphic_mut(&mut self) -> &mut Graphic {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic()")]
+    pub fn get_graphic(&self) -> &Graphic {
+        self.graphic()
+    }
+
+    #[inline]
+    pub fn graphic_mut(&mut self) -> &mut Graphic {
         &mut self.graphic
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_mut()")]
+    pub fn get_graphic_mut(&mut self) -> &mut Graphic {
+        self.graphic_mut()
     }
 
     #[inline]
@@ -129,7 +204,7 @@ impl GraphicFrame {
         write_start_tag(
             writer,
             "xdr:graphicFrame",
-            vec![("macro", self.r#macro.get_value_str())],
+            vec![("macro", self.r#macro.value_str()).into()],
             false,
         );
 
@@ -140,7 +215,7 @@ impl GraphicFrame {
         self.transform.write_to(writer);
 
         // a:graphic
-        self.graphic.write_to(writer, rel_list);
+        Graphic::write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }
@@ -150,10 +225,10 @@ impl AdjustmentCoordinateWithSheet for GraphicFrame {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.graphic.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -168,10 +243,10 @@ impl AdjustmentCoordinateWithSheet for GraphicFrame {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.graphic.adjustment_remove_coordinate_with_sheet(
             sheet_name,

@@ -1,32 +1,53 @@
 // pivotFields
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::ByteValue;
-use crate::structs::PivotField;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::PivotField,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotFields {
-    list: ThinVec<PivotField>,
+    list: Vec<PivotField>,
 }
 impl PivotFields {
     #[inline]
-    pub fn get_list(&self) -> &[PivotField] {
+    #[must_use]
+    pub fn list(&self) -> &[PivotField] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<PivotField> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use list()")]
+    pub fn get_list(&self) -> &[PivotField] {
+        self.list()
+    }
+
+    #[inline]
+    pub fn list_mut(&mut self) -> &mut Vec<PivotField> {
         &mut self.list
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use list_mut()")]
+    pub fn get_list_mut(&mut self) -> &mut Vec<PivotField> {
+        self.list_mut()
+    }
+    
     #[inline]
     pub fn add_list_mut(&mut self, value: PivotField) -> &mut Self {
         self.list.push(value);
@@ -34,6 +55,7 @@ impl PivotFields {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -58,12 +80,13 @@ impl PivotFields {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotFields
         write_start_tag(
             writer,
             "pivotFields",
-            vec![("count", &self.list.len().to_string())],
+            vec![("count", self.list.len().to_string()).into()],
             false,
         );
 

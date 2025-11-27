@@ -1,27 +1,52 @@
 // sheetViews
-use super::SheetView;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::SheetView;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetViews {
-    sheet_view_list: ThinVec<SheetView>,
+    sheet_view_list: Vec<SheetView>,
 }
 
 impl SheetViews {
     #[inline]
-    pub fn get_sheet_view_list(&self) -> &[SheetView] {
+    #[must_use]
+    pub fn sheet_view_list(&self) -> &[SheetView] {
         &self.sheet_view_list
     }
 
     #[inline]
-    pub fn get_sheet_view_list_mut(&mut self) -> &mut ThinVec<SheetView> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_view_list()")]
+    pub fn get_sheet_view_list(&self) -> &[SheetView] {
+        self.sheet_view_list()
+    }
+
+    #[inline]
+    pub fn sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
         &mut self.sheet_view_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sheet_view_list_mut()")]
+    pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
+        self.sheet_view_list_mut()
     }
 
     #[inline]

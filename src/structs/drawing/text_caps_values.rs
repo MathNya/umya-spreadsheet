@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum TextCapsValues {
     All,
@@ -14,7 +15,7 @@ impl Default for TextCapsValues {
 }
 impl EnumTrait for TextCapsValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::All => "all",
             Self::None => "none",

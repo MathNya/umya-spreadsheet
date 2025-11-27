@@ -1,25 +1,43 @@
 // sharedItems
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::DoubleValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        BooleanValue,
+        DoubleValue,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SharedItems {
     contains_semi_mixed_types: BooleanValue,
-    contains_string: BooleanValue,
-    contains_number: BooleanValue,
-    contains_integer: BooleanValue,
-    min_value: DoubleValue,
-    max_value: DoubleValue,
+    contains_string:           BooleanValue,
+    contains_number:           BooleanValue,
+    contains_integer:          BooleanValue,
+    min_value:                 DoubleValue,
+    max_value:                 DoubleValue,
 }
 impl SharedItems {
-    pub fn get_contains_semi_mixed_types(&self) -> &bool {
-        self.contains_semi_mixed_types.get_value()
+    #[must_use]
+    pub fn contains_semi_mixed_types(&self) -> bool {
+        self.contains_semi_mixed_types.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_semi_mixed_types()")]
+    pub fn get_contains_semi_mixed_types(&self) -> bool {
+        self.contains_semi_mixed_types()
     }
 
     pub fn set_contains_semi_mixed_types(&mut self, value: bool) -> &mut Self {
@@ -27,8 +45,15 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_string(&self) -> &bool {
-        self.contains_string.get_value()
+    #[must_use]
+    pub fn contains_string(&self) -> bool {
+        self.contains_string.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_string()")]
+    pub fn get_contains_string(&self) -> bool {
+        self.contains_string()
     }
 
     pub fn set_contains_string(&mut self, value: bool) -> &mut Self {
@@ -36,8 +61,15 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_number(&self) -> &bool {
-        self.contains_number.get_value()
+    #[must_use]
+    pub fn contains_number(&self) -> bool {
+        self.contains_number.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_number()")]
+    pub fn get_contains_number(&self) -> bool {
+        self.contains_number()
     }
 
     pub fn set_contains_number(&mut self, value: bool) -> &mut Self {
@@ -45,8 +77,15 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_integer(&self) -> &bool {
-        self.contains_integer.get_value()
+    #[must_use]
+    pub fn contains_integer(&self) -> bool {
+        self.contains_integer.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_integer()")]
+    pub fn get_contains_integer(&self) -> bool {
+        self.contains_integer()
     }
 
     pub fn set_contains_integer(&mut self, value: bool) -> &mut Self {
@@ -54,8 +93,15 @@ impl SharedItems {
         self
     }
 
-    pub fn get_min_value(&self) -> &f64 {
-        self.min_value.get_value()
+    #[must_use]
+    pub fn min_value(&self) -> f64 {
+        self.min_value.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use min_value()")]
+    pub fn get_min_value(&self) -> f64 {
+        self.min_value()
     }
 
     pub fn set_min_value(&mut self, value: f64) -> &mut Self {
@@ -63,8 +109,15 @@ impl SharedItems {
         self
     }
 
-    pub fn get_max_value(&self) -> &f64 {
-        self.max_value.get_value()
+    #[must_use]
+    pub fn max_value(&self) -> f64 {
+        self.max_value.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use max_value()")]
+    pub fn get_max_value(&self) -> f64 {
+        self.max_value()
     }
 
     pub fn set_max_value(&mut self, value: f64) -> &mut Self {
@@ -93,13 +146,14 @@ impl SharedItems {
             vec![
                 (
                     "containsSemiMixedTypes",
-                    self.contains_semi_mixed_types.get_value_string(),
-                ),
-                ("containsString", self.contains_string.get_value_string()),
-                ("containsNumber", self.contains_number.get_value_string()),
-                ("containsInteger", self.contains_integer.get_value_string()),
-                ("minValue", &self.min_value.get_value_string()),
-                ("maxValue", &self.max_value.get_value_string()),
+                    self.contains_semi_mixed_types.value_string(),
+                )
+                    .into(),
+                ("containsString", self.contains_string.value_string()).into(),
+                ("containsNumber", self.contains_number.value_string()).into(),
+                ("containsInteger", self.contains_integer.value_string()).into(),
+                ("minValue", self.min_value.value_string().as_str()).into(),
+                ("maxValue", self.max_value.value_string().as_str()).into(),
             ],
             true,
         );

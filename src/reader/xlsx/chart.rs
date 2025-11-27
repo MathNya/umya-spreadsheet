@@ -1,16 +1,18 @@
-use super::XlsxError;
-use crate::structs::drawing::charts::ChartSpace;
-use crate::structs::raw::RawFile;
-use crate::xml_read_loop;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::result;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-pub(crate) fn read(
-    raw_file: &RawFile,
-    chart_space: &mut ChartSpace,
-) -> result::Result<(), XlsxError> {
-    let data = std::io::Cursor::new(raw_file.get_file_data());
+use crate::{
+    structs::{
+        drawing::charts::ChartSpace,
+        raw::RawFile,
+    },
+    xml_read_loop,
+};
+
+pub(crate) fn read(raw_file: &RawFile, chart_space: &mut ChartSpace) {
+    let data = std::io::Cursor::new(raw_file.file_data());
     let mut reader = Reader::from_reader(data);
 
     reader.config_mut().trim_text(true);
@@ -24,6 +26,4 @@ pub(crate) fn read(
         },
         Event::Eof => break,
     );
-
-    Ok(())
 }

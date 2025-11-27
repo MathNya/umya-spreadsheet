@@ -1,11 +1,23 @@
 // c:layout
-use super::ManualLayout;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::ManualLayout;
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Layout {
@@ -13,12 +25,24 @@ pub struct Layout {
 }
 
 impl Layout {
-    pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
+    #[must_use]
+    pub fn manual_layout(&self) -> Option<&ManualLayout> {
         self.manual_layout.as_ref()
     }
 
-    pub fn get_manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manual_layout()")]
+    pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
+        self.manual_layout()
+    }
+
+    pub fn manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
         self.manual_layout.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use manual_layout_mut()")]
+    pub fn get_manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
+        self.manual_layout_mut()
     }
 
     pub fn set_manual_layout(&mut self, value: ManualLayout) -> &mut Layout {
@@ -26,6 +50,7 @@ impl Layout {
         self
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.manual_layout.is_none()
     }

@@ -1,28 +1,55 @@
 // fills
-use super::Fill;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Fill,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fills {
-    fill: ThinVec<Fill>,
+    fill: Vec<Fill>,
 }
 
 impl Fills {
     #[inline]
-    pub(crate) fn get_fill(&self) -> &[Fill] {
+    pub(crate) fn fill(&self) -> &[Fill] {
         &self.fill
     }
 
     #[inline]
-    pub(crate) fn get_fill_mut(&mut self) -> &mut ThinVec<Fill> {
+    #[deprecated(since = "3.0.0", note = "Use fill()")]
+    pub(crate) fn get_fill(&self) -> &[Fill] {
+        self.fill()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn fill_mut(&mut self) -> &mut Vec<Fill> {
         &mut self.fill
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fill_mut()")]
+    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
+        self.fill_mut()
     }
 
     #[inline]
@@ -32,12 +59,12 @@ impl Fills {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
-        match style.get_fill() {
+        match style.fill() {
             Some(v) => {
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
                 let mut id = 0;
                 for fill in &self.fill {
-                    if fill.get_hash_code() == hash_code {
+                    if fill.hash_code() == hash_code {
                         return id;
                     }
                     id += 1;
@@ -78,7 +105,7 @@ impl Fills {
             write_start_tag(
                 writer,
                 "fills",
-                vec![("count", &self.fill.len().to_string())],
+                vec![("count", &self.fill.len().to_string()).into()],
                 false,
             );
 

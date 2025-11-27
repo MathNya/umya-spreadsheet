@@ -1,11 +1,23 @@
 // colors
-use super::MruColors;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::MruColors;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Colors {
@@ -14,17 +26,29 @@ pub(crate) struct Colors {
 
 impl Colors {
     #[inline]
-    pub(crate) fn _get_mru_colors(&self) -> &MruColors {
+    pub(crate) fn mru_colors(&self) -> &MruColors {
         &self.mru_colors
     }
 
     #[inline]
-    pub(crate) fn _get_mru_colors_mut(&mut self) -> &mut MruColors {
+    #[deprecated(since = "3.0.0", note = "Use mru_colors()")]
+    pub(crate) fn get_mru_colors(&self) -> &MruColors {
+        self.mru_colors()
+    }
+
+    #[inline]
+    pub(crate) fn mru_colors_mut(&mut self) -> &mut MruColors {
         &mut self.mru_colors
     }
 
     #[inline]
-    pub(crate) fn _set_mru_colors(&mut self, value: MruColors) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use mru_colors_mut()")]
+    pub(crate) fn get_mru_colors_mut(&mut self) -> &mut MruColors {
+        self.mru_colors_mut()
+    }
+
+    #[inline]
+    pub(crate) fn set_mru_colors(&mut self, value: MruColors) -> &mut Self {
         self.mru_colors = value;
         self
     }
@@ -51,7 +75,7 @@ impl Colors {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.mru_colors.get_color().is_empty() {
+        if self.mru_colors.color().is_empty() {
             return;
         }
         // colors

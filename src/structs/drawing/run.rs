@@ -1,21 +1,42 @@
-use super::run_properties::RunProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::run_properties::RunProperties;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text: Box<str>,
+    text:           Box<str>,
     run_properties: RunProperties,
 }
 
 impl Run {
     #[inline]
-    pub fn get_text(&self) -> &str {
+    #[must_use]
+    pub fn text(&self) -> &str {
         &self.text
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     #[inline]
@@ -24,13 +45,27 @@ impl Run {
     }
 
     #[inline]
-    pub fn get_run_properties(&self) -> &RunProperties {
+    #[must_use]
+    pub fn run_properties(&self) -> &RunProperties {
         &self.run_properties
     }
 
     #[inline]
-    pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use run_properties()")]
+    pub fn get_run_properties(&self) -> &RunProperties {
+        self.run_properties()
+    }
+
+    #[inline]
+    pub fn run_properties_mut(&mut self) -> &mut RunProperties {
         &mut self.run_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use run_properties_mut()")]
+    pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
+        self.run_properties_mut()
     }
 
     #[inline]

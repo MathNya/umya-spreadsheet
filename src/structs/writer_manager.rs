@@ -1,13 +1,47 @@
-use crate::helper::const_str::*;
-use crate::structs::Spreadsheet;
-use crate::structs::XlsxError;
-use crate::writer::driver::*;
+use std::{
+    io,
+    io::Cursor,
+};
+
 use quick_xml::Writer;
-use std::io;
-use std::io::Cursor;
+
+use crate::{
+    helper::const_str::{
+        CHART_TYPE,
+        COMMENTS_TYPE,
+        CORE_PROPS_TYPE,
+        CUSTOM_PROPS_TYPE,
+        DRAWING_TYPE,
+        OLE_OBJECT_TYPE,
+        PKG_CHARTS,
+        PKG_DRAWINGS,
+        PKG_EMBEDDINGS,
+        PKG_PRNTR_SETTINGS,
+        PKG_TABLES,
+        SHARED_STRINGS_TYPE,
+        SHEET_TYPE,
+        STYLES_TYPE,
+        TABLE_TYPE,
+        PIVOT_TABLE_TYPE,
+        PIVOT_CACHE_DEF_TYPE,
+        THEME_TYPE,
+        VBA_TYPE,
+        WORKBOOK_MACRO_TYPE,
+        WORKBOOK_TYPE,
+        XPROPS_TYPE,
+    },
+    structs::{
+        Workbook,
+        XlsxError,
+    },
+    writer::driver::{
+        make_file_from_bin,
+        make_file_from_writer,
+    },
+};
 pub struct WriterManager<'a, W: io::Seek + io::Write> {
-    files: Vec<String>,
-    arv: &'a mut zip::ZipWriter<W>,
+    files:    Vec<String>,
+    arv:      &'a mut zip::ZipWriter<W>,
     is_light: bool,
     table_no: i32,
     pivot_table_no: i32,
@@ -34,11 +68,13 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     }
 
     #[inline]
-    pub fn get_is_light(&self) -> &bool {
-        &self.is_light
+    #[must_use]
+    pub fn get_is_light(&self) -> bool {
+        self.is_light
     }
 
     #[inline]
+    #[must_use]
     pub fn get_num_tables(&self) -> i32 {
         self.table_no
     }
@@ -68,7 +104,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_writer(target, self.arv, writer, None, &self.is_light)?;
+            make_file_from_writer(target, self.arv, writer, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -77,7 +113,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
+            make_file_from_bin(target, self.arv, data, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -85,7 +121,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
     #[inline]
     pub(crate) fn get_arv_mut(&mut self) -> &mut zip::ZipWriter<W> {
-        &mut self.arv
+        self.arv
     }
 
     #[inline]
@@ -107,7 +143,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/drawing{}.xml", PKG_DRAWINGS, index);
+            let file_path = format!("{PKG_DRAWINGS}/drawing{index}.xml");
             if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
@@ -122,7 +158,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/vmlDrawing{}.vml", PKG_DRAWINGS, index);
+            let file_path = format!("{PKG_DRAWINGS}/vmlDrawing{index}.vml");
             if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
@@ -137,7 +173,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/comments{}.xml", index);
+            let file_path = format!("xl/comments{index}.xml");
             if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
@@ -152,7 +188,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/threadedComments/threadedComment{}.xml", index);
+            let file_path = format!("xl/threadedComments/threadedComment{index}.xml");
             if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
@@ -167,7 +203,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/chart{}.xml", PKG_CHARTS, index);
+            let file_path = format!("{PKG_CHARTS}/chart{index}.xml");
             if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
@@ -179,7 +215,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/oleObject{}.bin", PKG_EMBEDDINGS, index);
+            let file_path = format!("{PKG_EMBEDDINGS}/oleObject{index}.bin");
             if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
@@ -191,7 +227,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/Microsoft_Excel_Worksheet{}.xlsx", PKG_EMBEDDINGS, index);
+            let file_path = format!("{PKG_EMBEDDINGS}/Microsoft_Excel_Worksheet{index}.xlsx");
             if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
@@ -203,7 +239,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{}/printerSettings{}.bin", PKG_PRNTR_SETTINGS, index);
+            let file_path = format!("{PKG_PRNTR_SETTINGS}/printerSettings{index}.bin");
             if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
@@ -217,9 +253,9 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
         table_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("{}/table{}.xml", PKG_TABLES, table_no);
+        let file_path = format!("{PKG_TABLES}/table{table_no}.xml");
         self.add_writer(&file_path, writer)?;
-        return Ok(table_no);
+        Ok(table_no)
     }
 
     #[inline]
@@ -228,9 +264,9 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
         pivot_table_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("xl/pivotTables/pivotTable{}.xml", pivot_table_no);
+        let file_path = format!("xl/pivotTables/pivotTable{pivot_table_no}.xml");
         self.add_writer(&file_path, writer)?;
-        return Ok(pivot_table_no);
+        Ok(pivot_table_no)
     }
 
     #[inline]
@@ -239,33 +275,31 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
         pivot_cache_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("xl/pivotCache/pivotCacheDefinition{}.xml", pivot_cache_no);
+        let file_path = format!("xl/pivotCache/pivotCacheDefinition{pivot_cache_no}.xml");
         self.add_writer(&file_path, writer)?;
-        return Ok(pivot_cache_no);
+        Ok(pivot_cache_no)
     }
 
     #[inline]
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
-        let extension = format!(".{}", extension);
+        let extension = format!(".{extension}");
         self.files.iter().any(|file| file.ends_with(&extension))
     }
 
-    pub(crate) fn make_context_type_override(
-        &mut self,
-        spreadsheet: &Spreadsheet,
-    ) -> Vec<(String, String)> {
+    pub(crate) fn make_context_type_override(&mut self, wb: &Workbook) -> Vec<(String, String)> {
         self.file_list_sort();
 
         let mut list: Vec<(String, String)> = Vec::new();
         for file in &self.files {
-            let file = format!("/{}", file);
+            let file = format!("/{file}");
             let mut content_type = "";
 
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
-                content_type = match spreadsheet.get_has_macros() {
-                    true => WORKBOOK_MACRO_TYPE,
-                    false => WORKBOOK_TYPE,
+                content_type = if wb.has_macros() {
+                    WORKBOOK_MACRO_TYPE
+                } else {
+                    WORKBOOK_TYPE
                 };
             }
 
@@ -346,8 +380,8 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override Unsupported
             if content_type.is_empty() {
-                for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
-                    if &**old_part_name == &file {
+                for (old_part_name, old_content_type) in wb.backup_context_types() {
+                    if **old_part_name == file {
                         content_type = old_content_type;
                     }
                 }

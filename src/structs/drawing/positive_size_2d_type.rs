@@ -1,12 +1,25 @@
 // a:ext
 // a:chExt
-use crate::reader::driver::*;
-use crate::structs::Int64Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Int64Value,
+    writer::driver::write_start_tag,
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PositiveSize2DType {
@@ -16,8 +29,16 @@ pub struct PositiveSize2DType {
 
 impl PositiveSize2DType {
     #[inline]
-    pub fn get_cx(&self) -> &i64 {
-        &self.cx.get_value()
+    #[must_use]
+    pub fn cx(&self) -> i64 {
+        self.cx.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cx()")]
+    pub fn get_cx(&self) -> i64 {
+        self.cx()
     }
 
     #[inline]
@@ -26,8 +47,16 @@ impl PositiveSize2DType {
     }
 
     #[inline]
-    pub fn get_cy(&self) -> &i64 {
-        &self.cy.get_value()
+    #[must_use]
+    pub fn cy(&self) -> i64 {
+        self.cy.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cy()")]
+    pub fn get_cy(&self) -> i64 {
+        self.cy()
     }
 
     #[inline]
@@ -53,8 +82,7 @@ impl PositiveSize2DType {
             reader,
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:ext" => return,
-                    b"a:chExt" => return,
+                    b"a:chExt" | b"a:ext" => return,
                     _ => (),
                 }
             },
@@ -76,11 +104,11 @@ impl PositiveSize2DType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let cx_str = self.cx.get_value_string();
-        attributes.push(("cx", &cx_str));
-        let cy_str = self.cy.get_value_string();
-        attributes.push(("cy", &cy_str));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let cx_str = self.cx.value_string();
+        attributes.push(("cx", &cx_str).into());
+        let cy_str = self.cy.value_string();
+        attributes.push(("cy", &cy_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }
 }

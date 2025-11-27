@@ -1,19 +1,16 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum ConnectValues {
     Custom,
+    #[default]
     None,
     Rectangle,
     Segments,
 }
-impl Default for ConnectValues {
-    fn default() -> Self {
-        Self::None
-    }
-}
 impl EnumTrait for ConnectValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Custom => "custom",
             Self::None => "none",
@@ -24,6 +21,7 @@ impl EnumTrait for ConnectValues {
 }
 impl FromStr for ConnectValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "custom" => Ok(Self::Custom),

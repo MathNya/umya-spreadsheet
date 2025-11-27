@@ -1,11 +1,17 @@
 // a:srcRect
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    StringValue,
+    reader::driver::get_attribute_value,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SourceRectangle {
@@ -21,8 +27,16 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
+    pub fn t(&self) -> Option<&str> {
+        self.t.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use t()")]
     pub fn get_t(&self) -> Option<&str> {
-        self.t.get_value()
+        self.t()
     }
 
     #[inline]
@@ -31,8 +45,16 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
+    pub fn l(&self) -> Option<&str> {
+        self.l.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use l()")]
     pub fn get_l(&self) -> Option<&str> {
-        self.l.get_value()
+        self.l()
     }
 
     #[inline]
@@ -41,8 +63,16 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
+    pub fn r(&self) -> Option<&str> {
+        self.r.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use r()")]
     pub fn get_r(&self) -> Option<&str> {
-        self.r.get_value()
+        self.r()
     }
 
     #[inline]
@@ -51,8 +81,16 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
+    pub fn b(&self) -> Option<&str> {
+        self.b.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use b()")]
     pub fn get_b(&self) -> Option<&str> {
-        self.b.get_value()
+        self.b()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -60,34 +98,32 @@ impl SourceRectangle {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        for a in e.attributes().with_checks(false) {
-            if let Ok(attr) = a {
-                match attr.key.0 {
-                    b"t" => self.set_t(get_attribute_value(&attr).unwrap()),
-                    b"l" => self.set_l(get_attribute_value(&attr).unwrap()),
-                    b"r" => self.set_r(get_attribute_value(&attr).unwrap()),
-                    b"b" => self.set_b(get_attribute_value(&attr).unwrap()),
-                    _ => {}
-                }
+        for attr in e.attributes().with_checks(false).flatten() {
+            match attr.key.0 {
+                b"t" => self.set_t(get_attribute_value(&attr).unwrap()),
+                b"l" => self.set_l(get_attribute_value(&attr).unwrap()),
+                b"r" => self.set_r(get_attribute_value(&attr).unwrap()),
+                b"b" => self.set_b(get_attribute_value(&attr).unwrap()),
+                _ => {}
             }
         }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srcRect
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        if let Some(v) = self.t.get_value() {
-            attributes.push(("t", v))
+        if let Some(v) = self.t.value() {
+            attributes.push(("t", v).into());
         }
-        if let Some(v) = self.l.get_value() {
-            attributes.push(("l", v))
+        if let Some(v) = self.l.value() {
+            attributes.push(("l", v).into());
         }
-        if let Some(v) = self.r.get_value() {
-            attributes.push(("r", v))
+        if let Some(v) = self.r.value() {
+            attributes.push(("r", v).into());
         }
-        if let Some(v) = self.b.get_value() {
-            attributes.push(("b", v))
+        if let Some(v) = self.b.value() {
+            attributes.push(("b", v).into());
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

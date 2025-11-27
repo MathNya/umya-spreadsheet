@@ -16,18 +16,42 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.3.2
-#### Bug Fixed #290,#291
+### ver 2.2.0
+#### * Increased processing speed and reduced memory consumption.(Thank you. [schungx](https://github.com/schungx),[mxsrm](https://github.com/mxsrm))
+The return type has been changed in some functions.
+Please be aware of this.
+
+#### * copy_row_styling(),copy_col_styling() is now available.
+Copies the style of the specified column or row.
+```rust
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+let sheet = book.get_sheet_mut(0).unwrap();
+sheet.copy_row_styling(&3, &5, None, None);
+sheet.copy_col_styling(&3, &5, None, None);
+```
+#### * The function to create a new comment has been implemented.
+```rust
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+let sheet = book.get_sheet_mut(0).unwrap();
+let mut comment = Comment::default();
+comment.new_comment("B2");
+comment.set_text_string("TEST");
+sheet.add_comments(comment);
+```
+#### * Minor bug fixes
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.3.3"
+umya-spreadsheet = "2.2.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.3.3", features = ["js"] }
+umya-spreadsheet = { version = "2.2.0", features = ["js"] }
+
+# Use only png for image processing
+umya-spreadsheet = { version = "2.2.0", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
@@ -53,25 +77,25 @@ let mut book = umya_spreadsheet::new_file();
 ### Write file
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+let _unused =  umya_spreadsheet::writer::xlsx::write(&book, path);
 ```
 ### Write file with password
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+let _unused =  umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
 ```
 ```rust
 let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+let _unused =  umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
 ```
 ### Read Value
 ```rust
 let mut book = umya_spreadsheet::new_file();
 book.get_sheet_by_name("Sheet1").unwrap().get_cell("A1").get_value();
 book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
-book.get_sheet_by_name("Sheet1").unwrap().get_cell((&1, &1)).get_value();
-book.get_sheet_mut(0).unwrap().get_cell((&1, &1)).get_value();
+book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
+book.get_sheet_mut(0).unwrap().get_cell((1, 1)).get_value();
 ```
 ### Change Value
 ```rust
@@ -118,15 +142,15 @@ book.get_sheet_by_name_mut("Sheet1").unwrap()
 
 ### Struct 
 
-Pass the book as a ```Spreadsheet``` to modify it in other functions. 
+Pass the book as a ```Workbook``` to modify it in other functions. 
 
 ```rust
 
 let mut book = umya_spreadsheet::new_file();
-let _ = book.new_sheet("Sheet2");
+let _unused =  book.new_sheet("Sheet2");
 update_excel(&mut book);
 
-fn update_excel(book: &mut Spreadsheet) {
+fn update_excel(book:  &mut Workbook) {
    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("Test"); 
 }
 ```
@@ -160,3 +184,7 @@ Contributions by way of pull requests are welcome!  Please make sure your code u
 
 * `cargo fmt` for formatting
 * [clippy](https://github.com/rust-lang/rust-clippy)
+```rust
+cargo +nightly fmt --all
+cargo clippy -- -D warnings
+```

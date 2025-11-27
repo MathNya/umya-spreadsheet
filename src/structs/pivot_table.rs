@@ -1,12 +1,7 @@
-use super::SheetView;
-use crate::reader::driver::*;
-use crate::structs::PivotCacheDefinition;
-use crate::structs::PivotTableDefinition;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::structs::{
+    PivotCacheDefinition,
+    PivotTableDefinition,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTable {
@@ -16,13 +11,27 @@ pub struct PivotTable {
 
 impl PivotTable {
     #[inline]
-    pub fn get_pivot_table_definition(&self) -> &PivotTableDefinition {
+    #[must_use]
+    pub fn pivot_table_definition(&self) -> &PivotTableDefinition {
         &self.pivot_table_definition
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_table_definition()")]
+    pub fn get_pivot_table_definition(&self) -> &PivotTableDefinition {
+        self.pivot_table_definition()
+    }
+
+    #[inline]
+    pub fn pivot_table_definition_mut(&mut self) -> &mut PivotTableDefinition {
+        &mut self.
+        pivot_table_definition
+    }
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pivot_table_definition_mut()")]
     pub fn get_pivot_table_definition_mut(&mut self) -> &mut PivotTableDefinition {
-        &mut self.pivot_table_definition
+        self.pivot_table_definition_mut()
     }
 
     #[inline]
@@ -32,13 +41,27 @@ impl PivotTable {
     }
 
     #[inline]
-    pub fn get_pivot_cache_definition(&self) -> &PivotCacheDefinition {
+    #[must_use]
+    pub fn pivot_cache_definition(&self) -> &PivotCacheDefinition {
         &self.pivot_cache_definition
     }
 
     #[inline]
-    pub fn get_pivot_cache_definition_mut(&mut self) -> &mut PivotCacheDefinition {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_cache_definition()")]
+    pub fn get_pivot_cache_definition(&self) -> &PivotCacheDefinition {
+        self.pivot_cache_definition()
+    }
+
+    #[inline]
+    pub fn pivot_cache_definition_mut(&mut self) -> &mut PivotCacheDefinition {
         &mut self.pivot_cache_definition
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pivot_cache_definition_mut()")]
+    pub fn get_pivot_cache_definition_mut(&mut self) -> &mut PivotCacheDefinition {
+        self.pivot_cache_definition_mut()
     }
 
     #[inline]

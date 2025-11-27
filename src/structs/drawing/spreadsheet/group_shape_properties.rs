@@ -1,11 +1,23 @@
 // xdr:grpSpPr
-use super::super::Transform2D;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::Transform2D;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GroupShapeProperties {
@@ -14,13 +26,27 @@ pub struct GroupShapeProperties {
 
 impl GroupShapeProperties {
     #[inline]
-    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+    #[must_use]
+    pub fn transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
 
     #[inline]
-    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform2d()")]
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d()
+    }
+
+    #[inline]
+    pub fn transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform2d_mut()")]
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d_mut()
     }
 
     #[inline]
@@ -37,13 +63,10 @@ impl GroupShapeProperties {
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
-                match e.name().0 {
-                    b"a:xfrm" => {
-                        let mut obj = Transform2D::default();
-                        obj.set_attributes(reader, e);
-                        self.set_transform2d(obj);
-                    }
-                    _ => (),
+                if e.name().0 == b"a:xfrm" {
+                    let mut obj = Transform2D::default();
+                    obj.set_attributes(reader, e);
+                    self.set_transform2d(obj);
                 }
             },
             Event::End(ref e) => {

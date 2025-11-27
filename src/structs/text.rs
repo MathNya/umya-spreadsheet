@@ -1,32 +1,57 @@
 // t
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
 
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
+
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub(crate) struct Text {
+pub struct Text {
     value: Box<str>,
 }
 
 impl Text {
     #[inline]
-    pub(crate) fn get_value(&self) -> &str {
+    pub fn value(&self) -> &str {
         &self.value
     }
 
     #[inline]
-    pub(crate) fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &str {
+        self.value()
+    }
+
+    #[inline]
+    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.value = value.into().into_boxed_str();
         self
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(&*self.value))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -50,11 +75,11 @@ impl Text {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // t
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.value.starts_with(|c: char| c.is_whitespace())
             || self.value.ends_with(|c: char| c.is_whitespace())
         {
-            attributes.push(("xml:space", "preserve"));
+            attributes.push(("xml:space", "preserve").into());
         }
         write_start_tag(writer, "t", attributes, false);
         write_text_node(writer, &*self.value);

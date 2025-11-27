@@ -1,31 +1,52 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::custom_properties::Properties as CustomProperties;
-use crate::structs::StringValue;
-use crate::structs::Worksheet;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::const_str::{
+        COREPROPS_NS,
+        DCMITYPE_NS,
+        DCORE_NS,
+        DCTERMS_NS,
+        VTYPES_NS,
+        XPROPS_NS,
+        XSI_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::{
+        StringValue,
+        Worksheet,
+        custom_properties::Properties as CustomProperties,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Debug)]
 pub struct Properties {
-    creator: StringValue,
-    last_modified_by: StringValue,
-    created: StringValue,
-    modified: StringValue,
-    title: StringValue,
-    description: StringValue,
-    subject: StringValue,
-    keywords: StringValue,
-    category: StringValue,
-    manager: StringValue,
-    company: StringValue,
-    revision: StringValue,
-    version: StringValue,
+    creator:           StringValue,
+    last_modified_by:  StringValue,
+    created:           StringValue,
+    modified:          StringValue,
+    title:             StringValue,
+    description:       StringValue,
+    subject:           StringValue,
+    keywords:          StringValue,
+    category:          StringValue,
+    manager:           StringValue,
+    company:           StringValue,
+    revision:          StringValue,
+    version:           StringValue,
     custom_properties: CustomProperties,
 }
 impl Default for Properties {
@@ -55,8 +76,16 @@ impl Default for Properties {
 }
 impl Properties {
     #[inline]
+    #[must_use]
+    pub fn creator(&self) -> &str {
+        self.creator.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use creator()")]
     pub fn get_creator(&self) -> &str {
-        &self.creator.get_value_str()
+        self.creator()
     }
 
     #[inline]
@@ -66,8 +95,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn last_modified_by(&self) -> &str {
+        self.last_modified_by.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use last_modified_by()")]
     pub fn get_last_modified_by(&self) -> &str {
-        &self.last_modified_by.get_value_str()
+        self.last_modified_by()
     }
 
     #[inline]
@@ -77,8 +114,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn created(&self) -> &str {
+        self.created.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use created()")]
     pub fn get_created(&self) -> &str {
-        &self.created.get_value_str()
+        self.created()
     }
 
     #[inline]
@@ -88,8 +133,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn modified(&self) -> &str {
+        self.modified.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use modified()")]
     pub fn get_modified(&self) -> &str {
-        &self.modified.get_value_str()
+        self.modified()
     }
 
     #[inline]
@@ -99,8 +152,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn title(&self) -> &str {
+        self.title.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
     pub fn get_title(&self) -> &str {
-        &self.title.get_value_str()
+        self.title()
     }
 
     #[inline]
@@ -110,8 +171,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn description(&self) -> &str {
+        self.description.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use description()")]
     pub fn get_description(&self) -> &str {
-        &self.description.get_value_str()
+        self.description()
     }
 
     #[inline]
@@ -121,8 +190,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn subject(&self) -> &str {
+        self.subject.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use subject()")]
     pub fn get_subject(&self) -> &str {
-        &self.subject.get_value_str()
+        self.subject()
     }
 
     #[inline]
@@ -132,8 +209,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn keywords(&self) -> &str {
+        self.keywords.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use keywords()")]
     pub fn get_keywords(&self) -> &str {
-        &self.keywords.get_value_str()
+        self.keywords()
     }
 
     #[inline]
@@ -143,8 +228,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn revision(&self) -> &str {
+        self.revision.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revision()")]
     pub fn get_revision(&self) -> &str {
-        &self.revision.get_value_str()
+        self.revision()
     }
 
     #[inline]
@@ -154,8 +247,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn category(&self) -> &str {
+        self.category.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use category()")]
     pub fn get_category(&self) -> &str {
-        &self.category.get_value_str()
+        self.category()
     }
 
     #[inline]
@@ -165,8 +266,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn version(&self) -> &str {
+        self.version.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use version()")]
     pub fn get_version(&self) -> &str {
-        &self.version.get_value_str()
+        self.version()
     }
 
     #[inline]
@@ -176,8 +285,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn manager(&self) -> &str {
+        self.manager.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manager()")]
     pub fn get_manager(&self) -> &str {
-        &self.manager.get_value_str()
+        self.manager()
     }
 
     #[inline]
@@ -187,8 +304,16 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn company(&self) -> &str {
+        self.company.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use company()")]
     pub fn get_company(&self) -> &str {
-        &self.company.get_value_str()
+        self.company()
     }
 
     #[inline]
@@ -198,13 +323,27 @@ impl Properties {
     }
 
     #[inline]
-    pub fn get_custom_properties(&self) -> &CustomProperties {
+    #[must_use]
+    pub fn custom_properties(&self) -> &CustomProperties {
         &self.custom_properties
     }
 
     #[inline]
-    pub fn get_custom_properties_mut(&mut self) -> &mut CustomProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_properties()")]
+    pub fn get_custom_properties(&self) -> &CustomProperties {
+        self.custom_properties()
+    }
+
+    #[inline]
+    pub fn custom_properties_mut(&mut self) -> &mut CustomProperties {
         &mut self.custom_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use custom_properties_mut()")]
+    pub fn get_custom_properties_mut(&mut self) -> &mut CustomProperties {
+        self.custom_properties_mut()
     }
 
     #[inline]
@@ -254,8 +393,7 @@ impl Properties {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner(){
-                    b"Manager" => {value = String::new();},
-                    b"Company" => {value = String::new();},
+                    b"Manager"| b"Company" => {value = String::new();},
                     _ => {}
                 }
             },
@@ -288,11 +426,11 @@ impl Properties {
             writer,
             "cp:coreProperties",
             vec![
-                ("xmlns:cp", COREPROPS_NS),
-                ("xmlns:dc", DCORE_NS),
-                ("xmlns:dcterms", DCTERMS_NS),
-                ("xmlns:dcmitype", DCMITYPE_NS),
-                ("xmlns:xsi", XSI_NS),
+                ("xmlns:cp", COREPROPS_NS).into(),
+                ("xmlns:dc", DCORE_NS).into(),
+                ("xmlns:dcterms", DCTERMS_NS).into(),
+                ("xmlns:dcmitype", DCMITYPE_NS).into(),
+                ("xmlns:xsi", XSI_NS).into(),
             ],
             false,
         );
@@ -300,49 +438,49 @@ impl Properties {
         // dc:title
         if self.title.has_value() {
             write_start_tag(writer, "dc:title", vec![], false);
-            write_text_node(writer, self.title.get_value_str());
+            write_text_node(writer, self.title.value_str());
             write_end_tag(writer, "dc:title");
         }
 
         // dc:subject
         if self.subject.has_value() {
             write_start_tag(writer, "dc:subject", vec![], false);
-            write_text_node(writer, self.subject.get_value_str());
+            write_text_node(writer, self.subject.value_str());
             write_end_tag(writer, "dc:subject");
         }
 
         // dc:creator
         if self.creator.has_value() {
             write_start_tag(writer, "dc:creator", vec![], false);
-            write_text_node(writer, self.creator.get_value_str());
+            write_text_node(writer, self.creator.value_str());
             write_end_tag(writer, "dc:creator");
         }
 
         // cp:keywords
         if self.keywords.has_value() {
             write_start_tag(writer, "cp:keywords", vec![], false);
-            write_text_node(writer, self.keywords.get_value_str());
+            write_text_node(writer, self.keywords.value_str());
             write_end_tag(writer, "cp:keywords");
         }
 
         // dc:description
         if self.description.has_value() {
             write_start_tag(writer, "dc:description", vec![], false);
-            write_text_node(writer, self.description.get_value_str());
+            write_text_node(writer, self.description.value_str());
             write_end_tag(writer, "dc:description");
         }
 
         // cp:lastModifiedBy
         if self.last_modified_by.has_value() {
             write_start_tag(writer, "cp:lastModifiedBy", vec![], false);
-            write_text_node(writer, self.last_modified_by.get_value_str());
+            write_text_node(writer, self.last_modified_by.value_str());
             write_end_tag(writer, "cp:lastModifiedBy");
         }
 
         // cp:revision
         if self.revision.has_value() {
             write_start_tag(writer, "cp:revision", vec![], false);
-            write_text_node(writer, self.revision.get_value_str());
+            write_text_node(writer, self.revision.value_str());
             write_end_tag(writer, "cp:revision");
         }
 
@@ -351,10 +489,10 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:created",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
-            write_text_node(writer, self.created.get_value_str());
+            write_text_node(writer, self.created.value_str());
             write_end_tag(writer, "dcterms:created");
         }
 
@@ -363,24 +501,24 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:modified",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
-            write_text_node(writer, self.modified.get_value_str());
+            write_text_node(writer, self.modified.value_str());
             write_end_tag(writer, "dcterms:modified");
         }
 
         // cp:category
         if self.category.has_value() {
             write_start_tag(writer, "cp:category", vec![], false);
-            write_text_node(writer, self.category.get_value_str());
+            write_text_node(writer, self.category.value_str());
             write_end_tag(writer, "cp:category");
         }
 
         // cp:version
         if self.version.has_value() {
             write_start_tag(writer, "cp:version", vec![], false);
-            write_text_node(writer, self.version.get_value_str());
+            write_text_node(writer, self.version.value_str());
             write_end_tag(writer, "cp:version");
         }
 
@@ -398,7 +536,7 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", XPROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![("xmlns", XPROPS_NS).into(), ("xmlns:vt", VTYPES_NS).into()],
             false,
         );
 
@@ -424,7 +562,7 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", "2"), ("baseType", "variant")],
+            vec![("size", "2").into(), ("baseType", "variant").into()],
             false,
         );
 
@@ -459,14 +597,17 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", &sheet_count_str), ("baseType", "lpstr")],
+            vec![
+                ("size", &sheet_count_str).into(),
+                ("baseType", "lpstr").into(),
+            ],
             false,
         );
 
         for workseet in work_sheet_collection {
             // vt:lpstr
             write_start_tag(writer, "vt:lpstr", vec![], false);
-            write_text_node(writer, workseet.get_name());
+            write_text_node(writer, workseet.name());
             write_end_tag(writer, "vt:lpstr");
         }
 
@@ -476,12 +617,12 @@ impl Properties {
 
         // Manager
         write_start_tag(writer, "Manager", vec![], false);
-        write_text_node(writer, self.get_manager());
+        write_text_node(writer, self.manager());
         write_end_tag(writer, "Manager");
 
         // Company
         write_start_tag(writer, "Company", vec![], false);
-        write_text_node(writer, self.get_company());
+        write_text_node(writer, self.company());
         write_end_tag(writer, "Company");
 
         // LinksUpToDate

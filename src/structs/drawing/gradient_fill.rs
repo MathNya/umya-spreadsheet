@@ -1,30 +1,58 @@
 // a:gradFill
-use super::super::super::EnumValue;
-use super::super::BooleanValue;
-use super::GradientStopList;
-use super::LinearGradientFill;
-use super::TileFlipValues;
-use super::TileRectangle;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::{
+        super::EnumValue,
+        BooleanValue,
+    },
+    GradientStopList,
+    LinearGradientFill,
+    TileFlipValues,
+    TileRectangle,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientFill {
-    flip: EnumValue<TileFlipValues>,
-    rotate_with_shape: BooleanValue,
-    gradient_stop_list: GradientStopList,
+    flip:                 EnumValue<TileFlipValues>,
+    rotate_with_shape:    BooleanValue,
+    gradient_stop_list:   GradientStopList,
     linear_gradient_fill: Option<Box<LinearGradientFill>>,
-    tile_rectangle: Option<Box<TileRectangle>>,
+    tile_rectangle:       Option<Box<TileRectangle>>,
 }
 
 impl GradientFill {
     #[inline]
+    #[must_use]
+    pub fn flip(&self) -> &TileFlipValues {
+        self.flip.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use flip()")]
     pub fn get_flip(&self) -> &TileFlipValues {
-        self.flip.get_value()
+        self.flip()
     }
 
     #[inline]
@@ -34,8 +62,16 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_rotate_with_shape(&self) -> &bool {
-        self.rotate_with_shape.get_value()
+    #[must_use]
+    pub fn rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
+    pub fn get_rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape()
     }
 
     #[inline]
@@ -45,13 +81,27 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_gradient_stop_list(&self) -> &GradientStopList {
+    #[must_use]
+    pub fn gradient_stop_list(&self) -> &GradientStopList {
         &self.gradient_stop_list
     }
 
     #[inline]
-    pub fn get_gradient_stop_list_mut(&mut self) -> &mut GradientStopList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop_list()")]
+    pub fn get_gradient_stop_list(&self) -> &GradientStopList {
+        self.gradient_stop_list()
+    }
+
+    #[inline]
+    pub fn gradient_stop_list_mut(&mut self) -> &mut GradientStopList {
         &mut self.gradient_stop_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop_list_mut()")]
+    pub fn get_gradient_stop_list_mut(&mut self) -> &mut GradientStopList {
+        self.gradient_stop_list_mut()
     }
 
     #[inline]
@@ -61,13 +111,27 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
+    #[must_use]
+    pub fn linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
         self.linear_gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use linear_gradient_fill()")]
+    pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
+        self.linear_gradient_fill()
+    }
+
+    #[inline]
+    pub fn linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
         self.linear_gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use linear_gradient_fill_mut()")]
+    pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
+        self.linear_gradient_fill_mut()
     }
 
     #[inline]
@@ -77,13 +141,27 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
+    #[must_use]
+    pub fn tile_rectangle(&self) -> Option<&TileRectangle> {
         self.tile_rectangle.as_deref()
     }
 
     #[inline]
-    pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tile_rectangle()")]
+    pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
+        self.tile_rectangle()
+    }
+
+    #[inline]
+    pub fn tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
         self.tile_rectangle.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use tile_rectangle_mut()")]
+    pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
+        self.tile_rectangle_mut()
     }
 
     #[inline]
@@ -110,8 +188,8 @@ impl GradientFill {
                     self.set_linear_gradient_fill(obj);
                 }
                 b"a:tileRect" => {
-                    let mut obj = TileRectangle::default();
-                    obj.set_attributes(reader, e, true);
+                    let obj = TileRectangle::default();
+                    TileRectangle::set_attributes(reader, e, true);
                     self.set_tile_rectangle(obj);
                 }
                 _ => (),
@@ -125,8 +203,8 @@ impl GradientFill {
                     self.set_linear_gradient_fill(obj);
                 }
                 b"a:tileRect" => {
-                    let mut obj = TileRectangle::default();
-                    obj.set_attributes(reader, e, false);
+                    let obj = TileRectangle::default();
+                    TileRectangle::set_attributes(reader, e, false);
                     self.set_tile_rectangle(obj);
                 }
                 b"a:gsLst" => {
@@ -146,12 +224,12 @@ impl GradientFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:gradFill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.flip.has_value() {
-            attributes.push(("flip", self.flip.get_value_string()));
+            attributes.push(("flip", self.flip.value_string()).into());
         }
         if self.rotate_with_shape.has_value() {
-            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()));
+            attributes.push(("rotWithShape", self.rotate_with_shape.value_string()).into());
         }
         write_start_tag(writer, "a:gradFill", attributes, false);
 
@@ -164,8 +242,8 @@ impl GradientFill {
         }
 
         // a:tileRect
-        if let Some(v) = &self.tile_rectangle {
-            v.write_to(writer);
+        if self.tile_rectangle.is_some() {
+            TileRectangle::write_to(writer);
         }
 
         write_end_tag(writer, "a:gradFill");

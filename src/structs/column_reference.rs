@@ -1,9 +1,16 @@
-use crate::helper::coordinate::*;
-use crate::traits::AdjustmentValue;
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
+        string_from_column_index,
+    },
+    traits::AdjustmentValue,
+};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {
-    num: u32,
+    num:     u32,
     is_lock: bool,
 }
 
@@ -11,7 +18,7 @@ impl Default for ColumnReference {
     #[inline]
     fn default() -> Self {
         Self {
-            num: 1,
+            num:     1,
             is_lock: false,
         }
     }
@@ -19,8 +26,16 @@ impl Default for ColumnReference {
 
 impl ColumnReference {
     #[inline]
-    pub fn get_num(&self) -> &u32 {
-        &self.num
+    #[must_use]
+    pub fn num(&self) -> u32 {
+        self.num
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use num()")]
+    pub fn get_num(&self) -> u32 {
+        self.num()
     }
 
     #[inline]
@@ -32,10 +47,10 @@ impl ColumnReference {
     #[inline]
     pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
         if value > 0 {
-            self.plus_num(value as u32);
+            self.plus_num(value.try_into().unwrap());
         }
         if value < 0 {
-            self.minus_num(-value as u32);
+            self.minus_num((-value).try_into().unwrap());
         }
         self
     }
@@ -53,8 +68,16 @@ impl ColumnReference {
     }
 
     #[inline]
-    pub fn get_is_lock(&self) -> &bool {
-        &self.is_lock
+    #[must_use]
+    pub fn is_lock(&self) -> bool {
+        self.is_lock
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock()")]
+    pub fn get_is_lock(&self) -> bool {
+        self.is_lock()
     }
 
     #[inline]
@@ -70,27 +93,33 @@ impl ColumnReference {
     }
 
     #[inline]
-    pub(crate) fn get_coordinate(&self) -> String {
+    pub(crate) fn coordinate(&self) -> String {
         format!(
             "{}{}",
             if self.is_lock { "$" } else { "" },
-            string_from_column_index(&self.num),
+            string_from_column_index(self.num),
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub(crate) fn get_coordinate(&self) -> String {
+        self.coordinate()
     }
 }
 impl AdjustmentValue for ColumnReference {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.num = adjustment_insert_coordinate(&self.num, root_num, offset_num);
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
+        self.num = adjustment_insert_coordinate(self.num, root_num, offset_num);
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.num = adjustment_remove_coordinate(&self.num, root_num, offset_num);
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
+        self.num = adjustment_remove_coordinate(self.num, root_num, offset_num);
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        is_remove_coordinate(&self.num, root_num, offset_num)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        is_remove_coordinate(self.num, root_num, offset_num)
     }
 }

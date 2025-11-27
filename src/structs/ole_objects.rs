@@ -1,28 +1,53 @@
 // oleObjects
-use super::OleObject;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::OleObject;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObjects {
-    ole_object: ThinVec<OleObject>,
+    ole_object: Vec<OleObject>,
 }
 
 impl OleObjects {
     #[inline]
-    pub fn get_ole_object(&self) -> &[OleObject] {
+    #[must_use]
+    pub fn ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }
 
     #[inline]
-    pub fn get_ole_object_mut(&mut self) -> &mut ThinVec<OleObject> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use ole_object()")]
+    pub fn get_ole_object(&self) -> &[OleObject] {
+        self.ole_object()
+    }
+
+    #[inline]
+    pub fn ole_object_mut(&mut self) -> &mut Vec<OleObject> {
         &mut self.ole_object
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use ole_object_mut()")]
+    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
+        self.ole_object_mut()
     }
 
     #[inline]
@@ -58,18 +83,18 @@ impl OleObjects {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        r_id: &usize,
-        ole_id: &usize,
+        r_id: usize,
+        ole_id: usize,
     ) {
         if !self.ole_object.is_empty() {
             // oleObjects
             write_start_tag(writer, "oleObjects", vec![], false);
 
             // mc:AlternateContent
-            let mut r = *r_id;
-            let mut o = *ole_id;
+            let mut r = r_id;
+            let mut o = ole_id;
             for obj in &self.ole_object {
-                obj.write_to(writer, &r, &o);
+                obj.write_to(writer, r, o);
                 r += 2;
                 o += 1;
             }

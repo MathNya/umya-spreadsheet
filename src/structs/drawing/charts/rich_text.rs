@@ -1,21 +1,34 @@
 // c:rich
-use super::super::BodyProperties;
-use super::super::ListStyle;
-use super::super::Paragraph;
-use crate::drawing::Run;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    BodyProperties,
+    ListStyle,
+    Paragraph,
+};
+use crate::{
+    drawing::Run,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct RichText {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: ThinVec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl RichText {
@@ -30,36 +43,72 @@ impl RichText {
         self
     }
 
-    pub fn get_body_properties(&self) -> &BodyProperties {
+    #[must_use]
+    pub fn body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
 
-    pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use body_properties()")]
+    pub fn get_body_properties(&self) -> &BodyProperties {
+        self.body_properties()
+    }
+
+    pub fn body_properties_mut(&mut self) -> &mut BodyProperties {
         &mut self.body_properties
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use body_properties_mut()")]
+    pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
+        self.body_properties_mut()
     }
 
     pub fn set_body_properties(&mut self, value: BodyProperties) {
         self.body_properties = value;
     }
 
-    pub fn get_list_style(&self) -> &ListStyle {
+    #[must_use]
+    pub fn list_style(&self) -> &ListStyle {
         &self.list_style
     }
 
-    pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use list_style()")]
+    pub fn get_list_style(&self) -> &ListStyle {
+        self.list_style()
+    }
+
+    pub fn list_style_mut(&mut self) -> &mut ListStyle {
         &mut self.list_style
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use list_style_mut()")]
+    pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
+        self.list_style_mut()
     }
 
     pub fn set_list_style(&mut self, value: ListStyle) {
         self.list_style = value;
     }
 
-    pub fn get_paragraph(&self) -> &[Paragraph] {
+    #[must_use]
+    pub fn paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use paragraph()")]
+    pub fn get_paragraph(&self) -> &[Paragraph] {
+        self.paragraph()
+    }
+
+    pub fn paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
         &mut self.paragraph
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use paragraph_mut()")]
+    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
+        self.paragraph_mut()
     }
 
     pub fn add_paragraph(&mut self, value: Paragraph) {

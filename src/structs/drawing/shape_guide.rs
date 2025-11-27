@@ -1,7 +1,9 @@
 // a:gd
-use crate::writer::driver::*;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::Writer;
+
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeGuide {
@@ -10,8 +12,16 @@ pub struct ShapeGuide {
 }
 impl ShapeGuide {
     #[inline]
-    pub fn get_name(&self) -> &str {
+    #[must_use]
+    pub fn name(&self) -> &str {
         &self.name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -20,8 +30,16 @@ impl ShapeGuide {
     }
 
     #[inline]
-    pub fn get_fmla(&self) -> &str {
+    #[must_use]
+    pub fn fmla(&self) -> &str {
         &self.fmla
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fmla()")]
+    pub fn get_fmla(&self) -> &str {
+        self.fmla()
     }
 
     #[inline]
@@ -33,7 +51,7 @@ impl ShapeGuide {
         write_start_tag(
             writer,
             "a:gd",
-            vec![("name", &self.name), ("fmla", &self.fmla)],
+            vec![("name", &self.name).into(), ("fmla", &self.fmla).into()],
             true,
         );
     }

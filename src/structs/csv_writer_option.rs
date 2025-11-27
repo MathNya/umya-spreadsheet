@@ -4,13 +4,21 @@ use crate::structs::CsvEncodeValues;
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct CsvWriterOption {
     pub(crate) csv_encode_values: EnumValue<CsvEncodeValues>,
-    pub(crate) wrap_with_char: Box<str>,
-    pub(crate) do_trim: bool,
+    pub(crate) wrap_with_char:    Box<str>,
+    pub(crate) do_trim:           bool,
 }
 impl CsvWriterOption {
     #[inline]
+    #[must_use]
+    pub fn csv_encode_value(&self) -> &CsvEncodeValues {
+        self.csv_encode_values.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use csv_encode_value()")]
     pub fn get_csv_encode_value(&self) -> &CsvEncodeValues {
-        self.csv_encode_values.get_value()
+        self.csv_encode_value()
     }
 
     #[inline]
@@ -20,8 +28,16 @@ impl CsvWriterOption {
     }
 
     #[inline]
-    pub fn get_wrap_with_char(&self) -> &str {
+    #[must_use]
+    pub fn wrap_with_char(&self) -> &str {
         &self.wrap_with_char
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use wrap_with_char()")]
+    pub fn get_wrap_with_char(&self) -> &str {
+        self.wrap_with_char()
     }
 
     #[inline]
@@ -31,8 +47,16 @@ impl CsvWriterOption {
     }
 
     #[inline]
-    pub fn get_do_trim(&self) -> &bool {
-        &self.do_trim
+    #[must_use]
+    pub fn do_trim(&self) -> bool {
+        self.do_trim
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use do_trim()")]
+    pub fn get_do_trim(&self) -> bool {
+        self.do_trim()
     }
 
     #[inline]

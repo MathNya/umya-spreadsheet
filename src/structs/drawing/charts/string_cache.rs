@@ -1,24 +1,32 @@
-use crate::drawing::charts::Formula;
 // c:strCache
-use crate::reader::driver::*;
-use crate::structs::Address;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::CellValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    CellValue,
+    drawing::charts::Formula,
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StringCache {}
 
 impl StringCache {
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
+    pub(crate) fn set_attributes<R: std::io::BufRead>(reader: &mut Reader<R>, _e: &BytesStart) {
         xml_read_loop!(
             reader,
             Event::End(ref e) => {
@@ -30,34 +38,33 @@ impl StringCache {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        formula: &Formula,
-        spreadsheet: &Spreadsheet,
-    ) {
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, formula: &Formula, wb: &Workbook) {
         let mut cell = CellValue::default();
-        let cell_value_list = match formula.has_string_value() {
-            true => {
-                cell.set_value(formula.get_address_str());
-                vec![&cell]
-            }
-            false => spreadsheet.get_cell_value_by_address_crate(formula.get_address()),
+        let cell_value_list = if formula.has_string_value() {
+            cell.set_value(formula.address_str());
+            vec![&cell]
+        } else {
+            wb.cell_value_by_address_crate(formula.address())
         };
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);
 
         // c:ptCount
-        write_start_tag(writer, "c:ptCount", vec![("val", &coll_value_count)], true);
+        write_start_tag(
+            writer,
+            "c:ptCount",
+            vec![("val", &coll_value_count).into()],
+            true,
+        );
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(writer, "c:pt", vec![("idx", &idx.to_string())], false);
+            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string()).into()], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);
-            write_text_node(writer, cell_value.get_value());
+            write_text_node(writer, cell_value.value());
             write_end_tag(writer, "c:v");
 
             write_end_tag(writer, "c:pt");

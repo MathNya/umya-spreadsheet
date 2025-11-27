@@ -1,7 +1,9 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum MarkerStyleValues {
+    #[default]
     Auto,
     Circle,
     Dash,
@@ -15,13 +17,8 @@ pub enum MarkerStyleValues {
     Triangle,
     X,
 }
-impl Default for MarkerStyleValues {
-    fn default() -> Self {
-        Self::Auto
-    }
-}
 impl EnumTrait for MarkerStyleValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Auto => "auto",
             Self::Circle => "circle",
@@ -40,6 +37,7 @@ impl EnumTrait for MarkerStyleValues {
 }
 impl FromStr for MarkerStyleValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "auto" => Ok(Self::Auto),

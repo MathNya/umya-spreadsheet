@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum ConditionalFormatValueObjectValues {
     Formula,
@@ -17,7 +18,7 @@ impl Default for ConditionalFormatValueObjectValues {
 }
 impl EnumTrait for ConditionalFormatValueObjectValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Formula => "formula",
             Self::Max => "max",

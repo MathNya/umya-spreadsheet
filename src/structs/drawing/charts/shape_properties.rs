@@ -1,40 +1,66 @@
 // c:spPr
-use super::super::EffectList;
-use super::super::NoFill;
-use super::super::Outline;
-use super::super::PatternFill;
-use super::super::PresetGeometry;
-use super::super::Scene3DType;
-use super::super::Shape3DType;
-use super::super::SolidFill;
-use super::super::Transform2D;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    EffectList,
+    NoFill,
+    Outline,
+    PatternFill,
+    PresetGeometry,
+    Scene3DType,
+    Shape3DType,
+    SolidFill,
+    Transform2D,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    pattern_fill: Option<PatternFill>,
-    transform2d: Option<Transform2D>,
+    pattern_fill:    Option<PatternFill>,
+    transform2d:     Option<Transform2D>,
     preset_geometry: Option<PresetGeometry>,
-    solid_fill: Option<SolidFill>,
-    no_fill: Option<NoFill>,
-    outline: Option<Outline>,
-    effect_list: Option<EffectList>,
-    scene_3d_type: Option<Scene3DType>,
-    shape_3d_type: Option<Shape3DType>,
+    solid_fill:      Option<SolidFill>,
+    no_fill:         Option<NoFill>,
+    outline:         Option<Outline>,
+    effect_list:     Option<EffectList>,
+    scene_3d_type:   Option<Scene3DType>,
+    shape_3d_type:   Option<Shape3DType>,
 }
 
 impl ShapeProperties {
-    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+    #[must_use]
+    pub fn pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_ref()
     }
 
-    pub fn get_pattern_fill_mut(&mut self) -> Option<&mut PatternFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pattern_fill()")]
+    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+        self.pattern_fill()
+    }
+
+    pub fn pattern_fill_mut(&mut self) -> Option<&mut PatternFill> {
         self.pattern_fill.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use pattern_fill_mut()")]
+    pub fn get_pattern_fill_mut(&mut self) -> Option<&mut PatternFill> {
+        self.pattern_fill_mut()
     }
 
     pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
@@ -42,12 +68,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+    #[must_use]
+    pub fn transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
 
-    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform2d()")]
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d()
+    }
+
+    pub fn transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use transform2d_mut()")]
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d_mut()
     }
 
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
@@ -55,12 +93,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_geometry(&self) -> Option<&PresetGeometry> {
+    #[must_use]
+    pub fn geometry(&self) -> Option<&PresetGeometry> {
         self.preset_geometry.as_ref()
     }
 
-    pub fn get_geometry_mut(&mut self) -> Option<&mut PresetGeometry> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use geometry()")]
+    pub fn get_geometry(&self) -> Option<&PresetGeometry> {
+        self.geometry()
+    }
+
+    pub fn geometry_mut(&mut self) -> Option<&mut PresetGeometry> {
         self.preset_geometry.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use geometry_mut()")]
+    pub fn get_geometry_mut(&mut self) -> Option<&mut PresetGeometry> {
+        self.geometry_mut()
     }
 
     pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut Self {
@@ -68,12 +118,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    #[must_use]
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
@@ -81,12 +143,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    #[must_use]
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
@@ -94,12 +168,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_outline(&self) -> Option<&Outline> {
+    #[must_use]
+    pub fn outline(&self) -> Option<&Outline> {
         self.outline.as_ref()
     }
 
-    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline()")]
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline()
+    }
+
+    pub fn outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use outline_mut()")]
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
@@ -107,12 +193,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    #[must_use]
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
@@ -120,12 +218,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+    #[must_use]
+    pub fn scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_ref()
     }
 
-    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scene_3d_type()")]
+    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+        self.scene_3d_type()
+    }
+
+    pub fn scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
         self.scene_3d_type.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use scene_3d_type_mut()")]
+    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+        self.scene_3d_type_mut()
     }
 
     pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
@@ -133,12 +243,24 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+    #[must_use]
+    pub fn shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_ref()
     }
 
-    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_3d_type()")]
+    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+        self.shape_3d_type()
+    }
+
+    pub fn shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
         self.shape_3d_type.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_3d_type_mut()")]
+    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+        self.shape_3d_type_mut()
     }
 
     pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {
@@ -200,8 +322,8 @@ impl ShapeProperties {
             },
             Event::Empty(ref e) => {
                 if e.name().0 == b"a:noFill" {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e, true);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e, true);
                     self.set_no_fill(obj);
                 }
             },
@@ -239,8 +361,8 @@ impl ShapeProperties {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:ln

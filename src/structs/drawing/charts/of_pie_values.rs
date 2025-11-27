@@ -1,17 +1,14 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum OfPieValues {
     Bar,
+    #[default]
     Pie,
 }
-impl Default for OfPieValues {
-    fn default() -> Self {
-        Self::Pie
-    }
-}
 impl EnumTrait for OfPieValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bar => "bar",
             Self::Pie => "pie",
@@ -20,6 +17,7 @@ impl EnumTrait for OfPieValues {
 }
 impl FromStr for OfPieValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "bar" => Ok(Self::Bar),

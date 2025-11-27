@@ -1,11 +1,23 @@
 // a:spcAft
-use super::SpacingPercent;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::SpacingPercent;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SpaceAfter {
@@ -14,13 +26,27 @@ pub struct SpaceAfter {
 
 impl SpaceAfter {
     #[inline]
-    pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
+    #[must_use]
+    pub fn spacing_percent(&self) -> Option<&SpacingPercent> {
         self.spacing_percent.as_ref()
     }
 
     #[inline]
-    pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use spacing_percent()")]
+    pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
+        self.spacing_percent()
+    }
+
+    #[inline]
+    pub fn spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
         self.spacing_percent.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use spacing_percent_mut()")]
+    pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
+        self.spacing_percent_mut()
     }
 
     #[inline]

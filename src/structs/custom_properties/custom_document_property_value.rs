@@ -12,11 +12,10 @@ impl fmt::Display for CustomDocumentPropertyValue {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::String(v) => write!(f, "{}", v),
-            Self::Date(v) => write!(f, "{}", v),
+            Self::String(v) | Self::Date(v) => write!(f, "{v}"),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if *v { "true" } else { "false" }),
-            _ => write!(f, ""),
+            Self::Null => write!(f, ""),
         }
     }
 }
@@ -28,18 +27,24 @@ impl Default for CustomDocumentPropertyValue {
 }
 impl CustomDocumentPropertyValue {
     #[inline]
-    pub(crate) fn get_tag(&self) -> Option<&str> {
+    pub(crate) fn tag(&self) -> Option<&str> {
         match self {
             Self::String(_) => Some("vt:lpwstr"),
             Self::Date(_) => Some("vt:filetime"),
             Self::Numeric(_) => Some("vt:i4"),
             Self::Bool(_) => Some("vt:bool"),
-            _ => None,
+            Self::Null => None,
         }
     }
 
     #[inline]
-    pub(crate) fn get_number(&self) -> Option<i32> {
+    #[deprecated(since = "3.0.0", note = "Use tag()")]
+    pub(crate) fn get_tag(&self) -> Option<&str> {
+        self.tag()
+    }
+
+    #[inline]
+    pub(crate) fn number(&self) -> Option<i32> {
         match self {
             Self::Numeric(number) => Some(*number),
             _ => None,
@@ -47,10 +52,22 @@ impl CustomDocumentPropertyValue {
     }
 
     #[inline]
-    pub(crate) fn get_bool(&self) -> Option<bool> {
+    #[deprecated(since = "3.0.0", note = "Use number()")]
+    pub(crate) fn get_number(&self) -> Option<i32> {
+        self.number()
+    }
+
+    #[inline]
+    pub(crate) fn bool(&self) -> Option<bool> {
         match self {
             Self::Bool(bool) => Some(*bool),
             _ => None,
         }
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use bool()")]
+    pub(crate) fn get_bool(&self) -> Option<bool> {
+        self.bool()
     }
 }

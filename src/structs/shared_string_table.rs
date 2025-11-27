@@ -1,34 +1,61 @@
 // sst
-use super::drawing::Theme;
-use super::CellValue;
-use super::SharedStringItem;
-use crate::drawing::charts::View3D;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
-use thin_vec::ThinVec;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    CellValue,
+    SharedStringItem,
+};
+use crate::{
+    helper::const_str::SHEET_MAIN_NS,
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
-    shared_string_item: ThinVec<SharedStringItem>,
-    map: HashMap<u64, usize>,
-    regist_count: usize,
+    shared_string_item: Vec<SharedStringItem>,
+    map:                HashMap<u64, usize>,
+    regist_count:       usize,
 }
 
 impl SharedStringTable {
     #[inline]
-    pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
+    pub(crate) fn shared_string_item(&self) -> &[SharedStringItem] {
         &self.shared_string_item
     }
 
     #[inline]
-    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut ThinVec<SharedStringItem> {
+    #[deprecated(since = "3.0.0", note = "Use shared_string_item()")]
+    pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
+        self.shared_string_item()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
         &mut self.shared_string_item
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use shared_string_item_mut()")]
+    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
+        self.shared_string_item_mut()
     }
 
     #[inline]
@@ -47,22 +74,21 @@ impl SharedStringTable {
 
         let mut shared_string_item = SharedStringItem::default();
 
-        if let Some(v) = value.get_text() {
+        if let Some(v) = value.text() {
             shared_string_item.set_text(v);
         }
-        if let Some(v) = value.get_rich_text() {
+        if let Some(v) = value.rich_text() {
             shared_string_item.set_rich_text(v);
         }
 
-        let hash_code = shared_string_item.get_hash_u64();
-        let n = match self.map.get(&hash_code) {
-            Some(v) => *v,
-            None => {
-                let n = self.shared_string_item.len();
-                self.map.insert(hash_code, n);
-                self.set_shared_string_item(shared_string_item);
-                n
-            }
+        let hash_code = shared_string_item.hash_u64();
+        let n = if let Some(v) = self.map.get(&hash_code) {
+            *v
+        } else {
+            let n = self.shared_string_item.len();
+            self.map.insert(hash_code, n);
+            self.set_shared_string_item(shared_string_item);
+            n
         };
         n
     }
@@ -80,7 +106,7 @@ impl SharedStringTable {
                     let mut shared_string_item = SharedStringItem::default();
                     shared_string_item.set_attributes(reader, e);
 
-                    let hash_code = shared_string_item.get_hash_u64();
+                    let hash_code = shared_string_item.hash_u64();
                     self.map.insert(hash_code, n);
                     self.set_shared_string_item(shared_string_item);
 
@@ -102,9 +128,13 @@ impl SharedStringTable {
             writer,
             "sst",
             vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("count", &self.regist_count.to_string()),
-                ("uniqueCount", &self.shared_string_item.len().to_string()),
+                ("xmlns", SHEET_MAIN_NS).into(),
+                ("count", self.regist_count.to_string()).into(),
+                (
+                    "uniqueCount",
+                    &self.shared_string_item.len().to_string(),
+                )
+                    .into(),
             ],
             false,
         );

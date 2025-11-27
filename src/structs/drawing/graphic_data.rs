@@ -1,15 +1,35 @@
 // *:graphicData
-use super::charts::ChartSpace;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::reader::xlsx::chart;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::charts::ChartSpace;
+use crate::{
+    helper::const_str::{
+        DRAWINGML_CHART_NS,
+        REL_OFC_NS,
+    },
+    reader::{
+        driver::{
+            get_attribute,
+            xml_read_loop,
+        },
+        xlsx::chart,
+    },
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicData {
@@ -18,13 +38,27 @@ pub struct GraphicData {
 
 impl GraphicData {
     #[inline]
-    pub fn get_chart_space(&self) -> &ChartSpace {
+    #[must_use]
+    pub fn chart_space(&self) -> &ChartSpace {
         &self.chart_space
     }
 
     #[inline]
-    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_space()")]
+    pub fn get_chart_space(&self) -> &ChartSpace {
+        self.chart_space()
+    }
+
+    #[inline]
+    pub fn chart_space_mut(&mut self) -> &mut ChartSpace {
         &mut self.chart_space
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_space_mut()")]
+    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+        self.chart_space_mut()
     }
 
     #[inline]
@@ -46,8 +80,8 @@ impl GraphicData {
                     let chart_id = get_attribute(e, b"r:id").unwrap();
                     let relationship = drawing_relationships
                         .unwrap()
-                        .get_relationship_by_rid(&chart_id);
-                    chart::read(relationship.get_raw_file(), &mut self.chart_space);
+                        .relationship_by_rid(&chart_id);
+                    chart::read(relationship.raw_file(), &mut self.chart_space);
                 }
             },
             Event::End(ref e) => {
@@ -60,7 +94,6 @@ impl GraphicData {
     }
 
     pub(crate) fn write_to(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
@@ -68,7 +101,7 @@ impl GraphicData {
         write_start_tag(
             writer,
             "a:graphicData",
-            vec![("uri", DRAWINGML_CHART_NS)],
+            vec![("uri", DRAWINGML_CHART_NS).into()],
             false,
         );
 
@@ -78,9 +111,9 @@ impl GraphicData {
             writer,
             "c:chart",
             vec![
-                ("xmlns:c", DRAWINGML_CHART_NS),
-                ("xmlns:r", REL_OFC_NS),
-                ("r:id", format!("rId{}", rel_list.len()).as_str()),
+                ("xmlns:c", DRAWINGML_CHART_NS).into(),
+                ("xmlns:r", REL_OFC_NS).into(),
+                ("r:id", format!("rId{}", rel_list.len()).as_str()).into(),
             ],
             true,
         );
@@ -93,10 +126,10 @@ impl AdjustmentCoordinateWithSheet for GraphicData {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.chart_space.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -111,10 +144,10 @@ impl AdjustmentCoordinateWithSheet for GraphicData {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.chart_space.adjustment_remove_coordinate_with_sheet(
             sheet_name,

@@ -1,26 +1,52 @@
 // c:marker
-use super::ShapeProperties;
-use super::Thickness;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ShapeProperties,
+    Thickness,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Floor {
-    thickness: Option<Thickness>,
+    thickness:        Option<Thickness>,
     shape_properties: Option<Box<ShapeProperties>>,
 }
 
 impl Floor {
-    pub fn get_thickness(&self) -> Option<&Thickness> {
+    #[must_use]
+    pub fn thickness(&self) -> Option<&Thickness> {
         self.thickness.as_ref()
     }
 
-    pub fn get_thickness_mut(&mut self) -> Option<&mut Thickness> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thickness()")]
+    pub fn get_thickness(&self) -> Option<&Thickness> {
+        self.thickness()
+    }
+
+    pub fn thickness_mut(&mut self) -> Option<&mut Thickness> {
         self.thickness.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use thickness_mut()")]
+    pub fn get_thickness_mut(&mut self) -> Option<&mut Thickness> {
+        self.thickness_mut()
     }
 
     pub fn set_thickness(&mut self, value: Thickness) -> &mut Floor {
@@ -28,12 +54,24 @@ impl Floor {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {

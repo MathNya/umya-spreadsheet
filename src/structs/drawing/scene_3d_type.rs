@@ -1,23 +1,45 @@
 // a:scene3d
-use super::Camera;
-use super::LightRig;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Camera,
+    LightRig,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Scene3DType {
-    camera: Option<Camera>,
+    camera:    Option<Camera>,
     light_rig: Option<LightRig>,
 }
 
 impl Scene3DType {
     #[inline]
-    pub fn get_camera(&self) -> Option<&Camera> {
+    #[must_use]
+    pub fn camera(&self) -> Option<&Camera> {
         self.camera.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use camera()")]
+    pub fn get_camera(&self) -> Option<&Camera> {
+        self.camera()
     }
 
     #[inline]
@@ -27,8 +49,16 @@ impl Scene3DType {
     }
 
     #[inline]
-    pub fn get_light_rig(&self) -> Option<&LightRig> {
+    #[must_use]
+    pub fn light_rig(&self) -> Option<&LightRig> {
         self.light_rig.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use light_rig()")]
+    pub fn get_light_rig(&self) -> Option<&LightRig> {
+        self.light_rig()
     }
 
     #[inline]

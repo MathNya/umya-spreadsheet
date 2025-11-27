@@ -1,92 +1,68 @@
-use super::fraction_formater::*;
-use fancy_regex::Regex;
 use std::borrow::Cow;
+
 use thousands::Separable;
 
-pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
-    lazy_static! {
-        static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r#"(#,#|0,0)"#).unwrap();
-        static ref SCALE_REGEX: Regex = Regex::new(r#"(#|0)(,+)"#).unwrap();
-        static ref TRAILING_COMMA_REGEX: Regex = Regex::new("(#|0),+").unwrap();
-        static ref FRACTION_REGEX: Regex = Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap();
-        static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r"\[[^\]]+\]").unwrap();
-        static ref NUMBER_REGEX: Regex = Regex::new(r"(0+)(\.?)(0*)").unwrap();
-    }
+use super::fraction_formater::format_as_fraction;
+use crate::helper::utils::compile_regex;
+
+pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
+    let thousands_sep_regex = compile_regex!(r"(#,#|0,0)");
+    let scale_regex = compile_regex!(r"(#|0)(,+)");
+    let trailing_comma_regex = compile_regex!("(#|0),+");
+    let fraction_regex = compile_regex!(r"#?.*\?{1,2}\/\?{1,2}");
+    let square_bracket_regex = compile_regex!(r"\[[^\]]+\]");
+    let number_regex = compile_regex!(r"(0+)(\.?)(0*)");
 
     let mut value = value.to_string();
 
-    // The "_" in this string has already been stripped out,
-    // so this test is never true. Furthermore, testing
-    // on Excel shows this format uses Euro symbol, not "EUR".
-    //if ($format === self::FORMAT_CURRENCY_EUR_SIMPLE) {
-    //    return 'EUR ' . sprintf('%1.2f', $value);
-    //}
-
-    // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
     let mut format = format.replace(['"', '*'], "");
 
-    // Find out if we need thousands separator
-    // This is indicated by a comma enclosed by a digit placeholder:
-    //        #,#   or   0,0
-
-    let use_thousands = THOUSANDS_SEP_REGEX.is_match(&format).unwrap_or(false);
+    let use_thousands = thousands_sep_regex.is_match(&format).unwrap_or(false);
     if use_thousands {
         format = format.replace("0,0", "00");
         format = format.replace("#,#", "##");
     }
 
-    // Scale thousands, millions,...
-    // This is indicated by a number of commas after a digit placeholder:
-    //        #,   or    0.0,,
-    let mut scale: f64 = 1f64; // same as no scale
+    let mut scale: f64 = 1f64;
 
-    if SCALE_REGEX.is_match(&format).unwrap_or(false) {
+    if scale_regex.is_match(&format).unwrap_or(false) {
         let mut matches: Vec<&str> = Vec::new();
-        for ite in SCALE_REGEX.captures(&format).ok().flatten().unwrap().iter() {
+        for ite in scale_regex.captures(&format).ok().flatten().unwrap().iter() {
             matches.push(ite.unwrap().as_str());
         }
-        scale = 1000i32.pow(matches[2].len() as u32) as f64;
+        scale = f64::from(1000i32.pow(num_traits::cast(matches[2].len()).unwrap()));
 
-        // strip the commas
-        format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
+        format = trailing_comma_regex.replace_all(&format, "$1").into();
     }
-    if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
+    if fraction_regex.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
-            //println!("format as fraction {} {}", value, format);
-            value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
+            value = format_as_fraction(value.parse::<f64>().unwrap(), &format);
         }
     } else {
-        // Handle the number itself
-
-        // scale number
         value = (value.parse::<f64>().unwrap() / scale).to_string();
-        // Strip #
         format = format.replace('#', "0");
-        // Remove \
         format = format.replace('\\', "");
-        // Remove locale code [$-###]
         format = format.replace("[$-.*]", "");
-        // Trim
         format = format.trim().to_string();
 
-        let m = SQUARE_BRACKET_REGEX.replace_all(&format, "");
+        let m = square_bracket_regex.replace_all(&format, "");
 
-        if NUMBER_REGEX.is_match(&m).unwrap_or(false) {
+        if number_regex.is_match(&m).unwrap_or(false) {
             let mut item: Vec<String> = Vec::new();
-            for ite in NUMBER_REGEX.captures(&m).ok().flatten().unwrap().iter() {
+            for ite in number_regex.captures(&m).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str().to_string());
             }
             value = format_straight_numeric_value(
                 &value,
                 &format,
                 &item,
-                &use_thousands,
+                use_thousands,
                 r"(0+)(\.?)(0*)",
             );
         }
     }
 
-    let re = Regex::new(r"\$[^0-9]*").unwrap();
+    let re = compile_regex!(r"\$[^0-9]*");
     if re.find(&format).ok().flatten().is_some() {
         let item: Vec<&str> = re
             .captures(&format)
@@ -96,10 +72,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
             .iter()
             .map(|ite| ite.unwrap().as_str())
             .collect();
-        value = format!("{}{}", item[0], value);
-        //    //  Currency or Accounting
-        //    let currency_code = item.get(1).unwrap().to_string();
-        //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
+        value = format!("{}{}", item.first().unwrap(), value);
     }
 
     Cow::Owned(value)
@@ -109,7 +82,7 @@ fn format_straight_numeric_value(
     value: &str,
     _format: &str,
     matches: &[String],
-    use_thousands: &bool,
+    use_thousands: bool,
     _number_regex: &str,
 ) -> String {
     let mut value = value.to_string();
@@ -117,13 +90,13 @@ fn format_straight_numeric_value(
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    if *use_thousands {
+    if use_thousands {
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
-    let left_value = blocks[0].to_string();
+    let left_value = (*blocks.first().unwrap()).to_string();
     let mut right_value = match blocks.get(1) {
-        Some(v) => v.to_string(),
+        Some(v) => (*v).to_string(),
         None => String::from("0"),
     };
     if right.is_empty() {
@@ -131,9 +104,9 @@ fn format_straight_numeric_value(
     }
     if right.len() != right_value.len() {
         if right_value == "0" {
-            right_value = right.to_string();
+            right_value.clone_from(right);
         } else if right.len() > right_value.len() {
-            let pow = 10i32.pow(right.len() as u32);
+            let pow = 10i32.pow(num_traits::cast(right.len()).unwrap());
             right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
         } else {
             let mut right_value_conv: String = right_value.chars().take(right.len()).collect();
@@ -145,40 +118,18 @@ fn format_straight_numeric_value(
             right_value = right_value_conv;
         }
     }
-    value = format!("{}.{}", left_value, right_value);
+    value = format!("{left_value}.{right_value}");
     value
-
-    //    if use_thousands == &true {
-    //        value = value.parse::<f64>().unwrap().separate_with_commas();
-    //        dbg!(&value);
-    //        value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
-    //        dbg!(&value);
-    //    } else {
-    //        if Regex::new(r#"[0#]E[+-]0"#).unwrap().find(&format).is_some() {
-    //            // Scientific format
-    //            value = value.parse::<f64>().unwrap().to_string();
-    //        } else if Regex::new(r#"0([^\d\.]+)0"#).unwrap().find(&format).is_some() || format.find(".").is_some() {
-    //            if value.parse::<f64>().unwrap() as usize as f64 == value.parse::<f64>().unwrap() && format.find(".").is_some() {
-    //                let format_collect:Vec<&str> = format.split('.').collect();
-    //                let pow = 10i32.pow(format_collect.get(1).unwrap().len() as u32);
-    //                value = format!("{}", value.parse::<i32>().unwrap() * pow);
-    //            }
-    //            value = complex_number_format_mask(&value.parse::<f64>().unwrap(), &format, &true);
-    //        } else {
-    //            value = format!("{:0width$.len$}", value, width = min_width, len = right.len());
-    //            value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
-    //        }
-    //    }
-    //    value
 }
 
+#[allow(dead_code)]
 fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks: Vec<&str> = Vec::new();
 
     for mask in masks.iter().rev() {
         post_decimal_masks.push(mask);
-        decimal_count -= mask.to_string().len();
+        decimal_count -= mask.clone().len();
         if decimal_count == 0 {
             break;
         }
@@ -188,9 +139,10 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
     vec![masks.join("."), post_decimal_masks.join(".")]
 }
 
-fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
+#[allow(dead_code)]
+fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
     let mut result = number.to_string();
-    let re = Regex::new(r#"0+"#).unwrap();
+    let re = compile_regex!(r"0+");
     let mut masking_blocks: Vec<(&str, usize)> = Vec::new();
     let mut masking_str: Vec<&str> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();
@@ -207,7 +159,7 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut mask = mask.to_string();
 
     if masking_blocks.len() > 1 {
-        let mut number = *number;
+        let mut number = number;
         let mut offset: usize = 0;
         for (block, pos) in masking_blocks.iter().rev() {
             let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
@@ -229,11 +181,12 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     result
 }
 
-fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -> String {
-    let sign = number < &0.0;
+#[allow(dead_code)]
+fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> String {
+    let sign = number < 0.0;
     let number = number.abs();
 
-    if *split_on_point && mask.contains('.') && number.to_string().contains('.') {
+    if split_on_point && mask.contains('.') && number.to_string().contains('.') {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
         let mut numbers: Vec<String> = Vec::new();
@@ -249,16 +202,16 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
             masks = merge_complex_number_format_masks(&numbers, &masks);
         }
         let result1 =
-            complex_number_format_mask(&numbers[0].parse::<f64>().unwrap(), &masks[0], &false);
+            complex_number_format_mask(numbers[0].parse::<f64>().unwrap(), &masks[0], false);
         let result2 = complex_number_format_mask(
-            &numbers[1]
+            numbers[1]
                 .chars()
                 .rev()
                 .collect::<String>()
                 .parse::<f64>()
                 .unwrap(),
             &masks[1].chars().rev().collect::<String>(),
-            &false,
+            false,
         )
         .chars()
         .rev()
@@ -267,6 +220,6 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
         return format!("{}{}.{}", if sign { "-" } else { "" }, result1, result2);
     }
 
-    let result = process_complex_number_format_mask(&number, mask);
+    let result = process_complex_number_format_mask(number, mask);
     format!("{}{}", if sign { "-" } else { "" }, result)
 }

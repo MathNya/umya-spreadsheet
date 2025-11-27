@@ -1,14 +1,30 @@
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::StringValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node_no_escape,
+    },
+};
 
 #[derive(Clone, Debug)]
 pub struct TextBox {
-    style: StringValue,
+    style:  StringValue,
     innder: StringValue,
 }
 
@@ -23,8 +39,15 @@ impl Default for TextBox {
 }
 
 impl TextBox {
+    #[must_use]
+    pub fn style(&self) -> &str {
+        self.style.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
     pub fn get_style(&self) -> &str {
-        self.style.get_value_str()
+        self.style()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -32,8 +55,15 @@ impl TextBox {
         self
     }
 
+    #[must_use]
+    pub fn innder(&self) -> &str {
+        self.innder.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use innder()")]
     pub fn get_innder(&self) -> &str {
-        self.innder.get_value_str()
+        self.innder()
     }
 
     pub fn set_innder<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -69,9 +99,9 @@ impl TextBox {
                         }
                     });
                     for (key, value) in &attrs {
-                        tag = format!("{} {}=\"{}\"", tag, key, value);
+                        tag = format!("{tag} {key}=\"{value}\"");
                     }
-                    inner_text = format!("{}<{}/>", inner_text, tag);
+                    inner_text = format!("{inner_text}<{tag}/>");
                 }
                 Ok(Event::Start(ref e)) => {
                     let mut tag = std::str::from_utf8(e.name().into_inner())
@@ -89,20 +119,20 @@ impl TextBox {
                         }
                     });
                     for (key, value) in &attrs {
-                        tag = format!("{} {}=\"{}\"", tag, key, value);
+                        tag = format!("{tag} {key}=\"{value}\"");
                     }
-                    inner_text = format!("{}<{}>", inner_text, tag);
+                    inner_text = format!("{inner_text}<{tag}>");
                 }
                 Ok(Event::Text(ref e)) => {
                     let s = e.unescape().unwrap();
-                    inner_text = format!("{}{}", inner_text, s);
+                    inner_text = format!("{inner_text}{s}");
                 }
                 Ok(Event::End(ref e)) => {
                     if e.name().into_inner() == b"v:textbox" {
                         break;
                     }
                     let s = std::str::from_utf8(e.name().into_inner()).unwrap();
-                    inner_text = format!("{}</{}>", inner_text, s);
+                    inner_text = format!("{inner_text}</{s}>");
                 }
                 Ok(Event::Eof) => break,
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -110,18 +140,18 @@ impl TextBox {
             }
             buf.clear();
         }
-        //reader.check_end_names(true);
+        // reader.check_end_names(true);
         self.set_innder(inner_text);
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:textbox
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_str()));
+            attributes.push(("style", self.style.value_str()).into());
         }
         write_start_tag(writer, "v:textbox", attributes, false);
-        write_text_node_no_escape(writer, self.innder.get_value_str());
+        write_text_node_no_escape(writer, self.innder.value_str());
         write_end_tag(writer, "v:textbox");
     }
 }

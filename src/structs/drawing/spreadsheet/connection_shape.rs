@@ -1,33 +1,61 @@
 // xdr:cxnSp
-use super::super::super::Anchor;
-use super::NonVisualConnectionShapeProperties;
-use super::ShapeProperties;
-use super::ShapeStyle;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::Anchor,
+    NonVisualConnectionShapeProperties,
+    ShapeProperties,
+    ShapeStyle,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ConnectionShape {
-    anchor: Anchor,
+    anchor:                                 Anchor,
     non_visual_connection_shape_properties: NonVisualConnectionShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: ShapeStyle,
+    shape_properties:                       ShapeProperties,
+    shape_style:                            ShapeStyle,
 }
 
 impl ConnectionShape {
     #[inline]
-    pub fn get_anchor(&self) -> &Anchor {
+    #[must_use]
+    pub fn anchor(&self) -> &Anchor {
         &self.anchor
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -36,17 +64,36 @@ impl ConnectionShape {
     }
 
     #[inline]
-    pub fn get_non_visual_connection_shape_properties(
-        &self,
-    ) -> &NonVisualConnectionShapeProperties {
+    #[must_use]
+    pub fn non_visual_connection_shape_properties(&self) -> &NonVisualConnectionShapeProperties {
         &self.non_visual_connection_shape_properties
     }
 
     #[inline]
-    pub fn get_non_visual_connection_shape_properties_mut(
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_connection_shape_properties()")]
+    pub fn get_non_visual_connection_shape_properties(
+        &self,
+    ) -> &NonVisualConnectionShapeProperties {
+        self.non_visual_connection_shape_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_connection_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualConnectionShapeProperties {
         &mut self.non_visual_connection_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_connection_shape_properties_mut()"
+    )]
+    pub fn get_non_visual_connection_shape_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualConnectionShapeProperties {
+        self.non_visual_connection_shape_properties_mut()
     }
 
     #[inline]
@@ -58,13 +105,27 @@ impl ConnectionShape {
     }
 
     #[inline]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    #[must_use]
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]
@@ -73,13 +134,27 @@ impl ConnectionShape {
     }
 
     #[inline]
-    pub fn get_shape_style(&self) -> &ShapeStyle {
+    #[must_use]
+    pub fn shape_style(&self) -> &ShapeStyle {
         &self.shape_style
     }
 
     #[inline]
-    pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_style()")]
+    pub fn get_shape_style(&self) -> &ShapeStyle {
+        self.shape_style()
+    }
+
+    #[inline]
+    pub fn shape_style_mut(&mut self) -> &mut ShapeStyle {
         &mut self.shape_style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use stretch_mut()")]
+    pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
+        self.shape_style_mut()
     }
 
     #[inline]
@@ -125,7 +200,7 @@ impl ConnectionShape {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:cxnSp
-        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
+        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "").into()], false);
 
         // xdr:nvCxnSpPr
         self.non_visual_connection_shape_properties.write_to(writer);

@@ -1,28 +1,56 @@
 // xdr:nvGrpSpPr
-use super::NonVisualDrawingProperties;
-use super::NonVisualGroupShapeDrawingProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    NonVisualDrawingProperties,
+    NonVisualGroupShapeDrawingProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualGroupShapeProperties {
-    non_visual_drawing_properties: NonVisualDrawingProperties,
+    non_visual_drawing_properties:             NonVisualDrawingProperties,
     non_visual_group_shape_drawing_properties: NonVisualGroupShapeDrawingProperties,
 }
 
 impl NonVisualGroupShapeProperties {
     #[inline]
-    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+    #[must_use]
+    pub fn non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties()")]
+    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+        self.non_visual_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties_mut()")]
+    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+        self.non_visual_drawing_properties_mut()
     }
 
     #[inline]
@@ -35,17 +63,41 @@ impl NonVisualGroupShapeProperties {
     }
 
     #[inline]
-    pub fn get_non_visual_group_shape_drawing_properties(
+    #[must_use]
+    pub fn non_visual_group_shape_drawing_properties(
         &self,
     ) -> &NonVisualGroupShapeDrawingProperties {
         &self.non_visual_group_shape_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_group_shape_drawing_properties_mut(
+    #[must_use]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_group_shape_drawing_properties()"
+    )]
+    pub fn get_non_visual_group_shape_drawing_properties(
+        &self,
+    ) -> &NonVisualGroupShapeDrawingProperties {
+        self.non_visual_group_shape_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_group_shape_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeDrawingProperties {
         &mut self.non_visual_group_shape_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_group_shape_drawing_properties_mut()"
+    )]
+    pub fn get_non_visual_group_shape_drawing_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualGroupShapeDrawingProperties {
+        self.non_visual_group_shape_drawing_properties_mut()
     }
 
     #[inline]
@@ -104,7 +156,7 @@ impl NonVisualGroupShapeProperties {
         write_start_tag(writer, "xdr:nvGrpSpPr", vec![], false);
 
         // xdr:cNvPr
-        self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvGrpSpPr
         self.non_visual_group_shape_drawing_properties

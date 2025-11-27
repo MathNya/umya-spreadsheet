@@ -1,29 +1,54 @@
 // a:fontScheme
-use super::super::StringValue;
-use super::BackgroundFillStyleList;
-use super::EffectStyleList;
-use super::FillStyleList;
-use super::LineStyleList;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::StringValue,
+    BackgroundFillStyleList,
+    EffectStyleList,
+    FillStyleList,
+    LineStyleList,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatScheme {
-    name: StringValue,
-    fill_style_list: FillStyleList,
-    line_style_list: LineStyleList,
-    effect_style_list: EffectStyleList,
+    name:                       StringValue,
+    fill_style_list:            FillStyleList,
+    line_style_list:            LineStyleList,
+    effect_style_list:          EffectStyleList,
     background_fill_style_list: BackgroundFillStyleList,
 }
 
 impl FormatScheme {
     #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name()
     }
 
     #[inline]
@@ -33,13 +58,27 @@ impl FormatScheme {
     }
 
     #[inline]
-    pub fn get_fill_style_list(&self) -> &FillStyleList {
+    #[must_use]
+    pub fn fill_style_list(&self) -> &FillStyleList {
         &self.fill_style_list
     }
 
     #[inline]
-    pub fn get_fill_style_list_mut(&mut self) -> &mut FillStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill_style_list()")]
+    pub fn get_fill_style_list(&self) -> &FillStyleList {
+        self.fill_style_list()
+    }
+
+    #[inline]
+    pub fn fill_style_list_mut(&mut self) -> &mut FillStyleList {
         &mut self.fill_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_style_list_mut()")]
+    pub fn get_fill_style_list_mut(&mut self) -> &mut FillStyleList {
+        self.fill_style_list_mut()
     }
 
     #[inline]
@@ -48,13 +87,27 @@ impl FormatScheme {
     }
 
     #[inline]
-    pub fn get_line_style_list(&self) -> &LineStyleList {
+    #[must_use]
+    pub fn line_style_list(&self) -> &LineStyleList {
         &self.line_style_list
     }
 
     #[inline]
-    pub fn get_line_style_list_mut(&mut self) -> &mut LineStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_style_list()")]
+    pub fn get_line_style_list(&self) -> &LineStyleList {
+        self.line_style_list()
+    }
+
+    #[inline]
+    pub fn line_style_list_mut(&mut self) -> &mut LineStyleList {
         &mut self.line_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use line_style_list_mut()")]
+    pub fn get_line_style_list_mut(&mut self) -> &mut LineStyleList {
+        self.line_style_list_mut()
     }
 
     #[inline]
@@ -63,13 +116,27 @@ impl FormatScheme {
     }
 
     #[inline]
-    pub fn get_effect_style_list(&self) -> &EffectStyleList {
+    #[must_use]
+    pub fn effect_style_list(&self) -> &EffectStyleList {
         &self.effect_style_list
     }
 
     #[inline]
-    pub fn get_effect_style_list_mut(&mut self) -> &mut EffectStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_style_list()")]
+    pub fn get_effect_style_list(&self) -> &EffectStyleList {
+        self.effect_style_list()
+    }
+
+    #[inline]
+    pub fn effect_style_list_mut(&mut self) -> &mut EffectStyleList {
         &mut self.effect_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_style_list_mut()")]
+    pub fn get_effect_style_list_mut(&mut self) -> &mut EffectStyleList {
+        self.effect_style_list_mut()
     }
 
     #[inline]
@@ -78,13 +145,27 @@ impl FormatScheme {
     }
 
     #[inline]
-    pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
+    #[must_use]
+    pub fn background_fill_style_list(&self) -> &BackgroundFillStyleList {
         &self.background_fill_style_list
     }
 
     #[inline]
-    pub fn get_background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_fill_style_list()")]
+    pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
+        self.background_fill_style_list()
+    }
+
+    #[inline]
+    pub fn background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
         &mut self.background_fill_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use background_fill_style_list_mut()")]
+    pub fn get_background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
+        self.background_fill_style_list_mut()
     }
 
     #[inline]
@@ -139,9 +220,9 @@ impl FormatScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fmtScheme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.value_str()).into());
         }
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 

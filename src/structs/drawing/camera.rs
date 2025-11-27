@@ -1,24 +1,50 @@
 // a:camera
-use super::super::EnumValue;
-use super::PresetCameraValues;
-use super::Rotation;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::EnumValue,
+    PresetCameraValues,
+    Rotation,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Camera {
-    preset: EnumValue<PresetCameraValues>,
+    preset:   EnumValue<PresetCameraValues>,
     rotation: Option<Box<Rotation>>,
 }
 
 impl Camera {
     #[inline]
+    #[must_use]
+    pub fn preset(&self) -> &PresetCameraValues {
+        self.preset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
     pub fn get_preset(&self) -> &PresetCameraValues {
-        self.preset.get_value()
+        self.preset()
     }
 
     #[inline]
@@ -28,13 +54,27 @@ impl Camera {
     }
 
     #[inline]
-    pub fn get_rotation(&self) -> Option<&Rotation> {
+    #[must_use]
+    pub fn rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
 
     #[inline]
-    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation()
+    }
+
+    #[inline]
+    pub fn rotation_mut(&mut self) -> Option<&mut Rotation> {
         self.rotation.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rotation_mut()")]
+    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+        self.rotation_mut()
     }
 
     #[inline]
@@ -79,7 +119,7 @@ impl Camera {
         write_start_tag(
             writer,
             "a:camera",
-            vec![("prst", self.preset.get_value_string())],
+            vec![("prst", self.preset.value_string()).into()],
             !with_inner,
         );
 

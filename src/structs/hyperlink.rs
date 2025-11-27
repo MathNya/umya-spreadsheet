@@ -1,13 +1,21 @@
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Hyperlink {
-    url: Box<str>,
-    tooltip: Box<str>,
+    url:      Box<str>,
+    tooltip:  Box<str>,
     location: bool,
 }
 impl Hyperlink {
     #[inline]
-    pub fn get_url(&self) -> &str {
+    #[must_use]
+    pub fn url(&self) -> &str {
         &self.url
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use url()")]
+    pub fn get_url(&self) -> &str {
+        self.url()
     }
 
     #[inline]
@@ -17,8 +25,16 @@ impl Hyperlink {
     }
 
     #[inline]
-    pub fn get_tooltip(&self) -> &str {
+    #[must_use]
+    pub fn tooltip(&self) -> &str {
         &self.tooltip
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tooltip()")]
+    pub fn get_tooltip(&self) -> &str {
+        self.tooltip()
     }
 
     #[inline]
@@ -28,8 +44,16 @@ impl Hyperlink {
     }
 
     #[inline]
-    pub fn get_location(&self) -> &bool {
-        &self.location
+    #[must_use]
+    pub fn location(&self) -> bool {
+        self.location
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use location()")]
+    pub fn get_location(&self) -> bool {
+        self.location()
     }
 
     #[inline]

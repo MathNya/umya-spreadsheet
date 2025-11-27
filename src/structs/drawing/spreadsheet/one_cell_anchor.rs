@@ -1,36 +1,64 @@
 // xdr:oneCellAnchor
-use super::Extent;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Extent,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
     from_marker: MarkerType,
-    extent: Extent,
+    extent:      Extent,
     group_shape: Option<Box<GroupShape>>,
-    shape: Option<Box<Shape>>,
-    picture: Option<Box<Picture>>,
+    shape:       Option<Box<Shape>>,
+    picture:     Option<Box<Picture>>,
 }
 
 impl OneCellAnchor {
     #[inline]
-    pub fn get_from_marker(&self) -> &MarkerType {
+    #[must_use]
+    pub fn from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
     #[inline]
-    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use from_marker()")]
+    pub fn get_from_marker(&self) -> &MarkerType {
+        self.from_marker()
+    }
+
+    #[inline]
+    pub fn from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use from_marker_mut()")]
+    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+        self.from_marker_mut()
     }
 
     #[inline]
@@ -40,13 +68,27 @@ impl OneCellAnchor {
     }
 
     #[inline]
-    pub fn get_extent(&self) -> &Extent {
+    #[must_use]
+    pub fn extent(&self) -> &Extent {
         &self.extent
     }
 
     #[inline]
-    pub fn get_extent_mut(&mut self) -> &mut Extent {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extent()")]
+    pub fn get_extent(&self) -> &Extent {
+        self.extent()
+    }
+
+    #[inline]
+    pub fn extent_mut(&mut self) -> &mut Extent {
         &mut self.extent
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extent_mut()")]
+    pub fn get_extent_mut(&mut self) -> &mut Extent {
+        self.extent_mut()
     }
 
     #[inline]
@@ -56,13 +98,27 @@ impl OneCellAnchor {
     }
 
     #[inline]
-    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+    #[must_use]
+    pub fn group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape()")]
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape()
+    }
+
+    #[inline]
+    pub fn group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_mut()")]
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape_mut()
     }
 
     #[inline]
@@ -72,13 +128,27 @@ impl OneCellAnchor {
     }
 
     #[inline]
-    pub fn get_shape(&self) -> Option<&Shape> {
+    #[must_use]
+    pub fn shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape_mut()
     }
 
     #[inline]
@@ -88,13 +158,27 @@ impl OneCellAnchor {
     }
 
     #[inline]
-    pub fn get_picture(&self) -> Option<&Picture> {
+    #[must_use]
+    pub fn picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
     #[inline]
-    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture()")]
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture()
+    }
+
+    #[inline]
+    pub fn picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_mut()")]
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture_mut()
     }
 
     #[inline]
@@ -174,7 +258,7 @@ impl OneCellAnchor {
 
         // xdr:sp
         if let Some(v) = &self.shape {
-            v.write_to(writer, rel_list, &0);
+            v.write_to(writer, rel_list, 0);
         }
 
         // xdr:pic
@@ -192,10 +276,10 @@ impl AdjustmentCoordinate for OneCellAnchor {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_insert_coordinate(
             root_col_num,
@@ -208,10 +292,10 @@ impl AdjustmentCoordinate for OneCellAnchor {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_remove_coordinate(
             root_col_num,
@@ -224,10 +308,10 @@ impl AdjustmentCoordinate for OneCellAnchor {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.from_marker.is_remove_coordinate(
             root_col_num,

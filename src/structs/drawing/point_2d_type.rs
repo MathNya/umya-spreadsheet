@@ -1,12 +1,25 @@
 // a:off
 // a:chOff
-use crate::reader::driver::*;
-use crate::structs::Int64Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Int64Value,
+    writer::driver::write_start_tag,
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Point2DType {
@@ -16,8 +29,16 @@ pub struct Point2DType {
 
 impl Point2DType {
     #[inline]
-    pub fn get_x(&self) -> &i64 {
-        &self.x.get_value()
+    #[must_use]
+    pub fn x(&self) -> i64 {
+        self.x.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use x()")]
+    pub fn get_x(&self) -> i64 {
+        self.x()
     }
 
     #[inline]
@@ -26,8 +47,16 @@ impl Point2DType {
     }
 
     #[inline]
-    pub fn get_y(&self) -> &i64 {
-        &self.y.get_value()
+    #[must_use]
+    pub fn y(&self) -> i64 {
+        self.y.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use y()")]
+    pub fn get_y(&self) -> i64 {
+        self.y()
     }
 
     #[inline]
@@ -53,8 +82,7 @@ impl Point2DType {
             reader,
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:off" => return,
-                    b"a:chOff" => return,
+                    b"a:chOff" | b"a:off" => return,
                     _ => (),
                 }
             },
@@ -76,11 +104,11 @@ impl Point2DType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let x_str = self.x.get_value_string();
-        attributes.push(("x", &x_str));
-        let y_str = self.y.get_value_string();
-        attributes.push(("y", &y_str));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let x_str = self.x.value_string();
+        attributes.push(("x", &x_str).into());
+        let y_str = self.y.value_string();
+        attributes.push(("y", &y_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }
 }

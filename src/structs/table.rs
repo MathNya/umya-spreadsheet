@@ -1,24 +1,22 @@
-use std::default;
-
-use quick_xml::{
-    events::{BytesStart, Event},
-    Reader,
-};
-
 use super::{
-    coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
+    BooleanValue,
+    EnumValue,
+    StringValue,
+    TotalsRowFunctionValues,
+    UInt32Value,
+    coordinate::Coordinate,
 };
-use crate::helper::coordinate::*;
-use thin_vec::ThinVec;
-//use reader::driver::*;
+use crate::helper::coordinate::CellCoordinates;
+
+// use reader::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Table {
-    name: Box<str>,
-    area: (Coordinate, Coordinate),
-    display_name: Box<str>,
-    columns: ThinVec<TableColumn>,
-    style_info: Option<Box<TableStyleInfo>>,
+    name:             Box<str>,
+    area:             (Coordinate, Coordinate),
+    display_name:     Box<str>,
+    columns:          Vec<TableColumn>,
+    style_info:       Option<Box<TableStyleInfo>>,
     totals_row_shown: BooleanValue,
     totals_row_count: UInt32Value,
 }
@@ -32,31 +30,40 @@ impl Table {
         let coord_end = Self::cell_coord_to_coord(area.1);
         let name: Box<str> = name.into();
         Self {
-            area: (coord_beg, coord_end),
-            name: name.clone(),
-            display_name: name,
-            columns: ThinVec::<TableColumn>::default(),
-            style_info: None,
+            area:             (coord_beg, coord_end),
+            name:             name.clone(),
+            display_name:     name,
+            columns:          Vec::<TableColumn>::default(),
+            style_info:       None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),
         }
     }
 
     #[inline]
+    #[must_use]
     pub fn is_ok(&self) -> bool {
         !(self.name.is_empty()
             || self.display_name.is_empty()
-            || self.area.0.get_col_num() == &0
-            || self.area.0.get_row_num() == &0
-            || self.area.1.get_col_num() == &0
-            || self.area.1.get_row_num() == &0
-            || self.area.0.get_col_num() > self.area.1.get_col_num()
-            || self.area.0.get_row_num() > self.area.1.get_row_num())
+            || self.area.0.col_num() == 0
+            || self.area.0.row_num() == 0
+            || self.area.1.col_num() == 0
+            || self.area.1.row_num() == 0
+            || self.area.0.col_num() > self.area.1.col_num()
+            || self.area.0.row_num() > self.area.1.row_num())
     }
 
     #[inline]
-    pub fn get_name(&self) -> &str {
+    #[must_use]
+    pub fn name(&self) -> &str {
         &self.name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -68,8 +75,16 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_display_name(&self) -> &str {
+    #[must_use]
+    pub fn display_name(&self) -> &str {
         &self.display_name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use display_name()")]
+    pub fn get_display_name(&self) -> &str {
+        self.display_name()
     }
 
     #[inline]
@@ -78,8 +93,16 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_area(&self) -> &(Coordinate, Coordinate) {
+    #[must_use]
+    pub fn area(&self) -> &(Coordinate, Coordinate) {
         &self.area
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area()")]
+    pub fn get_area(&self) -> &(Coordinate, Coordinate) {
+        self.area()
     }
 
     #[inline]
@@ -98,8 +121,16 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_columns(&self) -> &[TableColumn] {
+    #[must_use]
+    pub fn columns(&self) -> &[TableColumn] {
         &self.columns
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use columns()")]
+    pub fn get_columns(&self) -> &[TableColumn] {
+        self.columns()
     }
 
     #[inline]
@@ -108,8 +139,16 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
+    #[must_use]
+    pub fn style_info(&self) -> Option<&TableStyleInfo> {
         self.style_info.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style_info()")]
+    pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
+        self.style_info()
     }
 
     #[inline]
@@ -123,13 +162,27 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_totals_row_shown(&self) -> &bool {
-        self.totals_row_shown.get_value()
+    #[must_use]
+    pub fn totals_row_shown(&self) -> bool {
+        self.totals_row_shown.value()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_shown()")]
+    pub fn get_totals_row_shown(&self) -> bool {
+        self.totals_row_shown()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_shown_str(&self) -> &str {
+        self.totals_row_shown.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_shown_str()")]
     pub(crate) fn get_totals_row_shown_str(&self) -> &str {
-        self.totals_row_shown.get_value_string()
+        self.totals_row_shown_str()
     }
 
     #[inline]
@@ -148,13 +201,27 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_totals_row_count(&self) -> &u32 {
-        self.totals_row_count.get_value()
+    #[must_use]
+    pub fn totals_row_count(&self) -> u32 {
+        self.totals_row_count.value()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_count()")]
+    pub fn get_totals_row_count(&self) -> u32 {
+        self.totals_row_count()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_count_str(&self) -> String {
+        self.totals_row_count.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_count_str()")]
     pub(crate) fn get_totals_row_count_str(&self) -> String {
-        self.totals_row_count.get_value_string()
+        self.totals_row_count_str()
     }
 
     #[inline]
@@ -173,7 +240,7 @@ impl Table {
         T: Into<CellCoordinates>,
     {
         let cell_coord: CellCoordinates = cc.into();
-        let mut coord: Coordinate = Default::default();
+        let mut coord: Coordinate = Coordinate::default();
         coord.set_col_num(cell_coord.col);
         coord.set_row_num(cell_coord.row);
         coord
@@ -182,25 +249,34 @@ impl Table {
 
 #[derive(Clone, Default, Debug)]
 pub struct TableColumn {
-    name: String,
-    totals_row_label: StringValue,
-    totals_row_function: EnumValue<TotalsRowFunctionValues>,
+    name:                      String,
+    totals_row_label:          StringValue,
+    totals_row_function:       EnumValue<TotalsRowFunctionValues>,
     calculated_column_formula: Option<String>,
 }
 impl TableColumn {
     #[inline]
+    #[must_use]
     pub fn new(name: &str) -> Self {
         Self {
-            name: name.to_string(),
-            totals_row_label: StringValue::default(),
-            totals_row_function: EnumValue::default(),
+            name:                      name.to_string(),
+            totals_row_label:          StringValue::default(),
+            totals_row_function:       EnumValue::default(),
             calculated_column_formula: None,
         }
     }
 
     #[inline]
-    pub fn get_name(&self) -> &str {
+    #[must_use]
+    pub fn name(&self) -> &str {
         self.name.as_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -209,18 +285,33 @@ impl TableColumn {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn has_totals_row_label(&self) -> bool {
         self.totals_row_label.has_value()
     }
 
     #[inline]
-    pub fn get_totals_row_label(&self) -> Option<&str> {
-        self.totals_row_label.get_value()
+    #[must_use]
+    pub fn totals_row_label(&self) -> Option<&str> {
+        self.totals_row_label.value()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_label()")]
+    pub fn get_totals_row_label(&self) -> Option<&str> {
+        self.totals_row_label()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_label_str(&self) -> &str {
+        self.totals_row_label.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_label_str()")]
     pub(crate) fn get_totals_row_label_str(&self) -> &str {
-        self.totals_row_label.get_value_str()
+        self.totals_row_label_str()
     }
 
     #[inline]
@@ -234,18 +325,33 @@ impl TableColumn {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn has_totals_row_function(&self) -> bool {
         self.totals_row_function.has_value()
     }
 
     #[inline]
-    pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
-        self.totals_row_function.get_value()
+    #[must_use]
+    pub fn totals_row_function(&self) -> &TotalsRowFunctionValues {
+        self.totals_row_function.value()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_function()")]
+    pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
+        self.totals_row_function()
+    }
+
+    #[inline]
+    pub(crate) fn totals_row_function_str(&self) -> &str {
+        self.totals_row_function.value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use totals_row_function_str()")]
     pub(crate) fn get_totals_row_function_str(&self) -> &str {
-        self.totals_row_function.get_value_string()
+        self.totals_row_function_str()
     }
 
     #[inline]
@@ -259,8 +365,16 @@ impl TableColumn {
     }
 
     #[inline]
-    pub fn get_calculated_column_formula(&self) -> Option<&String> {
+    #[must_use]
+    pub fn calculated_column_formula(&self) -> Option<&String> {
         self.calculated_column_formula.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use calculated_column_formula()")]
+    pub fn get_calculated_column_formula(&self) -> Option<&String> {
+        self.calculated_column_formula()
     }
 
     #[inline]
@@ -269,22 +383,48 @@ impl TableColumn {
     }
 }
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct TableStyleInfo {
-    name: String,
-    show_first_col: bool,
-    show_last_col: bool,
-    show_row_stripes: bool,
-    show_col_stripes: bool,
+    name:             String,
+    show_first_col:   ShowColumn,
+    show_last_col:    ShowColumn,
+    show_row_stripes: ShowStripes,
+    show_col_stripes: ShowStripes,
 }
+
+#[derive(Debug, Clone, Copy)]
+pub enum ShowColumn {
+    Show,
+    Hide,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum ShowStripes {
+    Show,
+    Hide,
+}
+
+impl Default for TableStyleInfo {
+    fn default() -> Self {
+        Self {
+            name:             String::new(), // Default name can be an empty string
+            show_first_col:   ShowColumn::Hide, // Default to Hide
+            show_last_col:    ShowColumn::Hide, // Default to Hide
+            show_row_stripes: ShowStripes::Hide, // Default to Hide
+            show_col_stripes: ShowStripes::Hide, // Default to Hide
+        }
+    }
+}
+
 impl TableStyleInfo {
     #[inline]
+    #[must_use]
     pub fn new(
         name: &str,
-        show_first_col: bool,
-        show_last_col: bool,
-        show_row_stripes: bool,
-        show_col_stripes: bool,
+        show_first_col: ShowColumn,
+        show_last_col: ShowColumn,
+        show_row_stripes: ShowStripes,
+        show_col_stripes: ShowStripes,
     ) -> Self {
         Self {
             name: name.to_string(),
@@ -296,27 +436,39 @@ impl TableStyleInfo {
     }
 
     #[inline]
-    pub fn get_name(&self) -> &str {
+    #[must_use]
+    pub fn name(&self) -> &str {
         self.name.as_str()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
+    }
+
+    #[inline]
+    #[must_use]
     pub fn is_show_first_col(&self) -> bool {
-        self.show_first_col
+        matches!(self.show_first_col, ShowColumn::Show)
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_last_col(&self) -> bool {
-        self.show_last_col
+        matches!(self.show_last_col, ShowColumn::Show)
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_row_stripes(&self) -> bool {
-        self.show_row_stripes
+        matches!(self.show_row_stripes, ShowStripes::Show)
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_col_stripes(&self) -> bool {
-        self.show_col_stripes
+        matches!(self.show_col_stripes, ShowStripes::Show)
     }
 }

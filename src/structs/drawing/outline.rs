@@ -1,45 +1,73 @@
 // a:ln
-use super::Bevel;
-use super::GradientFill;
-use super::Miter;
-use super::NoFill;
-use super::PenAlignmentValues;
-use super::PresetDash;
-use super::Round;
-use super::SolidFill;
-use super::SystemColor;
-use super::TailEnd;
-use crate::reader::driver::*;
-use crate::structs::EnumValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Bevel,
+    GradientFill,
+    Miter,
+    NoFill,
+    PenAlignmentValues,
+    PresetDash,
+    Round,
+    SolidFill,
+    TailEnd,
+};
+use crate::{
+    StringValue,
+    drawing::SystemColor,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width: UInt32Value,
-    cap_type: StringValue,
+    width:              UInt32Value,
+    cap_type:           StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<Box<SolidFill>>,
-    gradient_fill: Option<Box<GradientFill>>,
-    tail_end: Option<Box<TailEnd>>,
-    no_fill: Option<NoFill>,
-    bevel: Option<Box<Bevel>>,
-    preset_dash: Option<PresetDash>,
-    miter: Option<Miter>,
-    round: Option<Round>,
-    alignment: EnumValue<PenAlignmentValues>,
-    system_color: Option<Box<SystemColor>>,
+    solid_fill:         Option<Box<SolidFill>>,
+    gradient_fill:      Option<Box<GradientFill>>,
+    tail_end:           Option<Box<TailEnd>>,
+    no_fill:            Option<NoFill>,
+    bevel:              Option<Box<Bevel>>,
+    preset_dash:        Option<PresetDash>,
+    miter:              Option<Miter>,
+    round:              Option<Round>,
+    alignment:          EnumValue<PenAlignmentValues>,
+    system_color:       Option<Box<SystemColor>>,
 }
 
 impl Outline {
     #[inline]
-    pub fn get_width(&self) -> &u32 {
-        self.width.get_value()
+    #[must_use]
+    pub fn width(&self) -> u32 {
+        self.width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> u32 {
+        self.width()
     }
 
     #[inline]
@@ -49,8 +77,16 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
+    pub fn cap_type(&self) -> Option<&str> {
+        self.cap_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cap_type()")]
     pub fn get_cap_type(&self) -> Option<&str> {
-        self.cap_type.get_value()
+        self.cap_type()
     }
 
     #[inline]
@@ -60,8 +96,16 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
+    pub fn compound_line_type(&self) -> Option<&str> {
+        self.compound_line_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use compound_line_type()")]
     pub fn get_compound_line_type(&self) -> Option<&str> {
-        self.compound_line_type.get_value()
+        self.compound_line_type()
     }
 
     #[inline]
@@ -71,13 +115,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    #[must_use]
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -87,13 +145,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+    #[must_use]
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
         self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill_mut()
     }
 
     #[inline]
@@ -103,13 +175,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_tail_end(&self) -> Option<&TailEnd> {
+    #[must_use]
+    pub fn tail_end(&self) -> Option<&TailEnd> {
         self.tail_end.as_deref()
     }
 
     #[inline]
-    pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tail_end()")]
+    pub fn get_tail_end(&self) -> Option<&TailEnd> {
+        self.tail_end()
+    }
+
+    #[inline]
+    pub fn tail_end_mut(&mut self) -> Option<&mut TailEnd> {
         self.tail_end.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use tail_end_mut()")]
+    pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
+        self.tail_end_mut()
     }
 
     #[inline]
@@ -119,13 +205,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    #[must_use]
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    #[inline]
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     #[inline]
@@ -135,13 +235,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_bevel(&self) -> Option<&Bevel> {
+    #[must_use]
+    pub fn bevel(&self) -> Option<&Bevel> {
         self.bevel.as_deref()
     }
 
     #[inline]
-    pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bevel()")]
+    pub fn get_bevel(&self) -> Option<&Bevel> {
+        self.bevel()
+    }
+
+    #[inline]
+    pub fn bevel_mut(&mut self) -> Option<&mut Bevel> {
         self.bevel.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use bevel_mut()")]
+    pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
+        self.bevel_mut()
     }
 
     #[inline]
@@ -151,13 +265,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_preset_dash(&self) -> Option<&PresetDash> {
+    #[must_use]
+    pub fn preset_dash(&self) -> Option<&PresetDash> {
         self.preset_dash.as_ref()
     }
 
     #[inline]
-    pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset_dash()")]
+    pub fn get_preset_dash(&self) -> Option<&PresetDash> {
+        self.preset_dash()
+    }
+
+    #[inline]
+    pub fn preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
         self.preset_dash.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use preset_dash_mut()")]
+    pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
+        self.preset_dash_mut()
     }
 
     #[inline]
@@ -167,13 +295,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_miter(&self) -> Option<&Miter> {
+    #[must_use]
+    pub fn miter(&self) -> Option<&Miter> {
         self.miter.as_ref()
     }
 
     #[inline]
-    pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use miter()")]
+    pub fn get_miter(&self) -> Option<&Miter> {
+        self.miter()
+    }
+
+    #[inline]
+    pub fn miter_mut(&mut self) -> Option<&mut Miter> {
         self.miter.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use miter_mut()")]
+    pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
+        self.miter_mut()
     }
 
     #[inline]
@@ -183,13 +325,27 @@ impl Outline {
     }
 
     #[inline]
-    pub fn get_round(&self) -> Option<&Round> {
+    #[must_use]
+    pub fn round(&self) -> Option<&Round> {
         self.round.as_ref()
     }
 
     #[inline]
-    pub fn get_round_mut(&mut self) -> Option<&mut Round> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use round()")]
+    pub fn get_round(&self) -> Option<&Round> {
+        self.round()
+    }
+
+    #[inline]
+    pub fn round_mut(&mut self) -> Option<&mut Round> {
         self.round.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use round_mut()")]
+    pub fn get_round_mut(&mut self) -> Option<&mut Round> {
+        self.round_mut()
     }
 
     #[inline]
@@ -199,8 +355,16 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
+    pub fn alignment(&self) -> &PenAlignmentValues {
+        self.alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
     pub fn get_alignment(&self) -> &PenAlignmentValues {
-        self.alignment.get_value()
+        self.alignment()
     }
 
     #[inline]
@@ -209,18 +373,32 @@ impl Outline {
     }
 
     #[inline]
-    pub fn set_system_color(&mut self, value: SystemColor) {
-        self.system_color = Some(Box::new(value));
-    }
-
-    #[inline]
-    pub fn get_system_color(&self) -> Option<&SystemColor> {
+    #[must_use]
+    pub fn system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
 
     #[inline]
-    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use system_color()")]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color()
+    }
+
+    #[inline]
+    pub fn system_color_mut(&mut self) -> Option<&mut SystemColor> {
         self.system_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use system_color_mut()")]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color_mut()
+    }
+
+    #[inline]
+    pub fn set_system_color(&mut self, value: SystemColor) {
+        self.system_color = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -262,13 +440,13 @@ impl Outline {
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
-                        let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e, false);
+                        let obj = NoFill::default();
+                        NoFill::set_attributes(reader, e, false);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
-                        let mut obj = Bevel::default();
-                        obj.set_attributes(reader, e, false);
+                        let obj = Bevel::default();
+                        Bevel::set_attributes(reader, e, false);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
@@ -282,8 +460,8 @@ impl Outline {
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
-                        let mut obj = Round::default();
-                        obj.set_attributes(reader, e, false);
+                        let obj = Round::default();
+                        Round::set_attributes(reader, e, false);
                         self.set_round(obj);
                     }
                     b"a:sysClr" => {
@@ -302,13 +480,13 @@ impl Outline {
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
-                        let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e, true);
+                        let obj = NoFill::default();
+                        NoFill::set_attributes(reader, e, true);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
-                        let mut obj = Bevel::default();
-                        obj.set_attributes(reader, e, true);
+                        let obj = Bevel::default();
+                        Bevel::set_attributes(reader, e, true);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
@@ -322,8 +500,8 @@ impl Outline {
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
-                        let mut obj = Round::default();
-                        obj.set_attributes(reader, e, true);
+                        let obj = Round::default();
+                        Round::set_attributes(reader, e, true);
                         self.set_round(obj);
                     }
                     b"a:sysClr" => {
@@ -345,19 +523,19 @@ impl Outline {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let width = self.width.get_value_string();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let width = self.width.value_string();
         if self.width.has_value() {
-            attributes.push(("w", &width));
+            attributes.push(("w", &width).into());
         }
-        if let Some(v) = self.cap_type.get_value() {
-            attributes.push(("cap", v));
+        if let Some(v) = self.cap_type.value() {
+            attributes.push(("cap", v).into());
         }
-        if let Some(v) = self.compound_line_type.get_value() {
-            attributes.push(("cmpd", v));
+        if let Some(v) = self.compound_line_type.value() {
+            attributes.push(("cmpd", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", (self.alignment.get_value_string())));
+            attributes.push(("algn", (self.alignment.value_string())).into());
         }
         write_start_tag(writer, "a:ln", attributes, false);
 
@@ -372,8 +550,8 @@ impl Outline {
         }
 
         // a:round
-        if let Some(v) = &self.round {
-            v.write_to(writer);
+        if self.round.is_some() {
+            Round::write_to(writer);
         }
 
         // a:tailEnd
@@ -382,13 +560,13 @@ impl Outline {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:bevel
-        if let Some(v) = &self.bevel {
-            v.write_to(writer);
+        if self.bevel.is_some() {
+            Bevel::write_to(writer);
         }
 
         // a:prstDash

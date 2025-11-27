@@ -1,25 +1,9 @@
 // text
-use super::vml::office::InsetMarginValues;
-use super::vml::spreadsheet::Anchor;
-use super::vml::spreadsheet::CommentColumnTarget;
-use super::vml::spreadsheet::CommentRowTarget;
-use super::vml::spreadsheet::MoveWithCells;
-use super::vml::spreadsheet::ResizeWithCells;
-use super::vml::Fill as VmlFill;
-use super::vml::Path;
-use super::vml::Shadow;
-use super::vml::TextBox;
-use super::Coordinate;
-use super::Fill;
 use super::PhoneticRun;
 use super::RichText;
 use super::Text;
 use super::TextElement;
-use crate::helper::coordinate::*;
-use crate::reader::driver::*;
-use crate::structs::vml::Shape;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -34,16 +18,33 @@ pub struct CommentText {
 
 impl CommentText {
     #[inline]
-    pub fn get_text(&self) -> Option<&Text> {
+    #[must_use]
+    pub fn text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> Option<&Text> {
+        self.text()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_mut()")]
+    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
+        self.text_mut()
+    }
+
+    #[inline]
+    #[must_use]
     pub fn set_text(&mut self, value: Text) -> &mut Self {
         self.text = Some(value);
         self
@@ -56,13 +57,29 @@ impl CommentText {
     }
 
     #[inline]
-    pub fn get_rich_text(&self) -> Option<&RichText> {
+    #[must_use]
+    pub fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
 
     #[inline]
-    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text_mut()
     }
 
     #[inline]
@@ -81,7 +98,7 @@ impl CommentText {
     pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let mut obj = Text::default();
         obj.set_value(value);
-        self.set_text(obj);
+        let _ = self.set_text(obj);
         self
     }
 
@@ -89,7 +106,7 @@ impl CommentText {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        e: &BytesStart,
+        _e: &BytesStart,
     ) {
         let mut vec_text_element: Vec<TextElement> = Vec::new();
 
@@ -100,7 +117,7 @@ impl CommentText {
                     b"t" => {
                         let mut obj = Text::default();
                         obj.set_attributes(reader, e);
-                        self.set_text(obj);
+                        let _ = self.set_text(obj);
                     }
                     b"r" => {
                         let mut obj = TextElement::default();
@@ -108,8 +125,7 @@ impl CommentText {
                         vec_text_element.push(obj);
                     }
                     b"rPh" => {
-                        let mut obj = PhoneticRun::default();
-                        obj.set_attributes(reader, e);
+                        PhoneticRun::set_attributes(reader, e);
                     }
                     _ => (),
                 }

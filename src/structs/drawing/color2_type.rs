@@ -1,58 +1,110 @@
-use super::RgbColorModelHex;
-use super::SystemColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    RgbColorModelHex,
+    SystemColor,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Color2Type {
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
-    system_color: Option<Box<SystemColor>>,
+    system_color:        Option<Box<SystemColor>>,
 }
 
 impl Color2Type {
     #[inline]
-    pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
-        self.rgb_color_model_hex = Some(Box::new(value));
-    }
-
-    #[inline]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    #[must_use]
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_system_color(&mut self, value: SystemColor) {
-        self.system_color = Some(Box::new(value));
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
     }
 
     #[inline]
-    pub fn get_system_color(&self) -> Option<&SystemColor> {
+    pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {
+        self.rgb_color_model_hex = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
 
     #[inline]
-    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use system_color()")]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color()
+    }
+
+    #[inline]
+    pub fn system_color_mut(&mut self) -> Option<&mut SystemColor> {
         self.system_color.as_deref_mut()
     }
 
     #[inline]
-    pub fn get_val(&self) -> String {
+    #[deprecated(since = "3.0.0", note = "Use system_color_mut()")]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color_mut()
+    }
+
+    #[inline]
+    pub fn set_system_color(&mut self, value: SystemColor) -> &mut Self {
+        self.system_color = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn val(&self) -> String {
         if let Some(v) = &self.rgb_color_model_hex {
-            return v.get_val().to_string();
+            return v.val().to_string();
         }
         if let Some(v) = &self.system_color {
-            return v.get_last_color().to_string();
+            return v.last_color().to_string();
         }
         String::new()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> String {
+        self.val()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -94,19 +146,19 @@ impl Color2Type {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                b"a:accent1" => return,
-                b"a:accent2" => return,
-                b"a:accent3" => return,
-                b"a:accent4" => return,
-                b"a:accent5" => return,
-                b"a:accent6" => return,
-                b"a:dk1" => return,
-                b"a:dk2" => return,
-                b"a:folHlink" => return,
-                b"a:hlink" => return,
-                b"a:lt1" => return,
-                b"a:lt2" => return,
-                _ => (),
+                    b"a:accent1"  |
+                    b"a:accent2"  |
+                    b"a:accent3"  |
+                    b"a:accent4"  |
+                    b"a:accent5"  |
+                    b"a:accent6"  |
+                    b"a:dk1"      |
+                    b"a:dk2"      |
+                    b"a:folHlink" |
+                    b"a:hlink"    |
+                    b"a:lt1"      |
+                    b"a:lt2"      => return,
+                    _             => (),
                 }
             },
             Event::Eof => panic!("Error: Could not find {} end element", "Color2Type")

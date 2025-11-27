@@ -1,10 +1,23 @@
-use super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::Int32Value;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct PercentageType {
@@ -13,8 +26,16 @@ pub struct PercentageType {
 
 impl PercentageType {
     #[inline]
-    pub fn get_val(&self) -> &i32 {
-        self.val.get_value()
+    #[must_use]
+    pub fn val(&self) -> i32 {
+        self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> i32 {
+        self.val()
     }
 
     #[inline]
@@ -61,34 +82,34 @@ impl PercentageType {
 
     #[inline]
     pub(crate) fn write_to_lum(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lum")
+        self.write_to(writer, "a:lum");
     }
 
     #[inline]
     pub(crate) fn write_to_lum_mod(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lumMod")
+        self.write_to(writer, "a:lumMod");
     }
 
     #[inline]
     pub(crate) fn write_to_lum_off(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lumOff")
+        self.write_to(writer, "a:lumOff");
     }
 
     #[inline]
     pub(crate) fn write_to_sat(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:sat")
+        self.write_to(writer, "a:sat");
     }
 
     #[inline]
     pub(crate) fn write_to_sat_mod(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:satMod")
+        self.write_to(writer, "a:satMod");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            let val = self.val.get_value_string();
-            attributes.push(("val", &val));
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
+            let val = self.val.value_string();
+            attributes.push(("val", &val).into());
             write_start_tag(writer, tab_name, attributes, true);
         }
     }

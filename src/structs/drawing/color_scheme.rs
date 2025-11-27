@@ -1,34 +1,60 @@
 // a:clrScheme
-use super::super::StringValue;
-use super::Color2Type;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::StringValue,
+    Color2Type,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScheme {
-    name: StringValue,
-    accent1: Color2Type,
-    accent2: Color2Type,
-    accent3: Color2Type,
-    accent4: Color2Type,
-    accent5: Color2Type,
-    accent6: Color2Type,
-    dk1: Color2Type,
-    dk2: Color2Type,
+    name:      StringValue,
+    accent1:   Color2Type,
+    accent2:   Color2Type,
+    accent3:   Color2Type,
+    accent4:   Color2Type,
+    accent5:   Color2Type,
+    accent6:   Color2Type,
+    dk1:       Color2Type,
+    dk2:       Color2Type,
     fol_hlink: Color2Type,
-    hlink: Color2Type,
-    lt1: Color2Type,
-    lt2: Color2Type,
+    hlink:     Color2Type,
+    lt1:       Color2Type,
+    lt2:       Color2Type,
 }
 
 impl ColorScheme {
     #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name()
     }
 
     #[inline]
@@ -38,201 +64,389 @@ impl ColorScheme {
     }
 
     #[inline]
-    pub fn set_accent1(&mut self, value: Color2Type) {
-        self.accent1 = value;
-    }
-
-    #[inline]
-    pub fn get_accent1(&self) -> &Color2Type {
+    #[must_use]
+    pub fn accent1(&self) -> &Color2Type {
         &self.accent1
     }
 
     #[inline]
-    pub fn get_accent1_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent1()")]
+    pub fn get_accent1(&self) -> &Color2Type {
+        self.accent1()
+    }
+
+    #[inline]
+    pub fn accent1_mut(&mut self) -> &mut Color2Type {
         &mut self.accent1
     }
 
     #[inline]
-    pub fn set_accent2(&mut self, value: Color2Type) {
-        self.accent2 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent1_mut()")]
+    pub fn get_accent1_mut(&mut self) -> &mut Color2Type {
+        self.accent1_mut()
     }
 
     #[inline]
-    pub fn get_accent2(&self) -> &Color2Type {
+    pub fn set_accent1(&mut self, value: Color2Type) -> &mut Self {
+        self.accent1 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn accent2(&self) -> &Color2Type {
         &self.accent2
     }
 
     #[inline]
-    pub fn get_accent2_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent2()")]
+    pub fn get_accent2(&self) -> &Color2Type {
+        self.accent2()
+    }
+
+    #[inline]
+    pub fn accent2_mut(&mut self) -> &mut Color2Type {
         &mut self.accent2
     }
 
     #[inline]
-    pub fn set_accent3(&mut self, value: Color2Type) {
-        self.accent3 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent2_mut()")]
+    pub fn get_accent2_mut(&mut self) -> &mut Color2Type {
+        self.accent2_mut()
     }
 
     #[inline]
-    pub fn get_accent3(&self) -> &Color2Type {
+    pub fn set_accent2(&mut self, value: Color2Type) -> &mut Self {
+        self.accent2 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn accent3(&self) -> &Color2Type {
         &self.accent3
     }
 
     #[inline]
-    pub fn get_accent3_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent3()")]
+    pub fn get_accent3(&self) -> &Color2Type {
+        self.accent3()
+    }
+
+    #[inline]
+    pub fn accent3_mut(&mut self) -> &mut Color2Type {
         &mut self.accent3
     }
 
     #[inline]
-    pub fn set_accent4(&mut self, value: Color2Type) {
-        self.accent4 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent3_mut()")]
+    pub fn get_accent3_mut(&mut self) -> &mut Color2Type {
+        self.accent3_mut()
     }
 
     #[inline]
-    pub fn get_accent4(&self) -> &Color2Type {
+    pub fn set_accent3(&mut self, value: Color2Type) -> &mut Self {
+        self.accent3 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn accent4(&self) -> &Color2Type {
         &self.accent4
     }
 
     #[inline]
-    pub fn get_accent4_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent4()")]
+    pub fn get_accent4(&self) -> &Color2Type {
+        self.accent4()
+    }
+
+    #[inline]
+    pub fn accent4_mut(&mut self) -> &mut Color2Type {
         &mut self.accent4
     }
 
     #[inline]
-    pub fn set_accent5(&mut self, value: Color2Type) {
-        self.accent5 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent4_mut()")]
+    pub fn get_accent4_mut(&mut self) -> &mut Color2Type {
+        self.accent4_mut()
     }
 
     #[inline]
-    pub fn get_accent5(&self) -> &Color2Type {
+    pub fn set_accent4(&mut self, value: Color2Type) -> &mut Self {
+        self.accent4 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn accent5(&self) -> &Color2Type {
         &self.accent5
     }
 
     #[inline]
-    pub fn get_accent5_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent5()")]
+    pub fn get_accent5(&self) -> &Color2Type {
+        self.accent5()
+    }
+
+    #[inline]
+    pub fn accent5_mut(&mut self) -> &mut Color2Type {
         &mut self.accent5
     }
 
     #[inline]
-    pub fn set_accent6(&mut self, value: Color2Type) {
-        self.accent6 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent5_mut()")]
+    pub fn get_accent5_mut(&mut self) -> &mut Color2Type {
+        self.accent5_mut()
     }
 
     #[inline]
-    pub fn get_accent6(&self) -> &Color2Type {
+    pub fn set_accent5(&mut self, value: Color2Type) -> &mut Self {
+        self.accent5 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn accent6(&self) -> &Color2Type {
         &self.accent6
     }
 
     #[inline]
-    pub fn get_accent6_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use accent6()")]
+    pub fn get_accent6(&self) -> &Color2Type {
+        self.accent6()
+    }
+
+    #[inline]
+    pub fn accent6_mut(&mut self) -> &mut Color2Type {
         &mut self.accent6
     }
 
     #[inline]
-    pub fn set_dk1(&mut self, value: Color2Type) {
-        self.dk1 = value;
+    #[deprecated(since = "3.0.0", note = "Use accent6_mut()")]
+    pub fn get_accent6_mut(&mut self) -> &mut Color2Type {
+        self.accent6_mut()
     }
 
     #[inline]
-    pub fn get_dk1(&self) -> &Color2Type {
+    pub fn set_accent6(&mut self, value: Color2Type) -> &mut Self {
+        self.accent6 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn dk1(&self) -> &Color2Type {
         &self.dk1
     }
 
     #[inline]
-    pub fn get_dk1_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use dk1()")]
+    pub fn get_dk1(&self) -> &Color2Type {
+        self.dk1()
+    }
+
+    #[inline]
+    pub fn dk1_mut(&mut self) -> &mut Color2Type {
         &mut self.dk1
     }
 
     #[inline]
-    pub fn set_dk2(&mut self, value: Color2Type) {
-        self.dk2 = value;
+    #[deprecated(since = "3.0.0", note = "Use dk1_mut()")]
+    pub fn get_dk1_mut(&mut self) -> &mut Color2Type {
+        self.dk1_mut()
     }
 
     #[inline]
-    pub fn get_dk2(&self) -> &Color2Type {
+    pub fn set_dk1(&mut self, value: Color2Type) -> &mut Self {
+        self.dk1 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn dk2(&self) -> &Color2Type {
         &self.dk2
     }
 
     #[inline]
-    pub fn get_dk2_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use dk2()")]
+    pub fn get_dk2(&self) -> &Color2Type {
+        self.dk2()
+    }
+
+    #[inline]
+    pub fn dk2_mut(&mut self) -> &mut Color2Type {
         &mut self.dk2
     }
 
     #[inline]
-    pub fn set_fol_hlink(&mut self, value: Color2Type) {
-        self.fol_hlink = value;
+    #[deprecated(since = "3.0.0", note = "Use dk2_mut()")]
+    pub fn get_dk2_mut(&mut self) -> &mut Color2Type {
+        self.dk2_mut()
     }
 
     #[inline]
-    pub fn get_fol_hlink(&self) -> &Color2Type {
+    pub fn set_dk2(&mut self, value: Color2Type) -> &mut Self {
+        self.dk2 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn fol_hlink(&self) -> &Color2Type {
         &self.fol_hlink
     }
 
     #[inline]
-    pub fn get_fol_hlink_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fol_hlink()")]
+    pub fn get_fol_hlink(&self) -> &Color2Type {
+        self.fol_hlink()
+    }
+
+    #[inline]
+    pub fn fol_hlink_mut(&mut self) -> &mut Color2Type {
         &mut self.fol_hlink
     }
 
     #[inline]
-    pub fn set_hlink(&mut self, value: Color2Type) {
-        self.hlink = value;
+    #[deprecated(since = "3.0.0", note = "Use fol_hlink_mut()")]
+    pub fn get_fol_hlink_mut(&mut self) -> &mut Color2Type {
+        self.fol_hlink_mut()
     }
 
     #[inline]
-    pub fn get_hlink(&self) -> &Color2Type {
+    pub fn set_fol_hlink(&mut self, value: Color2Type) -> &mut Self {
+        self.fol_hlink = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn hlink(&self) -> &Color2Type {
         &self.hlink
     }
 
     #[inline]
-    pub fn get_hlink_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hlink()")]
+    pub fn get_hlink(&self) -> &Color2Type {
+        self.hlink()
+    }
+
+    #[inline]
+    pub fn hlink_mut(&mut self) -> &mut Color2Type {
         &mut self.hlink
     }
 
     #[inline]
-    pub fn set_lt1(&mut self, value: Color2Type) {
-        self.lt1 = value;
+    #[deprecated(since = "3.0.0", note = "Use hlink_mut()")]
+    pub fn get_hlink_mut(&mut self) -> &mut Color2Type {
+        self.hlink_mut()
     }
 
     #[inline]
-    pub fn get_lt1(&self) -> &Color2Type {
+    pub fn set_hlink(&mut self, value: Color2Type) -> &mut Self {
+        self.hlink = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn lt1(&self) -> &Color2Type {
         &self.lt1
     }
 
     #[inline]
-    pub fn get_lt1_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use lt1()")]
+    pub fn get_lt1(&self) -> &Color2Type {
+        self.lt1()
+    }
+
+    #[inline]
+    pub fn lt1_mut(&mut self) -> &mut Color2Type {
         &mut self.lt1
     }
 
     #[inline]
-    pub fn set_lt2(&mut self, value: Color2Type) {
-        self.lt2 = value;
+    #[deprecated(since = "3.0.0", note = "Use lt1_mut()")]
+    pub fn get_lt1_mut(&mut self) -> &mut Color2Type {
+        self.lt1_mut()
     }
 
     #[inline]
-    pub fn get_lt2(&self) -> &Color2Type {
+    pub fn set_lt1(&mut self, value: Color2Type) -> &mut Self {
+        self.lt1 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn lt2(&self) -> &Color2Type {
         &self.lt2
     }
 
     #[inline]
-    pub fn get_lt2_mut(&mut self) -> &mut Color2Type {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use lt2()")]
+    pub fn get_lt2(&self) -> &Color2Type {
+        self.lt2()
+    }
+
+    #[inline]
+    pub fn lt2_mut(&mut self) -> &mut Color2Type {
         &mut self.lt2
     }
 
     #[inline]
-    pub fn get_color_map(&self) -> Vec<String> {
+    #[deprecated(since = "3.0.0", note = "Use lt2_mut()")]
+    pub fn get_lt2_mut(&mut self) -> &mut Color2Type {
+        self.lt2_mut()
+    }
+
+    #[inline]
+    pub fn set_lt2(&mut self, value: Color2Type) -> &mut Self {
+        self.lt2 = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn color_map(&self) -> Vec<String> {
         vec![
-            self.lt1.get_val(),
-            self.dk1.get_val(),
-            self.lt2.get_val(),
-            self.dk2.get_val(),
-            self.accent1.get_val(),
-            self.accent2.get_val(),
-            self.accent3.get_val(),
-            self.accent4.get_val(),
-            self.accent5.get_val(),
-            self.accent6.get_val(),
-            self.hlink.get_val(),
-            self.fol_hlink.get_val(),
+            self.lt1.val(),
+            self.dk1.val(),
+            self.lt2.val(),
+            self.dk2.val(),
+            self.accent1.val(),
+            self.accent2.val(),
+            self.accent3.val(),
+            self.accent4.val(),
+            self.accent5.val(),
+            self.accent6.val(),
+            self.hlink.val(),
+            self.fol_hlink.val(),
         ]
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_map()")]
+    pub fn get_color_map(&self) -> Vec<String> {
+        self.color_map()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -296,9 +510,9 @@ impl ColorScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:clrScheme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.value_str()).into());
         }
         write_start_tag(writer, "a:clrScheme", attributes, false);
 

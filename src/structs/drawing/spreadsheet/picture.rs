@@ -1,31 +1,59 @@
 // xdr:pic
-use super::BlipFill;
-use super::NonVisualPictureProperties;
-use super::ShapeProperties;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BlipFill,
+    NonVisualPictureProperties,
+    ShapeProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Picture {
     non_visual_picture_properties: NonVisualPictureProperties,
-    blip_fill: BlipFill,
-    shape_properties: ShapeProperties,
+    blip_fill:                     BlipFill,
+    shape_properties:              ShapeProperties,
 }
 
 impl Picture {
     #[inline]
-    pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
+    #[must_use]
+    pub fn non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
         &self.non_visual_picture_properties
     }
 
     #[inline]
-    pub fn get_non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_picture_properties()")]
+    pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
+        self.non_visual_picture_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
         &mut self.non_visual_picture_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_picture_properties_mut()")]
+    pub fn get_non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
+        self.non_visual_picture_properties_mut()
     }
 
     #[inline]
@@ -34,13 +62,27 @@ impl Picture {
     }
 
     #[inline]
-    pub fn get_blip_fill(&self) -> &BlipFill {
+    #[must_use]
+    pub fn blip_fill(&self) -> &BlipFill {
         &self.blip_fill
     }
 
     #[inline]
-    pub fn get_blip_fill_mut(&mut self) -> &mut BlipFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill()")]
+    pub fn get_blip_fill(&self) -> &BlipFill {
+        self.blip_fill()
+    }
+
+    #[inline]
+    pub fn blip_fill_mut(&mut self) -> &mut BlipFill {
         &mut self.blip_fill
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill_mut()")]
+    pub fn get_blip_fill_mut(&mut self) -> &mut BlipFill {
+        self.blip_fill_mut()
     }
 
     #[inline]
@@ -49,13 +91,27 @@ impl Picture {
     }
 
     #[inline]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    #[must_use]
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]

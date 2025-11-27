@@ -1,31 +1,57 @@
 // c:title
-use super::ChartText;
-use super::Layout;
-use super::Overlay;
-use super::ShapeProperties;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ChartText,
+    Layout,
+    Overlay,
+};
+use crate::{
+    Workbook,
+    drawing::charts::ShapeProperties,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Title {
-    chart_text: Option<ChartText>,
-    layout: Option<Layout>,
-    overlay: Overlay,
+    chart_text:       Option<ChartText>,
+    layout:           Option<Layout>,
+    overlay:          Overlay,
     shape_properties: Option<ShapeProperties>,
 }
 
 impl Title {
-    pub fn get_chart_text(&self) -> Option<&ChartText> {
+    #[must_use]
+    pub fn chart_text(&self) -> Option<&ChartText> {
         self.chart_text.as_ref()
     }
 
-    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_text()")]
+    pub fn get_chart_text(&self) -> Option<&ChartText> {
+        self.chart_text()
+    }
+
+    pub fn chart_text_mut(&mut self) -> Option<&mut ChartText> {
         self.chart_text.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use chart_text_mut()")]
+    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+        self.chart_text_mut()
     }
 
     pub fn set_chart_text(&mut self, value: ChartText) -> &mut Title {
@@ -33,12 +59,24 @@ impl Title {
         self
     }
 
-    pub fn get_layout(&self) -> Option<&Layout> {
+    #[must_use]
+    pub fn layout(&self) -> Option<&Layout> {
         self.layout.as_ref()
     }
 
-    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use layout()")]
+    pub fn get_layout(&self) -> Option<&Layout> {
+        self.layout()
+    }
+
+    pub fn layout_mut(&mut self) -> Option<&mut Layout> {
         self.layout.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use layout_mut()")]
+    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+        self.layout_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Title {
@@ -46,12 +84,24 @@ impl Title {
         self
     }
 
-    pub fn get_overlay(&self) -> &Overlay {
+    #[must_use]
+    pub fn overlay(&self) -> &Overlay {
         &self.overlay
     }
 
-    pub fn get_overlay_mut(&mut self) -> &mut Overlay {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use overlay()")]
+    pub fn get_overlay(&self) -> &Overlay {
+        self.overlay()
+    }
+
+    pub fn overlay_mut(&mut self) -> &mut Overlay {
         &mut self.overlay
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use overlay_mut()")]
+    pub fn get_overlay_mut(&mut self) -> &mut Overlay {
+        self.overlay_mut()
     }
 
     pub fn set_overlay(&mut self, value: Overlay) -> &mut Title {
@@ -59,12 +109,24 @@ impl Title {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -117,13 +179,13 @@ impl Title {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:title
         write_start_tag(writer, "c:title", vec![], false);
 
         // c:tx
         if let Some(v) = &self.chart_text {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:layout

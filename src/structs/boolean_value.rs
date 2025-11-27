@@ -5,16 +5,25 @@ pub struct BooleanValue {
 
 impl BooleanValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> &bool {
-        self.value.as_ref().unwrap_or(&false)
+    pub(crate) fn value(&self) -> bool {
+        self.value.unwrap_or(false)
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> bool {
+        self.value()
+    }
+
+    #[inline]
+    pub(crate) fn value_string(&self) -> &str {
+        if self.value() { "1" } else { "0" }
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> &str {
-        match *self.get_value() {
-            true => "1",
-            false => "0",
-        }
+        self.value_string()
     }
 
     #[inline]
@@ -34,10 +43,16 @@ impl BooleanValue {
     }
 
     #[inline]
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn hash_string(&self) -> &str {
         if self.has_value() {
-            return self.get_value_string();
+            return self.value_string();
         }
         "empty!!"
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> &str {
+        self.hash_string()
     }
 }

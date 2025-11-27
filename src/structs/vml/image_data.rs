@@ -1,12 +1,23 @@
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::MediaObject;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        MediaObject,
+        StringValue,
+        raw::RawRelationships,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
@@ -16,13 +27,27 @@ pub struct ImageData {
 
 impl ImageData {
     #[inline]
-    pub fn get_image(&self) -> Option<&MediaObject> {
+    #[must_use]
+    pub fn image(&self) -> Option<&MediaObject> {
         self.image.as_ref()
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self) -> Option<&MediaObject> {
+        self.image()
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self) -> Option<&mut MediaObject> {
         self.image.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
+        self.image_mut()
     }
 
     #[inline]
@@ -31,8 +56,15 @@ impl ImageData {
         self
     }
 
+    #[must_use]
+    pub fn title(&self) -> &str {
+        self.title.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
     pub fn get_title(&self) -> &str {
-        self.title.get_value_str()
+        self.title()
     }
 
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -48,10 +80,10 @@ impl ImageData {
     ) {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
-                let relationship = rel.get_relationship_by_rid(&relid);
+                let relationship = rel.relationship_by_rid(&relid);
                 let mut obj = MediaObject::default();
-                obj.set_image_name(relationship.get_raw_file().get_file_name());
-                obj.set_image_data(relationship.get_raw_file().get_file_data());
+                obj.set_image_name(relationship.raw_file().file_name());
+                obj.set_image_data(relationship.raw_file().file_data());
                 self.set_image(obj);
             }
         }
@@ -65,14 +97,13 @@ impl ImageData {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // v:imagedata
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let mut r_id_str = String::from("");
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if let Some(image) = &self.image {
-            r_id_str = format!("rId{}", image.get_rid(rel_list));
-            attributes.push(("o:relid", &r_id_str));
+            let r_id_str = format!("rId{}", image.rid(rel_list));
+            attributes.push(("o:relid", r_id_str).into());
         }
         if self.title.has_value() {
-            attributes.push(("o:title", self.title.get_value_str()));
+            attributes.push(("o:title", self.title.value_str()).into());
         }
 
         write_start_tag(writer, "v:imagedata", attributes, true);

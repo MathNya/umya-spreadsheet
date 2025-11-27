@@ -1,30 +1,58 @@
 // a:solidFill
-use super::rgb_color_model_hex::RgbColorModelHex;
-use super::scheme_color::SchemeColor;
-use super::SystemColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    rgb_color_model_hex::RgbColorModelHex,
+    scheme_color::SchemeColor,
+};
+use crate::{
+    drawing::SystemColor,
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SolidFill {
-    scheme_color: Option<Box<SchemeColor>>,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
-    system_color: Option<Box<SystemColor>>,
+    system_color:        Option<Box<SystemColor>>,
 }
 
 impl SolidFill {
     #[inline]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    #[must_use]
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color_mut()
     }
 
     #[inline]
@@ -33,13 +61,27 @@ impl SolidFill {
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    #[must_use]
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
     }
 
     #[inline]
@@ -48,13 +90,27 @@ impl SolidFill {
     }
 
     #[inline]
-    pub fn get_system_color(&self) -> Option<&SystemColor> {
+    #[must_use]
+    pub fn system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
 
     #[inline]
-    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use system_color()")]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color()
+    }
+
+    #[inline]
+    pub fn system_color_mut(&mut self) -> Option<&mut SystemColor> {
         self.system_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use system_color_mut()")]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color_mut()
     }
 
     #[inline]

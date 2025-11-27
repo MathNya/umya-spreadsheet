@@ -1,20 +1,32 @@
-use std::fmt;
-use std::fs::File;
-use std::io;
-use std::path::Path;
-use std::string::FromUtf8Error;
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::{
+    fs::File,
+    io,
+    path::Path,
+    sync::RwLock,
+};
 
 use super::driver;
-use crate::helper::const_str::*;
-use crate::structs::drawing::Theme;
-use crate::structs::raw::RawWorksheet;
-use crate::structs::SharedStringTable;
-use crate::structs::Spreadsheet;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::XlsxError;
+use crate::{
+    XlsxError,
+    helper::const_str::{
+        COMMENTS_NS,
+        DRAWINGS_NS,
+        PIVOT_CACHE_DEF_NS,
+        PIVOT_TABLE_NS,
+        TABLE_NS,
+        THEME_NS,
+        THREADED_COMMENT_NS,
+        VML_DRAWING_NS,
+    },
+    structs::{
+        SharedStringTable,
+        Stylesheet,
+        Workbook,
+        Worksheet,
+        drawing::Theme,
+        raw::RawWorksheet,
+    },
+};
 
 pub(crate) mod chart;
 pub(crate) mod comment;
@@ -42,11 +54,11 @@ pub(crate) mod worksheet;
 /// # Arguments
 /// * `reader` - reader to read from.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is `Workbook`. Err is error message.
 pub fn read_reader<R: io::Read + io::Seek>(
     reader: R,
     with_sheet_read: bool,
-) -> Result<Spreadsheet, XlsxError> {
+) -> Result<Workbook, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
     let mut book = workbook::read(&mut arv)?;
@@ -58,7 +70,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     content_types::read(&mut arv, &mut book)?;
     let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;
 
-    book.set_theme(Theme::get_default_value());
+    book.set_theme(Theme::default_value());
     for (_, type_value, rel_target) in &workbook_rel {
         if type_value == THEME_NS {
             let theme = theme::read(&mut arv, rel_target)?;
@@ -69,9 +81,9 @@ pub fn read_reader<R: io::Read + io::Seek>(
     shared_strings::read(&mut arv, &mut book)?;
     styles::read(&mut arv, &mut book)?;
 
-    for sheet in book.get_sheet_collection_mut() {
+    for sheet in book.sheet_collection_mut() {
         for (rel_id, _, rel_target) in &workbook_rel {
-            if sheet.get_r_id() != rel_id {
+            if sheet.r_id() != rel_id {
                 continue;
             }
             let mut raw_worksheet = RawWorksheet::default();
@@ -84,19 +96,6 @@ pub fn read_reader<R: io::Read + io::Seek>(
         book.read_sheet_collection();
     }
 
-    // Read pivot cache definitions
-    for (_, type_value, rel_target) in &workbook_rel {
-        if type_value == PIVOT_CACHE_DEF_NS {
-            // Extract cache_id from rel_target (e.g., "pivotCache/pivotCacheDefinition1.xml" -> "1")
-            let cache_id = rel_target
-                .trim_start_matches("pivotCache/pivotCacheDefinition")
-                .trim_end_matches(".xml");
-
-            // Read the pivot cache file
-            pivot_cache::read(&mut arv, &mut book, rel_target, cache_id).ok();
-        }
-    }
-
     Ok(book)
 }
 
@@ -104,32 +103,32 @@ pub fn read_reader<R: io::Read + io::Seek>(
 /// # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
 #[inline]
-pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
+pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, true)
 }
 
 /// lazy read spreadsheet file.
 /// Delays the loading of the worksheet until it is needed.
-/// When loading a file with a large amount of data, response improvement can be expected.
-/// # Arguments
+/// When loading a file with a large amount of data, response improvement can be
+/// expected. # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 /// ```
 #[inline]
-pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, false)
 }
@@ -143,7 +142,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         return;
     }
 
-    let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
+    let raw_data_of_worksheet = worksheet.raw_data_of_worksheet().clone();
     let shared_string_table = &*shared_string_table.read().unwrap();
     worksheet::read(
         worksheet,
@@ -153,46 +152,48 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
     )
     .unwrap();
 
-    if let Some(v) = raw_data_of_worksheet.get_worksheet_relationships() {
-        for relationship in v.get_relationship_list() {
+    if let Some(v) = raw_data_of_worksheet.worksheet_relationships() {
+        for relationship in v.relationship_list() {
             match relationship.get_type() {
                 // drawing, chart
                 DRAWINGS_NS => {
                     drawing::read(
                         worksheet,
-                        relationship.get_raw_file(),
-                        raw_data_of_worksheet.get_drawing_relationships(),
-                    )
-                    .unwrap();
+                        relationship.raw_file(),
+                        raw_data_of_worksheet.drawing_relationships(),
+                    );
                 }
                 // comment
                 COMMENTS_NS => {
-                    comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                    comment::read(worksheet, relationship.raw_file());
                 }
                 // threaded_comment
                 THREADED_COMMENT_NS => {
-                    threaded_comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                    threaded_comment::read(worksheet, relationship.raw_file());
                 }
                 // table
                 TABLE_NS => {
-                    table::read(worksheet, relationship.get_raw_file()).unwrap();
+                    table::read(worksheet, relationship.raw_file()).unwrap();
                 }
                 // pivot table
                 PIVOT_TABLE_NS => {
-                    pivot_table::read(worksheet, relationship.get_raw_file()).unwrap();
+                    pivot_table::read(worksheet, relationship.raw_file());
+                }
+                // pivot cache
+                PIVOT_CACHE_DEF_NS => {
+                    pivot_cache::read(worksheet, relationship.raw_file());
                 }
                 _ => {}
             }
         }
-        for relationship in v.get_relationship_list() {
+        for relationship in v.relationship_list() {
             // vmlDrawing
             if relationship.get_type() == VML_DRAWING_NS {
                 vml_drawing::read(
                     worksheet,
-                    relationship.get_raw_file(),
-                    raw_data_of_worksheet.get_vml_drawing_relationships(),
-                )
-                .unwrap();
+                    relationship.raw_file(),
+                    raw_data_of_worksheet.vml_drawing_relationships(),
+                );
             }
         }
     }

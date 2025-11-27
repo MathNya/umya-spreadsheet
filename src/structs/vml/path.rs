@@ -1,19 +1,35 @@
-use super::office::ConnectValues;
-use crate::reader::driver::*;
-use crate::structs::EnumValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::office::ConnectValues;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::EnumValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Path {
     connection_point_type: EnumValue<ConnectValues>,
 }
 impl Path {
+    #[must_use]
+    pub fn connection_point_type(&self) -> &ConnectValues {
+        self.connection_point_type.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_point_type()")]
     pub fn get_connection_point_type(&self) -> &ConnectValues {
-        self.connection_point_type.get_value()
+        self.connection_point_type()
     }
 
     pub fn set_connection_point_type(&mut self, value: ConnectValues) -> &mut Self {
@@ -31,12 +47,9 @@ impl Path {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:path
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.connection_point_type.has_value() {
-            attributes.push((
-                "o:connecttype",
-                self.connection_point_type.get_value_string(),
-            ));
+            attributes.push(("o:connecttype", self.connection_point_type.value_string()).into());
         }
         write_start_tag(writer, "v:path", attributes, true);
     }

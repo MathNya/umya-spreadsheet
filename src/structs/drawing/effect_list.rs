@@ -1,30 +1,58 @@
 // a:effectLst
-use super::Glow;
-use super::OuterShadow;
-use super::SoftEdge;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Glow,
+    OuterShadow,
+    SoftEdge,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectList {
-    glow: Option<Box<Glow>>,
+    glow:         Option<Box<Glow>>,
     outer_shadow: Option<Box<OuterShadow>>,
-    soft_edge: Option<Box<SoftEdge>>,
+    soft_edge:    Option<Box<SoftEdge>>,
 }
 
 impl EffectList {
     #[inline]
-    pub fn get_glow(&self) -> Option<&Glow> {
+    #[must_use]
+    pub fn glow(&self) -> Option<&Glow> {
         self.glow.as_deref()
     }
 
     #[inline]
-    pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use glow()")]
+    pub fn get_glow(&self) -> Option<&Glow> {
+        self.glow()
+    }
+
+    #[inline]
+    pub fn glow_mut(&mut self) -> Option<&mut Glow> {
         self.glow.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use glow_mut()")]
+    pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
+        self.glow_mut()
     }
 
     #[inline]
@@ -33,13 +61,27 @@ impl EffectList {
     }
 
     #[inline]
-    pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
+    #[must_use]
+    pub fn outer_shadow(&self) -> Option<&OuterShadow> {
         self.outer_shadow.as_deref()
     }
 
     #[inline]
-    pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outer_shadow()")]
+    pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
+        self.outer_shadow()
+    }
+
+    #[inline]
+    pub fn outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
         self.outer_shadow.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outer_shadow_mut()")]
+    pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
+        self.outer_shadow_mut()
     }
 
     #[inline]
@@ -48,13 +90,27 @@ impl EffectList {
     }
 
     #[inline]
-    pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
+    #[must_use]
+    pub fn soft_edge(&self) -> Option<&SoftEdge> {
         self.soft_edge.as_deref()
     }
 
     #[inline]
-    pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use soft_edge()")]
+    pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
+        self.soft_edge()
+    }
+
+    #[inline]
+    pub fn soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
         self.soft_edge.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use soft_edge_mut()")]
+    pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
+        self.soft_edge_mut()
     }
 
     #[inline]

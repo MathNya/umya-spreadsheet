@@ -1,20 +1,35 @@
 // c:shape
-use super::super::super::EnumValue;
-use super::ShapeValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    super::super::EnumValue,
+    ShapeValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
     val: EnumValue<ShapeValues>,
 }
 impl Shape {
+    #[must_use]
+    pub fn val(&self) -> &ShapeValues {
+        self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
     pub fn get_val(&self) -> &ShapeValues {
-        self.val.get_value()
+        self.val()
     }
 
     pub fn set_val(&mut self, value: ShapeValues) -> &mut Shape {
@@ -35,7 +50,7 @@ impl Shape {
         write_start_tag(
             writer,
             "c:shape",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

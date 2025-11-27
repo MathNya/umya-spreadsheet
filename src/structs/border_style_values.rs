@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum BorderStyleValues {
     DashDot,
@@ -25,7 +26,7 @@ impl Default for BorderStyleValues {
 }
 impl EnumTrait for BorderStyleValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::DashDot => "dashDot",
             Self::DashDotDot => "dashDotDot",

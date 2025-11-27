@@ -1,21 +1,33 @@
 // a:fillRect
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct FillRectangle {
     bottom: usize,
-    left: usize,
-    right: usize,
-    top: usize,
+    left:   usize,
+    right:  usize,
+    top:    usize,
 }
 impl FillRectangle {
     #[inline]
-    pub fn get_bottom(&self) -> &usize {
-        &self.bottom
+    #[must_use]
+    pub fn bottom(&self) -> usize {
+        self.bottom
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> usize {
+        self.bottom()
     }
 
     #[inline]
@@ -24,8 +36,16 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_left(&self) -> &usize {
-        &self.left
+    #[must_use]
+    pub fn left(&self) -> usize {
+        self.left
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left()")]
+    pub fn get_left(&self) -> usize {
+        self.left()
     }
 
     #[inline]
@@ -34,8 +54,16 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_right(&self) -> &usize {
-        &self.right
+    #[must_use]
+    pub fn right(&self) -> usize {
+        self.right
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right()")]
+    pub fn get_right(&self) -> usize {
+        self.right()
     }
 
     #[inline]
@@ -44,8 +72,16 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_top(&self) -> &usize {
-        &self.top
+    #[must_use]
+    pub fn top(&self) -> usize {
+        self.top
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top()")]
+    pub fn get_top(&self) -> usize {
+        self.top()
     }
 
     #[inline]
@@ -54,15 +90,10 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        _reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
-    }
+    pub(crate) fn set_attributes<R: std::io::BufRead>(_reader: &mut Reader<R>, _e: &BytesStart) {}
 
     #[inline]
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fillRect
         write_start_tag(writer, "a:fillRect", vec![], true);
     }

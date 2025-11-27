@@ -1,20 +1,17 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum LegendPositionValues {
+    #[default]
     Bottom,
     Left,
     Right,
     Top,
     TopRight,
 }
-impl Default for LegendPositionValues {
-    fn default() -> Self {
-        Self::Bottom
-    }
-}
 impl EnumTrait for LegendPositionValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bottom => "b",
             Self::Left => "l",
@@ -26,6 +23,7 @@ impl EnumTrait for LegendPositionValues {
 }
 impl FromStr for LegendPositionValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "b" => Ok(Self::Bottom),

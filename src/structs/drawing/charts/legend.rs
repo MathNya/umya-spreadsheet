@@ -1,32 +1,57 @@
-use crate::xml_read_loop;
-
-use super::Layout;
-use super::LegendPosition;
-use super::Overlay;
-use super::ShapeProperties;
-use super::TextProperties;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Layout,
+    LegendPosition,
+    Overlay,
+    ShapeProperties,
+    TextProperties,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
-    legend_position: LegendPosition,
-    layout: Option<Box<Layout>>,
-    overlay: Overlay,
+    legend_position:  LegendPosition,
+    layout:           Option<Box<Layout>>,
+    overlay:          Overlay,
     shape_properties: Option<Box<ShapeProperties>>,
-    text_properties: Option<Box<TextProperties>>,
+    text_properties:  Option<Box<TextProperties>>,
 }
 
 impl Legend {
-    pub fn get_legend_position(&self) -> &LegendPosition {
+    #[must_use]
+    pub fn legend_position(&self) -> &LegendPosition {
         &self.legend_position
     }
 
-    pub fn get_legend_position_mut(&mut self) -> &mut LegendPosition {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use legend_position()")]
+    pub fn get_legend_position(&self) -> &LegendPosition {
+        self.legend_position()
+    }
+
+    pub fn legend_position_mut(&mut self) -> &mut LegendPosition {
         &mut self.legend_position
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use legend_position_mut()")]
+    pub fn get_legend_position_mut(&mut self) -> &mut LegendPosition {
+        self.legend_position_mut()
     }
 
     pub fn set_legend_position(&mut self, value: LegendPosition) -> &mut Self {
@@ -34,12 +59,24 @@ impl Legend {
         self
     }
 
-    pub fn get_layout(&self) -> Option<&Layout> {
+    #[must_use]
+    pub fn layout(&self) -> Option<&Layout> {
         self.layout.as_deref()
     }
 
-    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use layout()")]
+    pub fn get_layout(&self) -> Option<&Layout> {
+        self.layout()
+    }
+
+    pub fn layout_mut(&mut self) -> Option<&mut Layout> {
         self.layout.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use layout_mut()")]
+    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+        self.layout_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Self {
@@ -47,12 +84,24 @@ impl Legend {
         self
     }
 
-    pub fn get_overlay(&self) -> &Overlay {
+    #[must_use]
+    pub fn overlay(&self) -> &Overlay {
         &self.overlay
     }
 
-    pub fn get_overlay_mut(&mut self) -> &mut Overlay {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use overlay()")]
+    pub fn get_overlay(&self) -> &Overlay {
+        self.overlay()
+    }
+
+    pub fn overlay_mut(&mut self) -> &mut Overlay {
         &mut self.overlay
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use overlay_mut()")]
+    pub fn get_overlay_mut(&mut self) -> &mut Overlay {
+        self.overlay_mut()
     }
 
     pub fn set_overlay(&mut self, value: Overlay) -> &mut Self {
@@ -60,12 +109,24 @@ impl Legend {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -73,12 +134,24 @@ impl Legend {
         self
     }
 
-    pub fn get_text_properties(&self) -> Option<&TextProperties> {
+    #[must_use]
+    pub fn text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_deref()
     }
 
-    pub fn get_text_properties_mut(&mut self) -> Option<&mut TextProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_properties()")]
+    pub fn get_text_properties(&self) -> Option<&TextProperties> {
+        self.text_properties()
+    }
+
+    pub fn text_properties_mut(&mut self) -> Option<&mut TextProperties> {
         self.text_properties.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use text_properties_mut()")]
+    pub fn get_text_properties_mut(&mut self) -> Option<&mut TextProperties> {
+        self.text_properties_mut()
     }
 
     pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {

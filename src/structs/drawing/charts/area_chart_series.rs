@@ -1,54 +1,80 @@
 // c:ser
-use super::Bubble3D;
-use super::BubbleSize;
-use super::DataLabels;
-use super::Explosion;
-use super::Formula;
-use super::Index;
-use super::InvertIfNegative;
-use super::Marker;
-use super::Order;
-use super::ShapeProperties;
-use super::Smooth;
-use super::Values;
-use super::XValues;
-use super::YValues;
-use crate::drawing::charts::CategoryAxisData;
-use crate::drawing::charts::ChartText;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Bubble3D,
+    BubbleSize,
+    CategoryAxisData,
+    DataLabels,
+    Explosion,
+    Formula,
+    Index,
+    InvertIfNegative,
+    Marker,
+    Order,
+    ShapeProperties,
+    Smooth,
+    Values,
+    XValues,
+    YValues,
+};
+use crate::{
+    drawing::charts::ChartText,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct AreaChartSeries {
-    index: Index,
-    order: Order,
-    chart_text: Option<ChartText>,
-    explosion: Option<Explosion>,
+    index:              Index,
+    order:              Order,
+    chart_text:         Option<ChartText>,
+    explosion:          Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
-    marker: Option<Marker>,
-    shape_properties: Option<ShapeProperties>,
+    marker:             Option<Marker>,
+    shape_properties:   Option<ShapeProperties>,
     category_axis_data: Option<CategoryAxisData>,
-    values: Option<Values>,
-    x_values: Option<XValues>,
-    y_values: Option<YValues>,
-    bubble_size: Option<BubbleSize>,
-    bubble_3d: Option<Bubble3D>,
-    smooth: Option<Smooth>,
-    data_labels: Option<DataLabels>,
+    values:             Option<Values>,
+    x_values:           Option<XValues>,
+    y_values:           Option<YValues>,
+    bubble_size:        Option<BubbleSize>,
+    bubble_3d:          Option<Bubble3D>,
+    smooth:             Option<Smooth>,
+    data_labels:        Option<DataLabels>,
 }
 
 impl AreaChartSeries {
-    pub fn get_index(&self) -> &Index {
+    #[must_use]
+    pub fn index(&self) -> &Index {
         &self.index
     }
 
-    pub fn get_index_mut(&mut self) -> &mut Index {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use index()")]
+    pub fn get_index(&self) -> &Index {
+        self.index()
+    }
+
+    pub fn index_mut(&mut self) -> &mut Index {
         &mut self.index
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use index_mut()")]
+    pub fn get_index_mut(&mut self) -> &mut Index {
+        self.index_mut()
     }
 
     pub fn set_index(&mut self, value: Index) -> &mut Self {
@@ -56,12 +82,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_order(&self) -> &Order {
+    #[must_use]
+    pub fn order(&self) -> &Order {
         &self.order
     }
 
-    pub fn get_order_mut(&mut self) -> &mut Order {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use order()")]
+    pub fn get_order(&self) -> &Order {
+        self.order()
+    }
+
+    pub fn order_mut(&mut self) -> &mut Order {
         &mut self.order
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use order_mut()")]
+    pub fn get_order_mut(&mut self) -> &mut Order {
+        self.order_mut()
     }
 
     pub fn set_order(&mut self, value: Order) -> &mut Self {
@@ -69,12 +107,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_chart_text(&self) -> Option<&ChartText> {
+    #[must_use]
+    pub fn chart_text(&self) -> Option<&ChartText> {
         self.chart_text.as_ref()
     }
 
-    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_text()")]
+    pub fn get_chart_text(&self) -> Option<&ChartText> {
+        self.chart_text()
+    }
+
+    pub fn chart_text_mut(&mut self) -> Option<&mut ChartText> {
         self.chart_text.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use chart_text_mut()")]
+    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+        self.chart_text_mut()
     }
 
     pub fn set_chart_text(&mut self, value: ChartText) -> &mut Self {
@@ -82,12 +132,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_explosion(&self) -> Option<&Explosion> {
+    #[must_use]
+    pub fn explosion(&self) -> Option<&Explosion> {
         self.explosion.as_ref()
     }
 
-    pub fn get_explosion_mut(&mut self) -> Option<&mut Explosion> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use explosion()")]
+    pub fn get_explosion(&self) -> Option<&Explosion> {
+        self.explosion()
+    }
+
+    pub fn explosion_mut(&mut self) -> Option<&mut Explosion> {
         self.explosion.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use explosion_mut()")]
+    pub fn get_explosion_mut(&mut self) -> Option<&mut Explosion> {
+        self.explosion_mut()
     }
 
     pub fn set_explosion(&mut self, value: Explosion) -> &mut Self {
@@ -95,12 +157,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_invert_if_negative(&self) -> Option<&InvertIfNegative> {
+    #[must_use]
+    pub fn invert_if_negative(&self) -> Option<&InvertIfNegative> {
         self.invert_if_negative.as_ref()
     }
 
-    pub fn get_invert_if_negative_mut(&mut self) -> Option<&mut InvertIfNegative> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use invert_if_negative()")]
+    pub fn get_invert_if_negative(&self) -> Option<&InvertIfNegative> {
+        self.invert_if_negative()
+    }
+
+    pub fn invert_if_negative_mut(&mut self) -> Option<&mut InvertIfNegative> {
         self.invert_if_negative.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use invert_if_negative_mut()")]
+    pub fn get_invert_if_negative_mut(&mut self) -> Option<&mut InvertIfNegative> {
+        self.invert_if_negative_mut()
     }
 
     pub fn set_invert_if_negative(&mut self, value: InvertIfNegative) -> &mut Self {
@@ -108,12 +182,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_marker(&self) -> Option<&Marker> {
+    #[must_use]
+    pub fn marker(&self) -> Option<&Marker> {
         self.marker.as_ref()
     }
 
-    pub fn get_marker_mut(&mut self) -> Option<&mut Marker> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use marker()")]
+    pub fn get_marker(&self) -> Option<&Marker> {
+        self.marker()
+    }
+
+    pub fn marker_mut(&mut self) -> Option<&mut Marker> {
         self.marker.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use marker_mut()")]
+    pub fn get_marker_mut(&mut self) -> Option<&mut Marker> {
+        self.marker_mut()
     }
 
     pub fn set_marker(&mut self, value: Marker) -> &mut Self {
@@ -121,12 +207,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -134,12 +232,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_category_axis_data(&self) -> Option<&CategoryAxisData> {
+    #[must_use]
+    pub fn category_axis_data(&self) -> Option<&CategoryAxisData> {
         self.category_axis_data.as_ref()
     }
 
-    pub fn get_category_axis_data_mut(&mut self) -> Option<&mut CategoryAxisData> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use category_axis_data()")]
+    pub fn get_category_axis_data(&self) -> Option<&CategoryAxisData> {
+        self.category_axis_data()
+    }
+
+    pub fn category_axis_data_mut(&mut self) -> Option<&mut CategoryAxisData> {
         self.category_axis_data.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use category_axis_data_mut()")]
+    pub fn get_category_axis_data_mut(&mut self) -> Option<&mut CategoryAxisData> {
+        self.category_axis_data_mut()
     }
 
     pub fn set_category_axis_data(&mut self, value: CategoryAxisData) -> &mut Self {
@@ -147,12 +257,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_values(&self) -> Option<&Values> {
+    #[must_use]
+    pub fn values(&self) -> Option<&Values> {
         self.values.as_ref()
     }
 
-    pub fn get_values_mut(&mut self) -> Option<&mut Values> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use values()")]
+    pub fn get_values(&self) -> Option<&Values> {
+        self.values()
+    }
+
+    pub fn values_mut(&mut self) -> Option<&mut Values> {
         self.values.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use values_mut()")]
+    pub fn get_values_mut(&mut self) -> Option<&mut Values> {
+        self.values_mut()
     }
 
     pub fn set_values(&mut self, value: Values) -> &mut Self {
@@ -160,12 +282,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_x_values(&self) -> Option<&XValues> {
+    #[must_use]
+    pub fn x_values(&self) -> Option<&XValues> {
         self.x_values.as_ref()
     }
 
-    pub fn get_x_values_mut(&mut self) -> Option<&mut XValues> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use x_values()")]
+    pub fn get_x_values(&self) -> Option<&XValues> {
+        self.x_values()
+    }
+
+    pub fn x_values_mut(&mut self) -> Option<&mut XValues> {
         self.x_values.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use x_values_mut()")]
+    pub fn get_x_values_mut(&mut self) -> Option<&mut XValues> {
+        self.x_values_mut()
     }
 
     pub fn set_x_values(&mut self, value: XValues) -> &mut Self {
@@ -173,12 +307,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_y_values(&self) -> Option<&YValues> {
+    #[must_use]
+    pub fn y_values(&self) -> Option<&YValues> {
         self.y_values.as_ref()
     }
 
-    pub fn get_y_values_mut(&mut self) -> Option<&mut YValues> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use y_values()")]
+    pub fn get_y_values(&self) -> Option<&YValues> {
+        self.y_values()
+    }
+
+    pub fn y_values_mut(&mut self) -> Option<&mut YValues> {
         self.y_values.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use y_values_mut()")]
+    pub fn get_y_values_mut(&mut self) -> Option<&mut YValues> {
+        self.y_values_mut()
     }
 
     pub fn set_y_values(&mut self, value: YValues) -> &mut Self {
@@ -186,12 +332,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_bubble_size(&self) -> Option<&BubbleSize> {
+    #[must_use]
+    pub fn bubble_size(&self) -> Option<&BubbleSize> {
         self.bubble_size.as_ref()
     }
 
-    pub fn get_bubble_size_mut(&mut self) -> Option<&mut BubbleSize> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bubble_size()")]
+    pub fn get_bubble_size(&self) -> Option<&BubbleSize> {
+        self.bubble_size()
+    }
+
+    pub fn bubble_size_mut(&mut self) -> Option<&mut BubbleSize> {
         self.bubble_size.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bubble_size_mut()")]
+    pub fn get_bubble_size_mut(&mut self) -> Option<&mut BubbleSize> {
+        self.bubble_size_mut()
     }
 
     pub fn set_bubble_size(&mut self, value: BubbleSize) -> &mut Self {
@@ -199,12 +357,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_bubble_3d(&self) -> Option<&Bubble3D> {
+    #[must_use]
+    pub fn bubble_3d(&self) -> Option<&Bubble3D> {
         self.bubble_3d.as_ref()
     }
 
-    pub fn get_bubble_3d_mut(&mut self) -> Option<&mut Bubble3D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bubble_3d()")]
+    pub fn get_bubble_3d(&self) -> Option<&Bubble3D> {
+        self.bubble_3d()
+    }
+
+    pub fn bubble_3d_mut(&mut self) -> Option<&mut Bubble3D> {
         self.bubble_3d.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bubble_3d_mut()")]
+    pub fn get_bubble_3d_mut(&mut self) -> Option<&mut Bubble3D> {
+        self.bubble_3d_mut()
     }
 
     pub fn set_bubble_3d(&mut self, value: Bubble3D) -> &mut Self {
@@ -212,12 +382,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_smooth(&self) -> Option<&Smooth> {
+    #[must_use]
+    pub fn smooth(&self) -> Option<&Smooth> {
         self.smooth.as_ref()
     }
 
-    pub fn get_smooth_mut(&mut self) -> Option<&mut Smooth> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use smooth()")]
+    pub fn get_smooth(&self) -> Option<&Smooth> {
+        self.smooth()
+    }
+
+    pub fn smooth_mut(&mut self) -> Option<&mut Smooth> {
         self.smooth.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use smooth_mut()")]
+    pub fn get_smooth_mut(&mut self) -> Option<&mut Smooth> {
+        self.smooth_mut()
     }
 
     pub fn set_smooth(&mut self, value: Smooth) -> &mut Self {
@@ -225,12 +407,24 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_data_labels(&self) -> Option<&DataLabels> {
+    #[must_use]
+    pub fn data_labels(&self) -> Option<&DataLabels> {
         self.data_labels.as_ref()
     }
 
-    pub fn get_data_labels_mut(&mut self) -> Option<&mut DataLabels> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> Option<&DataLabels> {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> Option<&mut DataLabels> {
         self.data_labels.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> Option<&mut DataLabels> {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {
@@ -238,27 +432,32 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
+    pub fn formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
 
         if let Some(v) = &mut self.category_axis_data {
-            if let Some(h) = v.get_string_reference_mut() {
-                result.push(h.get_formula_mut());
+            if let Some(h) = v.string_reference_mut() {
+                result.push(h.formula_mut());
             }
         }
         if let Some(v) = &mut self.values {
-            result.push(v.get_number_reference_mut().get_formula_mut());
+            result.push(v.number_reference_mut().formula_mut());
         }
         if let Some(v) = &mut self.x_values {
-            result.push(v.get_number_reference_mut().get_formula_mut());
+            result.push(v.number_reference_mut().formula_mut());
         }
         if let Some(v) = &mut self.y_values {
-            result.push(v.get_number_reference_mut().get_formula_mut());
+            result.push(v.number_reference_mut().formula_mut());
         }
         if let Some(v) = &mut self.bubble_size {
-            result.push(v.get_number_reference_mut().get_formula_mut());
+            result.push(v.number_reference_mut().formula_mut());
         }
         result
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
+    pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
+        self.formula_mut()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -354,7 +553,7 @@ impl AreaChartSeries {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:ser
         write_start_tag(writer, "c:ser", vec![], false);
 
@@ -366,7 +565,7 @@ impl AreaChartSeries {
 
         // c:tx
         if let Some(v) = &self.chart_text {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:explosion
@@ -396,27 +595,27 @@ impl AreaChartSeries {
 
         // c:cat
         if let Some(v) = &self.category_axis_data {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:val
         if let Some(v) = &self.values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:xVal
         if let Some(v) = &self.x_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:yVal
         if let Some(v) = &self.y_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubbleSize
         if let Some(v) = &self.bubble_size {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubble3D

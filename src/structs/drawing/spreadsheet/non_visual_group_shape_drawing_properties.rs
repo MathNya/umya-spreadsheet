@@ -1,12 +1,23 @@
 // xdr:cNvGrpSpPr
-use super::super::GroupShapeLocks;
-use super::NonVisualDrawingProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::GroupShapeLocks;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualGroupShapeDrawingProperties {
@@ -15,13 +26,27 @@ pub struct NonVisualGroupShapeDrawingProperties {
 
 impl NonVisualGroupShapeDrawingProperties {
     #[inline]
-    pub fn get_group_shape_locks(&self) -> Option<&GroupShapeLocks> {
+    #[must_use]
+    pub fn group_shape_locks(&self) -> Option<&GroupShapeLocks> {
         self.group_shape_locks.as_ref()
     }
 
     #[inline]
-    pub fn get_group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_locks()")]
+    pub fn get_group_shape_locks(&self) -> Option<&GroupShapeLocks> {
+        self.group_shape_locks()
+    }
+
+    #[inline]
+    pub fn group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
         self.group_shape_locks.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_locks_mut()")]
+    pub fn get_group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
+        self.group_shape_locks_mut()
     }
 
     #[inline]
@@ -64,11 +89,8 @@ impl NonVisualGroupShapeDrawingProperties {
         write_start_tag(writer, "xdr:cNvGrpSpPr", vec![], is_empty);
 
         // a:grpSpLocks
-        match &self.group_shape_locks {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.group_shape_locks {
+            v.write_to(writer);
         }
 
         if !is_empty {

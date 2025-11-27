@@ -1,19 +1,16 @@
-use super::EnumTrait;
 use std::str::FromStr;
-#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
+
+use super::EnumTrait;
+#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Default)]
 pub enum SourceValues {
     Consolidation,
     External,
     Scenario,
+    #[default]
     Worksheet,
 }
-impl Default for SourceValues {
-    fn default() -> Self {
-        Self::Worksheet
-    }
-}
 impl EnumTrait for SourceValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Consolidation => "consolidation",
             Self::External => "external",
@@ -24,6 +21,7 @@ impl EnumTrait for SourceValues {
 }
 impl FromStr for SourceValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "consolidation" => Ok(Self::Consolidation),

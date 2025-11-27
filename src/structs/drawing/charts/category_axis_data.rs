@@ -1,29 +1,55 @@
 // c:cat
-use super::NumberReference;
-use super::StringLiteral;
-use super::StringReference;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    StringLiteral,
+    StringReference,
+};
+use crate::{
+    drawing::charts::NumberReference,
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
-    string_literal: Option<StringLiteral>,
+    string_literal:   Option<StringLiteral>,
     number_reference: Option<NumberReference>,
 }
 
 impl CategoryAxisData {
-    pub fn get_string_reference(&self) -> Option<&StringReference> {
+    #[must_use]
+    pub fn string_reference(&self) -> Option<&StringReference> {
         self.string_reference.as_ref()
     }
 
-    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_reference()")]
+    pub fn get_string_reference(&self) -> Option<&StringReference> {
+        self.string_reference()
+    }
+
+    pub fn string_reference_mut(&mut self) -> Option<&mut StringReference> {
         self.string_reference.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use get_string_reference_mut()")]
+    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+        self.string_reference_mut()
     }
 
     pub fn set_string_reference(&mut self, value: StringReference) -> &mut Self {
@@ -36,12 +62,24 @@ impl CategoryAxisData {
         self
     }
 
-    pub fn get_string_literal(&self) -> Option<&StringLiteral> {
+    #[must_use]
+    pub fn string_literal(&self) -> Option<&StringLiteral> {
         self.string_literal.as_ref()
     }
 
-    pub fn get_string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_literal()")]
+    pub fn get_string_literal(&self) -> Option<&StringLiteral> {
+        self.string_literal()
+    }
+
+    pub fn string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
         self.string_literal.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use string_literal_mut()")]
+    pub fn get_string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
+        self.string_literal_mut()
     }
 
     pub fn set_string_literal(&mut self, value: StringLiteral) -> &mut Self {
@@ -54,12 +92,24 @@ impl CategoryAxisData {
         self
     }
 
-    pub fn get_number_reference(&self) -> Option<&NumberReference> {
+    #[must_use]
+    pub fn number_reference(&self) -> Option<&NumberReference> {
         self.number_reference.as_ref()
     }
 
-    pub fn get_number_reference_mut(&mut self) -> Option<&mut NumberReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_reference()")]
+    pub fn get_number_reference(&self) -> Option<&NumberReference> {
+        self.number_reference()
+    }
+
+    pub fn number_reference_mut(&mut self) -> Option<&mut NumberReference> {
         self.number_reference.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use number_reference_mut()")]
+    pub fn get_number_reference_mut(&mut self) -> Option<&mut NumberReference> {
+        self.number_reference_mut()
     }
 
     pub fn set_number_reference(&mut self, value: NumberReference) -> &mut Self {
@@ -108,13 +158,13 @@ impl CategoryAxisData {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:cat
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
         if let Some(v) = &self.string_reference {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:strLit
@@ -124,7 +174,7 @@ impl CategoryAxisData {
 
         // c:numRef
         if let Some(v) = &self.number_reference {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         write_end_tag(writer, "c:cat");

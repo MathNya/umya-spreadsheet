@@ -1,31 +1,59 @@
 // a:avLst
-use super::shape_guide::ShapeGuide;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::shape_guide::ShapeGuide;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct AdjustValueList {
-    shape_guide_collection: ThinVec<ShapeGuide>,
+    shape_guide_collection: Vec<ShapeGuide>,
 }
 
 impl AdjustValueList {
     #[inline]
-    pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
+    #[must_use]
+    pub fn shape_guide_collection(&self) -> &[ShapeGuide] {
         &self.shape_guide_collection
     }
 
     #[inline]
-    pub fn get_shape_guide_collection_mut(&mut self) -> &mut ThinVec<ShapeGuide> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_guide_collection()")]
+    pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
+        self.shape_guide_collection()
+    }
+
+    #[inline]
+    pub fn shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
         &mut self.shape_guide_collection
     }
 
     #[inline]
-    pub fn set_shape_guide_collection(&mut self, value: impl Into<ThinVec<ShapeGuide>>) {
+    #[deprecated(since = "3.0.0", note = "Use shape_guide_collection_mut()")]
+    pub fn get_shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
+        self.shape_guide_collection_mut()
+    }
+
+    #[inline]
+    pub fn set_shape_guide_collection(&mut self, value: impl Into<Vec<ShapeGuide>>) {
         self.shape_guide_collection = value.into();
     }
 
@@ -60,14 +88,14 @@ impl AdjustValueList {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:avLst
-        if !self.shape_guide_collection.is_empty() {
+        if self.shape_guide_collection.is_empty() {
+            write_start_tag(writer, "a:avLst", vec![], true);
+        } else {
             write_start_tag(writer, "a:avLst", vec![], false);
             for gd in &self.shape_guide_collection {
                 gd.write_to(writer);
             }
             write_end_tag(writer, "a:avLst");
-        } else {
-            write_start_tag(writer, "a:avLst", vec![], true);
         }
     }
 }

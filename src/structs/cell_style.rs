@@ -1,24 +1,43 @@
 // cellStyle
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        StringValue,
+        UInt32Value,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CellStyle {
-    name: StringValue,
+    name:       StringValue,
     builtin_id: UInt32Value,
-    format_id: UInt32Value,
+    format_id:  UInt32Value,
 }
 
 impl CellStyle {
     #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name()
     }
 
     #[inline]
@@ -28,8 +47,16 @@ impl CellStyle {
     }
 
     #[inline]
-    pub fn get_builtin_id(&self) -> &u32 {
-        self.builtin_id.get_value()
+    #[must_use]
+    pub fn builtin_id(&self) -> u32 {
+        self.builtin_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use builtin_id()")]
+    pub fn get_builtin_id(&self) -> u32 {
+        self.builtin_id()
     }
 
     #[inline]
@@ -39,8 +66,16 @@ impl CellStyle {
     }
 
     #[inline]
-    pub fn get_format_id(&self) -> &u32 {
-        self.format_id.get_value()
+    #[must_use]
+    pub fn format_id(&self) -> u32 {
+        self.format_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_id()")]
+    pub fn get_format_id(&self) -> u32 {
+        self.format_id()
     }
 
     #[inline]
@@ -63,12 +98,12 @@ impl CellStyle {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cellStyle
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.name.get_value_str()));
-        let format_id = self.format_id.get_value_string();
-        attributes.push(("xfId", &format_id));
-        let builtin_id = self.builtin_id.get_value_string();
-        attributes.push(("builtinId", &builtin_id));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("name", self.name.value_str()).into());
+        let format_id = self.format_id.value_string();
+        attributes.push(("xfId", &format_id).into());
+        let builtin_id = self.builtin_id.value_string();
+        attributes.push(("builtinId", &builtin_id).into());
         write_start_tag(writer, "cellStyle", attributes, true);
     }
 }

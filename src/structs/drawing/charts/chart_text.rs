@@ -1,42 +1,80 @@
 // c:tx
-use super::NumericValue;
-use super::RichText;
-use super::StringReference;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::RichText;
+use crate::{
+    Workbook,
+    drawing::charts::{
+        NumericValue,
+        StringReference,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartText {
-    rich_text: Option<RichText>,
+    rich_text:        Option<RichText>,
     string_reference: Option<StringReference>,
-    numeric_value: Option<NumericValue>,
+    numeric_value:    Option<NumericValue>,
 }
 
 impl ChartText {
-    pub fn get_rich_text(&self) -> Option<&RichText> {
+    #[must_use]
+    pub fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
 
-    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text()
+    }
+
+    pub fn rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
     }
 
-    pub fn set_rich_text(&mut self, value: RichText) -> &mut ChartText {
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text_mut()
+    }
+
+    pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.rich_text = Some(value);
         self
     }
 
-    pub fn get_string_reference(&self) -> Option<&StringReference> {
+    #[must_use]
+    pub fn string_reference(&self) -> Option<&StringReference> {
         self.string_reference.as_ref()
     }
 
-    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_reference()")]
+    pub fn get_string_reference(&self) -> Option<&StringReference> {
+        self.string_reference()
+    }
+
+    pub fn string_reference_mut(&mut self) -> Option<&mut StringReference> {
         self.string_reference.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use string_reference_mut()")]
+    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+        self.string_reference_mut()
     }
 
     pub fn set_string_reference(&mut self, value: StringReference) -> &mut Self {
@@ -44,12 +82,24 @@ impl ChartText {
         self
     }
 
-    pub fn get_numeric_value(&self) -> Option<&NumericValue> {
+    #[must_use]
+    pub fn numeric_value(&self) -> Option<&NumericValue> {
         self.numeric_value.as_ref()
     }
 
-    pub fn get_numeric_value_mut(&mut self) -> Option<&mut NumericValue> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use numeric_value()")]
+    pub fn get_numeric_value(&self) -> Option<&NumericValue> {
+        self.numeric_value()
+    }
+
+    pub fn numeric_value_mut(&mut self) -> Option<&mut NumericValue> {
         self.numeric_value.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use numeric_value_mut()")]
+    pub fn get_numeric_value_mut(&mut self) -> Option<&mut NumericValue> {
+        self.numeric_value_mut()
     }
 
     pub fn set_numeric_value(&mut self, value: NumericValue) -> &mut Self {
@@ -93,7 +143,7 @@ impl ChartText {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:tx
         write_start_tag(writer, "c:tx", vec![], false);
 
@@ -104,7 +154,7 @@ impl ChartText {
 
         // c:strRef
         if let Some(v) = &self.string_reference {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:v

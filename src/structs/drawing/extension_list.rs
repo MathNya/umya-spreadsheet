@@ -1,21 +1,22 @@
 // a:extLst
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::reader::driver::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct ExtensionList {}
 impl ExtensionList {
     #[inline]
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
+    pub(crate) fn set_attributes<R: std::io::BufRead>(reader: &mut Reader<R>, _e: &BytesStart) {
         xml_read_loop!(
             reader,
             Event::End(ref e) => {
@@ -27,6 +28,9 @@ impl ExtensionList {
         );
     }
 
+    #[allow(dead_code)]
     #[inline]
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {}
+    pub(crate) fn write_to(_writer: &mut Writer<Cursor<Vec<u8>>>) {
+        unimplemented!()
+    }
 }

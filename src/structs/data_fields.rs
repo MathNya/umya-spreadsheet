@@ -1,26 +1,51 @@
 // dataFields
-use crate::reader::driver::*;
-use crate::structs::DataField;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::DataField,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DataFields {
-    list: ThinVec<DataField>,
+    list: Vec<DataField>,
 }
 impl DataFields {
     #[inline]
-    pub fn get_list(&self) -> &[DataField] {
+    #[must_use]
+    pub fn list(&self) -> &[DataField] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<DataField> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use list()")]
+    pub fn get_list(&self) -> &[DataField] {
+        self.list()
+    }
+
+    #[inline]
+    pub fn list_mut(&mut self) -> &mut Vec<DataField> {
         &mut self.list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use list_mut()")]
+    pub fn get_list_mut(&mut self) -> &mut Vec<DataField> {
+        self.list_mut()
     }
 
     #[inline]
@@ -30,6 +55,7 @@ impl DataFields {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -54,12 +80,13 @@ impl DataFields {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataFields
         write_start_tag(
             writer,
             "dataFields",
-            vec![("count", &self.list.len().to_string())],
+            vec![("count", self.list.len().to_string()).into()],
             false,
         );
 

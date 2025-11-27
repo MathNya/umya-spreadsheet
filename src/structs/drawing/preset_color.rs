@@ -1,22 +1,45 @@
 // a:prstClr
-use super::alpha::Alpha;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::alpha::Alpha;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetColor {
-    val: Box<str>,
+    val:   Box<str>,
     alpha: Option<Alpha>,
 }
 
 impl PresetColor {
     #[inline]
-    pub fn get_val(&self) -> &str {
+    #[must_use]
+    pub fn val(&self) -> &str {
         &self.val
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     #[inline]
@@ -25,13 +48,27 @@ impl PresetColor {
     }
 
     #[inline]
-    pub fn get_alpha(&self) -> Option<&Alpha> {
+    #[must_use]
+    pub fn alpha(&self) -> Option<&Alpha> {
         self.alpha.as_ref()
     }
 
     #[inline]
-    pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alpha()")]
+    pub fn get_alpha(&self) -> Option<&Alpha> {
+        self.alpha()
+    }
+
+    #[inline]
+    pub fn alpha_mut(&mut self) -> Option<&mut Alpha> {
         self.alpha.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use alpha_mut()")]
+    pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
+        self.alpha_mut()
     }
 
     #[inline]
@@ -66,11 +103,11 @@ impl PresetColor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstClr
-        write_start_tag(writer, "a:prstClr", vec![("val", &self.val)], false);
+        write_start_tag(writer, "a:prstClr", vec![("val", &self.val).into()], false);
 
         // a:alpha
         if let Some(v) = &self.alpha {
-            v.write_to(writer)
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:prstClr");

@@ -1,26 +1,52 @@
 // patternFill
-use super::Color;
-use super::EnumValue;
-use super::PatternValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Color,
+    EnumValue,
+    PatternValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct PatternFill {
     pub(crate) pattern_type: EnumValue<PatternValues>,
-    foreground_color: Option<Box<Color>>,
-    background_color: Option<Box<Color>>,
+    foreground_color:        Option<Box<Color>>,
+    background_color:        Option<Box<Color>>,
 }
 
 impl PatternFill {
     #[inline]
+    #[must_use]
+    pub fn pattern_type(&self) -> &PatternValues {
+        self.pattern_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pattern_type()")]
     pub fn get_pattern_type(&self) -> &PatternValues {
-        self.pattern_type.get_value()
+        self.pattern_type()
     }
 
     #[inline]
@@ -30,25 +56,39 @@ impl PatternFill {
     }
 
     fn auto_set_pattern_type(&mut self) -> &mut Self {
-        if self.get_pattern_type() == &PatternValues::None {
-            if self.get_foreground_color().is_some() {
+        if self.pattern_type() == &PatternValues::None {
+            if self.foreground_color().is_some() {
                 self.set_pattern_type(PatternValues::Solid);
             }
-        } else if self.get_foreground_color().is_none() {
+        } else if self.foreground_color().is_none() {
             self.set_pattern_type(PatternValues::None);
         }
         self
     }
 
     #[inline]
-    pub fn get_foreground_color(&self) -> Option<&Color> {
+    #[must_use]
+    pub fn foreground_color(&self) -> Option<&Color> {
         self.foreground_color.as_deref()
     }
 
     #[inline]
-    pub fn get_foreground_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color()")]
+    pub fn get_foreground_color(&self) -> Option<&Color> {
+        self.foreground_color()
+    }
+
+    #[inline]
+    pub fn foreground_color_mut(&mut self) -> &mut Color {
         self.foreground_color
             .get_or_insert(Box::new(Color::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color_mut()")]
+    pub fn get_foreground_color_mut(&mut self) -> &mut Color {
+        self.foreground_color_mut()
     }
 
     #[inline]
@@ -65,14 +105,28 @@ impl PatternFill {
     }
 
     #[inline]
-    pub fn get_background_color(&self) -> Option<&Color> {
+    #[must_use]
+    pub fn background_color(&self) -> Option<&Color> {
         self.background_color.as_deref()
     }
 
     #[inline]
-    pub fn get_background_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_color()")]
+    pub fn get_background_color(&self) -> Option<&Color> {
+        self.background_color()
+    }
+
+    #[inline]
+    pub fn background_color_mut(&mut self) -> &mut Color {
         self.background_color
             .get_or_insert(Box::new(Color::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use background_color_mut()")]
+    pub fn get_background_color_mut(&mut self) -> &mut Color {
+        self.background_color_mut()
     }
 
     #[inline]
@@ -87,8 +141,8 @@ impl PatternFill {
         self
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
-        let pattern_type = self.pattern_type.get_value_string();
+    pub(crate) fn hash_code(&self) -> String {
+        let pattern_type = self.pattern_type.value_string();
         let foreground_color = self
             .foreground_color
             .as_ref()
@@ -100,15 +154,19 @@ impl PatternFill {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
-                "{}{}{}",
-                pattern_type, foreground_color, background_color
+                "{pattern_type}{foreground_color}{background_color}"
             ))
         )
     }
 
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
+    }
+
     // When opened in software such as Excel, it is visually blank.
     pub(crate) fn is_visually_empty(&self) -> bool {
-        !(self.pattern_type.get_value() != &PatternValues::None
+        !(self.pattern_type.value() != &PatternValues::None
             || self
                 .foreground_color
                 .as_ref()
@@ -161,9 +219,9 @@ impl PatternFill {
         let empty_flag = self.foreground_color.is_none() && self.background_color.is_none();
 
         // patternFill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.pattern_type.has_value() {
-            attributes.push(("patternType", self.pattern_type.get_value_string()));
+            attributes.push(("patternType", self.pattern_type.value_string()).into());
         }
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 

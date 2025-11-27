@@ -1,37 +1,55 @@
 // dataValidation
-use super::BooleanValue;
-use super::DataValidationOperatorValues;
-use super::DataValidationValues;
-use super::EnumValue;
-use super::SequenceOfReferences;
-use super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BooleanValue,
+    DataValidationOperatorValues,
+    DataValidationValues,
+    EnumValue,
+    SequenceOfReferences,
+    StringValue,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type: EnumValue<DataValidationValues>,
-    operator: EnumValue<DataValidationOperatorValues>,
-    allow_blank: BooleanValue,
-    show_input_message: BooleanValue,
-    show_error_message: BooleanValue,
-    prompt_title: StringValue,
-    prompt: StringValue,
-    error_title: StringValue,
-    error_messsage: StringValue,
+    r#type:                 EnumValue<DataValidationValues>,
+    operator:               EnumValue<DataValidationOperatorValues>,
+    allow_blank:            BooleanValue,
+    show_input_message:     BooleanValue,
+    show_error_message:     BooleanValue,
+    prompt_title:           StringValue,
+    prompt:                 StringValue,
+    error_title:            StringValue,
+    error_messsage:         StringValue,
     sequence_of_references: SequenceOfReferences,
-    formula1: StringValue,
-    formula2: StringValue,
+    formula1:               StringValue,
+    formula2:               StringValue,
 }
 impl DataValidation {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -41,8 +59,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn operator(&self) -> &DataValidationOperatorValues {
+        self.operator.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use operator()")]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
-        self.operator.get_value()
+        self.operator()
     }
 
     #[inline]
@@ -52,8 +78,16 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_allow_blank(&self) -> &bool {
-        self.allow_blank.get_value()
+    #[must_use]
+    pub fn allow_blank(&self) -> bool {
+        self.allow_blank.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use allow_blank()")]
+    pub fn get_allow_blank(&self) -> bool {
+        self.allow_blank()
     }
 
     #[inline]
@@ -63,8 +97,16 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_show_input_message(&self) -> &bool {
-        self.show_input_message.get_value()
+    #[must_use]
+    pub fn show_input_message(&self) -> bool {
+        self.show_input_message.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_input_message()")]
+    pub fn get_show_input_message(&self) -> bool {
+        self.show_input_message()
     }
 
     #[inline]
@@ -74,8 +116,16 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_show_error_message(&self) -> &bool {
-        self.show_error_message.get_value()
+    #[must_use]
+    pub fn show_error_message(&self) -> bool {
+        self.show_error_message.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_error_message()")]
+    pub fn get_show_error_message(&self) -> bool {
+        self.show_error_message()
     }
 
     #[inline]
@@ -85,8 +135,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn prompt_title(&self) -> &str {
+        self.prompt_title.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prompt_title()")]
     pub fn get_prompt_title(&self) -> &str {
-        self.prompt_title.get_value_str()
+        self.prompt_title()
     }
 
     #[inline]
@@ -96,8 +154,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn error_title(&self) -> &str {
+        self.error_title.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use error_title()")]
     pub fn get_error_title(&self) -> &str {
-        self.error_title.get_value_str()
+        self.error_title()
     }
 
     #[inline]
@@ -107,8 +173,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn error_message(&self) -> &str {
+        self.error_messsage.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use error_messsage()")]
     pub fn get_error_message(&self) -> &str {
-        self.error_messsage.get_value_str()
+        self.error_message()
     }
 
     #[inline]
@@ -118,8 +192,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn prompt(&self) -> &str {
+        self.prompt.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prompt()")]
     pub fn get_prompt(&self) -> &str {
-        self.prompt.get_value_str()
+        self.prompt()
     }
 
     #[inline]
@@ -129,13 +211,27 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+    #[must_use]
+    pub fn sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
     #[inline]
-    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references()")]
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+        self.sequence_of_references()
+    }
+
+    #[inline]
+    pub fn sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references_mut()")]
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+        self.sequence_of_references_mut()
     }
 
     #[inline]
@@ -145,8 +241,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn formula1(&self) -> &str {
+        self.formula1.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula1()")]
     pub fn get_formula1(&self) -> &str {
-        self.formula1.get_value_str()
+        self.formula1()
     }
 
     #[inline]
@@ -156,8 +260,16 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
+    pub fn formula2(&self) -> &str {
+        self.formula2.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula2()")]
     pub fn get_formula2(&self) -> &str {
-        self.formula2.get_value_str()
+        self.formula2()
     }
 
     #[inline]
@@ -233,7 +345,9 @@ impl DataValidation {
                     b"dataValidation" => return,
                     _ => {}
                 },
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "dataValidation"),
+                Ok(Event::Eof) => {
+                    panic!("Error: Could not find {} end element", "dataValidation")
+                }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => {}
             }
@@ -245,65 +359,71 @@ impl DataValidation {
         let is_inner = self.formula1.has_value() || self.formula2.has_value();
 
         // dataValidation
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()));
+            attributes.push(("type", self.r#type.value_string()).into());
         }
 
         if self.allow_blank.has_value() {
-            attributes.push(("allowBlank", self.allow_blank.get_value_string()));
+            attributes.push(("allowBlank", self.allow_blank.value_string()).into());
         }
 
         if self.show_input_message.has_value() {
-            attributes.push((
-                "showInputMessage",
-                self.show_input_message.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "showInputMessage",
+                    self.show_input_message.value_string(),
+                )
+                    .into(),
+            );
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()));
+            attributes.push(("operator", self.operator.value_string()).into());
         }
 
         if self.show_error_message.has_value() {
-            attributes.push((
-                "showErrorMessage",
-                self.show_error_message.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "showErrorMessage",
+                    self.show_error_message.value_string(),
+                )
+                    .into(),
+            );
         }
 
         if self.error_title.has_value() {
-            attributes.push(("errorTitle", self.error_title.get_value_str()));
+            attributes.push(("errorTitle", self.error_title.value_str()).into());
         }
 
         if self.error_messsage.has_value() {
-            attributes.push(("error", self.error_messsage.get_value_str()));
+            attributes.push(("error", self.error_messsage.value_str()).into());
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()));
+            attributes.push(("promptTitle", self.prompt_title.value_str()).into());
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()));
+            attributes.push(("prompt", self.prompt.value_str()).into());
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
         if !sequence_of_references.is_empty() {
-            attributes.push(("sqref", sequence_of_references));
+            attributes.push(("sqref", sequence_of_references).into());
         }
 
         write_start_tag(writer, "dataValidation", attributes, !is_inner);
         if is_inner {
             if self.formula1.has_value() {
                 write_start_tag(writer, "formula1", vec![], false);
-                write_text_node(writer, self.formula1.get_value_str());
+                write_text_node(writer, self.formula1.value_str());
                 write_end_tag(writer, "formula1");
             }
             if self.formula2.has_value() {
                 write_start_tag(writer, "formula2", vec![], false);
-                write_text_node(writer, self.formula2.get_value_str());
+                write_text_node(writer, self.formula2.value_str());
                 write_end_tag(writer, "formula2");
             }
             write_end_tag(writer, "dataValidation");

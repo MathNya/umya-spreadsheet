@@ -1,37 +1,60 @@
 // xf
-use super::Alignment;
-use super::BooleanValue;
-use super::Protection;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Alignment,
+    BooleanValue,
+    Protection,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {
-    number_format_id: UInt32Value,
-    font_id: UInt32Value,
-    fill_id: UInt32Value,
-    border_id: UInt32Value,
-    format_id: UInt32Value,
+    number_format_id:    UInt32Value,
+    font_id:             UInt32Value,
+    fill_id:             UInt32Value,
+    border_id:           UInt32Value,
+    format_id:           UInt32Value,
     apply_number_format: BooleanValue,
-    apply_fill: BooleanValue,
-    apply_border: BooleanValue,
-    apply_font: BooleanValue,
-    apply_alignment: BooleanValue,
-    apply_protection: BooleanValue,
-    alignment: Option<Alignment>,
-    protection: Option<Protection>,
+    apply_fill:          BooleanValue,
+    apply_border:        BooleanValue,
+    apply_font:          BooleanValue,
+    apply_alignment:     BooleanValue,
+    apply_protection:    BooleanValue,
+    alignment:           Option<Alignment>,
+    protection:          Option<Protection>,
 }
 
 impl CellFormat {
     #[inline]
-    pub(crate) fn get_number_format_id(&self) -> &u32 {
-        self.number_format_id.get_value()
+    pub(crate) fn number_format_id(&self) -> u32 {
+        self.number_format_id.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use number_format_id()")]
+    pub(crate) fn get_number_format_id(&self) -> u32 {
+        self.number_format_id()
     }
 
     #[inline]
@@ -41,8 +64,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_font_id(&self) -> &u32 {
-        self.font_id.get_value()
+    pub(crate) fn font_id(&self) -> u32 {
+        self.font_id.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use number_format_id()")]
+    pub(crate) fn get_font_id(&self) -> u32 {
+        self.font_id()
     }
 
     #[inline]
@@ -52,8 +81,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_fill_id(&self) -> &u32 {
-        self.fill_id.get_value()
+    pub(crate) fn fill_id(&self) -> u32 {
+        self.fill_id.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_id()")]
+    pub(crate) fn get_fill_id(&self) -> u32 {
+        self.fill_id()
     }
 
     #[inline]
@@ -63,8 +98,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_border_id(&self) -> &u32 {
-        self.border_id.get_value()
+    pub(crate) fn border_id(&self) -> u32 {
+        self.border_id.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use border_id()")]
+    pub(crate) fn get_border_id(&self) -> u32 {
+        self.border_id()
     }
 
     #[inline]
@@ -74,8 +115,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_format_id(&self) -> &u32 {
-        self.format_id.get_value()
+    pub(crate) fn format_id(&self) -> u32 {
+        self.format_id.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use format_id()")]
+    pub(crate) fn get_format_id(&self) -> u32 {
+        self.format_id()
     }
 
     #[inline]
@@ -85,8 +132,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_number_format(&self) -> &bool {
-        self.apply_number_format.get_value()
+    pub(crate) fn apply_number_format(&self) -> bool {
+        self.apply_number_format.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_number_format()")]
+    pub(crate) fn get_apply_number_format(&self) -> bool {
+        self.apply_number_format()
     }
 
     #[inline]
@@ -101,8 +154,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_fill(&self) -> &bool {
-        self.apply_fill.get_value()
+    pub(crate) fn apply_fill(&self) -> bool {
+        self.apply_fill.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_fill()")]
+    pub(crate) fn get_apply_fill(&self) -> bool {
+        self.apply_fill()
     }
 
     #[inline]
@@ -117,8 +176,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_border(&self) -> &bool {
-        self.apply_border.get_value()
+    pub(crate) fn apply_border(&self) -> bool {
+        self.apply_border.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_border()")]
+    pub(crate) fn get_apply_border(&self) -> bool {
+        self.apply_border()
     }
 
     #[inline]
@@ -133,8 +198,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_font(&self) -> &bool {
-        self.apply_font.get_value()
+    pub(crate) fn apply_font(&self) -> bool {
+        self.apply_font.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_font()")]
+    pub(crate) fn get_apply_font(&self) -> bool {
+        self.apply_font()
     }
 
     #[inline]
@@ -149,8 +220,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_alignment(&self) -> &bool {
-        self.apply_alignment.get_value()
+    pub(crate) fn apply_alignment(&self) -> bool {
+        self.apply_alignment.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_alignment()")]
+    pub(crate) fn get_apply_alignment(&self) -> bool {
+        self.apply_alignment()
     }
 
     #[inline]
@@ -165,8 +242,14 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_apply_protection(&self) -> &bool {
-        self.apply_protection.get_value()
+    pub(crate) fn apply_protection(&self) -> bool {
+        self.apply_protection.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use apply_protection()")]
+    pub(crate) fn get_apply_protection(&self) -> bool {
+        self.apply_protection()
     }
 
     #[inline]
@@ -181,13 +264,25 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
+    pub(crate) fn alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
+        self.alignment()
+    }
+
+    #[inline]
+    pub(crate) fn alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use alignment_mut()")]
+    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+        self.alignment_mut()
     }
 
     #[inline]
@@ -197,13 +292,25 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_protection(&self) -> Option<&Protection> {
+    pub(crate) fn protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_protection_mut(&mut self) -> Option<&mut Protection> {
+    #[deprecated(since = "3.0.0", note = "Use protection()")]
+    pub(crate) fn get_protection(&self) -> Option<&Protection> {
+        self.protection()
+    }
+
+    #[inline]
+    pub(crate) fn protection_mut(&mut self) -> Option<&mut Protection> {
         self.protection.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use protection_mut()")]
+    pub(crate) fn get_protection_mut(&mut self) -> Option<&mut Protection> {
+        self.protection_mut()
     }
 
     #[inline]
@@ -212,6 +319,7 @@ impl CellFormat {
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -259,44 +367,48 @@ impl CellFormat {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, is_cell_xfs: bool) {
         let empty_flag = self.alignment.is_none() && self.protection.is_none();
 
         // xf
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let number_format_id = self.number_format_id.get_value_string();
-        attributes.push(("numFmtId", &number_format_id));
-        let font_id = self.font_id.get_value_string();
-        attributes.push(("fontId", &font_id));
-        let fill_id = self.fill_id.get_value_string();
-        attributes.push(("fillId", &fill_id));
-        let border_id = self.border_id.get_value_string();
-        attributes.push(("borderId", &border_id));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let number_format_id = self.number_format_id.value_string();
+        attributes.push(("numFmtId", &number_format_id).into());
+        let font_id = self.font_id.value_string();
+        attributes.push(("fontId", &font_id).into());
+        let fill_id = self.fill_id.value_string();
+        attributes.push(("fillId", &fill_id).into());
+        let border_id = self.border_id.value_string();
+        attributes.push(("borderId", &border_id).into());
 
-        let format_id = self.format_id.get_value_string();
+        let format_id = self.format_id.value_string();
         if is_cell_xfs {
-            attributes.push(("xfId", &format_id));
+            attributes.push(("xfId", &format_id).into());
         }
         if self.apply_font.has_value() {
-            attributes.push(("applyFont", self.apply_font.get_value_string()));
+            attributes.push(("applyFont", self.apply_font.value_string()).into());
         }
         if self.apply_number_format.has_value() {
-            attributes.push((
-                "applyNumberFormat",
-                self.apply_number_format.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyNumberFormat",
+                    self.apply_number_format.value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_fill.has_value() {
-            attributes.push(("applyFill", self.apply_fill.get_value_string()));
+            attributes.push(("applyFill", self.apply_fill.value_string()).into());
         }
         if self.apply_border.has_value() {
-            attributes.push(("applyBorder", self.apply_border.get_value_string()));
+            attributes.push(("applyBorder", self.apply_border.value_string()).into());
         }
         if self.apply_alignment.has_value() {
-            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()));
+            attributes.push(("applyAlignment", self.apply_alignment.value_string()).into());
         }
         if self.apply_protection.has_value() {
-            attributes.push(("applyProtection", self.apply_protection.get_value_string()));
+            attributes.push(("applyProtection", self.apply_protection.value_string()).into());
         }
         write_start_tag(writer, "xf", attributes, empty_flag);
 

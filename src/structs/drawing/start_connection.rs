@@ -1,21 +1,35 @@
 // a:stCxn
-use super::super::super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::UInt32Value;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StartConnection {
-    id: UInt32Value,
+    id:    UInt32Value,
     index: UInt32Value,
 }
 impl StartConnection {
     #[inline]
-    pub fn get_id(&self) -> &u32 {
-        self.id.get_value()
+    #[must_use]
+    pub fn id(&self) -> u32 {
+        self.id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> u32 {
+        self.id()
     }
 
     #[inline]
@@ -24,8 +38,16 @@ impl StartConnection {
     }
 
     #[inline]
-    pub fn get_index(&self) -> &u32 {
-        self.index.get_value()
+    #[must_use]
+    pub fn index(&self) -> u32 {
+        self.index.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use index()")]
+    pub fn get_index(&self) -> u32 {
+        self.index()
     }
 
     #[inline]
@@ -50,8 +72,8 @@ impl StartConnection {
             writer,
             "a:stCxn",
             vec![
-                ("id", &self.id.get_value_string()),
-                ("idx", &self.index.get_value_string()),
+                ("id", self.id.value_string()).into(),
+                ("idx", self.index.value_string()).into(),
             ],
             true,
         );

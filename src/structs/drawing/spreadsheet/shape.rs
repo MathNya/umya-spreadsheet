@@ -1,37 +1,71 @@
 // xdr:sp
-use super::super::super::Anchor;
-use super::NonVisualShapeProperties;
-use super::ShapeProperties;
-use super::ShapeStyle;
-use super::TextBody;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::Anchor,
+    NonVisualShapeProperties,
+    ShapeProperties,
+    ShapeStyle,
+    TextBody,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        StringValue,
+        raw::RawRelationships,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    anchor: Anchor,
+    anchor:                      Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: Option<Box<ShapeStyle>>,
-    text_body: Option<Box<TextBody>>,
-    r#macro: StringValue,
+    shape_properties:            ShapeProperties,
+    shape_style:                 Option<Box<ShapeStyle>>,
+    text_body:                   Option<Box<TextBody>>,
+    r#macro:                     StringValue,
 }
 
 impl Shape {
     #[inline]
-    pub fn get_anchor(&self) -> &Anchor {
+    #[must_use]
+    pub fn anchor(&self) -> &Anchor {
         &self.anchor
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -40,12 +74,25 @@ impl Shape {
     }
 
     #[inline]
-    pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
+    #[must_use]
+    pub fn non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
     }
 
-    pub fn get_non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_shape_properties()")]
+    pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
+        self.non_visual_shape_properties()
+    }
+
+    pub fn non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
         &mut self.non_visual_shape_properties
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use non_visual_shape_properties_mut()")]
+    pub fn get_non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
+        self.non_visual_shape_properties_mut()
     }
 
     #[inline]
@@ -54,13 +101,27 @@ impl Shape {
     }
 
     #[inline]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    #[must_use]
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]
@@ -68,13 +129,26 @@ impl Shape {
         self.shape_properties = value;
     }
 
-    pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
+    #[must_use]
+    pub fn shape_style(&self) -> Option<&ShapeStyle> {
         self.shape_style.as_deref()
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_style()")]
+    pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
+        self.shape_style()
+    }
+
     #[inline]
-    pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
+    pub fn shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
         self.shape_style.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_style_mut()")]
+    pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
+        self.shape_style_mut()
     }
 
     #[inline]
@@ -83,13 +157,27 @@ impl Shape {
     }
 
     #[inline]
-    pub fn get_text_body(&self) -> Option<&TextBody> {
+    #[must_use]
+    pub fn text_body(&self) -> Option<&TextBody> {
         self.text_body.as_deref()
     }
 
     #[inline]
-    pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_body()")]
+    pub fn get_text_body(&self) -> Option<&TextBody> {
+        self.text_body()
+    }
+
+    #[inline]
+    pub fn text_body_mut(&mut self) -> Option<&mut TextBody> {
         self.text_body.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use text_body_mut()")]
+    pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
+        self.text_body_mut()
     }
 
     #[inline]
@@ -98,8 +186,9 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_macro(&self) -> &str {
-        self.r#macro.get_value_str()
+        self.r#macro.value_str()
     }
 
     #[inline]
@@ -152,13 +241,16 @@ impl Shape {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
-        ole_id: &usize,
+        ole_id: usize,
     ) {
         // xdr:sp
         write_start_tag(
             writer,
             "xdr:sp",
-            vec![("macro", self.r#macro.get_value_str()), ("textlink", "")],
+            vec![
+                ("macro", self.r#macro.value_str()).into(),
+                ("textlink", "").into(),
+            ],
             false,
         );
 

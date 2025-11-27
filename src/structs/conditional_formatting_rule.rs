@@ -1,50 +1,68 @@
-use super::BooleanValue;
-use super::ColorScale;
-use super::ConditionalFormatValues;
-use super::ConditionalFormattingOperatorValues;
-use super::DataBar;
-use super::DifferentialFormats;
-use super::EnumValue;
-use super::Formula;
-use super::IconSet;
-use super::Int32Value;
-use super::StringValue;
-use super::Style;
-use super::TimePeriodValues;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BooleanValue,
+    ColorScale,
+    ConditionalFormatValues,
+    ConditionalFormattingOperatorValues,
+    DataBar,
+    DifferentialFormats,
+    EnumValue,
+    Formula,
+    IconSet,
+    Int32Value,
+    StringValue,
+    Style,
+    TimePeriodValues,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ConditionalFormattingRule {
-    r#type: EnumValue<ConditionalFormatValues>,
-    operator: EnumValue<ConditionalFormattingOperatorValues>,
-    text: StringValue,
-    priority: Int32Value,
-    percent: BooleanValue,
-    bottom: BooleanValue,
-    rank: UInt32Value,
-    stop_if_true: BooleanValue,
-    std_dev: Int32Value,
+    r#type:        EnumValue<ConditionalFormatValues>,
+    operator:      EnumValue<ConditionalFormattingOperatorValues>,
+    text:          StringValue,
+    priority:      Int32Value,
+    percent:       BooleanValue,
+    bottom:        BooleanValue,
+    rank:          UInt32Value,
+    stop_if_true:  BooleanValue,
+    std_dev:       Int32Value,
     above_average: BooleanValue,
     equal_average: BooleanValue,
-    time_period: EnumValue<TimePeriodValues>,
-    style: Option<Box<Style>>,
-    color_scale: Option<ColorScale>,
-    data_bar: Option<DataBar>,
-    icon_set: Option<IconSet>,
-    formula: Option<Box<Formula>>,
+    time_period:   EnumValue<TimePeriodValues>,
+    style:         Option<Box<Style>>,
+    color_scale:   Option<ColorScale>,
+    data_bar:      Option<DataBar>,
+    icon_set:      Option<IconSet>,
+    formula:       Option<Box<Formula>>,
 }
 
 impl ConditionalFormattingRule {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &ConditionalFormatValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -54,8 +72,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
+    pub fn operator(&self) -> &ConditionalFormattingOperatorValues {
+        self.operator.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use operator()")]
     pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
-        self.operator.get_value()
+        self.operator()
     }
 
     #[inline]
@@ -65,8 +91,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
+    pub fn text(&self) -> &str {
+        self.text.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
     pub fn get_text(&self) -> &str {
-        self.text.get_value_str()
+        self.text()
     }
 
     #[inline]
@@ -76,8 +110,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_priority(&self) -> &i32 {
-        self.priority.get_value()
+    #[must_use]
+    pub fn priority(&self) -> i32 {
+        self.priority.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use priority()")]
+    pub fn get_priority(&self) -> i32 {
+        self.priority()
     }
 
     #[inline]
@@ -87,8 +129,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_percent(&self) -> &bool {
-        self.percent.get_value()
+    #[must_use]
+    pub fn percent(&self) -> bool {
+        self.percent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use percent()")]
+    pub fn get_percent(&self) -> bool {
+        self.percent()
     }
 
     #[inline]
@@ -98,8 +148,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_bottom(&self) -> &bool {
-        self.bottom.get_value()
+    #[must_use]
+    pub fn bottom(&self) -> bool {
+        self.bottom.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> bool {
+        self.bottom()
     }
 
     #[inline]
@@ -109,8 +167,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_rank(&self) -> &u32 {
-        self.rank.get_value()
+    #[must_use]
+    pub fn rank(&self) -> u32 {
+        self.rank.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rank()")]
+    pub fn get_rank(&self) -> u32 {
+        self.rank()
     }
 
     #[inline]
@@ -120,8 +186,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_stop_if_true(&self) -> &bool {
-        self.stop_if_true.get_value()
+    #[must_use]
+    pub fn stop_if_true(&self) -> bool {
+        self.stop_if_true.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stop_if_true()")]
+    pub fn get_stop_if_true(&self) -> bool {
+        self.stop_if_true()
     }
 
     #[inline]
@@ -131,8 +205,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_std_dev(&self) -> &i32 {
-        self.std_dev.get_value()
+    #[must_use]
+    pub fn std_dev(&self) -> i32 {
+        self.std_dev.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use std_dev()")]
+    pub fn get_std_dev(&self) -> i32 {
+        self.std_dev()
     }
 
     #[inline]
@@ -142,8 +224,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_above_average(&self) -> &bool {
-        self.above_average.get_value()
+    #[must_use]
+    pub fn above_average(&self) -> bool {
+        self.above_average.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use above_average()")]
+    pub fn get_above_average(&self) -> bool {
+        self.above_average()
     }
 
     #[inline]
@@ -153,8 +243,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_equal_average(&self) -> &bool {
-        self.equal_average.get_value()
+    #[must_use]
+    pub fn equal_average(&self) -> bool {
+        self.equal_average.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use equal_average()")]
+    pub fn get_equal_average(&self) -> bool {
+        self.equal_average()
     }
 
     #[inline]
@@ -164,8 +262,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
+    pub fn time_period(&self) -> &TimePeriodValues {
+        self.time_period.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use time_period()")]
     pub fn get_time_period(&self) -> &TimePeriodValues {
-        self.time_period.get_value()
+        self.time_period()
     }
 
     #[inline]
@@ -175,8 +281,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_style(&self) -> Option<&Style> {
+    #[must_use]
+    pub fn style(&self) -> Option<&Style> {
         self.style.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style()
     }
 
     #[inline]
@@ -192,8 +306,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+    #[must_use]
+    pub fn color_scale(&self) -> Option<&ColorScale> {
         self.color_scale.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_scale()")]
+    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+        self.color_scale()
     }
 
     #[inline]
@@ -209,8 +331,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_data_bar(&self) -> Option<&DataBar> {
+    #[must_use]
+    pub fn data_bar(&self) -> Option<&DataBar> {
         self.data_bar.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_bar()")]
+    pub fn get_data_bar(&self) -> Option<&DataBar> {
+        self.data_bar()
     }
 
     #[inline]
@@ -226,8 +356,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_icon_set(&self) -> Option<&IconSet> {
+    #[must_use]
+    pub fn icon_set(&self) -> Option<&IconSet> {
         self.icon_set.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use icon_set()")]
+    pub fn get_icon_set(&self) -> Option<&IconSet> {
+        self.icon_set()
     }
 
     #[inline]
@@ -243,8 +381,16 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_formula(&self) -> Option<&Formula> {
+    #[must_use]
+    pub fn formula(&self) -> Option<&Formula> {
         self.formula.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> Option<&Formula> {
+        self.formula()
     }
 
     #[inline]
@@ -271,7 +417,7 @@ impl ConditionalFormattingRule {
 
         if let Some(v) = get_attribute(e, b"dxfId") {
             let dxf_id = v.parse::<usize>().unwrap();
-            let style = differential_formats.get_style(dxf_id);
+            let style = differential_formats.style(dxf_id);
             self.set_style(style);
         }
 
@@ -336,68 +482,68 @@ impl ConditionalFormattingRule {
             || self.formula.is_some();
 
         // cfRule
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        let r#type = self.r#type.get_value_string();
+        let r#type = self.r#type.value_string();
         if self.r#type.has_value() {
-            attributes.push(("type", r#type));
+            attributes.push(("type", r#type).into());
         }
 
-        let operator = self.operator.get_value_string();
+        let operator = self.operator.value_string();
         if self.operator.has_value() {
-            attributes.push(("operator", operator));
+            attributes.push(("operator", operator).into());
         }
 
         let dxf_id_str: String;
         if let Some(v) = &self.style {
             let dxf_id = differential_formats.set_style(v);
             dxf_id_str = dxf_id.to_string();
-            attributes.push(("dxfId", &dxf_id_str));
+            attributes.push(("dxfId", &dxf_id_str).into());
         }
 
-        let priority = self.priority.get_value_string();
+        let priority = self.priority.value_string();
         if self.priority.has_value() {
-            attributes.push(("priority", &priority));
+            attributes.push(("priority", &priority).into());
         }
 
-        let percent = self.percent.get_value_string();
+        let percent = self.percent.value_string();
         if self.percent.has_value() {
-            attributes.push(("percent", percent));
+            attributes.push(("percent", percent).into());
         }
 
-        let bottom = self.bottom.get_value_string();
+        let bottom = self.bottom.value_string();
         if self.bottom.has_value() {
-            attributes.push(("bottom", bottom));
+            attributes.push(("bottom", bottom).into());
         }
 
-        let rank = self.rank.get_value_string();
+        let rank = self.rank.value_string();
         if self.rank.has_value() {
-            attributes.push(("rank", &rank));
+            attributes.push(("rank", &rank).into());
         }
 
-        let stop_if_true = self.stop_if_true.get_value_string();
+        let stop_if_true = self.stop_if_true.value_string();
         if self.stop_if_true.has_value() {
-            attributes.push(("stopIfTrue", stop_if_true));
+            attributes.push(("stopIfTrue", stop_if_true).into());
         }
 
-        let std_dev = self.std_dev.get_value_string();
+        let std_dev = self.std_dev.value_string();
         if self.std_dev.has_value() {
-            attributes.push(("stdDev", &std_dev));
+            attributes.push(("stdDev", &std_dev).into());
         }
 
-        let time_period = self.time_period.get_value_string();
+        let time_period = self.time_period.value_string();
         if self.time_period.has_value() {
-            attributes.push(("timePeriod", time_period));
+            attributes.push(("timePeriod", time_period).into());
         }
 
-        let above_average = self.above_average.get_value_string();
+        let above_average = self.above_average.value_string();
         if self.above_average.has_value() {
-            attributes.push(("aboveAverage", above_average));
+            attributes.push(("aboveAverage", above_average).into());
         }
 
-        let equal_average = self.equal_average.get_value_string();
+        let equal_average = self.equal_average.value_string();
         if self.equal_average.has_value() {
-            attributes.push(("equalAverage", equal_average));
+            attributes.push(("equalAverage", equal_average).into());
         }
 
         write_start_tag(writer, "cfRule", attributes, !is_inner);
@@ -405,22 +551,22 @@ impl ConditionalFormattingRule {
         if is_inner {
             // colorScale
             if let Some(v) = &self.color_scale {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // dataBar
             if let Some(v) = &self.data_bar {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // iconSet
             if let Some(v) = &self.icon_set {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // formula
             if let Some(v) = &self.formula {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "cfRule");

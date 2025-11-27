@@ -1,13 +1,25 @@
 // a:graphic
-use super::GraphicData;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::GraphicData;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Graphic {
@@ -16,13 +28,27 @@ pub struct Graphic {
 
 impl Graphic {
     #[inline]
-    pub fn get_graphic_data(&self) -> &GraphicData {
+    #[must_use]
+    pub fn graphic_data(&self) -> &GraphicData {
         &self.graphic_data
     }
 
     #[inline]
-    pub fn get_graphic_data_mut(&mut self) -> &mut GraphicData {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_data()")]
+    pub fn get_graphic_data(&self) -> &GraphicData {
+        self.graphic_data()
+    }
+
+    #[inline]
+    pub fn graphic_data_mut(&mut self) -> &mut GraphicData {
         &mut self.graphic_data
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_data_mut()")]
+    pub fn get_graphic_data_mut(&mut self) -> &mut GraphicData {
+        self.graphic_data_mut()
     }
 
     #[inline]
@@ -55,7 +81,6 @@ impl Graphic {
     }
 
     pub(crate) fn write_to(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
@@ -63,7 +88,7 @@ impl Graphic {
         write_start_tag(writer, "a:graphic", vec![], false);
 
         // a:graphicData
-        self.graphic_data.write_to(writer, rel_list);
+        GraphicData::write_to(writer, rel_list);
 
         write_end_tag(writer, "a:graphic");
     }
@@ -73,10 +98,10 @@ impl AdjustmentCoordinateWithSheet for Graphic {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.graphic_data.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -91,10 +116,10 @@ impl AdjustmentCoordinateWithSheet for Graphic {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.graphic_data.adjustment_remove_coordinate_with_sheet(
             sheet_name,

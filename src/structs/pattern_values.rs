@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum PatternValues {
     DarkDown,
@@ -30,7 +31,7 @@ impl Default for PatternValues {
 }
 impl EnumTrait for PatternValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::DarkDown => "darkDown",
             Self::DarkGray => "darkGray",

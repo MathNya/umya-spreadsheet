@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-pub(crate) fn format_as_percentage<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
+pub(crate) fn format_as_percentage(value: f64, format: &str) -> Cow<'_, str> {
     let mut value = value.to_string();
     let mut format = Cow::Borrowed(format);
     format = Cow::Owned(format.replace('%', ""));

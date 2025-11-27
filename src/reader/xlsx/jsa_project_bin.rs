@@ -1,14 +1,18 @@
+use std::{
+    io,
+    io::Read,
+};
+
 use super::XlsxError;
-use std::io::Read;
-use std::{io, result};
+use crate::{
+    helper::const_str::PKG_JSA_PROJECT,
+    structs::Workbook,
+};
 
-use crate::helper::const_str::*;
-use crate::structs::Spreadsheet;
-
-pub(crate) fn read<R: io::Read + io::Seek>(
+pub(crate) fn read<R: Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
-) -> result::Result<(), XlsxError> {
+    wb: &mut Workbook,
+) -> Result<(), XlsxError> {
     let mut r = io::BufReader::new(match arv.by_name(PKG_JSA_PROJECT) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
@@ -21,7 +25,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut buf = Vec::new();
     r.read_to_end(&mut buf)?;
 
-    spreadsheet.set_jsa_macros_code(buf);
+    wb.set_jsa_macros_code(buf);
 
     Ok(())
 }

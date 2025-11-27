@@ -1,33 +1,58 @@
 // a:outerShdw
-use super::PresetColor;
-use super::RgbColorModelHex;
-use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    PresetColor,
+    RgbColorModelHex,
+    SchemeColor,
+};
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
-    blur_radius: StringValue,
-    alignment: StringValue,
-    horizontal_ratio: StringValue,
-    vertical_ratio: StringValue,
-    direction: StringValue,
-    distance: StringValue,
-    rotate_with_shape: StringValue,
-    preset_color: Option<Box<PresetColor>>,
-    scheme_color: Option<Box<SchemeColor>>,
+    blur_radius:         StringValue,
+    alignment:           StringValue,
+    horizontal_ratio:    StringValue,
+    vertical_ratio:      StringValue,
+    direction:           StringValue,
+    distance:            StringValue,
+    rotate_with_shape:   StringValue,
+    preset_color:        Option<Box<PresetColor>>,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl OuterShadow {
     #[inline]
+    #[must_use]
+    pub fn blur_radius(&self) -> Option<&str> {
+        self.blur_radius.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blur_radius()")]
     pub fn get_blur_radius(&self) -> Option<&str> {
-        self.blur_radius.get_value()
+        self.blur_radius()
     }
 
     #[inline]
@@ -37,8 +62,16 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
+    pub fn horizontal_ratio(&self) -> Option<&str> {
+        self.horizontal_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_ratio()")]
     pub fn get_horizontal_ratio(&self) -> Option<&str> {
-        self.horizontal_ratio.get_value()
+        self.horizontal_ratio()
     }
 
     #[inline]
@@ -48,8 +81,16 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
+    pub fn vertical_ratio(&self) -> Option<&str> {
+        self.vertical_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_ratio()")]
     pub fn get_vertical_ratio(&self) -> Option<&str> {
-        self.vertical_ratio.get_value()
+        self.vertical_ratio()
     }
 
     #[inline]
@@ -59,8 +100,16 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
+    pub fn alignment(&self) -> Option<&str> {
+        self.alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
     pub fn get_alignment(&self) -> Option<&str> {
-        self.alignment.get_value()
+        self.alignment()
     }
 
     #[inline]
@@ -70,8 +119,16 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
+    pub fn direction(&self) -> Option<&str> {
+        self.direction.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use direction()")]
     pub fn get_direction(&self) -> Option<&str> {
-        self.direction.get_value()
+        self.direction()
     }
 
     #[inline]
@@ -81,8 +138,16 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
+    pub fn distance(&self) -> Option<&str> {
+        self.distance.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use distance()")]
     pub fn get_distance(&self) -> Option<&str> {
-        self.distance.get_value()
+        self.distance()
     }
 
     #[inline]
@@ -91,8 +156,15 @@ impl OuterShadow {
         self
     }
 
+    #[must_use]
+    pub fn rotate_with_shape(&self) -> Option<&str> {
+        self.rotate_with_shape.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
     pub fn get_rotate_with_shape(&self) -> Option<&str> {
-        self.rotate_with_shape.get_value()
+        self.rotate_with_shape()
     }
 
     #[inline]
@@ -102,13 +174,27 @@ impl OuterShadow {
     }
 
     #[inline]
-    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+    #[must_use]
+    pub fn preset_color(&self) -> Option<&PresetColor> {
         self.preset_color.as_deref()
     }
 
     #[inline]
-    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset_color()")]
+    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+        self.preset_color()
+    }
+
+    #[inline]
+    pub fn preset_color_mut(&mut self) -> Option<&mut PresetColor> {
         self.preset_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use preset_color_mut()")]
+    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+        self.preset_color_mut()
     }
 
     #[inline]
@@ -118,13 +204,27 @@ impl OuterShadow {
     }
 
     #[inline]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    #[must_use]
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color_mut()
     }
 
     #[inline]
@@ -134,13 +234,27 @@ impl OuterShadow {
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    #[must_use]
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
     }
 
     #[inline]
@@ -224,27 +338,27 @@ impl OuterShadow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = self.blur_radius.get_value() {
-            attributes.push(("blurRad", v));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        if let Some(v) = self.blur_radius.value() {
+            attributes.push(("blurRad", v).into());
         }
-        if let Some(v) = self.distance.get_value() {
-            attributes.push(("dist", v));
+        if let Some(v) = self.distance.value() {
+            attributes.push(("dist", v).into());
         }
-        if let Some(v) = self.direction.get_value() {
-            attributes.push(("dir", v));
+        if let Some(v) = self.direction.value() {
+            attributes.push(("dir", v).into());
         }
-        if let Some(v) = self.horizontal_ratio.get_value() {
-            attributes.push(("sx", v));
+        if let Some(v) = self.horizontal_ratio.value() {
+            attributes.push(("sx", v).into());
         }
-        if let Some(v) = self.vertical_ratio.get_value() {
-            attributes.push(("sy", v));
+        if let Some(v) = self.vertical_ratio.value() {
+            attributes.push(("sy", v).into());
         }
-        if let Some(v) = self.alignment.get_value() {
-            attributes.push(("algn", v));
+        if let Some(v) = self.alignment.value() {
+            attributes.push(("algn", v).into());
         }
-        if let Some(v) = self.rotate_with_shape.get_value() {
-            attributes.push(("rotWithShape", v));
+        if let Some(v) = self.rotate_with_shape.value() {
+            attributes.push(("rotWithShape", v).into());
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);
 

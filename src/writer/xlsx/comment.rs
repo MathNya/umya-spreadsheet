@@ -1,12 +1,32 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
-use std::collections::HashSet;
-use std::io;
+use std::{
+    collections::HashSet,
+    io,
+};
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+        write_text_node,
+    },
+};
+use crate::{
+    helper::const_str::SHEET_MAIN_NS,
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -18,18 +38,20 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    )));
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // comments
     write_start_tag(
         &mut writer,
         "comments",
-        vec![("xmlns", SHEET_MAIN_NS)],
+        vec![("xmlns", SHEET_MAIN_NS).into()],
         false,
     );
 
@@ -45,7 +67,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // commentList
     write_start_tag(&mut writer, "commentList", vec![], false);
-    for comment in worksheet.get_comments() {
+    for comment in worksheet.comments() {
         // comment
         comment.write_to(&mut writer, &authors);
     }
@@ -58,9 +80,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     worksheet
-        .get_comments()
-        .into_iter()
-        .map(|comment| comment.get_author().to_string())
+        .comments()
+        .iter()
+        .map(|comment| comment.author().to_string())
         .collect::<HashSet<_>>()
         .into_iter()
         .collect()

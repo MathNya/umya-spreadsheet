@@ -1,11 +1,23 @@
 // xdr:nvSpPr
-use super::NonVisualDrawingProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::NonVisualDrawingProperties;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualShapeProperties {
@@ -14,13 +26,27 @@ pub struct NonVisualShapeProperties {
 
 impl NonVisualShapeProperties {
     #[inline]
-    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+    #[must_use]
+    pub fn non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties()")]
+    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+        self.non_visual_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties_mut()")]
+    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+        self.non_visual_drawing_properties_mut()
     }
 
     #[inline]
@@ -56,7 +82,7 @@ impl NonVisualShapeProperties {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: usize) {
         // xdr:nvSpPr
         write_start_tag(writer, "xdr:nvSpPr", vec![], false);
 

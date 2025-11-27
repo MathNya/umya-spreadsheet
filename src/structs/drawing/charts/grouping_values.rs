@@ -1,18 +1,15 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum GroupingValues {
+    #[default]
     PercentStacked,
     Stacked,
     Standard,
 }
-impl Default for GroupingValues {
-    fn default() -> Self {
-        Self::PercentStacked
-    }
-}
 impl EnumTrait for GroupingValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::PercentStacked => "percentStacked",
             Self::Stacked => "stacked",
@@ -22,6 +19,7 @@ impl EnumTrait for GroupingValues {
 }
 impl FromStr for GroupingValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "percentStacked" => Ok(Self::PercentStacked),

@@ -1,15 +1,26 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Spreadsheet;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::{io, result};
+use std::io;
+
+use quick_xml::{
+    Reader,
+    events::Event,
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+};
+use crate::{
+    helper::const_str::CONTENT_TYPES,
+    structs::Workbook,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
-) -> result::Result<(), XlsxError> {
+    wb: &mut Workbook,
+) -> Result<(), XlsxError> {
     let r = io::BufReader::new(arv.by_name(CONTENT_TYPES)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
@@ -27,6 +38,6 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         Event::Eof => break,
     );
 
-    spreadsheet.set_backup_context_types(list);
+    wb.set_backup_context_types(list);
     Ok(())
 }

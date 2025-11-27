@@ -1,34 +1,62 @@
 // si
-use super::PhoneticRun;
-use super::RichText;
-use super::Text;
-use super::TextElement;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::hash::Hasher;
-use std::io::Cursor;
-extern crate ahash;
-use self::ahash::AHasher;
+use std::{
+    hash::{
+        DefaultHasher,
+        Hasher,
+    },
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    PhoneticRun,
+    RichText,
+    Text,
+    TextElement,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
-    text: Option<Text>,
+    text:      Option<Text>,
     rich_text: Option<RichText>,
 }
 
 impl SharedStringItem {
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<&Text> {
+    pub(crate) fn text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_text_mut(&mut self) -> Option<&mut Text> {
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub(crate) fn get_text(&self) -> Option<&Text> {
+        self.text()
+    }
+
+    #[inline]
+    pub(crate) fn text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use text_mut()")]
+    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
+        self.text_mut()
     }
 
     #[inline]
@@ -38,19 +66,33 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
 
     #[inline]
-    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+    pub(crate) fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text()
     }
 
     #[inline]
-    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    #[allow(dead_code)]
+    pub(crate) fn rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text_mut()
     }
 
     #[inline]
@@ -60,24 +102,29 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_rich_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }
 
-    pub(crate) fn get_hash_u64(&self) -> u64 {
-        let mut h = AHasher::default();
+    pub(crate) fn hash_u64(&self) -> u64 {
+        let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
             self.text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code()),
+                .map_or(String::from("NONE"), Text::hash_code),
             self.rich_text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code())
+                .map_or(String::from("NONE"), RichText::hash_code)
         );
         h.write(content.as_bytes());
         h.finish()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_u64()")]
+    pub(crate) fn get_hash_u64(&self) -> u64 {
+        self.hash_u64()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -102,8 +149,7 @@ impl SharedStringItem {
                         vec_text_element.push(obj);
                     }
                     b"rPh" => {
-                        let mut obj = PhoneticRun::default();
-                        obj.set_attributes(reader, e);
+                        PhoneticRun::set_attributes(reader, e);
                     }
                     _ => (),
                 }
@@ -136,7 +182,7 @@ impl SharedStringItem {
             v.write_to(writer);
         }
 
-        write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);
+        write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
         write_end_tag(writer, "si");
     }

@@ -4,13 +4,25 @@ pub struct UInt32Value {
 }
 impl UInt32Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> &u32 {
-        self.value.as_ref().unwrap_or(&0)
+    pub(crate) fn value(&self) -> u32 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> u32 {
+        self.value()
+    }
+
+    #[inline]
+    pub(crate) fn value_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> String {
-        self.get_value().to_string()
+        self.value_string()
     }
 
     #[inline]
@@ -36,10 +48,16 @@ impl UInt32Value {
     }
 
     #[inline]
-    pub(crate) fn get_hash_string(&self) -> String {
+    pub(crate) fn hash_string(&self) -> String {
         if self.has_value() {
-            return self.get_value_string();
+            return self.value_string();
         }
         String::from("empty!!")
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> String {
+        self.hash_string()
     }
 }

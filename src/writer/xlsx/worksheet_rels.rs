@@ -1,12 +1,42 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        COMMENTS_NS,
+        DRAWINGS_NS,
+        HYPERLINK_NS,
+        IMAGE_NS,
+        OLE_OBJECT_NS,
+        PACKAGE_NS,
+        PIVOT_TABLE_NS,
+        PKG_SHEET_RELS,
+        PRINTER_SETTINGS_NS,
+        REL_NS,
+        TABLE_NS,
+        THREADED_COMMENT_NS,
+        VML_DRAWING_NS,
+    },
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn write<W: io::Seek + io::Write>(
@@ -28,26 +58,33 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    )));
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
+    write_start_tag(
+        &mut writer,
+        "Relationships",
+        vec![("xmlns", REL_NS).into()],
+        false,
+    );
 
     let mut r_id: i32 = 1;
 
     // Write hyperlink relationships
-    for (_, hyperlink) in worksheet.get_hyperlink_collection() {
-        if !*hyperlink.get_location() {
+    for (_, hyperlink) in worksheet.hyperlink_collection() {
+        if !hyperlink.location() {
             is_write = write_relationship(
                 &mut writer,
                 &r_id.to_string(),
                 HYPERLINK_NS,
-                hyperlink.get_url(),
+                hyperlink.url(),
                 "External",
             );
             r_id += 1;
@@ -55,13 +92,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // write pageSetup
-    if worksheet.get_page_setup().get_object_data().is_some() {
-        let object_name = format!("printerSettings{}.bin", printer_settings_no);
+    if worksheet.page_setup().object_data().is_some() {
+        let object_name = format!("printerSettings{printer_settings_no}.bin");
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             PRINTER_SETTINGS_NS,
-            format!("../printerSettings/{}", object_name).as_str(),
+            format!("../printerSettings/{object_name}").as_str(),
             "",
         );
         r_id += 1;
@@ -73,7 +110,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             &r_id.to_string(),
             DRAWINGS_NS,
-            format!("../drawings/drawing{}.xml", drawing_no).as_str(),
+            format!("../drawings/drawing{drawing_no}.xml").as_str(),
             "",
         );
         r_id += 1;
@@ -85,78 +122,76 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             &r_id.to_string(),
             VML_DRAWING_NS,
-            format!("../drawings/vmlDrawing{}.vml", vml_drawing_no).as_str(),
+            format!("../drawings/vmlDrawing{vml_drawing_no}.vml").as_str(),
             "",
         );
         r_id += 1;
     }
 
     // write table relationships
-    for table_no in table_no_list.iter() {
+    for table_no in table_no_list {
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             TABLE_NS,
-            format!("../tables/table{}.xml", table_no).as_str(),
+            format!("../tables/table{table_no}.xml").as_str(),
             "",
         );
         r_id += 1;
     }
 
     // write pivot table relationships
-    for pivot_table_no in pivot_table_no_list.iter() {
+    for pivot_table_no in pivot_table_no_list {
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             PIVOT_TABLE_NS,
-            format!("../pivotTables/pivotTable{}.xml", pivot_table_no).as_str(),
+            format!("../pivotTables/pivotTable{pivot_table_no}.xml").as_str(),
             "",
         );
         r_id += 1;
     }
 
-    // write pivot cache relationships (handled at workbook level, not worksheet level)
-    // Pivot caches are referenced from the workbook, not individual worksheets
+    // write pivot cache relationships (handled at workbook level, not worksheet
+    // level) Pivot caches are referenced from the workbook, not individual
+    // worksheets
     let _ = pivot_cache_no_list; // Suppress unused warning
 
     // Write ole_objects
     let mut excel_no_list = excel_no_list.iter();
     let mut ole_object_no_list = ole_object_no_list.iter();
-    for ole_object in worksheet.get_ole_objects().get_ole_object() {
+    for ole_object in worksheet.ole_objects().ole_object() {
         if ole_object.is_xlsx() {
             let excel_no = excel_no_list.next().unwrap();
-            let object_name = format!("Microsoft_Excel_Worksheet{}.xlsx", excel_no);
+            let object_name = format!("Microsoft_Excel_Worksheet{excel_no}.xlsx");
             write_relationship(
                 &mut writer,
                 &r_id.to_string(),
                 PACKAGE_NS,
-                format!("../embeddings/{}", object_name).as_str(),
+                format!("../embeddings/{object_name}").as_str(),
                 "",
             );
             r_id += 1;
         }
         if ole_object.is_bin() {
             let ole_object_no = ole_object_no_list.next().unwrap();
-            let object_name = format!("oleObject{}.bin", ole_object_no);
+            let object_name = format!("oleObject{ole_object_no}.bin");
             write_relationship(
                 &mut writer,
                 &r_id.to_string(),
                 OLE_OBJECT_NS,
-                format!("../embeddings/{}", object_name).as_str(),
+                format!("../embeddings/{object_name}").as_str(),
                 "",
             );
             r_id += 1;
         }
 
-        let image_name = ole_object
-            .get_embedded_object_properties()
-            .get_image()
-            .get_image_name();
+        let image_name = ole_object.embedded_object_properties().image().image_name();
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             IMAGE_NS,
-            format!("../media/{}", image_name).as_str(),
+            format!("../media/{image_name}").as_str(),
             "",
         );
         r_id += 1;
@@ -168,7 +203,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             &r_id.to_string(),
             COMMENTS_NS,
-            format!("../comments{}.xml", comment_no).as_str(),
+            format!("../comments{comment_no}.xml").as_str(),
             "",
         );
         r_id += 1;
@@ -180,11 +215,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             &r_id.to_string(),
             THREADED_COMMENT_NS,
-            format!(
-                "../threadedComments/threadedComment{}.xml",
-                threaded_comment_no
-            )
-            .as_str(),
+            format!("../threadedComments/threadedComment{threaded_comment_no}.xml").as_str(),
             "",
         );
     }
@@ -192,7 +223,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("{PKG_SHEET_RELS}{}.xml.rels", worksheet_no);
+        let file_path = format!("{PKG_SHEET_RELS}{worksheet_no}.xml.rels");
         writer_mng.add_writer(&file_path, writer)?;
     }
     Ok(())
@@ -206,13 +237,13 @@ fn write_relationship(
     p_target_mode: &str,
 ) -> bool {
     let tag_name = "Relationship";
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let r_id = format!("rId{}", p_id);
-    attributes.push(("Id", &r_id));
-    attributes.push(("Type", p_type));
-    attributes.push(("Target", p_target));
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
+    let r_id = format!("rId{p_id}");
+    attributes.push(("Id", &r_id).into());
+    attributes.push(("Type", p_type).into());
+    attributes.push(("Target", p_target).into());
     if !p_target_mode.is_empty() {
-        attributes.push(("TargetMode", p_target_mode));
+        attributes.push(("TargetMode", p_target_mode).into());
     }
     write_start_tag(writer, tag_name, attributes, true);
     true

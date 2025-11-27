@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum LightRigValues {
     Balanced,
@@ -38,7 +39,7 @@ impl Default for LightRigValues {
 }
 impl EnumTrait for LightRigValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Balanced => "balanced",
             Self::BrightRoom => "brightRoom",

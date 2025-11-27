@@ -1,15 +1,16 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct EnumValue<T: EnumTrait + FromStr> {
-    value: Option<T>,
+    value:         Option<T>,
     value_default: T,
 }
 
 impl<T: EnumTrait + FromStr> EnumValue<T> {
     #[inline]
-    pub(crate) fn get_value(&self) -> &T {
+    pub(crate) fn value(&self) -> &T {
         match &self.value {
             Some(v) => v,
             None => &self.value_default,
@@ -17,8 +18,20 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> &T {
+        self.value()
+    }
+
+    #[inline]
+    pub(crate) fn value_string(&self) -> &str {
+        self.value().value_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> &str {
-        self.get_value().get_value_string()
+        self.value_string()
     }
 
     #[inline]
@@ -41,10 +54,16 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
     }
 
     #[inline]
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn hash_string(&self) -> &str {
         if self.has_value() {
-            return self.get_value_string();
+            return self.value_string();
         }
         "empty!!"
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> &str {
+        self.hash_string()
     }
 }

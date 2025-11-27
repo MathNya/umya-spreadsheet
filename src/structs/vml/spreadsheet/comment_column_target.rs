@@ -1,12 +1,29 @@
-use crate::helper::coordinate::*;
-use crate::reader::driver::*;
-use crate::structs::UInt32Value;
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
+    },
+    reader::driver::xml_read_loop,
+    structs::UInt32Value,
+    traits::AdjustmentValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CommentColumnTarget {
@@ -15,8 +32,16 @@ pub struct CommentColumnTarget {
 
 impl CommentColumnTarget {
     #[inline]
-    pub fn get_value(&self) -> &u32 {
-        self.value.get_value()
+    #[must_use]
+    pub fn value(&self) -> u32 {
+        self.value.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> u32 {
+        self.value()
     }
 
     #[inline]
@@ -49,27 +74,27 @@ impl CommentColumnTarget {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x:Column
         write_start_tag(writer, "x:Column", vec![], false);
-        write_text_node(writer, self.value.get_value_string());
+        write_text_node(writer, self.value.value_string());
         write_end_tag(writer, "x:Column");
     }
 }
 impl AdjustmentValue for CommentColumnTarget {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_insert_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_insert_coordinate(self.value.value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_remove_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_remove_coordinate(self.value.value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        is_remove_coordinate(&(self.value.get_value() + 1), root_num, offset_num)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        is_remove_coordinate(self.value.value() + 1, root_num, offset_num)
     }
 }

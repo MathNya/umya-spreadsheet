@@ -1,21 +1,36 @@
 // c:numFmt
-use super::super::super::BooleanValue;
-use super::super::super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::{
+    BooleanValue,
+    StringValue,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingFormat {
-    format_code: StringValue,
+    format_code:   StringValue,
     source_linked: BooleanValue,
 }
 impl NumberingFormat {
+    #[must_use]
+    pub fn format_code(&self) -> &str {
+        self.format_code.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_code()")]
     pub fn get_format_code(&self) -> &str {
-        self.format_code.get_value_str()
+        self.format_code()
     }
 
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut NumberingFormat {
@@ -23,8 +38,15 @@ impl NumberingFormat {
         self
     }
 
-    pub fn get_source_linked(&self) -> &bool {
-        self.source_linked.get_value()
+    #[must_use]
+    pub fn source_linked(&self) -> bool {
+        self.source_linked.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use source_linked()")]
+    pub fn get_source_linked(&self) -> bool {
+        self.source_linked()
     }
 
     pub fn set_source_linked(&mut self, value: bool) -> &mut NumberingFormat {
@@ -49,8 +71,8 @@ impl NumberingFormat {
             writer,
             "c:numFmt",
             vec![
-                ("formatCode", self.format_code.get_value_str()),
-                ("sourceLinked", self.source_linked.get_value_string()),
+                ("formatCode", self.format_code.value_str()).into(),
+                ("sourceLinked", self.source_linked.value_string()).into(),
             ],
             true,
         );

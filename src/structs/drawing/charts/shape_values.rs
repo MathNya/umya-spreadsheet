@@ -1,21 +1,18 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum ShapeValues {
     Box,
+    #[default]
     Cone,
     ConeToMax,
     Cylinder,
     Pyramid,
     PyramidToMaximum,
 }
-impl Default for ShapeValues {
-    fn default() -> Self {
-        Self::Cone
-    }
-}
 impl EnumTrait for ShapeValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Box => "box",
             Self::Cone => "cone",
@@ -28,6 +25,7 @@ impl EnumTrait for ShapeValues {
 }
 impl FromStr for ShapeValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "box" => Ok(Self::Box),

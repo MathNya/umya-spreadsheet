@@ -1,34 +1,60 @@
 // dxf
-use super::Alignment;
-use super::Borders;
-use super::Fill;
-use super::Font;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Alignment,
+    Borders,
+    Fill,
+    Font,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {
-    font: Option<Box<Font>>,
-    fill: Option<Fill>,
-    borders: Option<Box<Borders>>,
+    font:      Option<Box<Font>>,
+    fill:      Option<Fill>,
+    borders:   Option<Box<Borders>>,
     alignment: Option<Alignment>,
 }
 
 impl DifferentialFormat {
     #[inline]
-    pub(crate) fn _get_font(&self) -> Option<&Font> {
+    pub(crate) fn font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
 
     #[inline]
-    pub(crate) fn _get_font_mut(&mut self) -> Option<&mut Font> {
+    #[deprecated(since = "3.0.0", note = "Use font()")]
+    pub(crate) fn get_font(&self) -> Option<&Font> {
+        self.font()
+    }
+
+    #[inline]
+    pub(crate) fn font_mut(&mut self) -> Option<&mut Font> {
         self.font.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_mut()")]
+    pub(crate) fn get_font_mut(&mut self) -> Option<&mut Font> {
+        self.font_mut()
     }
 
     #[inline]
@@ -38,13 +64,25 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_fill(&self) -> Option<&Fill> {
+    pub(crate) fn fill(&self) -> Option<&Fill> {
         self.fill.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_fill_mut(&mut self) -> Option<&mut Fill> {
+    #[deprecated(since = "3.0.0", note = "Use fill()")]
+    pub(crate) fn get_fill(&self) -> Option<&Fill> {
+        self.fill()
+    }
+
+    #[inline]
+    pub(crate) fn fill_mut(&mut self) -> Option<&mut Fill> {
         self.fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_mut()")]
+    pub(crate) fn get_fill_mut(&mut self) -> Option<&mut Fill> {
+        self.fill_mut()
     }
 
     #[inline]
@@ -54,13 +92,25 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_borders(&self) -> Option<&Borders> {
+    pub(crate) fn borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
 
     #[inline]
-    pub(crate) fn _get_borders_mut(&mut self) -> Option<&mut Borders> {
+    #[deprecated(since = "3.0.0", note = "Use borders()")]
+    pub(crate) fn get_borders(&self) -> Option<&Borders> {
+        self.borders()
+    }
+
+    #[inline]
+    pub(crate) fn borders_mut(&mut self) -> Option<&mut Borders> {
         self.borders.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use borders_mut()")]
+    pub(crate) fn get_borders_mut(&mut self) -> Option<&mut Borders> {
+        self.borders_mut()
     }
 
     #[inline]
@@ -70,13 +120,25 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_alignment(&self) -> Option<&Alignment> {
+    pub(crate) fn alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
+        self.alignment()
+    }
+
+    #[inline]
+    pub(crate) fn alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use alignment_mut()")]
+    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+        self.alignment_mut()
     }
 
     #[inline]
@@ -86,7 +148,7 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn get_style(&self) -> Style {
+    pub(crate) fn style(&self) -> Style {
         let mut style = Style::default();
         style.set_font_crate(self.font.as_deref().cloned());
         style.set_fill_crate(self.fill.clone());
@@ -96,21 +158,27 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn set_style(&mut self, style: &Style) {
-        self.font = style.get_font().cloned().map(Box::new);
-        self.fill = style.get_fill().cloned();
-        self.borders = style.get_borders().cloned().map(Box::new);
-        self.alignment = style.get_alignment().cloned();
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub(crate) fn get_style(&self) -> Style {
+        self.style()
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    #[inline]
+    pub(crate) fn set_style(&mut self, style: &Style) {
+        self.font = style.font().cloned().map(Box::new);
+        self.fill = style.fill().cloned();
+        self.borders = style.borders().cloned().map(Box::new);
+        self.alignment = style.alignment().cloned();
+    }
+
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}",
                 match &self.font {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()
@@ -118,7 +186,7 @@ impl DifferentialFormat {
                 },
                 match &self.fill {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()
@@ -126,7 +194,7 @@ impl DifferentialFormat {
                 },
                 match &self.borders {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()
@@ -134,7 +202,7 @@ impl DifferentialFormat {
                 },
                 match &self.alignment {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()
@@ -142,6 +210,11 @@ impl DifferentialFormat {
                 },
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

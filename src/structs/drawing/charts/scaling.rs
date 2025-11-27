@@ -1,11 +1,23 @@
 // c:scaling
-use super::Orientation;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Orientation;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Scaling {
@@ -13,12 +25,24 @@ pub struct Scaling {
 }
 
 impl Scaling {
-    pub fn get_orientation(&self) -> &Orientation {
+    #[must_use]
+    pub fn orientation(&self) -> &Orientation {
         &self.orientation
     }
 
-    pub fn get_orientation_mut(&mut self) -> &mut Orientation {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use orientation()")]
+    pub fn get_orientation(&self) -> &Orientation {
+        self.orientation()
+    }
+
+    pub fn orientation_mut(&mut self) -> &mut Orientation {
         &mut self.orientation
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use orientation_mut()")]
+    pub fn get_orientation_mut(&mut self) -> &mut Orientation {
+        self.orientation_mut()
     }
 
     pub fn set_orientation(&mut self, value: Orientation) -> &mut Self {

@@ -1,28 +1,45 @@
 // dataField
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::Int32Value;
-use crate::structs::Location;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        Int32Value,
+        StringValue,
+        UInt32Value,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DataField {
-    name: StringValue,
-    fie_id: UInt32Value,
+    name:        StringValue,
+    fie_id:      UInt32Value,
     base_fie_id: Int32Value,
-    base_item: UInt32Value,
-    subtotal: UInt32Value, // Aggregation function: 0=sum, 1=count, 2=average, 3=max, 4=min, 5=product, 7=stdDev, 9=var
+    base_item:   UInt32Value,
+    subtotal: UInt32Value,  // Aggregation function: 0=sum, 1=count, 2=average, 3=max, 4=min, 5=product, 7=stdDev, 9=var
 }
 impl DataField {
     #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name()
     }
 
     #[inline]
@@ -32,8 +49,16 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_fie_id(&self) -> &u32 {
-        self.fie_id.get_value()
+    #[must_use]
+    pub fn fie_id(&self) -> u32 {
+        self.fie_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fie_id()")]
+    pub fn get_fie_id(&self) -> u32 {
+        self.fie_id()
     }
 
     #[inline]
@@ -43,8 +68,16 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_fie_id(&self) -> &i32 {
-        self.base_fie_id.get_value()
+    #[must_use]
+    pub fn base_fie_id(&self) -> i32 {
+        self.base_fie_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_fie_id()")]
+    pub fn get_base_fie_id(&self) -> i32 {
+        self.base_fie_id()
     }
 
     #[inline]
@@ -54,8 +87,16 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_item(&self) -> &u32 {
-        self.base_item.get_value()
+    #[must_use]
+    pub fn base_item(&self) -> u32 {
+        self.base_item.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_item()")]
+    pub fn get_base_item(&self) -> u32 {
+        self.base_item()
     }
 
     #[inline]
@@ -64,9 +105,17 @@ impl DataField {
         self
     }
 
+    #[must_use]
     #[inline]
-    pub fn get_subtotal(&self) -> &u32 {
-        self.subtotal.get_value()
+    pub fn subtotal(&self) -> u32 {
+        self.subtotal.value()
+    }
+
+    #[must_use]
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use subtotal()")]
+    pub fn get_subtotal(&self) -> u32 {
+        self.subtotal()
     }
 
     #[inline]
@@ -89,17 +138,18 @@ impl DataField {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataField
         write_start_tag(
             writer,
             "dataField",
             vec![
-                ("name", self.name.get_value_str()),
-                ("fld", &self.fie_id.get_value_string()),
-                ("baseField", &self.base_fie_id.get_value_string()),
-                ("baseItem", &self.base_item.get_value_string()),
-                ("subtotal", &self.subtotal.get_value_string()),
+                ("name", self.name.value_str()).into(),
+                ("fld", self.fie_id.value_string().as_str()).into(),
+                ("baseField", self.base_fie_id.value_string().as_str()).into(),
+                ("baseItem", self.base_item.value_string().as_str()).into(),
+                ("subtotal", self.subtotal.value_string().as_str()).into(),
             ],
             true,
         );

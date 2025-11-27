@@ -1,28 +1,53 @@
 // dxfs
-use super::DifferentialFormat;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    DifferentialFormat,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormats {
-    differential_format: ThinVec<DifferentialFormat>,
+    differential_format: Vec<DifferentialFormat>,
 }
 
 impl DifferentialFormats {
     #[inline]
-    pub(crate) fn _get_differential_format(&self) -> &[DifferentialFormat] {
+    pub(crate) fn differential_format(&self) -> &[DifferentialFormat] {
         &self.differential_format
     }
 
     #[inline]
-    pub(crate) fn _get_differential_format_mut(&mut self) -> &mut ThinVec<DifferentialFormat> {
+    #[deprecated(since = "3.0.0", note = "Use differential_format()")]
+    pub(crate) fn get_differential_format(&self) -> &[DifferentialFormat] {
+        self.differential_format()
+    }
+
+    #[inline]
+    pub(crate) fn differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
         &mut self.differential_format
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use differential_format_mut()")]
+    pub(crate) fn get_differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
+        self.differential_format_mut()
     }
 
     #[inline]
@@ -32,19 +57,25 @@ impl DifferentialFormats {
     }
 
     #[inline]
-    pub(crate) fn get_style(&self, id: usize) -> Style {
+    pub(crate) fn style(&self, id: usize) -> Style {
         let differential_format = self.differential_format.get(id).unwrap().clone();
-        differential_format.get_style()
+        differential_format.style()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub(crate) fn get_style(&self, id: usize) -> Style {
+        self.style(id)
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         let mut differential_format = DifferentialFormat::default();
         differential_format.set_style(style);
 
-        let hash_code = differential_format.get_hash_code();
+        let hash_code = differential_format.hash_code();
         let mut id = 0;
         for v in &self.differential_format {
-            if v.get_hash_code() == hash_code {
+            if v.hash_code() == hash_code {
                 return id;
             }
             id += 1;
@@ -83,7 +114,7 @@ impl DifferentialFormats {
             write_start_tag(
                 writer,
                 "dxfs",
-                vec![("count", &self.differential_format.len().to_string())],
+                vec![("count", &self.differential_format.len().to_string()).into()],
                 false,
             );
 

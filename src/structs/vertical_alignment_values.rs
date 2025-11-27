@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum VerticalAlignmentValues {
     Bottom,
@@ -16,7 +17,7 @@ impl Default for VerticalAlignmentValues {
 }
 impl EnumTrait for VerticalAlignmentValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bottom => "bottom",
             Self::Center => "center",

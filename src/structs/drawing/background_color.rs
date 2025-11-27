@@ -1,11 +1,23 @@
 // a:bgClr
-use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::SchemeColor;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BackgroundColor {
@@ -14,13 +26,27 @@ pub struct BackgroundColor {
 
 impl BackgroundColor {
     #[inline]
-    pub fn get_scheme_color(&self) -> &SchemeColor {
+    #[must_use]
+    pub fn scheme_color(&self) -> &SchemeColor {
         &self.scheme_color
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> &mut SchemeColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> &SchemeColor {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> &mut SchemeColor {
         &mut self.scheme_color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> &mut SchemeColor {
+        self.scheme_color_mut()
     }
 
     #[inline]

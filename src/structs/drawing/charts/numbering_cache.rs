@@ -1,13 +1,28 @@
 // c:numCache
-use super::FormatCode;
-use crate::structs::Address;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::FormatCode;
+use crate::{
+    structs::{
+        Address,
+        Workbook,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingCache {
@@ -15,12 +30,24 @@ pub struct NumberingCache {
 }
 
 impl NumberingCache {
-    pub fn get_format_code(&self) -> &FormatCode {
+    #[must_use]
+    pub fn format_code(&self) -> &FormatCode {
         &self.format_code
     }
 
-    pub fn get_format_code_mut(&mut self) -> &mut FormatCode {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_code()")]
+    pub fn get_format_code(&self) -> &FormatCode {
+        self.format_code()
+    }
+
+    pub fn format_code_mut(&mut self) -> &mut FormatCode {
         &mut self.format_code
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use format_code_mut()")]
+    pub fn get_format_code_mut(&mut self) -> &mut FormatCode {
+        self.format_code_mut()
     }
 
     pub fn set_format_code(&mut self, value: FormatCode) -> &mut NumberingCache {
@@ -53,9 +80,9 @@ impl NumberingCache {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         address: &Address,
-        spreadsheet: &Spreadsheet,
+        wb: &Workbook,
     ) {
-        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
+        let cell_value_list = wb.cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:numCache
         write_start_tag(writer, "c:numCache", vec![], false);
@@ -64,15 +91,20 @@ impl NumberingCache {
         self.format_code.write_to(writer);
 
         // c:ptCount
-        write_start_tag(writer, "c:ptCount", vec![("val", &coll_value_count)], true);
+        write_start_tag(
+            writer,
+            "c:ptCount",
+            vec![("val", &coll_value_count).into()],
+            true,
+        );
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(writer, "c:pt", vec![("idx", &idx.to_string())], false);
+            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string()).into()], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);
-            write_text_node(writer, cell_value.get_value());
+            write_text_node(writer, cell_value.value());
             write_end_tag(writer, "c:v");
 
             write_end_tag(writer, "c:pt");

@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum BlackWhiteModeValues {
     Auto,
@@ -22,7 +23,7 @@ impl Default for BlackWhiteModeValues {
 }
 impl EnumTrait for BlackWhiteModeValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Auto => "auto",
             Self::Black => "black",

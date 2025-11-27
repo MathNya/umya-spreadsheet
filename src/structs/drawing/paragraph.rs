@@ -1,42 +1,77 @@
 // a:p
-use super::ParagraphProperties;
-use super::Run;
-use super::RunProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ParagraphProperties,
+    Run,
+    RunProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
-    paragraph_properties: ParagraphProperties,
-    run: ThinVec<Run>,
+    paragraph_properties:    ParagraphProperties,
+    run:                     Vec<Run>,
     end_para_run_properties: Option<Box<RunProperties>>,
 }
 
 impl Paragraph {
     #[inline]
-    pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
+    #[must_use]
+    pub fn paragraph_properties(&self) -> &ParagraphProperties {
         &self.paragraph_properties
     }
 
     #[inline]
-    pub fn get_paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use paragraph_properties()")]
+    pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
+        self.paragraph_properties()
+    }
+
+    #[inline]
+    pub fn paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
         &mut self.paragraph_properties
     }
 
     #[inline]
-    pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Paragraph {
+    #[deprecated(since = "3.0.0", note = "Use paragraph_properties_mut()")]
+    pub fn get_paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
+        self.paragraph_properties_mut()
+    }
+
+    #[inline]
+    pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Self {
         self.paragraph_properties = value;
         self
     }
 
     #[inline]
-    pub fn get_run(&self) -> &[Run] {
+    #[must_use]
+    pub fn run(&self) -> &[Run] {
         &self.run
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use run()")]
+    pub fn get_run(&self) -> &[Run] {
+        self.run()
     }
 
     #[inline]
@@ -45,17 +80,31 @@ impl Paragraph {
     }
 
     #[inline]
-    pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
+    #[must_use]
+    pub fn end_para_run_properties(&self) -> Option<&RunProperties> {
         self.end_para_run_properties.as_deref()
     }
 
     #[inline]
-    pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use end_para_run_properties()")]
+    pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
+        self.end_para_run_properties()
+    }
+
+    #[inline]
+    pub fn end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
         self.end_para_run_properties.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {
+    #[deprecated(since = "3.0.0", note = "Use end_para_run_properties_mut()")]
+    pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.end_para_run_properties_mut()
+    }
+
+    #[inline]
+    pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Self {
         self.end_para_run_properties = Some(Box::new(value));
         self
     }

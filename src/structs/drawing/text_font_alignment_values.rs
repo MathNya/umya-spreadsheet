@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum TextFontAlignmentValues {
     Automatic,
@@ -16,7 +17,7 @@ impl Default for TextFontAlignmentValues {
 }
 impl EnumTrait for TextFontAlignmentValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Automatic => "auto",
             Self::Baseline => "base",

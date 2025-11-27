@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum PenAlignmentValues {
     Center,
@@ -13,7 +14,7 @@ impl Default for PenAlignmentValues {
 }
 impl EnumTrait for PenAlignmentValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Center => "ctr",
             Self::Insert => "in",

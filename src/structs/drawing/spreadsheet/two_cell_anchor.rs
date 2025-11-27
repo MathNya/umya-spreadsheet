@@ -1,42 +1,74 @@
 // xdr:twoCellAnchor
-use super::super::super::EnumValue;
-use super::ConnectionShape;
-use super::EditAsValues;
-use super::GraphicFrame;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::helper::const_str::MC_NS;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::BooleanValue;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::EnumValue,
+    ConnectionShape,
+    EditAsValues,
+    GraphicFrame,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    helper::const_str::{
+        DRAWING_MAIN_NS,
+        MC_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        BooleanValue,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
-    edit_as: EnumValue<EditAsValues>,
-    from_marker: MarkerType,
-    to_marker: MarkerType,
-    group_shape: Option<Box<GroupShape>>,
-    graphic_frame: Option<Box<GraphicFrame>>,
-    shape: Option<Box<Shape>>,
-    connection_shape: Option<Box<ConnectionShape>>,
-    picture: Option<Box<Picture>>,
+    edit_as:              EnumValue<EditAsValues>,
+    from_marker:          MarkerType,
+    to_marker:            MarkerType,
+    group_shape:          Option<Box<GroupShape>>,
+    graphic_frame:        Option<Box<GraphicFrame>>,
+    shape:                Option<Box<Shape>>,
+    connection_shape:     Option<Box<ConnectionShape>>,
+    picture:              Option<Box<Picture>>,
     is_alternate_content: BooleanValue,
 }
 
 impl TwoCellAnchor {
     #[inline]
+    #[must_use]
+    pub fn edit_as(&self) -> &EditAsValues {
+        self.edit_as.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use edit_as()")]
     pub fn get_edit_as(&self) -> &EditAsValues {
-        self.edit_as.get_value()
+        self.edit_as()
     }
 
     #[inline]
@@ -46,13 +78,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_from_marker(&self) -> &MarkerType {
+    #[must_use]
+    pub fn from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
     #[inline]
-    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use from_marker()")]
+    pub fn get_from_marker(&self) -> &MarkerType {
+        self.from_marker()
+    }
+
+    #[inline]
+    pub fn from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use from_marker_mut()")]
+    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+        self.from_marker_mut()
     }
 
     #[inline]
@@ -62,13 +108,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_to_marker(&self) -> &MarkerType {
+    #[must_use]
+    pub fn to_marker(&self) -> &MarkerType {
         &self.to_marker
     }
 
     #[inline]
-    pub fn get_to_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use to_marker()")]
+    pub fn get_to_marker(&self) -> &MarkerType {
+        self.to_marker()
+    }
+
+    #[inline]
+    pub fn to_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.to_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use to_marker_mut()")]
+    pub fn get_to_marker_mut(&mut self) -> &mut MarkerType {
+        self.to_marker_mut()
     }
 
     #[inline]
@@ -78,13 +138,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+    #[must_use]
+    pub fn group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape()")]
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape()
+    }
+
+    #[inline]
+    pub fn group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_mut()")]
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape_mut()
     }
 
     #[inline]
@@ -94,13 +168,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
+    #[must_use]
+    pub fn graphic_frame(&self) -> Option<&GraphicFrame> {
         self.graphic_frame.as_deref()
     }
 
     #[inline]
-    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame()")]
+    pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
+        self.graphic_frame()
+    }
+
+    #[inline]
+    pub fn graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
         self.graphic_frame.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_mut()")]
+    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+        self.graphic_frame_mut()
     }
 
     #[inline]
@@ -110,13 +198,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_shape(&self) -> Option<&Shape> {
+    #[must_use]
+    pub fn shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape_mut()
     }
 
     #[inline]
@@ -126,13 +228,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
+    #[must_use]
+    pub fn connection_shape(&self) -> Option<&ConnectionShape> {
         self.connection_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape()")]
+    pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
+        self.connection_shape()
+    }
+
+    #[inline]
+    pub fn connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
         self.connection_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_mut()")]
+    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+        self.connection_shape_mut()
     }
 
     #[inline]
@@ -142,13 +258,27 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_picture(&self) -> Option<&Picture> {
+    #[must_use]
+    pub fn picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
     #[inline]
-    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture()")]
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture()
+    }
+
+    #[inline]
+    pub fn picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_mut()")]
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture_mut()
     }
 
     #[inline]
@@ -158,8 +288,16 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_is_alternate_content(&self) -> &bool {
-        self.is_alternate_content.get_value()
+    #[must_use]
+    pub fn is_alternate_content(&self) -> bool {
+        self.is_alternate_content.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_alternate_content()")]
+    pub fn get_is_alternate_content(&self) -> bool {
+        self.is_alternate_content()
     }
 
     #[inline]
@@ -170,14 +308,16 @@ impl TwoCellAnchor {
 
     #[inline]
     pub(crate) fn is_support(&self) -> bool {
-        self.graphic_frame.as_ref().map_or(true, |v| {
-            v.get_graphic()
-                .get_graphic_data()
-                .get_chart_space()
-                .get_chart()
-                .get_plot_area()
-                .is_support()
-        })
+        match self.graphic_frame.as_ref() {
+            Some(v) => v
+                .graphic()
+                .graphic_data()
+                .chart_space()
+                .chart()
+                .plot_area()
+                .is_support(),
+            None => true,
+        }
     }
 
     #[inline]
@@ -249,14 +389,14 @@ impl TwoCellAnchor {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
-        ole_id: &usize,
+        ole_id: usize,
     ) {
-        if *self.get_is_alternate_content() {
+        if self.is_alternate_content() {
             // mc:AlternateContent
             write_start_tag(
                 writer,
                 "mc:AlternateContent",
-                vec![("xmlns:mc", MC_NS)],
+                vec![("xmlns:mc", MC_NS).into()],
                 false,
             );
 
@@ -264,15 +404,18 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:Choice",
-                vec![("xmlns:a14", DRAWING_MAIN_NS), ("Requires", "a14")],
+                vec![
+                    ("xmlns:a14", DRAWING_MAIN_NS).into(),
+                    ("Requires", "a14").into(),
+                ],
                 false,
             );
         }
 
         // xdr:twoCellAnchor
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.edit_as.has_value() {
-            attributes.push(("editAs", self.edit_as.get_value_string()));
+            attributes.push(("editAs", self.edit_as.value_string()).into());
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 
@@ -299,7 +442,7 @@ impl TwoCellAnchor {
 
         // xdr:cxnSp
         if let Some(v) = &self.connection_shape {
-            v.write_to(writer, rel_list)
+            v.write_to(writer, rel_list);
         }
 
         // xdr:pic
@@ -312,7 +455,7 @@ impl TwoCellAnchor {
 
         write_end_tag(writer, "xdr:twoCellAnchor");
 
-        if *self.get_is_alternate_content() {
+        if self.is_alternate_content() {
             write_end_tag(writer, "mc:Choice");
 
             // mc:Fallback
@@ -326,10 +469,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_insert_coordinate(
             root_col_num,
@@ -348,10 +491,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_remove_coordinate(
             root_col_num,
@@ -370,10 +513,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.from_marker.is_remove_coordinate(
             root_col_num,
@@ -393,22 +536,19 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_insert_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -416,22 +556,19 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_remove_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 }

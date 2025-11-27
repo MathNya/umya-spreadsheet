@@ -1,15 +1,5 @@
-use std::borrow::Cow;
-
-use crate::helper::date::*;
-use crate::structs::Color;
-use crate::structs::NumberingFormat;
-use fancy_regex::Captures;
-use fancy_regex::Matches;
-use fancy_regex::Regex;
-use thousands::Separable;
-
-pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
-    let sign = if value < &0f64 { "-" } else { "" };
+pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
+    let sign = if value < 0f64 { "-" } else { "" };
 
     let integer_part = value.abs().floor();
     let decimal_part = (value.abs() % 1f64)
@@ -18,9 +8,9 @@ pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
         .parse::<f64>()
         .unwrap();
     let decimal_length = decimal_part.to_string().len();
-    let decimal_divisor = 10f64.powi(decimal_length as i32);
+    let decimal_divisor = 10f64.powi(num_traits::cast(decimal_length).unwrap());
 
-    let gcd = gcd(&decimal_part, &decimal_divisor);
+    let gcd = gcd(decimal_part, decimal_divisor);
 
     let mut adjusted_decimal_part = decimal_part / gcd;
     let adjusted_decimal_divisor = decimal_divisor / gcd;
@@ -70,10 +60,6 @@ pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
 }
 
 #[inline]
-fn gcd(a: &f64, b: &f64) -> f64 {
-    if b == &0f64 {
-        *a
-    } else {
-        gcd(b, &(a % b))
-    }
+fn gcd(a: f64, b: f64) -> f64 {
+    if b == 0f64 { a } else { gcd(b, a % b) }
 }

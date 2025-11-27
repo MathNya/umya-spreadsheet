@@ -1,30 +1,55 @@
 // a:majorFont
 // a:minorFont
-use super::SupplementalFont;
-use super::TextFontType;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    SupplementalFont,
+    TextFontType,
+};
+use crate::writer::driver::{
+    write_end_tag,
+    write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
-    latin_font: TextFontType,
-    east_asian_font: TextFontType,
-    complex_script_font: TextFontType,
-    supplemental_font_list: ThinVec<SupplementalFont>,
+    latin_font:             TextFontType,
+    east_asian_font:        TextFontType,
+    complex_script_font:    TextFontType,
+    supplemental_font_list: Vec<SupplementalFont>,
 }
 impl FontCollectionType {
     #[inline]
-    pub fn get_latin_font(&self) -> &TextFontType {
+    #[must_use]
+    pub fn latin_font(&self) -> &TextFontType {
         &self.latin_font
     }
 
     #[inline]
-    pub fn get_latin_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use latin_font()")]
+    pub fn get_latin_font(&self) -> &TextFontType {
+        self.latin_font()
+    }
+
+    #[inline]
+    pub fn latin_font_mut(&mut self) -> &mut TextFontType {
         &mut self.latin_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use latin_font_mut()")]
+    pub fn get_latin_font_mut(&mut self) -> &mut TextFontType {
+        self.latin_font_mut()
     }
 
     #[inline]
@@ -34,13 +59,27 @@ impl FontCollectionType {
     }
 
     #[inline]
-    pub fn get_east_asian_font(&self) -> &TextFontType {
+    #[must_use]
+    pub fn east_asian_font(&self) -> &TextFontType {
         &self.east_asian_font
     }
 
     #[inline]
-    pub fn get_east_asian_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font()")]
+    pub fn get_east_asian_font(&self) -> &TextFontType {
+        self.east_asian_font()
+    }
+
+    #[inline]
+    pub fn east_asian_font_mut(&mut self) -> &mut TextFontType {
         &mut self.east_asian_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font_mut()")]
+    pub fn get_east_asian_font_mut(&mut self) -> &mut TextFontType {
+        self.east_asian_font_mut()
     }
 
     #[inline]
@@ -50,13 +89,27 @@ impl FontCollectionType {
     }
 
     #[inline]
-    pub fn get_complex_script_font(&self) -> &TextFontType {
+    #[must_use]
+    pub fn complex_script_font(&self) -> &TextFontType {
         &self.complex_script_font
     }
 
     #[inline]
-    pub fn get_complex_script_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font()")]
+    pub fn get_complex_script_font(&self) -> &TextFontType {
+        self.complex_script_font()
+    }
+
+    #[inline]
+    pub fn complex_script_font_mut(&mut self) -> &mut TextFontType {
         &mut self.complex_script_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font_mut()")]
+    pub fn get_complex_script_font_mut(&mut self) -> &mut TextFontType {
+        self.complex_script_font_mut()
     }
 
     #[inline]
@@ -66,19 +119,33 @@ impl FontCollectionType {
     }
 
     #[inline]
-    pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
+    #[must_use]
+    pub fn supplemental_font_list(&self) -> &[SupplementalFont] {
         &self.supplemental_font_list
     }
 
     #[inline]
-    pub fn get_supplemental_font_list_mut(&mut self) -> &mut ThinVec<SupplementalFont> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use supplemental_font_list()")]
+    pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
+        self.supplemental_font_list()
+    }
+
+    #[inline]
+    pub fn supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
         &mut self.supplemental_font_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use supplemental_font_list_mut()")]
+    pub fn get_supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
+        self.supplemental_font_list_mut()
     }
 
     #[inline]
     pub fn set_supplemental_font_list(
         &mut self,
-        value: impl Into<ThinVec<SupplementalFont>>,
+        value: impl Into<Vec<SupplementalFont>>,
     ) -> &mut Self {
         self.supplemental_font_list = value.into();
         self
@@ -95,7 +162,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0302020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in self::MAJOR_FONTS {
+        for (font_script, typeface) in MAJOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);
@@ -108,7 +175,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0502020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in self::MINOR_FONTS {
+        for (font_script, typeface) in MINOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);
@@ -159,12 +226,7 @@ impl FontCollectionType {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:majorFont" => {
-                        return;
-                    }
-                    b"a:minorFont" => {
-                        return;
-                    }
+                    b"a:majorFont" | b"a:minorFont" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => {

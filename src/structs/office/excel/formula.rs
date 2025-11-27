@@ -1,12 +1,26 @@
 // xm:f
-use crate::reader::driver::*;
-use crate::structs::Address;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    structs::Address,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct Formula {
@@ -14,13 +28,27 @@ pub struct Formula {
 }
 impl Formula {
     #[inline]
-    pub fn get_value(&self) -> &Address {
+    #[must_use]
+    pub fn value(&self) -> &Address {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut Address {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_value(&self) -> &Address {
+        self.value()
+    }
+
+    #[inline]
+    pub fn value_mut(&mut self) -> &mut Address {
         &mut self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_value_mut(&mut self) -> &mut Address {
+        self.value_mut()
     }
 
     #[inline]
@@ -41,16 +69,14 @@ impl Formula {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xm:f" => {
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"xm:f" {
                         let mut obj = Address::default();
                         obj.set_address(value);
                         self.value = obj;
-                        value = String::new();
                         return;
                     }
-                    _ => (),
-                },
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:f"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
@@ -62,7 +88,7 @@ impl Formula {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:f", vec![], false);
-        write_text_node(writer, &self.value.get_address());
+        write_text_node(writer, self.value.address());
         write_end_tag(writer, "xm:f");
     }
 }

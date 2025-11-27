@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum OrientationValues {
     Default,
@@ -14,7 +15,7 @@ impl Default for OrientationValues {
 }
 impl EnumTrait for OrientationValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Default => "default",
             Self::Landscape => "landscape",

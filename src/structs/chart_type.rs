@@ -1,7 +1,9 @@
-use super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum ChartType {
+    #[default]
     LineChart,
     Line3DChart,
     PieChart,
@@ -16,14 +18,9 @@ pub enum ChartType {
     Area3DChart,
     OfPieChart,
 }
-impl Default for ChartType {
-    fn default() -> Self {
-        Self::LineChart
-    }
-}
 impl EnumTrait for ChartType {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::LineChart => "line_chart",
             Self::Line3DChart => "line_3d_chart",

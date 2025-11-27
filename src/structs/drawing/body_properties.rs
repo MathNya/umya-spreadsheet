@@ -1,37 +1,64 @@
 // a:bodyPr
-use super::super::EnumValue;
-use super::super::Int32Value;
-use super::ShapeAutoFit;
-use super::TextWrappingValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::BooleanValue;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::{
+        BooleanValue,
+        EnumValue,
+        Int32Value,
+    },
+    ShapeAutoFit,
+    TextWrappingValues,
+};
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute_value,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {
-    vert_overflow: StringValue,
-    horz_overflow: StringValue,
-    rtl_col: StringValue,
-    anchor: StringValue,
-    wrap: EnumValue<TextWrappingValues>,
-    rotation: Int32Value,
-    left_inset: Int32Value,
-    top_inset: Int32Value,
-    right_inset: Int32Value,
-    bottom_inset: Int32Value,
+    vert_overflow:         StringValue,
+    horz_overflow:         StringValue,
+    rtl_col:               StringValue,
+    anchor:                StringValue,
+    wrap:                  EnumValue<TextWrappingValues>,
+    rotation:              Int32Value,
+    left_inset:            Int32Value,
+    top_inset:             Int32Value,
+    right_inset:           Int32Value,
+    bottom_inset:          Int32Value,
     use_paragraph_spacing: BooleanValue,
-    shape_auto_fit: Option<ShapeAutoFit>,
+    shape_auto_fit:        Option<ShapeAutoFit>,
 }
 
 impl BodyProperties {
     #[inline]
+    #[must_use]
+    pub fn vert_overflow(&self) -> Option<&str> {
+        self.vert_overflow.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vert_overflow()")]
     pub fn get_vert_overflow(&self) -> Option<&str> {
-        self.vert_overflow.get_value()
+        self.vert_overflow()
     }
 
     #[inline]
@@ -41,8 +68,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn horz_overflow(&self) -> Option<&str> {
+        self.horz_overflow.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horz_overflow()")]
     pub fn get_horz_overflow(&self) -> Option<&str> {
-        self.horz_overflow.get_value()
+        self.horz_overflow()
     }
 
     #[inline]
@@ -52,8 +87,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn rtl_col(&self) -> Option<&str> {
+        self.rtl_col.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rtl_col()")]
     pub fn get_rtl_col(&self) -> Option<&str> {
-        self.rtl_col.get_value()
+        self.rtl_col()
     }
 
     #[inline]
@@ -63,8 +106,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn anchor(&self) -> Option<&str> {
+        self.anchor.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
     pub fn get_anchor(&self) -> Option<&str> {
-        self.anchor.get_value()
+        self.anchor()
     }
 
     #[inline]
@@ -74,8 +125,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
+    pub fn wrap(&self) -> &TextWrappingValues {
+        self.wrap.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use wrap()")]
     pub fn get_wrap(&self) -> &TextWrappingValues {
-        self.wrap.get_value()
+        self.wrap()
     }
 
     #[inline]
@@ -85,8 +144,16 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_rotation(&self) -> &i32 {
-        self.rotation.get_value()
+    #[must_use]
+    pub fn rotation(&self) -> i32 {
+        self.rotation.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> i32 {
+        self.rotation()
     }
 
     #[inline]
@@ -95,8 +162,16 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_left_inset(&self) -> &i32 {
-        self.left_inset.get_value()
+    #[must_use]
+    pub fn left_inset(&self) -> i32 {
+        self.left_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_inset()")]
+    pub fn get_left_inset(&self) -> i32 {
+        self.left_inset()
     }
 
     #[inline]
@@ -105,8 +180,16 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_top_inset(&self) -> &i32 {
-        self.top_inset.get_value()
+    #[must_use]
+    pub fn top_inset(&self) -> i32 {
+        self.top_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_inset()")]
+    pub fn get_top_inset(&self) -> i32 {
+        self.top_inset()
     }
 
     #[inline]
@@ -115,8 +198,16 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_right_inset(&self) -> &i32 {
-        self.right_inset.get_value()
+    #[must_use]
+    pub fn right_inset(&self) -> i32 {
+        self.right_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_inset()")]
+    pub fn get_right_inset(&self) -> i32 {
+        self.right_inset()
     }
 
     #[inline]
@@ -125,8 +216,16 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_bottom_inset(&self) -> &i32 {
-        self.bottom_inset.get_value()
+    #[must_use]
+    pub fn bottom_inset(&self) -> i32 {
+        self.bottom_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_inset()")]
+    pub fn get_bottom_inset(&self) -> i32 {
+        self.bottom_inset()
     }
 
     #[inline]
@@ -135,8 +234,22 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_use_paragraph_spacing(&self) -> &bool {
-        self.use_paragraph_spacing.get_value()
+    #[must_use]
+    pub fn shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
+        self.shape_auto_fit.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn use_paragraph_spacing(&self) -> bool {
+        self.use_paragraph_spacing.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use use_paragraph_spacing()")]
+    pub fn get_use_paragraph_spacing(&self) -> bool {
+        self.use_paragraph_spacing()
     }
 
     #[inline]
@@ -145,8 +258,10 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_auto_fit()")]
     pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
-        self.shape_auto_fit.as_ref()
+        self.shape_auto_fit()
     }
 
     #[inline]
@@ -161,46 +276,44 @@ impl BodyProperties {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        for attr in e.attributes().with_checks(false) {
-            if let Ok(attr) = attr {
-                let key = attr.key.into_inner();
-                let value = get_attribute_value(&attr).unwrap();
-                match key {
-                    b"rot" => {
-                        self.rotation.set_value_string(value);
-                    }
-                    b"vertOverflow" => {
-                        self.set_vert_overflow(value);
-                    }
-                    b"horzOverflow" => {
-                        self.set_horz_overflow(value);
-                    }
-                    b"rtlCol" => {
-                        self.set_rtl_col(value);
-                    }
-                    b"anchor" => {
-                        self.set_anchor(value);
-                    }
-                    b"wrap" => {
-                        self.wrap.set_value_string(value);
-                    }
-                    b"lIns" => {
-                        self.left_inset.set_value_string(value);
-                    }
-                    b"tIns" => {
-                        self.top_inset.set_value_string(value);
-                    }
-                    b"rIns" => {
-                        self.right_inset.set_value_string(value);
-                    }
-                    b"bIns" => {
-                        self.bottom_inset.set_value_string(value);
-                    }
-                    b"spcFirstLastPara" => {
-                        self.use_paragraph_spacing.set_value_string(value);
-                    }
-                    _ => {}
+        for attr in e.attributes().with_checks(false).flatten() {
+            let key = attr.key.into_inner();
+            let value = get_attribute_value(&attr).unwrap();
+            match key {
+                b"rot" => {
+                    self.rotation.set_value_string(value);
                 }
+                b"vertOverflow" => {
+                    self.set_vert_overflow(value);
+                }
+                b"horzOverflow" => {
+                    self.set_horz_overflow(value);
+                }
+                b"rtlCol" => {
+                    self.set_rtl_col(value);
+                }
+                b"anchor" => {
+                    self.set_anchor(value);
+                }
+                b"wrap" => {
+                    self.wrap.set_value_string(value);
+                }
+                b"lIns" => {
+                    self.left_inset.set_value_string(value);
+                }
+                b"tIns" => {
+                    self.top_inset.set_value_string(value);
+                }
+                b"rIns" => {
+                    self.right_inset.set_value_string(value);
+                }
+                b"bIns" => {
+                    self.bottom_inset.set_value_string(value);
+                }
+                b"spcFirstLastPara" => {
+                    self.use_paragraph_spacing.set_value_string(value);
+                }
+                _ => {}
             }
         }
 
@@ -212,8 +325,8 @@ impl BodyProperties {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:spAutoFit" {
-                    let mut obj = ShapeAutoFit::default();
-                    obj.set_attributes(reader, e);
+                    let obj = ShapeAutoFit::default();
+                    ShapeAutoFit::set_attributes(reader, e);
                     self.set_shape_auto_fit(obj);
                 }
             },
@@ -230,54 +343,57 @@ impl BodyProperties {
         let empty_flag = &self.shape_auto_fit.is_none();
 
         // a:bodyPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = self.vert_overflow.get_value() {
-            attributes.push(("vertOverflow", v));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        if let Some(v) = self.vert_overflow.value() {
+            attributes.push(("vertOverflow", v).into());
         }
-        if let Some(v) = self.horz_overflow.get_value() {
-            attributes.push(("horzOverflow", v));
+        if let Some(v) = self.horz_overflow.value() {
+            attributes.push(("horzOverflow", v).into());
         }
-        if let Some(v) = self.rtl_col.get_value() {
-            attributes.push(("rtlCol", v));
+        if let Some(v) = self.rtl_col.value() {
+            attributes.push(("rtlCol", v).into());
         }
-        if let Some(v) = self.anchor.get_value() {
-            attributes.push(("anchor", v));
+        if let Some(v) = self.anchor.value() {
+            attributes.push(("anchor", v).into());
         }
         if self.wrap.has_value() {
-            attributes.push(("wrap", self.wrap.get_value_string()));
+            attributes.push(("wrap", self.wrap.value_string()).into());
         }
-        let rotation = self.rotation.get_value_string();
+        let rotation = self.rotation.value_string();
         if self.rotation.has_value() {
-            attributes.push(("rot", &rotation));
+            attributes.push(("rot", &rotation).into());
         }
-        let l_ins = self.left_inset.get_value_string();
+        let l_ins = self.left_inset.value_string();
         if self.left_inset.has_value() {
-            attributes.push(("lIns", &l_ins));
+            attributes.push(("lIns", &l_ins).into());
         }
-        let t_ins = self.top_inset.get_value_string();
+        let t_ins = self.top_inset.value_string();
         if self.top_inset.has_value() {
-            attributes.push(("tIns", &t_ins));
+            attributes.push(("tIns", &t_ins).into());
         }
-        let r_ins = self.right_inset.get_value_string();
+        let r_ins = self.right_inset.value_string();
         if self.right_inset.has_value() {
-            attributes.push(("rIns", &r_ins));
+            attributes.push(("rIns", &r_ins).into());
         }
-        let b_ins = self.bottom_inset.get_value_string();
+        let b_ins = self.bottom_inset.value_string();
         if self.bottom_inset.has_value() {
-            attributes.push(("bIns", &b_ins));
+            attributes.push(("bIns", &b_ins).into());
         }
         if self.use_paragraph_spacing.has_value() {
-            attributes.push((
-                "spcFirstLastPara",
-                self.use_paragraph_spacing.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "spcFirstLastPara",
+                    self.use_paragraph_spacing.value_string(),
+                )
+                    .into(),
+            );
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);
 
         if !*empty_flag {
-            if let Some(v) = &self.shape_auto_fit {
-                v.write_to(writer);
+            if self.shape_auto_fit.is_some() {
+                ShapeAutoFit::write_to(writer);
             }
 
             write_end_tag(writer, "a:bodyPr");

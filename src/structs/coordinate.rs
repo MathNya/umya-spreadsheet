@@ -1,31 +1,54 @@
-use super::ColumnReference;
-use super::RowReference;
-use crate::helper::coordinate::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
+use std::fmt;
+
+use super::{
+    ColumnReference,
+    RowReference,
+};
+use crate::{
+    helper::coordinate::{
+        coordinate_from_index_with_lock,
+        index_from_coordinate,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {
     column: ColumnReference,
-    row: RowReference,
+    row:    RowReference,
 }
 
-impl ToString for Coordinate {
+impl fmt::Display for Coordinate {
     #[inline]
-    fn to_string(&self) -> String {
-        coordinate_from_index_with_lock(
-            self.column.get_num(),
-            self.row.get_num(),
-            self.column.get_is_lock(),
-            self.row.get_is_lock(),
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            coordinate_from_index_with_lock(
+                self.column.num(),
+                self.row.num(),
+                self.column.is_lock(),
+                self.row.is_lock(),
+            )
         )
     }
 }
 
 impl Coordinate {
     #[inline]
-    pub fn get_col_num(&self) -> &u32 {
-        self.column.get_num()
+    #[must_use]
+    pub fn col_num(&self) -> u32 {
+        self.column.num()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col_num()")]
+    pub fn get_col_num(&self) -> u32 {
+        self.col_num()
     }
 
     #[inline]
@@ -41,8 +64,16 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_row_num(&self) -> &u32 {
-        self.row.get_num()
+    #[must_use]
+    pub fn row_num(&self) -> u32 {
+        self.row.num()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_num()")]
+    pub fn get_row_num(&self) -> u32 {
+        self.row_num()
     }
 
     #[inline]
@@ -58,8 +89,16 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_is_lock_col(&self) -> &bool {
-        self.column.get_is_lock()
+    #[must_use]
+    pub fn is_lock_col(&self) -> bool {
+        self.column.is_lock()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock_col()")]
+    pub fn get_is_lock_col(&self) -> bool {
+        self.is_lock_col()
     }
 
     #[inline]
@@ -69,8 +108,16 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_is_lock_row(&self) -> &bool {
-        self.row.get_is_lock()
+    #[must_use]
+    pub fn is_lock_row(&self) -> bool {
+        self.row.is_lock()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock_row()")]
+    pub fn get_is_lock_row(&self) -> bool {
+        self.is_lock_row()
     }
 
     #[inline]
@@ -94,12 +141,13 @@ impl Coordinate {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index_with_lock(
-            self.column.get_num(),
-            self.row.get_num(),
-            self.column.get_is_lock(),
-            self.row.get_is_lock(),
+            self.column.num(),
+            self.row.num(),
+            self.column.is_lock(),
+            self.row.is_lock(),
         )
     }
 }
@@ -107,10 +155,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.column
             .adjustment_insert_value(root_col_num, offset_col_num);
@@ -121,10 +169,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.column
             .adjustment_remove_value(root_col_num, offset_col_num);
@@ -135,10 +183,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.column.is_remove_value(root_col_num, offset_col_num)
             || self.row.is_remove_value(root_row_num, offset_row_num)

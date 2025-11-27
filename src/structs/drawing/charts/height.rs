@@ -1,19 +1,32 @@
 // c:h
-use super::super::super::DoubleValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::DoubleValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Height {
     val: DoubleValue,
 }
 impl Height {
-    pub fn get_val(&self) -> &f64 {
-        self.val.get_value()
+    #[must_use]
+    pub fn val(&self) -> f64 {
+        self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> f64 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: f64) -> &mut Height {
@@ -34,7 +47,7 @@ impl Height {
         write_start_tag(
             writer,
             "c:h",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

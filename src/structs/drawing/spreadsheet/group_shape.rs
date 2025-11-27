@@ -1,36 +1,63 @@
 // xdr:grpSp
-use super::GroupShapeProperties;
-use super::NonVisualGroupShapeProperties;
-use super::Picture;
-use super::Shape;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    GroupShapeProperties,
+    NonVisualGroupShapeProperties,
+    Picture,
+    Shape,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GroupShape {
     non_visual_group_shape_properties: NonVisualGroupShapeProperties,
-    group_shape_properties: GroupShapeProperties,
-    picture_collection: ThinVec<Picture>,
-    shape_collection: ThinVec<Shape>,
+    group_shape_properties:            GroupShapeProperties,
+    picture_collection:                Vec<Picture>,
+    shape_collection:                  Vec<Shape>,
 }
 
 impl GroupShape {
     #[inline]
-    pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
+    #[must_use]
+    pub fn non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
         &self.non_visual_group_shape_properties
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_group_shape_properties()")]
+    pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
+        self.non_visual_group_shape_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_group_shape_properties_mut(&mut self) -> &mut NonVisualGroupShapeProperties {
+        &mut self.non_visual_group_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_group_shape_properties_mut()")]
     pub fn get_non_visual_group_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeProperties {
-        &mut self.non_visual_group_shape_properties
+        self.non_visual_group_shape_properties_mut()
     }
 
     #[inline]
@@ -39,13 +66,27 @@ impl GroupShape {
     }
 
     #[inline]
-    pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
+    #[must_use]
+    pub fn group_shape_properties(&self) -> &GroupShapeProperties {
         &self.group_shape_properties
     }
 
     #[inline]
-    pub fn get_group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_properties()")]
+    pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
+        self.group_shape_properties()
+    }
+
+    #[inline]
+    pub fn group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
         &mut self.group_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_properties_mut()")]
+    pub fn get_group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
+        self.group_shape_properties_mut()
     }
 
     #[inline]
@@ -54,13 +95,27 @@ impl GroupShape {
     }
 
     #[inline]
-    pub fn get_picture_collection(&self) -> &[Picture] {
+    #[must_use]
+    pub fn picture_collection(&self) -> &[Picture] {
         &self.picture_collection
     }
 
     #[inline]
-    pub fn get_picture_collection_mut(&mut self) -> &mut ThinVec<Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection()")]
+    pub fn get_picture_collection(&self) -> &[Picture] {
+        self.picture_collection()
+    }
+
+    #[inline]
+    pub fn picture_collection_mut(&mut self) -> &mut Vec<Picture> {
         &mut self.picture_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection_mut()")]
+    pub fn get_picture_collection_mut(&mut self) -> &mut Vec<Picture> {
+        self.picture_collection_mut()
     }
 
     #[inline]
@@ -69,13 +124,27 @@ impl GroupShape {
     }
 
     #[inline]
-    pub fn get_shape_collection(&self) -> &[Shape] {
+    #[must_use]
+    pub fn shape_collection(&self) -> &[Shape] {
         &self.shape_collection
     }
 
     #[inline]
-    pub fn get_shape_collection_mut(&mut self) -> &mut ThinVec<Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection()")]
+    pub fn get_shape_collection(&self) -> &[Shape] {
+        self.shape_collection()
+    }
+
+    #[inline]
+    pub fn shape_collection_mut(&mut self) -> &mut Vec<Shape> {
         &mut self.shape_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection_mut()")]
+    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
+        self.shape_collection_mut()
     }
 
     #[inline]
@@ -130,10 +199,10 @@ impl GroupShape {
         write_start_tag(writer, "xdr:grpSp", vec![], false);
 
         // xdr:nvGrpSpPr
-        &self.non_visual_group_shape_properties.write_to(writer);
+        self.non_visual_group_shape_properties.write_to(writer);
 
         // xdr:grpSpPr
-        &self.group_shape_properties.write_to(writer);
+        self.group_shape_properties.write_to(writer);
 
         // xdr:pic
         for obj in &self.picture_collection {
@@ -142,7 +211,7 @@ impl GroupShape {
 
         // xdr:sp
         for obj in &self.shape_collection {
-            obj.write_to(writer, rel_list, &0);
+            obj.write_to(writer, rel_list, 0);
         }
 
         write_end_tag(writer, "xdr:grpSp");

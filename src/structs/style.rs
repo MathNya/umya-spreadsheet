@@ -1,15 +1,14 @@
-use crate::structs::Alignment;
-use crate::structs::Borders;
-use crate::structs::Color;
-use crate::structs::Fill;
-use crate::structs::Font;
-use crate::structs::NumberingFormat;
-use crate::structs::PatternValues;
-use crate::structs::Protection;
-use crate::structs::UInt32Value;
-use md5::Digest;
-
-use crate::BooleanValue;
+use crate::structs::{
+    Alignment,
+    Borders,
+    Color,
+    Fill,
+    Font,
+    NumberingFormat,
+    PatternValues,
+    Protection,
+    UInt32Value,
+};
 
 /// # Examples
 /// ## add border
@@ -17,16 +16,31 @@ use crate::BooleanValue;
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("D2");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("D2");
 ///
 /// // add bottom border
-/// style.get_borders_mut().get_bottom_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_bottom_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add top border
-/// style.get_borders_mut().get_top_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_top_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add left border
-/// style.get_borders_mut().get_left_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_left_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add right border
-/// style.get_borders_mut().get_right_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_right_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// ```
 ///
 /// ## change cell color
@@ -35,7 +49,10 @@ use crate::BooleanValue;
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("A1");
 ///
 /// // fill color on red.
 /// style.set_background_color(Color::COLOR_RED);
@@ -47,30 +64,50 @@ use crate::BooleanValue;
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("A1");
 ///
 /// // font color on red.
-/// style.get_font_mut().get_color_mut().set_argb(Color::COLOR_RED);
+/// style
+///     .get_font_mut()
+///     .get_color_mut()
+///     .set_argb(Color::COLOR_RED);
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
-    font: Option<Box<Font>>,
-    fill: Option<Box<Fill>>,
-    borders: Option<Box<Borders>>,
-    alignment: Option<Alignment>,
+    font:             Option<Box<Font>>,
+    fill:             Option<Box<Fill>>,
+    borders:          Option<Box<Borders>>,
+    alignment:        Option<Alignment>,
     numbering_format: Option<Box<NumberingFormat>>,
-    format_id: UInt32Value,
-    protection: Option<Protection>,
+    format_id:        UInt32Value,
+    protection:       Option<Protection>,
 }
 impl Style {
     #[inline]
-    pub fn get_font(&self) -> Option<&Font> {
+    #[must_use]
+    pub fn font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font()")]
+    pub fn get_font(&self) -> Option<&Font> {
+        self.font()
+    }
+
+    #[inline]
+    pub fn font_mut(&mut self) -> &mut Font {
+        self.font.get_or_insert(Box::new(Font::default_value()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_mut()")]
     pub fn get_font_mut(&mut self) -> &mut Font {
-        self.font.get_or_insert(Box::new(Font::get_default_value()))
+        self.font_mut()
     }
 
     #[inline]
@@ -92,13 +129,27 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_fill(&self) -> Option<&Fill> {
+    #[must_use]
+    pub fn fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill()")]
+    pub fn get_fill(&self) -> Option<&Fill> {
+        self.fill()
+    }
+
+    #[inline]
+    pub fn fill_mut(&mut self) -> &mut Fill {
+        self.fill.get_or_insert(Box::new(Fill::default_value()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_mut()")]
     pub fn get_fill_mut(&mut self) -> &mut Fill {
-        self.fill.get_or_insert(Box::new(Fill::get_default_value()))
+        self.fill_mut()
     }
 
     #[inline]
@@ -108,42 +159,50 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_background_color(&self) -> Option<&Color> {
-        self.get_fill()
-            .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
+    #[must_use]
+    pub fn background_color(&self) -> Option<&Color> {
+        self.fill()
+            .and_then(|fill| fill.pattern_fill()?.foreground_color())
     }
 
     #[inline]
-    pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_color()")]
+    pub fn get_background_color(&self) -> Option<&Color> {
+        self.background_color()
+    }
+    
+    #[inline]
+    pub fn set_background_color<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
         self.set_background_color_solid(color);
         self
     }
 
-    pub fn set_background_color_solid<S: Into<String>>(&mut self, color: S) -> &mut Self {
-        self.get_fill_mut()
-            .get_pattern_fill_mut()
+    pub fn set_background_color_solid<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
+        self.fill_mut()
+            .pattern_fill_mut()
             .set_pattern_type(PatternValues::Solid)
             .remove_background_color()
-            .get_foreground_color_mut()
-            .set_argb(color);
+            .foreground_color_mut()
+            .set_argb_str(color);
         self
     }
 
-    pub fn set_background_color_with_pattern<S: Into<String>>(
+    pub fn set_background_color_with_pattern<S: AsRef<str>>(
         &mut self,
         color1: S,
         color2: S,
         pattern: PatternValues,
     ) -> &mut Self {
-        self.get_fill_mut()
-            .get_pattern_fill_mut()
+        self.fill_mut()
+            .pattern_fill_mut()
             .set_pattern_type(pattern)
-            .get_background_color_mut()
-            .set_argb(color1);
-        self.get_fill_mut()
-            .get_pattern_fill_mut()
-            .get_foreground_color_mut()
-            .set_argb(color2);
+            .background_color_mut()
+            .set_argb_str(color1);
+        self.fill_mut()
+            .pattern_fill_mut()
+            .foreground_color_mut()
+            .set_argb_str(color2);
         self
     }
 
@@ -160,14 +219,28 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_borders(&self) -> Option<&Borders> {
+    #[must_use]
+    pub fn borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
 
     #[inline]
-    pub fn get_borders_mut(&mut self) -> &mut Borders {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use borders()")]
+    pub fn get_borders(&self) -> Option<&Borders> {
+        self.borders()
+    }
+
+    #[inline]
+    pub fn borders_mut(&mut self) -> &mut Borders {
         self.borders
-            .get_or_insert(Box::new(Borders::get_default_value()))
+            .get_or_insert(Box::new(Borders::default_value()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use borders_mut()")]
+    pub fn get_borders_mut(&mut self) -> &mut Borders {
+        self.borders_mut()
     }
 
     #[inline]
@@ -189,13 +262,27 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_alignment(&self) -> Option<&Alignment> {
+    #[must_use]
+    pub fn alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
     #[inline]
-    pub fn get_alignment_mut(&mut self) -> &mut Alignment {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub fn get_alignment(&self) -> Option<&Alignment> {
+        self.alignment()
+    }
+
+    #[inline]
+    pub fn alignment_mut(&mut self) -> &mut Alignment {
         self.alignment.get_or_insert(Alignment::default())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use alignment_mut()")]
+    pub fn get_alignment_mut(&mut self) -> &mut Alignment {
+        self.alignment_mut()
     }
 
     #[inline]
@@ -217,14 +304,28 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
+    #[must_use]
+    pub fn numbering_format(&self) -> Option<&NumberingFormat> {
         self.numbering_format.as_deref()
     }
 
     #[inline]
-    pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use numbering_format()")]
+    pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
+        self.numbering_format()
+    }
+
+    #[inline]
+    pub fn numbering_format_mut(&mut self) -> &mut NumberingFormat {
         self.numbering_format
             .get_or_insert(Box::new(NumberingFormat::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use numbering_format_mut()")]
+    pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
+        self.numbering_format_mut()
     }
 
     #[inline]
@@ -240,13 +341,27 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_number_format(&self) -> Option<&NumberingFormat> {
-        self.get_numbering_format()
+    #[must_use]
+    pub fn number_format(&self) -> Option<&NumberingFormat> {
+        self.numbering_format()
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_format()")]
+    pub fn get_number_format(&self) -> Option<&NumberingFormat> {
+        self.number_format()
+    }
+
+    #[inline]
+    pub fn number_format_mut(&mut self) -> &mut NumberingFormat {
+        self.numbering_format_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use number_format_mut()")]
     pub fn get_number_format_mut(&mut self) -> &mut NumberingFormat {
-        self.get_numbering_format_mut()
+        self.number_format_mut()
     }
 
     #[inline]
@@ -260,8 +375,16 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_format_id(&self) -> &u32 {
-        self.format_id.get_value()
+    #[must_use]
+    pub fn format_id(&self) -> u32 {
+        self.format_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_id()")]
+    pub fn get_format_id(&self) -> u32 {
+        self.format_id()
     }
 
     #[inline]
@@ -271,13 +394,27 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_protection(&self) -> Option<&Protection> {
+    #[must_use]
+    pub fn protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
 
     #[inline]
-    pub fn get_protection_mut(&mut self) -> &mut Protection {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use protection()")]
+    pub fn get_protection(&self) -> Option<&Protection> {
+        self.protection()
+    }
+
+    #[inline]
+    pub fn protection_mut(&mut self) -> &mut Protection {
         self.protection.get_or_insert(Protection::default())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use protection_mut()")]
+    pub fn get_protection_mut(&mut self) -> &mut Protection {
+        self.protection_mut()
     }
 
     #[inline]
@@ -293,6 +430,7 @@ impl Style {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_protection_crate(&mut self, value: Option<Protection>) -> &mut Self {
         self.protection = value;
         self
@@ -319,20 +457,34 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_default_value() -> Self {
+    #[must_use]
+    pub fn default_value() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_default_value());
-        def.set_borders(Borders::get_default_value());
-        def.set_fill(Fill::get_default_value());
+        def.set_font(Font::default_value());
+        def.set_borders(Borders::default_value());
+        def.set_fill(Fill::default_value());
         def
     }
 
     #[inline]
-    pub(crate) fn get_default_value_2() -> Self {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_value()")]
+    pub fn get_default_value() -> Self {
+        Self::default_value()
+    }
+
+    #[inline]
+    pub(crate) fn default_value_2() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_default_value());
-        def.set_borders(Borders::get_default_value());
-        def.set_fill(Fill::get_default_value_2());
+        def.set_font(Font::default_value());
+        def.set_borders(Borders::default_value());
+        def.set_fill(Fill::default_value_2());
         def
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_value_2()")]
+    pub(crate) fn get_default_value_2() -> Self {
+        Self::default_value_2()
     }
 }

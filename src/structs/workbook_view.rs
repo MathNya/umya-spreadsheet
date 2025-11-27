@@ -1,11 +1,20 @@
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
 use super::Int32Value;
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Debug)]
 pub struct WorkbookView {
@@ -39,8 +48,16 @@ impl Default for WorkbookView {
 }
 impl WorkbookView {
     #[inline]
-    pub fn get_active_tab(&self) -> &u32 {
-        self.active_tab.get_value()
+    #[must_use]
+    pub fn active_tab(&self) -> u32 {
+        self.active_tab.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_tab()")]
+    pub fn get_active_tab(&self) -> u32 {
+        self.active_tab()
     }
 
     #[inline]
@@ -50,8 +67,16 @@ impl WorkbookView {
     }
 
     #[inline]
-    pub fn get_x_window(&self) -> &i32 {
-        self.x_window.get_value()
+    #[must_use]
+    pub fn x_window(&self) -> i32 {
+        self.x_window.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use x_window()")]
+    pub fn get_x_window(&self) -> i32 {
+        self.x_window()
     }
 
     #[inline]
@@ -61,8 +86,16 @@ impl WorkbookView {
     }
 
     #[inline]
-    pub fn get_y_window(&self) -> &i32 {
-        self.y_window.get_value()
+    #[must_use]
+    pub fn y_window(&self) -> i32 {
+        self.y_window.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use y_window()")]
+    pub fn get_y_window(&self) -> i32 {
+        self.y_window()
     }
 
     #[inline]
@@ -72,8 +105,16 @@ impl WorkbookView {
     }
 
     #[inline]
-    pub fn get_window_width(&self) -> &i32 {
-        self.window_width.get_value()
+    #[must_use]
+    pub fn window_width(&self) -> i32 {
+        self.window_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use window_width()")]
+    pub fn get_window_width(&self) -> i32 {
+        self.window_width()
     }
 
     #[inline]
@@ -83,8 +124,16 @@ impl WorkbookView {
     }
 
     #[inline]
-    pub fn get_window_height(&self) -> &i32 {
-        self.window_height.get_value()
+    #[must_use]
+    pub fn window_height(&self) -> i32 {
+        self.window_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use window_height()")]
+    pub fn get_window_height(&self) -> i32 {
+        self.window_height()
     }
 
     #[inline]
@@ -94,8 +143,16 @@ impl WorkbookView {
     }
 
     #[inline]
-    pub fn get_tab_ratio(&self) -> &i32 {
-        self.tab_ratio.get_value()
+    #[must_use]
+    pub fn tab_ratio(&self) -> i32 {
+        self.tab_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tab_ratio()")]
+    pub fn get_tab_ratio(&self) -> i32 {
+        self.tab_ratio()
     }
 
     #[inline]
@@ -120,35 +177,36 @@ impl WorkbookView {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let active_tab = self.active_tab.get_value_string();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+
+        let active_tab = self.active_tab.value_string();
         if self.active_tab.has_value() {
-            attributes.push(("activeTab", active_tab.as_str()));
+            attributes.push(("activeTab", &active_tab).into());
         }
 
-        let x_window = self.x_window.get_value_string();
+        let x_window = self.x_window.value_string();
         if self.x_window.has_value() {
-            attributes.push(("xWindow", x_window.as_str()));
+            attributes.push(("xWindow", &x_window).into());
         }
 
-        let y_window = self.y_window.get_value_string();
+        let y_window = self.y_window.value_string();
         if self.y_window.has_value() {
-            attributes.push(("yWindow", y_window.as_str()));
+            attributes.push(("yWindow", &y_window).into());
         }
 
-        let window_width = self.window_width.get_value_string();
+        let window_width = self.window_width.value_string();
         if self.window_width.has_value() {
-            attributes.push(("windowWidth", window_width.as_str()));
+            attributes.push(("windowWidth", &window_width).into());
         }
 
-        let window_height = self.window_height.get_value_string();
+        let window_height = self.window_height.value_string();
         if self.window_height.has_value() {
-            attributes.push(("windowHeight", window_height.as_str()));
+            attributes.push(("windowHeight", &window_height).into());
         }
 
-        let tab_ratio = self.tab_ratio.get_value_string();
+        let tab_ratio = self.tab_ratio.value_string();
         if self.tab_ratio.has_value() {
-            attributes.push(("tabRatio", tab_ratio.as_str()));
+            attributes.push(("tabRatio", &tab_ratio).into());
         }
 
         // workbookView

@@ -1,28 +1,54 @@
 // c:marker
-use super::ShapeProperties;
-use super::Size;
-use super::Symbol;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Symbol;
+use crate::{
+    drawing::charts::{
+        ShapeProperties,
+        Size,
+    },
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Marker {
-    symbol: Option<Symbol>,
-    size: Option<Size>,
+    symbol:           Option<Symbol>,
+    size:             Option<Size>,
     shape_properties: Option<ShapeProperties>,
 }
 
 impl Marker {
-    pub fn get_symbol(&self) -> Option<&Symbol> {
+    #[must_use]
+    pub fn symbol(&self) -> Option<&Symbol> {
         self.symbol.as_ref()
     }
 
-    pub fn get_symbol_mut(&mut self) -> Option<&mut Symbol> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use symbol()")]
+    pub fn get_symbol(&self) -> Option<&Symbol> {
+        self.symbol()
+    }
+
+    pub fn symbol_mut(&mut self) -> Option<&mut Symbol> {
         self.symbol.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use symbol_mut()")]
+    pub fn get_symbol_mut(&mut self) -> Option<&mut Symbol> {
+        self.symbol_mut()
     }
 
     pub fn set_symbol(&mut self, value: Symbol) -> &mut Marker {
@@ -30,12 +56,24 @@ impl Marker {
         self
     }
 
-    pub fn get_size(&self) -> Option<&Size> {
+    #[must_use]
+    pub fn size(&self) -> Option<&Size> {
         self.size.as_ref()
     }
 
-    pub fn get_size_mut(&mut self) -> Option<&mut Size> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use size()")]
+    pub fn get_size(&self) -> Option<&Size> {
+        self.size()
+    }
+
+    pub fn size_mut(&mut self) -> Option<&mut Size> {
         self.size.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use size_mut()")]
+    pub fn get_size_mut(&mut self) -> Option<&mut Size> {
+        self.size_mut()
     }
 
     pub fn set_size(&mut self, value: Size) -> &mut Marker {
@@ -43,12 +81,24 @@ impl Marker {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {

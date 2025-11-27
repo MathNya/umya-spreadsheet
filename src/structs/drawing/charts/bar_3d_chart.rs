@@ -1,41 +1,66 @@
 // c:bar3DChart
-use super::AreaChartSeries;
-use super::AreaChartSeriesList;
-use super::AxisId;
-use super::BarDirection;
-use super::DataLabels;
-use super::GapWidth;
-use super::Grouping;
-use super::Shape;
-use super::VaryColors;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    AreaChartSeries,
+    AreaChartSeriesList,
+    AxisId,
+    BarDirection,
+    DataLabels,
+    GapWidth,
+    Grouping,
+    Shape,
+    VaryColors,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Bar3DChart {
-    bar_direction: BarDirection,
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    bar_direction:          BarDirection,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    gap_width: GapWidth,
-    shape: Shape,
-    axis_id: ThinVec<AxisId>,
+    data_labels:            DataLabels,
+    gap_width:              GapWidth,
+    shape:                  Shape,
+    axis_id:                Vec<AxisId>,
 }
 
 impl Bar3DChart {
-    pub fn get_bar_direction(&self) -> &BarDirection {
+    #[must_use]
+    pub fn bar_direction(&self) -> &BarDirection {
         &self.bar_direction
     }
 
-    pub fn get_bar_direction_mut(&mut self) -> &mut BarDirection {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bar_direction()")]
+    pub fn get_bar_direction(&self) -> &BarDirection {
+        self.bar_direction()
+    }
+
+    pub fn bar_direction_mut(&mut self) -> &mut BarDirection {
         &mut self.bar_direction
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bar_direction_mut()")]
+    pub fn get_bar_direction_mut(&mut self) -> &mut BarDirection {
+        self.bar_direction_mut()
     }
 
     pub fn set_bar_direction(&mut self, value: BarDirection) -> &mut Bar3DChart {
@@ -43,12 +68,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_grouping(&self) -> &Grouping {
+    #[must_use]
+    pub fn grouping(&self) -> &Grouping {
         &self.grouping
     }
 
-    pub fn get_grouping_mut(&mut self) -> &mut Grouping {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use grouping()")]
+    pub fn get_grouping(&self) -> &Grouping {
+        self.grouping()
+    }
+
+    pub fn grouping_mut(&mut self) -> &mut Grouping {
         &mut self.grouping
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use grouping_mut()")]
+    pub fn get_grouping_mut(&mut self) -> &mut Grouping {
+        self.grouping_mut()
     }
 
     pub fn set_grouping(&mut self, value: Grouping) -> &mut Bar3DChart {
@@ -56,12 +93,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_vary_colors(&self) -> &VaryColors {
+    #[must_use]
+    pub fn vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
 
-    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vary_colors()")]
+    pub fn get_vary_colors(&self) -> &VaryColors {
+        self.vary_colors()
+    }
+
+    pub fn vary_colors_mut(&mut self) -> &mut VaryColors {
         &mut self.vary_colors
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use vary_colors_mut()")]
+    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+        self.vary_colors_mut()
     }
 
     pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut Bar3DChart {
@@ -69,12 +118,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+    #[must_use]
+    pub fn area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list()")]
+    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+        self.area_chart_series_list()
+    }
+
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         &mut self.area_chart_series_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
     }
 
     pub fn set_area_chart_series_list(&mut self, value: AreaChartSeriesList) -> &mut Self {
@@ -82,12 +143,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_data_labels(&self) -> &DataLabels {
+    #[must_use]
+    pub fn data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> &DataLabels {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> &mut DataLabels {
         &mut self.data_labels
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Bar3DChart {
@@ -95,12 +168,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_gap_width(&self) -> &GapWidth {
+    #[must_use]
+    pub fn gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
 
-    pub fn get_gap_width_mut(&mut self) -> &mut GapWidth {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gap_width()")]
+    pub fn get_gap_width(&self) -> &GapWidth {
+        self.gap_width()
+    }
+
+    pub fn gap_width_mut(&mut self) -> &mut GapWidth {
         &mut self.gap_width
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use gap_width_mut()")]
+    pub fn get_gap_width_mut(&mut self) -> &mut GapWidth {
+        self.gap_width_mut()
     }
 
     pub fn set_gap_width(&mut self, value: GapWidth) -> &mut Bar3DChart {
@@ -108,12 +193,24 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_shape(&self) -> &Shape {
+    #[must_use]
+    pub fn shape(&self) -> &Shape {
         &self.shape
     }
 
-    pub fn get_shape_mut(&mut self) -> &mut Shape {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> &Shape {
+        self.shape()
+    }
+
+    pub fn shape_mut(&mut self) -> &mut Shape {
         &mut self.shape
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> &mut Shape {
+        self.shape_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut Bar3DChart {
@@ -121,15 +218,27 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_axis_id(&self) -> &[AxisId] {
+    #[must_use]
+    pub fn axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use axis_id()")]
+    pub fn get_axis_id(&self) -> &[AxisId] {
+        self.axis_id()
+    }
+
+    pub fn axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Bar3DChart {
+    #[deprecated(since = "3.0.0", note = "Use axis_id_mut()")]
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+        self.axis_id_mut()
+    }
+
+    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Bar3DChart {
         self.axis_id = value.into();
         self
     }
@@ -151,7 +260,7 @@ impl Bar3DChart {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
+                        self.area_chart_series_list_mut()
                             .add_area_chart_series(obj);
                         }
                     b"c:dLbls" => {
@@ -194,7 +303,7 @@ impl Bar3DChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:bar3DChart
         write_start_tag(writer, "c:bar3DChart", vec![], false);
 
@@ -208,8 +317,8 @@ impl Bar3DChart {
         self.vary_colors.write_to(writer);
 
         // c:ser
-        for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+        for v in self.area_chart_series_list.area_chart_series() {
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

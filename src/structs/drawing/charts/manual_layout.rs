@@ -1,40 +1,66 @@
 // c:manualLayout
-use super::Height;
-use super::HeightMode;
-use super::LayoutTarget;
-use super::Left;
-use super::LeftMode;
-use super::Top;
-use super::TopMode;
-use super::Width;
-use super::WidthMode;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Height,
+    HeightMode,
+    LayoutTarget,
+    Left,
+    LeftMode,
+    Top,
+    TopMode,
+    Width,
+    WidthMode,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ManualLayout {
-    height: Option<Height>,
-    height_mode: Option<HeightMode>,
+    height:        Option<Height>,
+    height_mode:   Option<HeightMode>,
     layout_target: Option<LayoutTarget>,
-    left: Option<Left>,
-    left_mode: Option<LeftMode>,
-    top: Option<Top>,
-    top_mode: Option<TopMode>,
-    width: Option<Width>,
-    width_mode: Option<WidthMode>,
+    left:          Option<Left>,
+    left_mode:     Option<LeftMode>,
+    top:           Option<Top>,
+    top_mode:      Option<TopMode>,
+    width:         Option<Width>,
+    width_mode:    Option<WidthMode>,
 }
 
 impl ManualLayout {
-    pub fn get_height(&self) -> Option<&Height> {
+    #[must_use]
+    pub fn height(&self) -> Option<&Height> {
         self.height.as_ref()
     }
 
-    pub fn get_height_mut(&mut self) -> Option<&mut Height> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use height()")]
+    pub fn get_height(&self) -> Option<&Height> {
+        self.height()
+    }
+
+    pub fn height_mut(&mut self) -> Option<&mut Height> {
         self.height.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use height_mut()")]
+    pub fn get_height_mut(&mut self) -> Option<&mut Height> {
+        self.height_mut()
     }
 
     pub fn set_height(&mut self, value: Height) -> &mut ManualLayout {
@@ -42,12 +68,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_height_mode(&self) -> Option<&HeightMode> {
+    #[must_use]
+    pub fn height_mode(&self) -> Option<&HeightMode> {
         self.height_mode.as_ref()
     }
 
-    pub fn get_height_mode_mut(&mut self) -> Option<&mut HeightMode> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use height_mode()")]
+    pub fn get_height_mode(&self) -> Option<&HeightMode> {
+        self.height_mode()
+    }
+
+    pub fn height_mode_mut(&mut self) -> Option<&mut HeightMode> {
         self.height_mode.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use height_mode_mut()")]
+    pub fn get_height_mode_mut(&mut self) -> Option<&mut HeightMode> {
+        self.height_mode_mut()
     }
 
     pub fn set_height_mode(&mut self, value: HeightMode) -> &mut ManualLayout {
@@ -55,12 +93,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_layout_target(&self) -> Option<&LayoutTarget> {
+    #[must_use]
+    pub fn layout_target(&self) -> Option<&LayoutTarget> {
         self.layout_target.as_ref()
     }
 
-    pub fn get_layout_target_mut(&mut self) -> Option<&mut LayoutTarget> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use layout_target()")]
+    pub fn get_layout_target(&self) -> Option<&LayoutTarget> {
+        self.layout_target()
+    }
+
+    pub fn layout_target_mut(&mut self) -> Option<&mut LayoutTarget> {
         self.layout_target.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use layout_target_mut()")]
+    pub fn get_layout_target_mut(&mut self) -> Option<&mut LayoutTarget> {
+        self.layout_target_mut()
     }
 
     pub fn set_layout_target(&mut self, value: LayoutTarget) -> &mut ManualLayout {
@@ -68,12 +118,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_left(&self) -> Option<&Left> {
+    #[must_use]
+    pub fn left(&self) -> Option<&Left> {
         self.left.as_ref()
     }
 
-    pub fn get_left_mut(&mut self) -> Option<&mut Left> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left()")]
+    pub fn get_left(&self) -> Option<&Left> {
+        self.left()
+    }
+
+    pub fn left_mut(&mut self) -> Option<&mut Left> {
         self.left.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use left_mut()")]
+    pub fn get_left_mut(&mut self) -> Option<&mut Left> {
+        self.left_mut()
     }
 
     pub fn set_left(&mut self, value: Left) -> &mut ManualLayout {
@@ -81,12 +143,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_left_mode(&self) -> Option<&LeftMode> {
+    #[must_use]
+    pub fn left_mode(&self) -> Option<&LeftMode> {
         self.left_mode.as_ref()
     }
 
-    pub fn get_left_mode_mut(&mut self) -> Option<&mut LeftMode> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_mode()")]
+    pub fn get_left_mode(&self) -> Option<&LeftMode> {
+        self.left_mode()
+    }
+
+    pub fn left_mode_mut(&mut self) -> Option<&mut LeftMode> {
         self.left_mode.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use left_mode_mut()")]
+    pub fn get_left_mode_mut(&mut self) -> Option<&mut LeftMode> {
+        self.left_mode_mut()
     }
 
     pub fn set_left_mode(&mut self, value: LeftMode) -> &mut ManualLayout {
@@ -94,12 +168,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_top(&self) -> Option<&Top> {
+    #[must_use]
+    pub fn top(&self) -> Option<&Top> {
         self.top.as_ref()
     }
 
-    pub fn get_top_mut(&mut self) -> Option<&mut Top> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top()")]
+    pub fn get_top(&self) -> Option<&Top> {
+        self.top()
+    }
+
+    pub fn top_mut(&mut self) -> Option<&mut Top> {
         self.top.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use top_mut()")]
+    pub fn get_top_mut(&mut self) -> Option<&mut Top> {
+        self.top_mut()
     }
 
     pub fn set_top(&mut self, value: Top) -> &mut ManualLayout {
@@ -107,12 +193,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_top_mode(&self) -> Option<&TopMode> {
+    #[must_use]
+    pub fn top_mode(&self) -> Option<&TopMode> {
         self.top_mode.as_ref()
     }
 
-    pub fn get_top_mode_mut(&mut self) -> Option<&mut TopMode> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_mode()")]
+    pub fn get_top_mode(&self) -> Option<&TopMode> {
+        self.top_mode()
+    }
+
+    pub fn top_mode_mut(&mut self) -> Option<&mut TopMode> {
         self.top_mode.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use top_mode_mut()")]
+    pub fn get_top_mode_mut(&mut self) -> Option<&mut TopMode> {
+        self.top_mode_mut()
     }
 
     pub fn set_top_mode(&mut self, value: TopMode) -> &mut ManualLayout {
@@ -120,12 +218,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_width(&self) -> Option<&Width> {
+    #[must_use]
+    pub fn width(&self) -> Option<&Width> {
         self.width.as_ref()
     }
 
-    pub fn get_width_mut(&mut self) -> Option<&mut Width> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> Option<&Width> {
+        self.width()
+    }
+
+    pub fn width_mut(&mut self) -> Option<&mut Width> {
         self.width.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use width_mut()")]
+    pub fn get_width_mut(&mut self) -> Option<&mut Width> {
+        self.width_mut()
     }
 
     pub fn set_width(&mut self, value: Width) -> &mut ManualLayout {
@@ -133,12 +243,24 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_width_mode(&self) -> Option<&WidthMode> {
+    #[must_use]
+    pub fn width_mode(&self) -> Option<&WidthMode> {
         self.width_mode.as_ref()
     }
 
-    pub fn get_width_mode_mut(&mut self) -> Option<&mut WidthMode> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width_mode()")]
+    pub fn get_width_mode(&self) -> Option<&WidthMode> {
+        self.width_mode()
+    }
+
+    pub fn width_mode_mut(&mut self) -> Option<&mut WidthMode> {
         self.width_mode.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use width_mode_mut()")]
+    pub fn get_width_mode_mut(&mut self) -> Option<&mut WidthMode> {
+        self.width_mode_mut()
     }
 
     pub fn set_width_mode(&mut self, value: WidthMode) -> &mut ManualLayout {
@@ -146,6 +268,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.height.is_none()
             && self.height_mode.is_none()

@@ -1,31 +1,60 @@
-use super::ConditionalFormattingRule;
-use super::DifferentialFormats;
-use super::SequenceOfReferences;
-use crate::reader::driver::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ConditionalFormattingRule,
+    DifferentialFormats,
+    SequenceOfReferences,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
-    conditional_collection: ThinVec<ConditionalFormattingRule>,
+    conditional_collection: Vec<ConditionalFormattingRule>,
 }
 
 impl ConditionalFormatting {
     #[inline]
-    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+    #[must_use]
+    pub fn sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
     #[inline]
-    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references()")]
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+        self.sequence_of_references()
+    }
+
+    #[inline]
+    pub fn sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references_mut()")]
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+        self.sequence_of_references_mut()
     }
 
     #[inline]
@@ -35,19 +64,33 @@ impl ConditionalFormatting {
     }
 
     #[inline]
-    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
+    #[must_use]
+    pub fn conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
     #[inline]
-    pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use conditional_collection()")]
+    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
+        self.conditional_collection()
+    }
+
+    #[inline]
+    pub fn conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
         &mut self.conditional_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use conditional_collection_mut()")]
+    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+        self.conditional_collection_mut()
     }
 
     #[inline]
     pub fn set_conditional_collection(
         &mut self,
-        value: impl Into<ThinVec<ConditionalFormattingRule>>,
+        value: impl Into<Vec<ConditionalFormattingRule>>,
     ) -> &mut Self {
         self.conditional_collection = value.into();
         self
@@ -102,10 +145,10 @@ impl ConditionalFormatting {
         let is_inner = !self.conditional_collection.is_empty();
 
         // conditionalFormatting
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
-        attributes.push(("sqref", sequence_of_references));
+        attributes.push(("sqref", sequence_of_references).into());
 
         write_start_tag(writer, "conditionalFormatting", attributes, !is_inner);
 
@@ -123,10 +166,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.sequence_of_references.adjustment_insert_coordinate(
             root_col_num,
@@ -139,10 +182,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.sequence_of_references.adjustment_remove_coordinate(
             root_col_num,
@@ -155,10 +198,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.sequence_of_references.is_remove_coordinate(
             root_col_num,

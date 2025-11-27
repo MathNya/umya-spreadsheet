@@ -1,11 +1,20 @@
 // b
-use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::BooleanValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Bold {
@@ -14,8 +23,16 @@ pub struct Bold {
 
 impl Bold {
     #[inline]
-    pub fn get_val(&self) -> &bool {
-        self.val.get_value()
+    #[must_use]
+    pub fn val(&self) -> bool {
+        self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> bool {
+        self.val()
     }
 
     #[inline]
@@ -37,7 +54,7 @@ impl Bold {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // b
-        if *self.val.get_value() {
+        if self.val.value() {
             write_start_tag(writer, "b", vec![], true);
         }
     }

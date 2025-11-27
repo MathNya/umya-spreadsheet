@@ -1,24 +1,50 @@
 // stop
-use super::Color;
-use super::DoubleValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Color,
+    DoubleValue,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientStop {
     position: DoubleValue,
-    color: Color,
+    color:    Color,
 }
 
 impl GradientStop {
     #[inline]
-    pub fn get_position(&self) -> &f64 {
-        self.position.get_value()
+    #[must_use]
+    pub fn position(&self) -> f64 {
+        self.position.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use position()")]
+    pub fn get_position(&self) -> f64 {
+        self.position()
     }
 
     #[inline]
@@ -28,13 +54,27 @@ impl GradientStop {
     }
 
     #[inline]
-    pub fn get_color(&self) -> &Color {
+    #[must_use]
+    pub fn color(&self) -> &Color {
         &self.color
     }
 
     #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &Color {
+        self.color()
+    }
+
+    #[inline]
+    pub fn color_mut(&mut self) -> &mut Color {
         &mut self.color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use color_mut()")]
+    pub fn get_color_mut(&mut self) -> &mut Color {
+        self.color_mut()
     }
 
     #[inline]
@@ -44,15 +84,21 @@ impl GradientStop {
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.position.get_value_string(),
+                &self.position.value_string(),
                 &self.color.get_hash_code(),
             ))
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -85,7 +131,7 @@ impl GradientStop {
         write_start_tag(
             writer,
             "stop",
-            vec![("position", &self.position.get_value_string())],
+            vec![("position", &self.position.value_string()).into()],
             false,
         );
 

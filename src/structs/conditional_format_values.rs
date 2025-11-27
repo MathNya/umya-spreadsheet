@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum ConditionalFormatValues {
     AboveAverage,
@@ -29,7 +30,7 @@ impl Default for ConditionalFormatValues {
 }
 impl EnumTrait for ConditionalFormatValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::AboveAverage => "aboveAverage",
             Self::BeginsWith => "beginsWith",

@@ -1,11 +1,17 @@
 // name
-use super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::StringValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FontName {
@@ -14,8 +20,16 @@ pub struct FontName {
 
 impl FontName {
     #[inline]
+    #[must_use]
+    pub fn val(&self) -> &str {
+        self.val.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
     pub fn get_val(&self) -> &str {
-        self.val.get_value_str()
+        self.val()
     }
 
     #[inline]
@@ -40,7 +54,7 @@ impl FontName {
             write_start_tag(
                 writer,
                 tag_name,
-                vec![("val", self.val.get_value_str())],
+                vec![("val", self.val.value_str()).into()],
                 true,
             );
         }

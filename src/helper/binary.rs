@@ -1,27 +1,47 @@
+use std::{
+    fs,
+    path::Path,
+};
+
 use crate::structs::MediaObject;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use std::fs;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Cursor;
-use std::io::Read;
 
-#[inline]
-pub fn get_binary_data(path: &str) -> Vec<u8> {
-    let path = std::path::Path::new(path);
-    let mut buf = Vec::new();
+/// Creates a `MediaObject` from the file at the specified path.
+///
+/// # Parameters
+///
+/// - `path`: A reference to a path from which to create the `MediaObject`.
+///
+/// # Returns
+///
+/// Returns a `MediaObject` populated with the image data, name, and title
+/// extracted from the file at the specified path.
+///
+/// # Panics
+///
+/// This function will panic if the file cannot be read, as it calls `unwrap()`
+/// on the result of `get_binary_data(path)`. Ensure that the file exists and is
+/// readable before calling this function.
+///
+/// # Example
+///
+/// ```
+/// let media_object = make_media_object("path/to/image.png");
+/// ```
+#[must_use]
+pub fn make_media_object<P: AsRef<Path>>(path: P) -> MediaObject {
+    let path = path.as_ref();
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("");
+    let title = path
+        .file_stem()
+        .and_then(|stem| stem.to_str())
+        .unwrap_or("");
 
-    let file = File::open(path).unwrap();
-    BufReader::new(file).read_to_end(&mut buf).unwrap();
-    return buf;
-}
-
-#[inline]
-pub fn make_media_object(path: &str) -> MediaObject {
-    let name = path.split("/").last().unwrap();
     let mut obj = MediaObject::default();
-    obj.set_image_data(get_binary_data(path));
-    obj.set_image_name(name);
-    obj.set_image_title(name.split(".").next().unwrap_or(""));
+    obj.set_image_data(fs::read(path).unwrap());
+    obj.set_image_name(file_name);
+    obj.set_image_title(title);
     obj
 }

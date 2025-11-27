@@ -1,32 +1,51 @@
 // sheetFormatPr
-use super::BooleanValue;
-use super::ByteValue;
-use super::DoubleValue;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    BooleanValue,
+    ByteValue,
+    DoubleValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetFormatProperties {
-    base_column_width: UInt32Value,
-    custom_height: BooleanValue,
+    base_column_width:    UInt32Value,
+    custom_height:        BooleanValue,
     default_column_width: DoubleValue,
-    default_row_height: DoubleValue,
-    dy_descent: DoubleValue,
+    default_row_height:   DoubleValue,
+    dy_descent:           DoubleValue,
     outline_level_column: ByteValue,
-    outline_level_row: ByteValue,
-    thick_bottom: BooleanValue,
-    thick_top: BooleanValue,
+    outline_level_row:    ByteValue,
+    thick_bottom:         BooleanValue,
+    thick_top:            BooleanValue,
 }
 
 impl SheetFormatProperties {
     #[inline]
-    pub fn get_base_column_width(&self) -> &u32 {
-        self.base_column_width.get_value()
+    #[must_use]
+    pub fn base_column_width(&self) -> u32 {
+        self.base_column_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_column_width()")]
+    pub fn get_base_column_width(&self) -> u32 {
+        self.base_column_width()
     }
 
     #[inline]
@@ -36,8 +55,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_custom_height(&self) -> &bool {
-        self.custom_height.get_value()
+    #[must_use]
+    pub fn custom_height(&self) -> bool {
+        self.custom_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_height()")]
+    pub fn get_custom_height(&self) -> bool {
+        self.custom_height()
     }
 
     #[inline]
@@ -47,8 +74,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_default_column_width(&self) -> &f64 {
-        self.default_column_width.get_value()
+    #[must_use]
+    pub fn default_column_width(&self) -> f64 {
+        self.default_column_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_column_width()")]
+    pub fn get_default_column_width(&self) -> f64 {
+        self.default_column_width()
     }
 
     #[inline]
@@ -58,8 +93,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_default_row_height(&self) -> &f64 {
-        self.default_row_height.get_value()
+    #[must_use]
+    pub fn default_row_height(&self) -> f64 {
+        self.default_row_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_row_height()")]
+    pub fn get_default_row_height(&self) -> f64 {
+        self.default_row_height()
     }
 
     #[inline]
@@ -69,8 +112,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_dy_descent(&self) -> &f64 {
-        self.dy_descent.get_value()
+    #[must_use]
+    pub fn dy_descent(&self) -> f64 {
+        self.dy_descent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use dy_descent()")]
+    pub fn get_dy_descent(&self) -> f64 {
+        self.dy_descent()
     }
 
     #[inline]
@@ -80,8 +131,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_outline_level_column(&self) -> &u8 {
-        self.outline_level_column.get_value()
+    #[must_use]
+    pub fn outline_level_column(&self) -> u8 {
+        self.outline_level_column.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_level_column()")]
+    pub fn get_outline_level_column(&self) -> u8 {
+        self.outline_level_column()
     }
 
     #[inline]
@@ -91,8 +150,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_outline_level_row(&self) -> &u8 {
-        self.outline_level_row.get_value()
+    #[must_use]
+    pub fn outline_level_row(&self) -> u8 {
+        self.outline_level_row.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_level_row()")]
+    pub fn get_outline_level_row(&self) -> u8 {
+        self.outline_level_row()
     }
 
     #[inline]
@@ -102,8 +169,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_thick_bottom(&self) -> &bool {
-        self.thick_bottom.get_value()
+    #[must_use]
+    pub fn thick_bottom(&self) -> bool {
+        self.thick_bottom.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_bottom()")]
+    pub fn get_thick_bottom(&self) -> bool {
+        self.thick_bottom()
     }
 
     #[inline]
@@ -113,8 +188,16 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_thick_top(&self) -> &bool {
-        self.thick_top.get_value()
+    #[must_use]
+    pub fn thick_top(&self) -> bool {
+        self.thick_top.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_top()")]
+    pub fn get_thick_top(&self) -> bool {
+        self.thick_top()
     }
 
     #[inline]
@@ -148,50 +231,50 @@ impl SheetFormatProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetFormatPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let str_base_column_width = self.base_column_width.get_value_string();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let str_base_column_width = self.base_column_width.value_string();
         if self.base_column_width.has_value() {
-            attributes.push(("baseColWidth", &str_base_column_width));
+            attributes.push(("baseColWidth", &str_base_column_width).into());
         }
 
-        let str_custom_height = self.custom_height.get_value_string();
+        let str_custom_height = self.custom_height.value_string();
         if self.custom_height.has_value() {
-            attributes.push(("customHeight", &str_custom_height));
+            attributes.push(("customHeight", str_custom_height).into());
         }
 
-        let str_default_column_width = self.default_column_width.get_value_string();
+        let str_default_column_width = self.default_column_width.value_string();
         if self.default_column_width.has_value() {
-            attributes.push(("defaultColWidth", &str_default_column_width));
+            attributes.push(("defaultColWidth", &str_default_column_width).into());
         }
 
-        let str_default_row_height = self.default_row_height.get_value_string();
+        let str_default_row_height = self.default_row_height.value_string();
         if self.default_row_height.has_value() {
-            attributes.push(("defaultRowHeight", &str_default_row_height));
+            attributes.push(("defaultRowHeight", &str_default_row_height).into());
         }
 
-        let str_dy_descent = self.dy_descent.get_value_string();
+        let str_dy_descent = self.dy_descent.value_string();
         if self.dy_descent.has_value() {
-            attributes.push(("x14ac:dyDescent", &str_dy_descent));
+            attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
         }
 
-        let str_outline_level_column = self.outline_level_column.get_value_string();
+        let str_outline_level_column = self.outline_level_column.value_string();
         if self.outline_level_column.has_value() {
-            attributes.push(("outlineLevelCol", &str_outline_level_column));
+            attributes.push(("outlineLevelCol", &str_outline_level_column).into());
         }
 
-        let str_outline_level_row = self.outline_level_row.get_value_string();
+        let str_outline_level_row = self.outline_level_row.value_string();
         if self.outline_level_row.has_value() {
-            attributes.push(("outlineLevelRow", &str_outline_level_row));
+            attributes.push(("outlineLevelRow", &str_outline_level_row).into());
         }
 
-        let str_thick_bottom = self.thick_bottom.get_value_string();
+        let str_thick_bottom = self.thick_bottom.value_string();
         if self.thick_bottom.has_value() {
-            attributes.push(("thickBottom", &str_thick_bottom));
+            attributes.push(("thickBottom", str_thick_bottom).into());
         }
 
-        let str_thick_top = self.thick_top.get_value_string();
+        let str_thick_top = self.thick_top.value_string();
         if self.thick_top.has_value() {
-            attributes.push(("thickTop", &str_thick_top));
+            attributes.push(("thickTop", str_thick_top).into());
         }
 
         write_start_tag(writer, "sheetFormatPr", attributes, true);

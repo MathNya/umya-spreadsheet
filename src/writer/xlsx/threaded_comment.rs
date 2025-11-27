@@ -1,12 +1,31 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
-use std::collections::HashSet;
 use std::io;
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        SHEET_MAIN_NS,
+        THREADED_COMMENTS_NS,
+    },
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -18,22 +37,27 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    )));
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // comments
     write_start_tag(
         &mut writer,
         "ThreadedComments",
-        vec![("xmlns", THREADED_COMMENTS_NS), (" xmlns:x", SHEET_MAIN_NS)],
+        vec![
+            ("xmlns", THREADED_COMMENTS_NS).into(),
+            (" xmlns:x", SHEET_MAIN_NS).into(),
+        ],
         false,
     );
 
-    for threaded_comment in worksheet.get_threaded_comments() {
+    for threaded_comment in worksheet.threaded_comments() {
         // threaded comment
         threaded_comment.write_to(&mut writer);
     }

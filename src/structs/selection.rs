@@ -1,25 +1,44 @@
-use super::Coordinate;
-use super::EnumValue;
-use super::PaneValues;
-use super::SequenceOfReferences;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    Coordinate,
+    EnumValue,
+    PaneValues,
+    SequenceOfReferences,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Selection {
-    pane: EnumValue<PaneValues>,
-    active_cell: Option<Coordinate>,
+    pane:                   EnumValue<PaneValues>,
+    active_cell:            Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
 
 impl Selection {
     #[inline]
+    #[must_use]
+    pub fn pane(&self) -> &PaneValues {
+        self.pane.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pane()")]
     pub fn get_pane(&self) -> &PaneValues {
-        self.pane.get_value()
+        self.pane()
     }
 
     #[inline]
@@ -29,13 +48,27 @@ impl Selection {
     }
 
     #[inline]
-    pub fn get_active_cell(&self) -> Option<&Coordinate> {
+    #[must_use]
+    pub fn active_cell(&self) -> Option<&Coordinate> {
         self.active_cell.as_ref()
     }
 
     #[inline]
-    pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_cell()")]
+    pub fn get_active_cell(&self) -> Option<&Coordinate> {
+        self.active_cell()
+    }
+
+    #[inline]
+    pub fn active_cell_mut(&mut self) -> Option<&mut Coordinate> {
         self.active_cell.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use active_cell_mut()")]
+    pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
+        self.active_cell_mut()
     }
 
     #[inline]
@@ -45,13 +78,27 @@ impl Selection {
     }
 
     #[inline]
-    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+    #[must_use]
+    pub fn sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
     #[inline]
-    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references()")]
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+        self.sequence_of_references()
+    }
+
+    #[inline]
+    pub fn sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references_mut()")]
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+        self.sequence_of_references_mut()
     }
 
     #[inline]
@@ -80,12 +127,12 @@ impl Selection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let mut active_cell_id = 0;
         if let Some(active_cell) = &self.active_cell {
-            for range in self.sequence_of_references.get_range_collection() {
-                let range_str = range.get_range();
+            for range in self.sequence_of_references.range_collection() {
+                let range_str = range.range();
                 if range_str.contains(&active_cell.to_string()) {
                     break;
                 }
@@ -94,7 +141,7 @@ impl Selection {
         }
 
         if self.pane.has_value() {
-            attributes.push(("pane", self.pane.get_value_string()));
+            attributes.push(("pane", self.pane.value_string()).into());
         }
 
         let active_cell_str = match &self.active_cell {
@@ -102,17 +149,17 @@ impl Selection {
             None => String::new(),
         };
         if !active_cell_str.is_empty() {
-            attributes.push(("activeCell", &active_cell_str));
+            attributes.push(("activeCell", &active_cell_str).into());
         }
 
         let active_cell_id_str = active_cell_id.to_string();
         if active_cell_id > 0 {
-            attributes.push(("activeCellId", &active_cell_id_str));
+            attributes.push(("activeCellId", &active_cell_id_str).into());
         }
 
         let sqref = self.sequence_of_references.get_sqref();
         if !sqref.is_empty() {
-            attributes.push(("sqref", &sqref));
+            attributes.push(("sqref", &sqref).into());
         }
 
         write_start_tag(writer, "selection", attributes, true);

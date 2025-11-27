@@ -1,23 +1,47 @@
-//xdr:cNvPicPr
-use super::super::PictureLocks;
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
+// xdr:cNvPicPr
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::PictureLocks;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::BooleanValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
     prefer_relative_resize: BooleanValue,
-    picture_locks: Option<PictureLocks>,
+    picture_locks:          Option<PictureLocks>,
 }
 
 impl NonVisualPictureDrawingProperties {
     #[inline]
-    pub fn get_prefer_relative_resize(&self) -> &bool {
-        self.prefer_relative_resize.get_value()
+    #[must_use]
+    pub fn prefer_relative_resize(&self) -> bool {
+        self.prefer_relative_resize.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prefer_relative_resize()")]
+    pub fn get_prefer_relative_resize(&self) -> bool {
+        self.prefer_relative_resize()
     }
 
     #[inline]
@@ -26,13 +50,27 @@ impl NonVisualPictureDrawingProperties {
     }
 
     #[inline]
-    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+    #[must_use]
+    pub fn picture_locks(&self) -> Option<&PictureLocks> {
         self.picture_locks.as_ref()
     }
 
     #[inline]
-    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_locks()")]
+    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+        self.picture_locks()
+    }
+
+    #[inline]
+    pub fn picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
         self.picture_locks.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_locks_mut()")]
+    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+        self.picture_locks_mut()
     }
 
     #[inline]
@@ -72,12 +110,15 @@ impl NonVisualPictureDrawingProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:cNvPicPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.prefer_relative_resize.has_value() {
-            attributes.push((
-                "preferRelativeResize",
-                self.prefer_relative_resize.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "preferRelativeResize",
+                    self.prefer_relative_resize.value_string(),
+                )
+                    .into(),
+            );
         }
 
         match &self.picture_locks {

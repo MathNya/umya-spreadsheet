@@ -1,11 +1,20 @@
 // xdr:ext
-use super::super::super::Int64Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::Int64Value;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Extent {
@@ -15,8 +24,16 @@ pub struct Extent {
 
 impl Extent {
     #[inline]
-    pub fn get_cx(&self) -> &i64 {
-        self.cx.get_value()
+    #[must_use]
+    pub fn cx(&self) -> i64 {
+        self.cx.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cx()")]
+    pub fn get_cx(&self) -> i64 {
+        self.cx()
     }
 
     #[inline]
@@ -26,8 +43,16 @@ impl Extent {
     }
 
     #[inline]
-    pub fn get_cy(&self) -> &i64 {
-        self.cy.get_value()
+    #[must_use]
+    pub fn cy(&self) -> i64 {
+        self.cy.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cy()")]
+    pub fn get_cy(&self) -> i64 {
+        self.cy()
     }
 
     #[inline]
@@ -53,8 +78,8 @@ impl Extent {
             writer,
             "xdr:ext",
             vec![
-                ("cx", &self.cx.get_value_string()),
-                ("cy", &self.cy.get_value_string()),
+                ("cx", self.cx.value_string()).into(),
+                ("cy", self.cy.value_string()).into(),
             ],
             true,
         );

@@ -1,10 +1,23 @@
-use super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::Int32Value;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct PositiveFixedPercentageType {
@@ -13,8 +26,16 @@ pub struct PositiveFixedPercentageType {
 
 impl PositiveFixedPercentageType {
     #[inline]
-    pub fn get_val(&self) -> &i32 {
-        self.val.get_value()
+    #[must_use]
+    pub fn val(&self) -> i32 {
+        self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> i32 {
+        self.val()
     }
 
     #[inline]
@@ -55,24 +76,24 @@ impl PositiveFixedPercentageType {
 
     #[inline]
     pub(crate) fn write_to_shade(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:shade")
+        self.write_to(writer, "a:shade");
     }
 
     #[inline]
     pub(crate) fn write_to_alpha(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:alpha")
+        self.write_to(writer, "a:alpha");
     }
 
     #[inline]
     pub(crate) fn write_to_tint(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:tint")
+        self.write_to(writer, "a:tint");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            let val = self.val.get_value_string();
-            attributes.push(("val", &val));
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
+            let val = self.val.value_string();
+            attributes.push(("val", &val).into());
             write_start_tag(writer, tab_name, attributes, true);
         }
     }

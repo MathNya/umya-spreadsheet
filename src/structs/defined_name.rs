@@ -1,29 +1,55 @@
-use super::Address;
-use super::BooleanValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::address::*;
-use crate::reader::driver::*;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Address,
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::address::is_address,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node_conversion,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
-    name: StringValue,
-    address: ThinVec<Address>,
-    string_value: StringValue,
+    name:           StringValue,
+    address:        Vec<Address>,
+    string_value:   StringValue,
     local_sheet_id: UInt32Value,
-    hidden: BooleanValue,
+    hidden:         BooleanValue,
 }
 impl DefinedName {
     #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name()
     }
 
     #[inline]
@@ -32,21 +58,28 @@ impl DefinedName {
         self
     }
 
-    pub fn get_address(&self) -> String {
+    #[must_use]
+    pub fn address(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_str().to_string();
+            return self.string_value.value_str().to_string();
         }
         let mut result: Vec<String> = Vec::with_capacity(self.address.len());
         for row in &self.address {
-            result.push(row.get_address_ptn2());
+            result.push(row.address_ptn2());
         }
         result.join(",")
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> String {
+        self.address()
+    }
+
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let list = self.split_str(value);
+        let list = Self::split_str(value);
         for v in &list {
-            if is_address(&v) {
+            if is_address(v) {
                 self.add_address(v);
             } else {
                 self.set_string_value(v);
@@ -62,25 +95,15 @@ impl DefinedName {
         self
     }
 
-    pub(crate) fn get_sheet_name_crate(&self) -> String {
-        if self.string_value.has_value() {
-            return String::new();
-        }
-        self.address
-            .first()
-            .unwrap_or(&Address::default())
-            .get_sheet_name()
-            .to_string()
-    }
-
     #[inline]
-    pub(crate) fn get_address_obj(&self) -> &[Address] {
+    pub(crate) fn address_obj(&self) -> &[Address] {
         &self.address
     }
 
     #[inline]
-    pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
-        &mut self.address
+    #[deprecated(since = "3.0.0", note = "Use address_obj()")]
+    pub(crate) fn get_address_obj(&self) -> &[Address] {
+        self.address_obj()
     }
 
     #[inline]
@@ -91,13 +114,22 @@ impl DefinedName {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_local_sheet_id(&self) -> bool {
         self.local_sheet_id.has_value()
     }
 
     #[inline]
-    pub fn get_local_sheet_id(&self) -> &u32 {
-        &self.local_sheet_id.get_value()
+    #[must_use]
+    pub fn local_sheet_id(&self) -> u32 {
+        self.local_sheet_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use local_sheet_id()")]
+    pub fn get_local_sheet_id(&self) -> u32 {
+        self.local_sheet_id()
     }
 
     #[inline]
@@ -106,8 +138,16 @@ impl DefinedName {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+    #[must_use]
+    pub fn hidden(&self) -> bool {
+        self.hidden.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&self) -> bool {
+        self.hidden()
     }
 
     #[inline]
@@ -115,7 +155,7 @@ impl DefinedName {
         self.hidden.set_value(value);
     }
 
-    fn split_str<S: Into<String>>(&self, value: S) -> Vec<String> {
+    fn split_str<S: Into<String>>(value: S) -> Vec<String> {
         let value = value.into();
         let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
         let mut is_pass_s = false;
@@ -196,18 +236,18 @@ impl DefinedName {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // definedName
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.get_name()));
-        let local_sheet_id_str = self.local_sheet_id.get_value_string();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("name", self.name()).into());
+        let local_sheet_id_str = self.local_sheet_id.value_string();
         if self.local_sheet_id.has_value() {
-            attributes.push(("localSheetId", &local_sheet_id_str));
+            attributes.push(("localSheetId", &local_sheet_id_str).into());
         }
-        let hidden_str = self.hidden.get_value_string();
+        let hidden_str = self.hidden.value_string();
         if self.hidden.has_value() {
-            attributes.push(("hidden", &hidden_str));
+            attributes.push(("hidden", hidden_str).into());
         }
         write_start_tag(writer, "definedName", attributes, false);
-        write_text_node_conversion(writer, self.get_address());
+        write_text_node_conversion(writer, self.address());
         write_end_tag(writer, "definedName");
     }
 }
@@ -215,10 +255,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for address in &mut self.address {
             address.adjustment_insert_coordinate_with_sheet(
@@ -234,10 +274,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.retain(|x| {
             !(x.is_remove_coordinate_with_sheet(
@@ -260,13 +300,14 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         if self.string_value.has_value() {
             return false;

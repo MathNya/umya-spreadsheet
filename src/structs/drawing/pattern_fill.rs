@@ -1,16 +1,33 @@
 // a:pattFill
-use super::BackgroundColor;
-use super::ForegroundColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BackgroundColor,
+    ForegroundColor,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {
-    preset: Box<str>,
+    preset:           Box<str>,
     foreground_color: ForegroundColor,
     background_color: BackgroundColor,
 }
@@ -19,7 +36,7 @@ impl Default for PatternFill {
     #[inline]
     fn default() -> Self {
         Self {
-            preset: "pct5".into(),
+            preset:           "pct5".into(),
             foreground_color: ForegroundColor::default(),
             background_color: BackgroundColor::default(),
         }
@@ -28,44 +45,80 @@ impl Default for PatternFill {
 
 impl PatternFill {
     #[inline]
-    pub fn get_preset(&self) -> &str {
+    #[must_use]
+    pub fn preset(&self) -> &str {
         &self.preset
     }
 
     #[inline]
-    pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
+    pub fn get_preset(&self) -> &str {
+        self.preset()
+    }
+
+    #[inline]
+    pub fn set_preset(&mut self, value: String) -> &mut Self {
         self.preset = value.into_boxed_str();
         self
     }
 
     #[inline]
-    pub fn get_foreground_color(&self) -> &ForegroundColor {
+    #[must_use]
+    pub fn foreground_color(&self) -> &ForegroundColor {
         &self.foreground_color
     }
 
     #[inline]
-    pub fn get_foreground_color_mut(&mut self) -> &mut ForegroundColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color()")]
+    pub fn get_foreground_color(&self) -> &ForegroundColor {
+        self.foreground_color()
+    }
+
+    #[inline]
+    pub fn foreground_color_mut(&mut self) -> &mut ForegroundColor {
         &mut self.foreground_color
     }
 
     #[inline]
-    pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut PatternFill {
+    #[deprecated(since = "3.0.0", note = "Use foreground_color_mut()")]
+    pub fn get_foreground_color_mut(&mut self) -> &mut ForegroundColor {
+        self.foreground_color_mut()
+    }
+
+    #[inline]
+    pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut Self {
         self.foreground_color = value;
         self
     }
 
     #[inline]
-    pub fn get_background_color(&self) -> &BackgroundColor {
+    #[must_use]
+    pub fn background_color(&self) -> &BackgroundColor {
         &self.background_color
     }
 
     #[inline]
-    pub fn get_background_color_mut(&mut self) -> &mut BackgroundColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_color()")]
+    pub fn get_background_color(&self) -> &BackgroundColor {
+        self.background_color()
+    }
+
+    #[inline]
+    pub fn background_color_mut(&mut self) -> &mut BackgroundColor {
         &mut self.background_color
     }
 
     #[inline]
-    pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut PatternFill {
+    #[deprecated(since = "3.0.0", note = "Use background_color_mut()")]
+    pub fn get_background_color_mut(&mut self) -> &mut BackgroundColor {
+        self.background_color_mut()
+    }
+
+    #[inline]
+    pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut Self {
         self.background_color = value;
         self
     }
@@ -103,7 +156,12 @@ impl PatternFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pattFill
-        write_start_tag(writer, "a:pattFill", vec![("prst", &self.preset)], false);
+        write_start_tag(
+            writer,
+            "a:pattFill",
+            vec![("prst", &self.preset).into()],
+            false,
+        );
 
         // a:fgClr
         self.foreground_color.write_to(writer);

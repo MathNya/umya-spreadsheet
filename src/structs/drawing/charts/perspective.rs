@@ -1,19 +1,32 @@
 // c:perspective
-use super::super::super::ByteValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::ByteValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Perspective {
     val: ByteValue,
 }
 impl Perspective {
-    pub fn get_val(&self) -> &u8 {
-        self.val.get_value()
+    #[must_use]
+    pub fn val(&self) -> u8 {
+        self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> u8 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: u8) -> &mut Perspective {
@@ -34,7 +47,7 @@ impl Perspective {
         write_start_tag(
             writer,
             "c:perspective",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

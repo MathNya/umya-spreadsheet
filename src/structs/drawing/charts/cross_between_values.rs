@@ -1,17 +1,14 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum CrossBetweenValues {
+    #[default]
     Between,
     MidpointCategory,
 }
-impl Default for CrossBetweenValues {
-    fn default() -> Self {
-        Self::Between
-    }
-}
 impl EnumTrait for CrossBetweenValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Between => "between",
             Self::MidpointCategory => "midCat",
@@ -20,6 +17,7 @@ impl EnumTrait for CrossBetweenValues {
 }
 impl FromStr for CrossBetweenValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "between" => Ok(Self::Between),

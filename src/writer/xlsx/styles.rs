@@ -1,11 +1,24 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Stylesheet;
-use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
+use crate::{
+    helper::const_str::PKG_STYLES,
+    structs::{
+        Stylesheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     stylesheet: &Stylesheet,
@@ -13,11 +26,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    )));
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     stylesheet.write_to(&mut writer);

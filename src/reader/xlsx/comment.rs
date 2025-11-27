@@ -1,17 +1,19 @@
-use super::XlsxError;
-use crate::structs::raw::RawFile;
-use crate::structs::Comment;
-use crate::structs::Worksheet;
-use crate::xml_read_loop;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::result;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-pub(crate) fn read(
-    worksheet: &mut Worksheet,
-    drawing_file: &RawFile,
-) -> result::Result<(), XlsxError> {
-    let data = std::io::Cursor::new(drawing_file.get_file_data());
+use crate::{
+    structs::{
+        Comment,
+        Worksheet,
+        raw::RawFile,
+    },
+    xml_read_loop,
+};
+
+pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
+    let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
 
@@ -41,6 +43,4 @@ pub(crate) fn read(
         },
         Event::Eof => break,
     );
-
-    Ok(())
 }

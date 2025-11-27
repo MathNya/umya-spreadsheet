@@ -4,13 +4,25 @@ pub struct UInt16Value {
 }
 impl UInt16Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> &u16 {
-        self.value.as_ref().unwrap_or(&0)
+    pub(crate) fn value(&self) -> u16 {
+        self.value.unwrap_or(0)
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> u16 {
+        self.value()
+    }
+    
+    #[inline]
+    pub(crate) fn value_string(&self) -> String {
+        self.value().to_string()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> String {
-        self.get_value().to_string()
+        self.value_string()
     }
 
     #[inline]
@@ -25,7 +37,7 @@ impl UInt16Value {
     }
 
     #[inline]
-    pub(crate) fn _has_value(&self) -> bool {
+    pub(crate) fn has_value(&self) -> bool {
         self.value.is_some()
     }
 }

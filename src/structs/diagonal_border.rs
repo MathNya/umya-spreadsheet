@@ -15,13 +15,25 @@ pub struct DiagonalBorder {
 }
 impl DiagonalBorder {
     #[inline]
-    pub fn get_color(&self) -> &Color {
+    pub fn color(&self) -> &Color {
         &self.color
     }
 
     #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &Color {
+        self.color()
+    }
+
+    #[inline]
+    pub fn color_mut(&mut self) -> &mut Color {
         &mut self.color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use color_mut()")]
+    pub fn get_color_mut(&mut self) -> &mut Color {
+        self.color_mut()
     }
 
     #[inline]
@@ -31,8 +43,14 @@ impl DiagonalBorder {
     }
 
     #[inline]
-    pub fn get_style(&self) -> &BorderStyleValues {
+    pub fn style(&self) -> &BorderStyleValues {
         self.style.get_value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &BorderStyleValues {
+        self.style()
     }
 
     #[inline]
@@ -58,16 +76,23 @@ impl DiagonalBorder {
     pub const BORDER_THIN: &'static str = "thin";
 
     #[inline]
-    pub fn get_border_style(&self) -> &str {
+    pub fn border_style(&self) -> &str {
         &self.style.get_value_string()
     }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use border_style()")]
+    pub fn get_border_style(&self) -> &str {
+        &self.border_style()
+    }
+
     #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -76,6 +101,12 @@ impl DiagonalBorder {
                 &self.get_color().get_hash_code()
             ))
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

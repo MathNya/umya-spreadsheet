@@ -1,25 +1,46 @@
 // a:bevelB
-use super::super::EnumValue;
-use super::super::Int64Value;
-use super::BevelPresetValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    super::{
+        EnumValue,
+        Int64Value,
+    },
+    BevelPresetValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BevelBottom {
-    width: Int64Value,
+    width:  Int64Value,
     height: Int64Value,
     preset: EnumValue<BevelPresetValues>,
 }
 
 impl BevelBottom {
     #[inline]
-    pub fn get_width(&self) -> &i64 {
-        self.width.get_value()
+    #[must_use]
+    pub fn width(&self) -> i64 {
+        self.width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> i64 {
+        self.width()
     }
 
     #[inline]
@@ -29,8 +50,16 @@ impl BevelBottom {
     }
 
     #[inline]
-    pub fn get_height(&self) -> &i64 {
-        self.height.get_value()
+    #[must_use]
+    pub fn height(&self) -> i64 {
+        self.height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use height()")]
+    pub fn get_height(&self) -> i64 {
+        self.height()
     }
 
     #[inline]
@@ -40,8 +69,16 @@ impl BevelBottom {
     }
 
     #[inline]
+    #[must_use]
+    pub fn preset(&self) -> &BevelPresetValues {
+        self.preset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
     pub fn get_preset(&self) -> &BevelPresetValues {
-        self.preset.get_value()
+        self.preset()
     }
 
     #[inline]
@@ -63,17 +100,17 @@ impl BevelBottom {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:bevelB
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let width = self.width.get_value_string();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let width = self.width.value_string();
         if self.width.has_value() {
-            attributes.push(("w", &width));
+            attributes.push(("w", &width).into());
         }
-        let height = self.height.get_value_string();
+        let height = self.height.value_string();
         if self.height.has_value() {
-            attributes.push(("h", &height));
+            attributes.push(("h", &height).into());
         }
         if self.preset.has_value() {
-            attributes.push(("prst", self.preset.get_value_string()));
+            attributes.push(("prst", self.preset.value_string()).into());
         }
 
         write_start_tag(writer, "a:bevelB", attributes, true);

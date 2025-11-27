@@ -1,25 +1,38 @@
 // pivotField
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::ByteValue;
-use crate::structs::Location;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::BooleanValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotField {
     data_field: BooleanValue,
-    show_all: BooleanValue,
+    show_all:   BooleanValue,
 }
 impl PivotField {
     #[inline]
-    pub fn get_data_field(&self) -> &bool {
-        self.data_field.get_value()
+    #[must_use]
+    pub fn data_field(&self) -> bool {
+        self.data_field.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_field()")]
+    pub fn get_data_field(&self) -> bool {
+        self.data_field()
     }
 
     #[inline]
@@ -29,8 +42,16 @@ impl PivotField {
     }
 
     #[inline]
-    pub fn get_show_all(&self) -> &bool {
-        self.show_all.get_value()
+    #[must_use]
+    pub fn show_all(&self) -> bool {
+        self.show_all.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_all()")]
+    pub fn get_show_all(&self) -> bool {
+        self.show_all()
     }
 
     #[inline]
@@ -50,14 +71,15 @@ impl PivotField {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
         write_start_tag(
             writer,
             "pivotField",
             vec![
-                ("dataField", self.data_field.get_value_string()),
-                ("showAll", self.show_all.get_value_string()),
+                ("dataField", self.data_field.value_string()).into(),
+                ("showAll", self.show_all.value_string()).into(),
             ],
             true,
         );

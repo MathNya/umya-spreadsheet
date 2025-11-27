@@ -1,37 +1,61 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::custom_properties::CustomDocumentProperty;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::const_str::{
+        CUSTOM_PROPS_NS,
+        VTYPES_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::custom_properties::CustomDocumentProperty,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct Properties {
-    custom_document_property_list: ThinVec<CustomDocumentProperty>,
+    custom_document_property_list: Vec<CustomDocumentProperty>,
 }
 
 impl Properties {
     #[inline]
-    pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
+    #[must_use]
+    pub fn custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }
 
     #[inline]
-    pub fn get_custom_document_property_list_mut(
-        &mut self,
-    ) -> &mut ThinVec<CustomDocumentProperty> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_document_property_list()")]
+    pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
+        self.custom_document_property_list()
+    }
+
+    #[inline]
+    pub fn custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
         &mut self.custom_document_property_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use custom_document_property_list_mut()")]
+    pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
+        self.custom_document_property_list_mut()
     }
 
     #[inline]
     pub fn set_custom_document_property_list(
         &mut self,
-        value: impl Into<ThinVec<CustomDocumentProperty>>,
+        value: impl Into<Vec<CustomDocumentProperty>>,
     ) -> &mut Self {
         self.custom_document_property_list = value.into();
         self
@@ -47,10 +71,7 @@ impl Properties {
     }
 
     #[inline]
-    pub fn remove_custom_document_property_list(
-        &mut self,
-        value: CustomDocumentProperty,
-    ) -> &mut Self {
+    pub fn remove_custom_document_property_list(&mut self) -> &mut Self {
         self.custom_document_property_list.clear();
         self
     }
@@ -60,7 +81,6 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
@@ -90,12 +110,15 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", CUSTOM_PROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![
+                ("xmlns", CUSTOM_PROPS_NS).into(),
+                ("xmlns:vt", VTYPES_NS).into(),
+            ],
             false,
         );
         let mut pid = 2;
         for v in &self.custom_document_property_list {
-            v.write_to(writer, &pid);
+            v.write_to(writer, pid);
             pid += 1;
         }
         write_end_tag(writer, "Properties");

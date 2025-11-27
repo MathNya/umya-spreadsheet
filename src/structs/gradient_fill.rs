@@ -1,26 +1,53 @@
 // gradientFill
-use super::DoubleValue;
-use super::GradientStop;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use std::{
+    fmt::Write,
+    io::Cursor,
+};
+
 use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::fmt::Write;
-use std::io::Cursor;
-use thin_vec::ThinVec;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    DoubleValue,
+    GradientStop,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
-    degree: DoubleValue,
-    gradient_stop: ThinVec<GradientStop>,
+    degree:        DoubleValue,
+    gradient_stop: Vec<GradientStop>,
 }
 
 impl GradientFill {
     #[inline]
-    pub fn get_degree(&self) -> &f64 {
-        self.degree.get_value()
+    #[must_use]
+    pub fn degree(&self) -> f64 {
+        self.degree.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use degree()")]
+    pub fn get_degree(&self) -> f64 {
+        self.degree()
     }
 
     #[inline]
@@ -30,13 +57,27 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+    #[must_use]
+    pub fn gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
     #[inline]
-    pub fn get_gradient_stop_mut(&mut self) -> &mut ThinVec<GradientStop> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop()")]
+    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+        self.gradient_stop()
+    }
+
+    #[inline]
+    pub fn gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
         &mut self.gradient_stop
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop_mut()")]
+    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+        self.gradient_stop_mut()
     }
 
     #[inline]
@@ -45,15 +86,20 @@ impl GradientFill {
         self
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         let mut value = String::new();
         for stop in &self.gradient_stop {
-            write!(value, "{}", stop.get_hash_code()).unwrap();
+            write!(value, "{}", stop.hash_code()).unwrap();
         }
         format!(
             "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,))
+            md5::Md5::digest(format!("{}{}", &self.degree.value_string(), value,))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -86,7 +132,7 @@ impl GradientFill {
         write_start_tag(
             writer,
             "gradientFill",
-            vec![("degree", &self.degree.get_value_string())],
+            vec![("degree", &self.degree.value_string()).into()],
             false,
         );
 

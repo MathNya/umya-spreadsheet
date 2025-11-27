@@ -1,44 +1,62 @@
 // sheetProtection
-use super::BooleanValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::crypt::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::crypt::encrypt_sheet_protection,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct SheetProtection {
-    algorithm_name: StringValue,
-    hash_value: StringValue,
-    salt_value: StringValue,
-    spin_count: UInt32Value,
-    password: StringValue,
-    sheet: BooleanValue,
-    objects: BooleanValue,
-    delete_rows: BooleanValue,
-    insert_columns: BooleanValue,
-    delete_columns: BooleanValue,
-    insert_hyperlinks: BooleanValue,
-    auto_filter: BooleanValue,
-    scenarios: BooleanValue,
-    format_cells: BooleanValue,
-    format_columns: BooleanValue,
-    insert_rows: BooleanValue,
-    format_rows: BooleanValue,
-    pivot_tables: BooleanValue,
-    select_locked_cells: BooleanValue,
+    algorithm_name:        StringValue,
+    hash_value:            StringValue,
+    salt_value:            StringValue,
+    spin_count:            UInt32Value,
+    password:              StringValue,
+    sheet:                 BooleanValue,
+    objects:               BooleanValue,
+    delete_rows:           BooleanValue,
+    insert_columns:        BooleanValue,
+    delete_columns:        BooleanValue,
+    insert_hyperlinks:     BooleanValue,
+    auto_filter:           BooleanValue,
+    scenarios:             BooleanValue,
+    format_cells:          BooleanValue,
+    format_columns:        BooleanValue,
+    insert_rows:           BooleanValue,
+    format_rows:           BooleanValue,
+    pivot_tables:          BooleanValue,
+    select_locked_cells:   BooleanValue,
     select_unlocked_cells: BooleanValue,
-    sort: BooleanValue,
+    sort:                  BooleanValue,
 }
 impl SheetProtection {
     #[inline]
+    #[must_use]
+    pub fn algorithm_name(&self) -> &str {
+        self.algorithm_name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use algorithm_name()")]
     pub fn get_algorithm_name(&self) -> &str {
-        self.algorithm_name.get_value_str()
+        self.algorithm_name()
     }
 
     #[inline]
@@ -48,8 +66,16 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
+    pub fn hash_value(&self) -> &str {
+        self.hash_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hash_value()")]
     pub fn get_hash_value(&self) -> &str {
-        self.hash_value.get_value_str()
+        self.hash_value()
     }
 
     #[inline]
@@ -59,8 +85,16 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
+    pub fn salt_value(&self) -> &str {
+        self.salt_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use salt_value()")]
     pub fn get_salt_value(&self) -> &str {
-        self.salt_value.get_value_str()
+        self.salt_value()
     }
 
     #[inline]
@@ -70,8 +104,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_spin_count(&self) -> &u32 {
-        self.spin_count.get_value()
+    #[must_use]
+    pub fn spin_count(&self) -> u32 {
+        self.spin_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use spin_count()")]
+    pub fn get_spin_count(&self) -> u32 {
+        self.spin_count()
     }
 
     #[inline]
@@ -81,8 +123,16 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
+    pub fn password_raw(&self) -> &str {
+        self.password.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use password_raw()")]
     pub fn get_password_raw(&self) -> &str {
-        self.password.get_value_str()
+        self.password_raw()
     }
 
     #[inline]
@@ -98,8 +148,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_sheet(&self) -> &bool {
-        self.sheet.get_value()
+    #[must_use]
+    pub fn sheet(&self) -> bool {
+        self.sheet.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet()")]
+    pub fn get_sheet(&self) -> bool {
+        self.sheet()
     }
 
     #[inline]
@@ -109,8 +167,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_objects(&self) -> &bool {
-        self.objects.get_value()
+    #[must_use]
+    pub fn objects(&self) -> bool {
+        self.objects.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use objects()")]
+    pub fn get_objects(&self) -> bool {
+        self.objects()
     }
 
     #[inline]
@@ -120,8 +186,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_delete_rows(&self) -> &bool {
-        self.delete_rows.get_value()
+    #[must_use]
+    pub fn delete_rows(&self) -> bool {
+        self.delete_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use delete_rows()")]
+    pub fn get_delete_rows(&self) -> bool {
+        self.delete_rows()
     }
 
     #[inline]
@@ -131,8 +205,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_columns(&self) -> &bool {
-        self.insert_columns.get_value()
+    #[must_use]
+    pub fn insert_columns(&self) -> bool {
+        self.insert_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_columns()")]
+    pub fn get_insert_columns(&self) -> bool {
+        self.insert_columns()
     }
 
     #[inline]
@@ -142,8 +224,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_delete_columns(&self) -> &bool {
-        self.delete_columns.get_value()
+    #[must_use]
+    pub fn delete_columns(&self) -> bool {
+        self.delete_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use delete_columns()")]
+    pub fn get_delete_columns(&self) -> bool {
+        self.delete_columns()
     }
 
     #[inline]
@@ -153,8 +243,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_hyperlinks(&self) -> &bool {
-        self.insert_hyperlinks.get_value()
+    #[must_use]
+    pub fn insert_hyperlinks(&self) -> bool {
+        self.insert_hyperlinks.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_hyperlinks()")]
+    pub fn get_insert_hyperlinks(&self) -> bool {
+        self.insert_hyperlinks()
     }
 
     #[inline]
@@ -164,8 +262,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_auto_filter(&self) -> &bool {
-        self.auto_filter.get_value()
+    #[must_use]
+    pub fn auto_filter(&self) -> bool {
+        self.auto_filter.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_filter()")]
+    pub fn get_auto_filter(&self) -> bool {
+        self.auto_filter()
     }
 
     #[inline]
@@ -175,8 +281,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_scenarios(&self) -> &bool {
-        self.scenarios.get_value()
+    #[must_use]
+    pub fn scenarios(&self) -> bool {
+        self.scenarios.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scenarios()")]
+    pub fn get_scenarios(&self) -> bool {
+        self.scenarios()
     }
 
     #[inline]
@@ -186,8 +300,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_cells(&self) -> &bool {
-        self.format_cells.get_value()
+    #[must_use]
+    pub fn format_cells(&self) -> bool {
+        self.format_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_cells()")]
+    pub fn get_format_cells(&self) -> bool {
+        self.format_cells()
     }
 
     #[inline]
@@ -197,8 +319,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_columns(&self) -> &bool {
-        self.format_columns.get_value()
+    #[must_use]
+    pub fn format_columns(&self) -> bool {
+        self.format_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_columns()")]
+    pub fn get_format_columns(&self) -> bool {
+        self.format_columns()
     }
 
     #[inline]
@@ -208,8 +338,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_rows(&self) -> &bool {
-        self.insert_rows.get_value()
+    #[must_use]
+    pub fn insert_rows(&self) -> bool {
+        self.insert_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_rows()")]
+    pub fn get_insert_rows(&self) -> bool {
+        self.insert_rows()
     }
 
     #[inline]
@@ -219,8 +357,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_rows(&self) -> &bool {
-        self.format_rows.get_value()
+    #[must_use]
+    pub fn format_rows(&self) -> bool {
+        self.format_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_rows()")]
+    pub fn get_format_rows(&self) -> bool {
+        self.format_rows()
     }
 
     #[inline]
@@ -230,8 +376,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_pivot_tables(&self) -> &bool {
-        self.pivot_tables.get_value()
+    #[must_use]
+    pub fn pivot_tables(&self) -> bool {
+        self.pivot_tables.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_tables()")]
+    pub fn get_pivot_tables(&self) -> bool {
+        self.pivot_tables()
     }
 
     #[inline]
@@ -241,8 +395,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_select_locked_cells(&self) -> &bool {
-        self.select_locked_cells.get_value()
+    #[must_use]
+    pub fn select_locked_cells(&self) -> bool {
+        self.select_locked_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use select_locked_cells()")]
+    pub fn get_select_locked_cells(&self) -> bool {
+        self.select_locked_cells()
     }
 
     #[inline]
@@ -252,8 +414,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_select_unlocked_cells(&self) -> &bool {
-        self.select_unlocked_cells.get_value()
+    #[must_use]
+    pub fn select_unlocked_cells(&self) -> bool {
+        self.select_unlocked_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use select_unlocked_cells()")]
+    pub fn get_select_unlocked_cells(&self) -> bool {
+        self.select_unlocked_cells()
     }
 
     #[inline]
@@ -263,8 +433,16 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_sort(&self) -> &bool {
-        self.sort.get_value()
+    #[must_use]
+    pub fn sort(&self) -> bool {
+        self.sort.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sort()")]
+    pub fn get_sort(&self) -> bool {
+        self.sort()
     }
 
     #[inline]
@@ -309,79 +487,88 @@ impl SheetProtection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetProtection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.algorithm_name.has_value() {
-            attributes.push(("algorithmName", self.algorithm_name.get_value_str()));
+            attributes.push(("algorithmName", self.algorithm_name.value_str()).into());
         }
         if self.hash_value.has_value() {
-            attributes.push(("hashValue", self.hash_value.get_value_str()));
+            attributes.push(("hashValue", self.hash_value.value_str()).into());
         }
         if self.salt_value.has_value() {
-            attributes.push(("saltValue", self.salt_value.get_value_str()));
+            attributes.push(("saltValue", self.salt_value.value_str()).into());
         }
-        let spin_count = self.spin_count.get_value_string();
+        let spin_count = self.spin_count.value_string();
         if self.spin_count.has_value() {
-            attributes.push(("spinCount", &spin_count));
+            attributes.push(("spinCount", &spin_count).into());
         }
         if self.password.has_value() {
-            attributes.push(("password", self.password.get_value_str()));
+            attributes.push(("password", self.password.value_str()).into());
         }
         if self.sheet.has_value() {
-            attributes.push(("sheet", self.sheet.get_value_string()));
+            attributes.push(("sheet", self.sheet.value_string()).into());
         }
         if self.objects.has_value() {
-            attributes.push(("objects", self.objects.get_value_string()));
+            attributes.push(("objects", self.objects.value_string()).into());
         }
         if self.delete_rows.has_value() {
-            attributes.push(("deleteRows", self.delete_rows.get_value_string()));
+            attributes.push(("deleteRows", self.delete_rows.value_string()).into());
         }
         if self.insert_columns.has_value() {
-            attributes.push(("insertColumns", self.insert_columns.get_value_string()));
+            attributes.push(("insertColumns", self.insert_columns.value_string()).into());
         }
         if self.delete_columns.has_value() {
-            attributes.push(("deleteColumns", self.delete_columns.get_value_string()));
+            attributes.push(("deleteColumns", self.delete_columns.value_string()).into());
         }
         if self.insert_hyperlinks.has_value() {
-            attributes.push((
-                "insertHyperlinks",
-                self.insert_hyperlinks.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "insertHyperlinks",
+                    self.insert_hyperlinks.value_string(),
+                )
+                    .into(),
+            );
         }
         if self.auto_filter.has_value() {
-            attributes.push(("autoFilter", self.auto_filter.get_value_string()));
+            attributes.push(("autoFilter", self.auto_filter.value_string()).into());
         }
         if self.scenarios.has_value() {
-            attributes.push(("scenarios", self.scenarios.get_value_string()));
+            attributes.push(("scenarios", self.scenarios.value_string()).into());
         }
         if self.format_cells.has_value() {
-            attributes.push(("formatCells", self.format_cells.get_value_string()));
+            attributes.push(("formatCells", self.format_cells.value_string()).into());
         }
         if self.format_columns.has_value() {
-            attributes.push(("formatColumns", self.format_columns.get_value_string()));
+            attributes.push(("formatColumns", self.format_columns.value_string()).into());
         }
         if self.insert_rows.has_value() {
-            attributes.push(("insertRows", self.insert_rows.get_value_string()));
+            attributes.push(("insertRows", self.insert_rows.value_string()).into());
         }
         if self.format_rows.has_value() {
-            attributes.push(("formatRows", self.format_rows.get_value_string()));
+            attributes.push(("formatRows", self.format_rows.value_string()).into());
         }
         if self.pivot_tables.has_value() {
-            attributes.push(("pivotTables", self.pivot_tables.get_value_string()));
+            attributes.push(("pivotTables", self.pivot_tables.value_string()).into());
         }
         if self.select_locked_cells.has_value() {
-            attributes.push((
-                "selectLockedCells",
-                self.select_locked_cells.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "selectLockedCells",
+                    self.select_locked_cells.value_string(),
+                )
+                    .into(),
+            );
         }
         if self.select_unlocked_cells.has_value() {
-            attributes.push((
-                "selectUnlockedCells",
-                self.select_unlocked_cells.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "selectUnlockedCells",
+                    self.select_unlocked_cells.value_string(),
+                )
+                    .into(),
+            );
         }
         if self.sort.has_value() {
-            attributes.push(("sort", self.sort.get_value_string()));
+            attributes.push(("sort", self.sort.value_string()).into());
         }
 
         write_start_tag(writer, "sheetProtection", attributes, true);

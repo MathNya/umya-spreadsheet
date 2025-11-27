@@ -1,23 +1,43 @@
-use super::super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::StringValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TextFontType {
-    typeface: StringValue,
+    typeface:     StringValue,
     pitch_family: StringValue,
-    charset: StringValue,
-    panose: StringValue,
+    charset:      StringValue,
+    panose:       StringValue,
 }
 
 impl TextFontType {
     #[inline]
+    #[must_use]
+    pub fn typeface(&self) -> &str {
+        self.typeface.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use typeface()")]
     pub fn get_typeface(&self) -> &str {
-        self.typeface.get_value_str()
+        self.typeface()
     }
 
     #[inline]
@@ -27,8 +47,16 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
+    pub fn pitch_family(&self) -> &str {
+        self.pitch_family.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pitch_family()")]
     pub fn get_pitch_family(&self) -> &str {
-        self.pitch_family.get_value_str()
+        self.pitch_family()
     }
 
     #[inline]
@@ -38,8 +66,16 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
+    pub fn charset(&self) -> &str {
+        self.charset.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use charset()")]
     pub fn get_charset(&self) -> &str {
-        self.charset.get_value_str()
+        self.charset()
     }
 
     #[inline]
@@ -49,8 +85,16 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
+    pub fn panose(&self) -> &str {
+        self.panose.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use panose()")]
     pub fn get_panose(&self) -> &str {
-        self.panose.get_value_str()
+        self.panose()
     }
 
     #[inline]
@@ -115,18 +159,18 @@ impl TextFontType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.typeface.has_value() {
-            attributes.push(("typeface", self.typeface.get_value_str()));
+            attributes.push(("typeface", self.typeface.value_str()).into());
         }
         if self.pitch_family.has_value() {
-            attributes.push(("pitchFamily", self.pitch_family.get_value_str()));
+            attributes.push(("pitchFamily", self.pitch_family.value_str()).into());
         }
         if self.charset.has_value() {
-            attributes.push(("charset", self.charset.get_value_str()));
+            attributes.push(("charset", self.charset.value_str()).into());
         }
         if self.panose.has_value() {
-            attributes.push(("panose", self.panose.get_value_str()));
+            attributes.push(("panose", self.panose.value_str()).into());
         }
         write_start_tag(writer, tab_name, attributes, true);
     }

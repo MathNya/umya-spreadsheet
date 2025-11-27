@@ -1,17 +1,21 @@
 use std::io;
 
 use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Spreadsheet;
-use crate::structs::WriterManager;
+use crate::{
+    helper::const_str::PKG_JSA_PROJECT,
+    structs::{
+        Workbook,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
-    if !spreadsheet.get_has_jsa_macros() {
+    if !wb.has_jsa_macros() {
         return Ok(());
     }
-    let writer = spreadsheet.get_jsa_macros_code().unwrap();
+    let writer = wb.jsa_macros_code().unwrap();
     writer_mng.add_bin(PKG_JSA_PROJECT, writer)
 }

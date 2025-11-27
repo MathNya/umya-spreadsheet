@@ -1,11 +1,23 @@
 // text
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub(crate) struct ThreadedCommentText {
@@ -14,8 +26,14 @@ pub(crate) struct ThreadedCommentText {
 
 impl ThreadedCommentText {
     #[inline]
-    pub(crate) fn get_value(&self) -> &str {
+    pub(crate) fn value(&self) -> &str {
         &self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> &str {
+        self.value()
     }
 
     #[inline]
@@ -45,7 +63,7 @@ impl ThreadedCommentText {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // text
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let attributes: crate::structs::AttrCollection = Vec::new();
         write_start_tag(writer, "text", attributes, false);
         write_text_node(writer, &*self.value);
         write_end_tag(writer, "text");

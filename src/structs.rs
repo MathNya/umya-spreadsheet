@@ -1,4 +1,15 @@
-//! store structs.
+/// A macro to simplify module usage and visibility.
+///
+/// This macro takes a list of modules, makes them private,
+/// and re-exports their contents as public in the current scope.
+macro_rules! pub_mod_use {
+    ($($vis:vis $mod:ident),*) => {
+        $(
+            mod $mod;
+            $vis use self::$mod::*;
+        )*
+    };
+}
 
 pub mod custom_properties;
 pub mod drawing;
@@ -8,500 +19,173 @@ pub mod office2019;
 pub mod raw;
 pub mod vml;
 
-mod error;
-pub use self::error::*;
-
-mod spreadsheet;
-pub use self::spreadsheet::*;
-
-mod worksheet;
-pub use self::worksheet::*;
-
-mod properties;
-pub use self::properties::*;
-
-mod cell;
-pub use self::cell::*;
-
-mod cells;
-pub use self::cells::*;
-
-mod hyperlink;
-pub use self::hyperlink::*;
-
-mod color;
-pub use self::color::*;
-
-mod page_setup;
-pub use self::page_setup::*;
-
-mod page_margins;
-pub use self::page_margins::*;
-
-mod header_footer;
-pub use self::header_footer::*;
-
-mod sheet_view;
-pub use self::sheet_view::*;
-
-mod auto_filter;
-pub use self::auto_filter::*;
-
-mod column;
-pub use self::column::*;
-
-mod style;
-pub use self::style::*;
-
-mod font;
-pub use self::font::*;
-
-mod fill;
-pub use self::fill::*;
-
-mod borders;
-pub(crate) use self::borders::*;
-
-mod border;
-pub use self::border::*;
-
-mod alignment;
-pub use self::alignment::*;
-
-mod conditional_formatting_rule;
-pub use self::conditional_formatting_rule::*;
-
-mod protection;
-pub use self::protection::*;
-
-mod rich_text;
-pub use self::rich_text::*;
-
-mod text_element;
-pub use self::text_element::*;
-
-mod cell_style;
-pub use self::cell_style::*;
-
-mod defined_name;
-pub use self::defined_name::*;
-
-mod comment;
-pub use self::comment::*;
-
-mod comment_text;
-pub use self::comment_text::*;
-
-mod coordinate;
-pub use self::coordinate::*;
-
-mod range;
-pub use self::range::*;
-
-mod conditional_formatting;
-pub use self::conditional_formatting::*;
-
-mod address;
-pub use self::address::*;
-
-mod anchor;
-pub use self::anchor::*;
-
-mod boolean_value;
-pub use self::boolean_value::*;
-
-mod u_int32_value;
-pub use self::u_int32_value::*;
-
-mod u_int16_value;
-pub use self::u_int16_value::*;
-
-mod int32_value;
-pub use self::int32_value::*;
-
-mod int16_value;
-pub use self::int16_value::*;
-
-mod string_value;
-pub use self::string_value::*;
-
-mod date_time_value;
-pub use self::date_time_value::*;
-
-mod double_value;
-pub use self::double_value::*;
-
-mod enum_value;
-pub use self::enum_value::*;
-
-mod enum_trait;
-pub use self::enum_trait::*;
-
-mod byte_value;
-pub use self::byte_value::*;
-
-mod s_byte_value;
-pub use self::s_byte_value::*;
-
-mod int64_value;
-pub use self::int64_value::*;
-
-mod row;
-pub use self::row::*;
-
-mod font_name;
-pub use self::font_name::*;
-
-mod font_size;
-pub use self::font_size::*;
-
-mod font_family_numbering;
-pub use self::font_family_numbering::*;
-
-mod bold;
-pub use self::bold::*;
-
-mod italic;
-pub use self::italic::*;
-
-mod underline_values;
-pub use self::underline_values::*;
-
-mod underline;
-pub use self::underline::*;
-
-mod strike;
-pub use self::strike::*;
-
-mod font_char_set;
-pub use self::font_char_set::*;
-
-mod font_scheme_values;
-pub use self::font_scheme_values::*;
-
-mod font_scheme;
-pub use self::font_scheme::*;
-
-mod fonts;
-pub(crate) use self::fonts::*;
-
-mod pattern_fill;
-pub use self::pattern_fill::*;
-
-mod pattern_values;
-pub use self::pattern_values::*;
-
-mod fills;
-pub(crate) use self::fills::*;
-
-mod numbering_format;
-pub use self::numbering_format::*;
-
-mod numbering_formats;
-pub(crate) use self::numbering_formats::*;
-
-mod stylesheet;
-pub(crate) use self::stylesheet::*;
-
-mod border_properties_type;
-pub use self::border_properties_type::*;
-
-mod border_style_values;
-pub use self::border_style_values::*;
-
-mod borders_crate;
-pub(crate) use self::borders_crate::*;
-
-mod cell_format;
-pub(crate) use self::cell_format::*;
-
-mod horizontal_alignment_values;
-pub use self::horizontal_alignment_values::*;
-
-mod vertical_alignment_values;
-pub use self::vertical_alignment_values::*;
-
-mod cell_formats;
-pub(crate) use self::cell_formats::*;
-
-mod cell_style_formats;
-pub(crate) use self::cell_style_formats::*;
-
-mod cell_styles;
-pub(crate) use self::cell_styles::*;
-
-mod differential_format;
-pub(crate) use self::differential_format::*;
-
-mod differential_formats;
-pub(crate) use self::differential_formats::*;
-
-mod mru_colors;
-pub(crate) use self::mru_colors::*;
-
-mod colors;
-pub(crate) use self::colors::*;
-
-mod shared_string_table;
-pub(crate) use self::shared_string_table::*;
-
-mod shared_string_item;
-pub(crate) use self::shared_string_item::*;
-
-mod text;
-pub(crate) use self::text::*;
-
-mod phonetic_run;
-pub(crate) use self::phonetic_run::*;
-
-mod gradient_fill;
-pub use self::gradient_fill::*;
-
-mod gradient_stop;
-pub use self::gradient_stop::*;
-
-mod vertical_alignment_run_values;
-pub use self::vertical_alignment_run_values::*;
-
-mod vertical_text_alignment;
-pub use self::vertical_text_alignment::*;
-
-mod cell_value;
-pub use self::cell_value::*;
-
-mod row_reference;
-pub use self::row_reference::*;
-
-mod column_reference;
-pub use self::column_reference::*;
-
-mod columns;
-pub(crate) use self::columns::*;
-
-mod sequence_of_references;
-pub use self::sequence_of_references::*;
-
-mod selection;
-pub use self::selection::*;
-
-mod pane_values;
-pub use self::pane_values::*;
-
-mod pane;
-pub use self::pane::*;
-
-mod pane_state_values;
-pub use self::pane_state_values::*;
-
-mod workbook_view;
-pub use self::workbook_view::*;
-
-mod ole_objects;
-pub use self::ole_objects::*;
-
-mod ole_object;
-pub use self::ole_object::*;
-
-mod embedded_object_properties;
-pub use self::embedded_object_properties::*;
-
-mod object_anchor;
-pub use self::object_anchor::*;
-
-mod from_marker;
-pub use self::from_marker::*;
-
-mod to_marker;
-pub use self::to_marker::*;
-
-mod true_false_value;
-pub use self::true_false_value::*;
-
-mod true_false_blank_value;
-pub use self::true_false_blank_value::*;
-
-mod image;
-pub use self::image::*;
-
-mod chart;
-pub use self::chart::*;
-
-mod chart_type;
-pub use self::chart_type::*;
-
-mod merge_cells;
-pub(crate) use self::merge_cells::*;
-
-mod print_options;
-pub use self::print_options::*;
-
-mod orientation_values;
-pub use self::orientation_values::*;
-
-mod odd_header;
-pub use self::odd_header::*;
-
-mod odd_footer;
-pub use self::odd_footer::*;
-
-mod r#break;
-pub use self::r#break::*;
-
-mod row_breaks;
-pub use self::row_breaks::*;
-
-mod column_breaks;
-pub use self::column_breaks::*;
-
-mod sheet_view_values;
-pub use self::sheet_view_values::*;
-
-mod writer_manager;
-pub use self::writer_manager::*;
-
-mod sheet_views;
-pub use self::sheet_views::*;
-
-mod rows;
-pub(crate) use self::rows::*;
-
-mod media_object;
-pub(crate) use self::media_object::*;
-
-mod csv_writer_option;
-pub use self::csv_writer_option::*;
-
-mod csv_encode_values;
-pub use self::csv_encode_values::*;
-
-mod cell_raw_value;
-pub use self::cell_raw_value::*;
-
-mod conditional_format_values;
-pub use self::conditional_format_values::*;
-
-mod conditional_formatting_operator_values;
-pub use self::conditional_formatting_operator_values::*;
-
-mod time_period_values;
-pub use self::time_period_values::*;
-
-mod color_scale;
-pub use self::color_scale::*;
-
-mod conditional_format_value_object;
-pub use self::conditional_format_value_object::*;
-
-mod conditional_format_value_object_values;
-pub use self::conditional_format_value_object_values::*;
-
-mod data_bar;
-pub use self::data_bar::*;
-
-mod icon_set;
-pub use self::icon_set::*;
-
-mod formula;
-pub use self::formula::*;
-
-mod table;
-pub use self::table::*;
-
-mod data_validation_values;
-pub use self::data_validation_values::*;
-
-mod data_validation_operator_values;
-pub use self::data_validation_operator_values::*;
-
-mod data_validation;
-pub use self::data_validation::*;
-
-mod data_validations;
-pub use self::data_validations::*;
-
-mod sheet_format_properties;
-pub use self::sheet_format_properties::*;
-
-mod sheet_protection;
-pub use self::sheet_protection::*;
-
-mod workbook_protection;
-pub use self::workbook_protection::*;
-
-mod cell_formula;
-pub use self::cell_formula::*;
-
-mod cell_formula_values;
-pub use self::cell_formula_values::*;
-
-mod totals_row_function_values;
-pub use self::totals_row_function_values::*;
-
-mod sheet_state_values;
-pub use self::sheet_state_values::*;
-
-mod pivot_table_definition;
-pub use self::pivot_table_definition::*;
-
-mod pivot_table;
-pub use self::pivot_table::*;
-
-mod pivot_cache_definition;
-pub use self::pivot_cache_definition::*;
-
-mod location;
-pub use self::location::*;
-
-mod pivot_fields;
-pub use self::pivot_fields::*;
-
-mod pivot_field;
-pub use self::pivot_field::*;
-
-mod row_items;
-pub use self::row_items::*;
-
-mod row_item;
-pub use self::row_item::*;
-
-mod column_fields;
-pub use self::column_fields::*;
-
-mod field;
-pub use self::field::*;
-
-mod column_items;
-pub use self::column_items::*;
-
-mod item_values;
-pub use self::item_values::*;
-
-mod member_property_index;
-pub use self::member_property_index::*;
-
-mod data_fields;
-pub use self::data_fields::*;
-
-mod data_field;
-pub use self::data_field::*;
-
-mod pivot_table_style;
-pub use self::pivot_table_style::*;
-
-mod cache_source;
-pub use self::cache_source::*;
-
-mod source_values;
-pub use self::source_values::*;
-
-mod worksheet_source;
-pub use self::worksheet_source::*;
-
-mod cache_fields;
-pub use self::cache_fields::*;
-
-mod cache_field;
-pub use self::cache_field::*;
-
-mod shared_items;
-pub use self::shared_items::*;
+pub_mod_use![
+    pub(crate) borders_crate,
+    pub(crate) borders,
+    pub(crate) cell_format,
+    pub(crate) cell_formats,
+    pub(crate) cell_style_formats,
+    pub(crate) cell_styles,
+    pub(crate) colors,
+    pub(crate) columns,
+    pub(crate) differential_format,
+    pub(crate) differential_formats,
+    pub(crate) fills,
+    pub(crate) fonts,
+    pub(crate) media_object,
+    pub(crate) merge_cells,
+    pub(crate) mru_colors,
+    pub(crate) numbering_formats,
+    pub(crate) phonetic_run,
+    pub(crate) rows,
+    pub(crate) shared_string_item,
+    pub(crate) shared_string_table,
+    pub(crate) stylesheet,
+    pub(crate) text,
+
+    pub address,
+    pub attributes,
+    pub alignment,
+    pub anchor,
+    pub auto_filter,
+    pub bold,
+    pub boolean_value,
+    pub border_properties_type,
+    pub border_style_values,
+    pub border,
+    pub byte_value,
+    pub cache_field,
+    pub cache_fields,
+    pub cache_source,
+    pub cell_formula_values,
+    pub cell_formula,
+    pub cell_raw_value,
+    pub cell_style,
+    pub cell_value,
+    pub cell,
+    pub cells,
+    pub chart_type,
+    pub chart,
+    pub color_scale,
+    pub color,
+    pub column_breaks,
+    pub column_fields,
+    pub column_items,
+    pub column_reference,
+    pub column,
+    pub comment,
+    pub comment_text,
+    pub conditional_format_value_object_values,
+    pub conditional_format_value_object,
+    pub conditional_format_values,
+    pub conditional_formatting_operator_values,
+    pub conditional_formatting_rule,
+    pub conditional_formatting,
+    pub coordinate,
+    pub csv_encode_values,
+    pub csv_writer_option,
+    pub data_bar,
+    pub data_field,
+    pub data_fields,
+    pub date_time_value,
+    pub data_validation_operator_values,
+    pub data_validation_values,
+    pub data_validation,
+    pub data_validations,
+    pub defined_name,
+    pub double_value,
+    pub embedded_object_properties,
+    pub enum_trait,
+    pub enum_value,
+    pub error,
+    pub field,
+    pub fill,
+    pub font_char_set,
+    pub font_family_numbering,
+    pub font_name,
+    pub font_scheme_values,
+    pub font_scheme,
+    pub font_size,
+    pub font,
+    pub formula,
+    pub from_marker,
+    pub gradient_fill,
+    pub gradient_stop,
+    pub header_footer,
+    pub horizontal_alignment_values,
+    pub hyperlink,
+    pub icon_set,
+    pub image,
+    pub int16_value,
+    pub int32_value,
+    pub int64_value,
+    pub italic,
+    pub item_values,
+    pub location,
+    pub member_property_index,
+    pub numbering_format,
+    pub object_anchor,
+    pub odd_footer,
+    pub odd_header,
+    pub ole_object,
+    pub ole_objects,
+    pub orientation_values,
+    pub page_margins,
+    pub page_setup,
+    pub pane_state_values,
+    pub pane_values,
+    pub pane,
+    pub pattern_fill,
+    pub pattern_values,
+    pub pivot_cache_definition,
+    pub pivot_field,
+    pub pivot_fields,
+    pub pivot_table_definition,
+    pub pivot_table_style,
+    pub pivot_table,
+    pub print_options,
+    pub properties,
+    pub protection,
+    pub r#break,
+    pub range,
+    pub rich_text,
+    pub row_breaks,
+    pub row_item,
+    pub row_items,
+    pub row_reference,
+    pub row,
+    pub s_byte_value,
+    pub selection,
+    pub sequence_of_references,
+    pub shared_items,
+    pub sheet_format_properties,
+    pub sheet_protection,
+    pub sheet_state_values,
+    pub sheet_view_values,
+    pub sheet_view,
+    pub sheet_views,
+    pub source_values,
+    pub strike,
+    pub string_value,
+    pub style,
+    pub table,
+    pub text_element,
+    pub time_period_values,
+    pub to_marker,
+    pub totals_row_function_values,
+    pub true_false_blank_value,
+    pub true_false_value,
+    pub u_int16_value,
+    pub u_int32_value,
+    pub underline_values,
+    pub underline,
+    pub vertical_alignment_run_values,
+    pub vertical_alignment_values,
+    pub vertical_text_alignment,
+    pub workbook_protection,
+    pub workbook_view,
+    pub workbook,
+    pub worksheet_source,
+    pub worksheet,
+    pub writer_manager
+];

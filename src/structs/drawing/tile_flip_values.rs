@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum TileFlipValues {
     Horizontal,
@@ -15,7 +16,7 @@ impl Default for TileFlipValues {
 }
 impl EnumTrait for TileFlipValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Horizontal => "x",
             Self::HorizontalAndVertical => "xy",

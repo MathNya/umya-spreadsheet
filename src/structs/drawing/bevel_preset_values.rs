@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum BevelPresetValues {
     Angle,
@@ -23,7 +24,7 @@ impl Default for BevelPresetValues {
 }
 impl EnumTrait for BevelPresetValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Angle => "angle",
             Self::ArtDeco => "artDeco",

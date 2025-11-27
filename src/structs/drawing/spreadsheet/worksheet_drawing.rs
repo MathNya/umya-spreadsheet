@@ -1,42 +1,76 @@
 // xdr:wsDr
-use super::ConnectionShape;
-use super::GraphicFrame;
-use super::OneCellAnchor;
-use super::Picture;
-use super::Shape;
-use super::TwoCellAnchor;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::Chart;
-use crate::structs::Image;
-use crate::structs::OleObjects;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ConnectionShape,
+    GraphicFrame,
+    OneCellAnchor,
+    Picture,
+    Shape,
+    TwoCellAnchor,
+};
+use crate::{
+    helper::const_str::{
+        DRAWINGML_MAIN_NS,
+        SHEET_DRAWING_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::{
+        Chart,
+        Image,
+        OleObjects,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection: ThinVec<Image>,
-    chart_collection: ThinVec<Chart>,
-    one_cell_anchor_collection: ThinVec<OneCellAnchor>,
-    two_cell_anchor_collection: ThinVec<TwoCellAnchor>,
+    image_collection:           Vec<Image>,
+    chart_collection:           Vec<Chart>,
+    one_cell_anchor_collection: Vec<OneCellAnchor>,
+    two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
 
 impl WorksheetDrawing {
     #[inline]
-    pub fn get_image_collection(&self) -> &[Image] {
+    #[must_use]
+    pub fn image_collection(&self) -> &[Image] {
         &self.image_collection
     }
 
     #[inline]
-    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image_collection()")]
+    pub fn get_image_collection(&self) -> &[Image] {
+        self.image_collection()
+    }
+
+    #[inline]
+    pub fn image_collection_mut(&mut self) -> &mut Vec<Image> {
         &mut self.image_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_collection_mut()")]
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+        self.image_collection_mut()
     }
 
     #[inline]
@@ -46,41 +80,85 @@ impl WorksheetDrawing {
     }
 
     #[inline]
+    #[must_use]
+    pub fn image(&self, col: u32, row: u32) -> Option<&Image> {
+        self.image_collection
+            .iter()
+            .find(|&image| image.get_col() == col - 1 && image.get_row() == row - 1)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
     pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
-        self.image_collection
-            .iter()
-            .find(|&image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
+        self.image(*col, *row)
     }
 
     #[inline]
+    pub fn image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
+        self.image_collection
+            .iter_mut()
+            .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
     pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
-        self.image_collection
-            .iter_mut()
-            .find(|image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
+        self.image_mut(*col, *row)
     }
 
-    pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
+    #[inline]
+    #[must_use]
+    pub fn images(&self, col: u32, row: u32) -> Vec<&Image> {
         self.image_collection
             .iter()
-            .filter(|image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
-            .collect()
-    }
-
-    pub fn get_images_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
-        self.image_collection
-            .iter_mut()
-            .filter(|image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
+            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
             .collect()
     }
 
     #[inline]
-    pub fn get_chart_collection(&self) -> &[Chart] {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use images()")]
+    pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
+        self.images(*col, *row)
+    }
+
+    #[inline]
+    pub fn images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+        self.image_collection
+            .iter_mut()
+            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .collect()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use images_mut()")]
+    pub fn get_images_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
+        self.images_mut(*col, *row)
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn chart_collection(&self) -> &[Chart] {
         &self.chart_collection
     }
 
     #[inline]
-    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_collection()")]
+    pub fn get_chart_collection(&self) -> &[Chart] {
+        self.chart_collection()
+    }
+
+    #[inline]
+    pub fn chart_collection_mut(&mut self) -> &mut Vec<Chart> {
         &mut self.chart_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_collection_mut()")]
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+        self.chart_collection_mut()
     }
 
     #[inline]
@@ -90,41 +168,81 @@ impl WorksheetDrawing {
     }
 
     #[inline]
+    #[must_use]
+    pub fn chart(&self, col: u32, row: u32) -> Option<&Chart> {
+        self.chart_collection
+            .iter()
+            .find(|&chart| chart.col() == col - 1 && chart.row() == row - 1)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart()")]
     pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
-        self.chart_collection
-            .iter()
-            .find(|&chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+        self.chart(*col, *row)
     }
 
     #[inline]
+    pub fn chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
+        self.chart_collection
+            .iter_mut()
+            .find(|chart| chart.col() == col - 1 && chart.row() == row - 1)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_mut()")]
     pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
-        self.chart_collection
-            .iter_mut()
-            .find(|chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+        self.chart_mut(*col, *row)
     }
 
-    pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
+    #[must_use]
+    pub fn charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         self.chart_collection
             .iter()
-            .filter(|chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+            .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
             .collect()
     }
 
-    pub fn get_charts_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use charts()")]
+    pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
+        self.charts(*col, *row)
+    }
+
+    pub fn charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
         self.chart_collection
             .iter_mut()
-            .filter(|chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+            .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
             .collect()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use charts_mut()")]
+    pub fn get_charts_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
+        self.charts_mut(*col, *row)
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
+    #[must_use]
+    pub fn one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
         &self.one_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<OneCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_collection()")]
+    pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
+        self.one_cell_anchor_collection()
+    }
+
+    #[inline]
+    pub fn one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_collection_mut()")]
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+        self.one_cell_anchor_collection_mut()
     }
 
     #[inline]
@@ -134,13 +252,27 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
+    #[must_use]
+    pub fn two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
         &self.two_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<TwoCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_collection()")]
+    pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
+        self.two_cell_anchor_collection()
+    }
+
+    #[inline]
+    pub fn two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_collection_mut()")]
+    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
+        self.two_cell_anchor_collection_mut()
     }
 
     #[inline]
@@ -150,6 +282,7 @@ impl WorksheetDrawing {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_drawing_object(&self) -> bool {
         !self.chart_collection.is_empty()
             || !self.image_collection.is_empty()
@@ -157,87 +290,145 @@ impl WorksheetDrawing {
             || !self.two_cell_anchor_collection.is_empty()
     }
 
+    #[must_use]
+    pub fn graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.graphic_frame())
+            .collect()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_collection()")]
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
+        self.graphic_frame_collection()
+    }
+
+    pub fn graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
         self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame())
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.graphic_frame_mut())
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_collection_mut()")]
     pub fn get_graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
+        self.graphic_frame_collection_mut()
+    }
+
+    #[must_use]
+    pub fn shape_collection(&self) -> Vec<&Shape> {
         self.two_cell_anchor_collection
-            .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame_mut())
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.shape())
             .collect()
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection()")]
     pub fn get_shape_collection(&self) -> Vec<&Shape> {
+        self.shape_collection()
+    }
+
+    pub fn shape_collection_mut(&mut self) -> Vec<&mut Shape> {
         self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape())
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.shape_mut())
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use shape_collection_mut()")]
     pub fn get_shape_collection_mut(&mut self) -> Vec<&mut Shape> {
+        self.shape_collection_mut()
+    }
+
+    #[must_use]
+    pub fn connection_shape_collection(&self) -> Vec<&ConnectionShape> {
         self.two_cell_anchor_collection
-            .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape_mut())
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.connection_shape())
             .collect()
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_collection()")]
     pub fn get_connection_shape_collection(&self) -> Vec<&ConnectionShape> {
-        self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape())
-            .collect()
+        self.connection_shape_collection()
     }
 
-    pub fn get_connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
+    pub fn connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
         self.two_cell_anchor_collection
             .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape_mut())
+            .filter_map(|two_cell_anchor| two_cell_anchor.connection_shape_mut())
             .collect()
     }
 
-    pub fn get_picture_collection(&self) -> Vec<&Picture> {
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_collection_mut()")]
+    pub fn get_connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
+        self.connection_shape_collection_mut()
+    }
+
+    #[must_use]
+    pub fn picture_collection(&self) -> Vec<&Picture> {
         self.two_cell_anchor_collection
             .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture())
+            .filter_map(|two_cell_anchor| two_cell_anchor.picture())
             .collect()
     }
 
-    pub fn get_one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection()")]
+    pub fn get_picture_collection(&self) -> Vec<&Picture> {
+        self.picture_collection()
+    }
+
+    pub fn one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
         self.one_cell_anchor_collection
             .iter_mut()
             .chain(
                 self.image_collection
                     .iter_mut()
-                    .filter_map(|image| image.get_one_cell_anchor_mut()),
+                    .filter_map(|image| image.one_cell_anchor_mut()),
             )
             .collect()
     }
 
-    pub fn get_two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_all_list()")]
+    pub fn get_one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
+        self.one_cell_anchor_all_list()
+    }
+
+    pub fn two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
         self.two_cell_anchor_collection
             .iter_mut()
             .chain(
                 self.chart_collection
                     .iter_mut()
-                    .map(|chart| chart.get_two_cell_anchor_mut()),
+                    .map(Chart::two_cell_anchor_mut),
             )
             .chain(
                 self.image_collection
                     .iter_mut()
-                    .filter_map(|image| image.get_two_cell_anchor_mut()),
+                    .filter_map(|image| image.two_cell_anchor_mut()),
             )
             .collect()
     }
 
-    pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_all_list()")]
+    pub fn get_two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
+        self.two_cell_anchor_all_list()
+    }
+
+    pub fn picture_collection_mut(&mut self) -> Vec<&mut Picture> {
         self.two_cell_anchor_collection
             .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture_mut())
+            .filter_map(|two_cell_anchor| two_cell_anchor.picture_mut())
             .collect()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use picture_collection_mut()")]
+    pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
+        self.picture_collection_mut()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -272,12 +463,12 @@ impl WorksheetDrawing {
                         }
                     }
                     b"xdr:twoCellAnchor" => {
-                        let os = ole_objects.get_ole_object_mut();
+                        let os = ole_objects.ole_object_mut();
                         if is_alternate_content && !os.is_empty() {
                             os[ole_index]
-                                .get_two_cell_anchor_mut()
+                                .two_cell_anchor_mut()
                                 .set_is_alternate_content(true);
-                            os[ole_index].get_two_cell_anchor_mut().set_attributes(
+                            os[ole_index].two_cell_anchor_mut().set_attributes(
                                 reader,
                                 e,
                                 drawing_relationships,
@@ -330,21 +521,21 @@ impl WorksheetDrawing {
             writer,
             "xdr:wsDr",
             vec![
-                ("xmlns:xdr", SHEET_DRAWING_NS),
-                ("xmlns:a", DRAWINGML_MAIN_NS),
+                ("xmlns:xdr", SHEET_DRAWING_NS).into(),
+                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
             ],
             false,
         );
 
         // xdr:twoCellAnchor
         for chart in &self.chart_collection {
-            chart.get_two_cell_anchor().write_to(writer, rel_list, &0);
+            chart.two_cell_anchor().write_to(writer, rel_list, 0);
         }
         for image in &self.image_collection {
             image.write_to(writer, rel_list);
         }
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            two_cell_anchor.write_to(writer, rel_list, &0);
+            two_cell_anchor.write_to(writer, rel_list, 0);
         }
 
         // xdr:oneCellAnchor
@@ -353,12 +544,10 @@ impl WorksheetDrawing {
         }
 
         // mc:AlternateContent
-        let mut ole_id = 1000 + 25;
-        for ole_object in ole_objects.get_ole_object() {
-            ole_object
-                .get_two_cell_anchor()
-                .write_to(writer, rel_list, &0);
-            ole_id += 1;
+        //        let mut ole_id = 1000 + 25;
+        for ole_object in ole_objects.ole_object() {
+            ole_object.two_cell_anchor().write_to(writer, rel_list, 0);
+            //            ole_id += 1;
         }
 
         write_end_tag(writer, "xdr:wsDr");
@@ -367,10 +556,10 @@ impl WorksheetDrawing {
 impl AdjustmentCoordinate for WorksheetDrawing {
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for anchor in &mut self.one_cell_anchor_collection {
             anchor.adjustment_insert_coordinate(
@@ -408,12 +597,12 @@ impl AdjustmentCoordinate for WorksheetDrawing {
 
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        &mut self.one_cell_anchor_collection.retain(|k| {
+        self.one_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.one_cell_anchor_collection {
@@ -424,7 +613,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.two_cell_anchor_collection.retain(|k| {
+        self.two_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.two_cell_anchor_collection {
@@ -435,7 +624,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.chart_collection.retain(|k| {
+        self.chart_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for chart in &mut self.chart_collection {
@@ -446,7 +635,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.image_collection.retain(|k| {
+        self.image_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for image in &mut self.image_collection {
@@ -463,10 +652,10 @@ impl AdjustmentCoordinateWithSheet for WorksheetDrawing {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // chart
         for chart in &mut self.chart_collection {
@@ -483,10 +672,10 @@ impl AdjustmentCoordinateWithSheet for WorksheetDrawing {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // chart
         for chart in &mut self.chart_collection {

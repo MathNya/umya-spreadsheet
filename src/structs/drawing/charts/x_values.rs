@@ -1,12 +1,24 @@
 // c:xVal
-use super::NumberReference;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::NumberReference;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct XValues {
@@ -14,12 +26,24 @@ pub struct XValues {
 }
 
 impl XValues {
-    pub fn get_number_reference(&self) -> &NumberReference {
+    #[must_use]
+    pub fn number_reference(&self) -> &NumberReference {
         &self.number_reference
     }
 
-    pub fn get_number_reference_mut(&mut self) -> &mut NumberReference {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_reference()")]
+    pub fn get_number_reference(&self) -> &NumberReference {
+        self.number_reference()
+    }
+
+    pub fn number_reference_mut(&mut self) -> &mut NumberReference {
         &mut self.number_reference
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use number_reference_mut()")]
+    pub fn get_number_reference_mut(&mut self) -> &mut NumberReference {
+        self.number_reference_mut()
     }
 
     pub fn set_number_reference(&mut self, value: NumberReference) -> &mut XValues {
@@ -48,12 +72,12 @@ impl XValues {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:xVal
         write_start_tag(writer, "c:xVal", vec![], false);
 
         // c:numRef
-        self.number_reference.write_to(writer, spreadsheet);
+        self.number_reference.write_to(writer, wb);
 
         write_end_tag(writer, "c:xVal");
     }

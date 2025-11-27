@@ -1,40 +1,72 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:chartSpace
 use super::Chart;
-use super::Date1904;
-use super::EditingLanguage;
-use super::PrintSettings;
-use super::RoundedCorners;
-use super::ShapeProperties;
-use crate::helper::const_str::*;
-use crate::structs::office2010::drawing::charts::Style;
-use crate::structs::Spreadsheet;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use super::{
+    Date1904,
+    EditingLanguage,
+    PrintSettings,
+    RoundedCorners,
+    ShapeProperties,
+};
+use crate::{
+    helper::const_str::{
+        DRAWING_CHART_2015_NS,
+        DRAWINGML_CHART_NS,
+        DRAWINGML_MAIN_NS,
+        REL_OFC_NS,
+    },
+    structs::{
+        Workbook,
+        office2010::drawing::charts::Style,
+    },
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {
-    date1904: Option<Date1904>,
+    date1904:         Option<Date1904>,
     editing_language: EditingLanguage,
-    rounded_corners: RoundedCorners,
-    style: Option<Style>,
-    chart: Chart,
+    rounded_corners:  RoundedCorners,
+    style:            Option<Style>,
+    chart:            Chart,
     shape_properties: Option<ShapeProperties>,
-    print_settings: Option<PrintSettings>,
+    print_settings:   Option<PrintSettings>,
 }
 
 impl ChartSpace {
-    pub fn get_date1904(&self) -> Option<&Date1904> {
+    #[must_use]
+    pub fn date1904(&self) -> Option<&Date1904> {
         self.date1904.as_ref()
     }
 
-    pub fn get_date1904_mut(&mut self) -> Option<&mut Date1904> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use date1904()")]
+    pub fn get_date1904(&self) -> Option<&Date1904> {
+        self.date1904()
+    }
+
+    pub fn date1904_mut(&mut self) -> Option<&mut Date1904> {
         self.date1904.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use date1904_mut()")]
+    pub fn get_date1904_mut(&mut self) -> Option<&mut Date1904> {
+        self.date1904_mut()
     }
 
     pub fn set_date1904(&mut self, value: Date1904) -> &mut Self {
@@ -42,12 +74,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_editing_language(&self) -> &EditingLanguage {
+    #[must_use]
+    pub fn editing_language(&self) -> &EditingLanguage {
         &self.editing_language
     }
 
-    pub fn get_editing_language_mut(&mut self) -> &mut EditingLanguage {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use editing_language()")]
+    pub fn get_editing_language(&self) -> &EditingLanguage {
+        self.editing_language()
+    }
+
+    pub fn editing_language_mut(&mut self) -> &mut EditingLanguage {
         &mut self.editing_language
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use editing_language_mut()")]
+    pub fn get_editing_language_mut(&mut self) -> &mut EditingLanguage {
+        self.editing_language_mut()
     }
 
     pub fn set_editing_language(&mut self, value: EditingLanguage) -> &mut Self {
@@ -55,12 +99,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_rounded_corners(&self) -> &RoundedCorners {
+    #[must_use]
+    pub fn rounded_corners(&self) -> &RoundedCorners {
         &self.rounded_corners
     }
 
-    pub fn get_rounded_corners_mut(&mut self) -> &mut RoundedCorners {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rounded_corners()")]
+    pub fn get_rounded_corners(&self) -> &RoundedCorners {
+        self.rounded_corners()
+    }
+
+    pub fn rounded_corners_mut(&mut self) -> &mut RoundedCorners {
         &mut self.rounded_corners
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use rounded_corners_mut()")]
+    pub fn get_rounded_corners_mut(&mut self) -> &mut RoundedCorners {
+        self.rounded_corners_mut()
     }
 
     pub fn set_rounded_corners(&mut self, value: RoundedCorners) -> &mut Self {
@@ -68,12 +124,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_style(&self) -> Option<&Style> {
+    #[must_use]
+    pub fn style(&self) -> Option<&Style> {
         self.style.as_ref()
     }
 
-    pub fn get_style_mut(&mut self) -> Option<&mut Style> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style()
+    }
+
+    pub fn style_mut(&mut self) -> Option<&mut Style> {
         self.style.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use style_mut()")]
+    pub fn get_style_mut(&mut self) -> Option<&mut Style> {
+        self.style_mut()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
@@ -81,12 +149,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_chart(&self) -> &Chart {
+    #[must_use]
+    pub fn chart(&self) -> &Chart {
         &self.chart
     }
 
-    pub fn get_chart_mut(&mut self) -> &mut Chart {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart()")]
+    pub fn get_chart(&self) -> &Chart {
+        self.chart()
+    }
+
+    pub fn chart_mut(&mut self) -> &mut Chart {
         &mut self.chart
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use chart_mut()")]
+    pub fn get_chart_mut(&mut self) -> &mut Chart {
+        self.chart_mut()
     }
 
     pub fn set_chart(&mut self, value: Chart) -> &mut Self {
@@ -94,12 +174,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -107,12 +199,24 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_print_settings(&self) -> Option<&PrintSettings> {
+    #[must_use]
+    pub fn print_settings(&self) -> Option<&PrintSettings> {
         self.print_settings.as_ref()
     }
 
-    pub fn get_print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use print_settings()")]
+    pub fn get_print_settings(&self) -> Option<&PrintSettings> {
+        self.print_settings()
+    }
+
+    pub fn print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
         self.print_settings.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use print_settings_mut()")]
+    pub fn get_print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
+        self.print_settings_mut()
     }
 
     pub fn set_print_settings(&mut self, value: PrintSettings) -> &mut Self {
@@ -176,16 +280,16 @@ impl ChartSpace {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:chartSpace
         write_start_tag(
             writer,
             "c:chartSpace",
             vec![
-                ("xmlns:c", DRAWINGML_CHART_NS),
-                ("xmlns:a", DRAWINGML_MAIN_NS),
-                ("xmlns:r", REL_OFC_NS),
-                ("xmlns:c16r2", DRAWING_CHART_2015_NS),
+                ("xmlns:c", DRAWINGML_CHART_NS).into(),
+                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
+                ("xmlns:r", REL_OFC_NS).into(),
+                ("xmlns:c16r2", DRAWING_CHART_2015_NS).into(),
             ],
             false,
         );
@@ -207,7 +311,7 @@ impl ChartSpace {
         }
 
         // c:chart
-        self.chart.write_to(writer, spreadsheet);
+        self.chart.write_to(writer, wb);
 
         // c:spPr
         if let Some(v) = &self.shape_properties {
@@ -226,10 +330,10 @@ impl AdjustmentCoordinateWithSheet for ChartSpace {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.chart.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -243,10 +347,10 @@ impl AdjustmentCoordinateWithSheet for ChartSpace {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.chart.adjustment_remove_coordinate_with_sheet(
             sheet_name,

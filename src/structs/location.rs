@@ -1,22 +1,40 @@
-use super::StringValue;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Location {
-    reference: StringValue,
+    reference:        StringValue,
     first_header_row: UInt32Value,
-    first_data_row: UInt32Value,
-    first_data_col: UInt32Value,
+    first_data_row:   UInt32Value,
+    first_data_col:   UInt32Value,
 }
 impl Location {
+    #[must_use]
+    pub fn reference(&self) -> &str {
+        self.reference.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use reference()")]
     pub fn get_reference(&self) -> &str {
-        self.reference.get_value_str()
+        self.reference()
     }
 
     pub fn set_reference<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -24,8 +42,15 @@ impl Location {
         self
     }
 
-    pub fn get_first_header_row(&self) -> &u32 {
-        self.first_header_row.get_value()
+    #[must_use]
+    pub fn first_header_row(&self) -> u32 {
+        self.first_header_row.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_header_row()")]
+    pub fn get_first_header_row(&self) -> u32 {
+        self.first_header_row()
     }
 
     pub fn set_first_header_row(&mut self, value: u32) -> &mut Self {
@@ -33,8 +58,15 @@ impl Location {
         self
     }
 
-    pub fn get_first_data_row(&self) -> &u32 {
-        self.first_data_row.get_value()
+    #[must_use]
+    pub fn first_data_row(&self) -> u32 {
+        self.first_data_row.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_data_row()")]
+    pub fn get_first_data_row(&self) -> u32 {
+        self.first_data_row()
     }
 
     pub fn set_first_data_row(&mut self, value: u32) -> &mut Self {
@@ -42,8 +74,15 @@ impl Location {
         self
     }
 
-    pub fn get_first_data_col(&self) -> &u32 {
-        self.first_data_col.get_value()
+    #[must_use]
+    pub fn first_data_col(&self) -> u32 {
+        self.first_data_col.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_data_col()")]
+    pub fn get_first_data_col(&self) -> u32 {
+        self.first_data_col()
     }
 
     pub fn set_first_data_col(&mut self, value: u32) -> &mut Self {
@@ -62,16 +101,17 @@ impl Location {
         set_string_from_xml!(self, e, first_data_col, "firstDataCol");
     }
 
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // location
         write_start_tag(
             writer,
             "location",
             vec![
-                ("ref", self.reference.get_value_str()),
-                ("firstHeaderRow", &self.first_header_row.get_value_string()),
-                ("firstDataRow", &self.first_data_row.get_value_string()),
-                ("firstDataCol", &self.first_data_col.get_value_string()),
+                ("ref", self.reference.value_str()).into(),
+                ("firstHeaderRow", &self.first_header_row.value_string()).into(),
+                ("firstDataRow", &self.first_data_row.value_string()).into(),
+                ("firstDataCol", &self.first_data_col.value_string()).into(),
             ],
             true,
         );

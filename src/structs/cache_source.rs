@@ -1,46 +1,83 @@
 // cacheSource
-use crate::structs::EnumValue;
-use crate::structs::SourceValues;
-use crate::structs::WorksheetSource;
-
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        SourceValues,
+        WorksheetSource,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CacheSource {
-    r#type: EnumValue<SourceValues>,
+    r#type:           EnumValue<SourceValues>,
     worksheet_source: Option<WorksheetSource>,
 }
 
 impl CacheSource {
+    #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &SourceValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
+    #[inline]
     pub fn set_type(&mut self, value: SourceValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
-    pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
+    #[inline]
+    #[must_use]
+    pub fn worksheet_source(&self) -> Option<&WorksheetSource> {
         self.worksheet_source.as_ref()
     }
 
-    pub fn get_worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use worksheet_source()")]
+    pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
+        self.worksheet_source()
+    }
+
+    #[inline]
+    pub fn worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
         self.worksheet_source.as_mut()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use worksheet_source_mut()")]
+    pub fn get_worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
+        self.worksheet_source_mut()
+    }
+
+    #[inline]
     pub fn set_worksheet_source_mut(&mut self, value: WorksheetSource) -> &mut Self {
         self.worksheet_source = Some(value);
         self
     }
 
     /// Create a new worksheet cache source
+    #[must_use]
     pub fn new_worksheet(worksheet_source: WorksheetSource) -> Self {
         let mut cache_source = Self::default();
         cache_source.set_type(SourceValues::Worksheet);
@@ -48,6 +85,8 @@ impl CacheSource {
         cache_source
     }
 
+    #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -78,20 +117,21 @@ impl CacheSource {
         );
     }
 
+    #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource
         let empty_flg = self.worksheet_source.is_none();
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("type", self.r#type.get_hash_string()));
+        let attributes: crate::structs::AttrCollection =
+            vec![("type", self.r#type.hash_string()).into()];
+
         write_start_tag(writer, "cacheSource", attributes, empty_flg);
 
         if !empty_flg {
             // worksheetSource
-            match &self.worksheet_source {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.worksheet_source {
+                v.write_to(writer);
             }
-
             write_end_tag(writer, "cacheSource");
         }
     }

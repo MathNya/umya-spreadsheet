@@ -1,28 +1,55 @@
 // fronts
-use crate::reader::driver::*;
-use crate::structs::Font;
-use crate::structs::Style;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::{
+        Font,
+        Style,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fonts {
-    font: ThinVec<Font>,
+    font: Vec<Font>,
 }
 
 impl Fonts {
     #[inline]
-    pub(crate) fn get_font(&self) -> &[Font] {
+    pub(crate) fn font(&self) -> &[Font] {
         &self.font
     }
 
     #[inline]
-    pub(crate) fn get_font_mut(&mut self) -> &mut ThinVec<Font> {
+    #[deprecated(since = "3.0.0", note = "Use font()")]
+    pub(crate) fn get_font(&self) -> &[Font] {
+        self.font()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) fn font_mut(&mut self) -> &mut Vec<Font> {
         &mut self.font
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use font_mut()")]
+    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
+        self.font_mut()
     }
 
     #[inline]
@@ -32,12 +59,12 @@ impl Fonts {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
-        match style.get_font() {
+        match style.font() {
             Some(v) => {
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
                 let mut id = 0;
                 for font in &self.font {
-                    if font.get_hash_code() == hash_code {
+                    if font.hash_code() == hash_code {
                         return id;
                     }
                     id += 1;
@@ -85,8 +112,8 @@ impl Fonts {
                 writer,
                 "fonts",
                 vec![
-                    ("count", &self.font.len().to_string()),
-                    ("x14ac:knownFonts", "1"),
+                    ("count", &self.font.len().to_string()).into(),
+                    ("x14ac:knownFonts", "1").into(),
                 ],
                 false,
             );

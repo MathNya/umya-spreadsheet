@@ -1,18 +1,15 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum TimeUnitValues {
+    #[default]
     Days,
     Months,
     Years,
 }
-impl Default for TimeUnitValues {
-    fn default() -> Self {
-        Self::Days
-    }
-}
 impl EnumTrait for TimeUnitValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Days => "days",
             Self::Months => "months",
@@ -22,6 +19,7 @@ impl EnumTrait for TimeUnitValues {
 }
 impl FromStr for TimeUnitValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "days" => Ok(Self::Days),

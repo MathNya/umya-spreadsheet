@@ -1,28 +1,54 @@
 // xdr:blipFill
-use super::super::super::BooleanValue;
-use super::super::Blip;
-use super::super::SourceRectangle;
-use super::super::Stretch;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    super::BooleanValue,
+    Blip,
+    SourceRectangle,
+    Stretch,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
-    blip: Blip,
-    source_rectangle: Option<Box<SourceRectangle>>,
-    stretch: Stretch,
+    blip:              Blip,
+    source_rectangle:  Option<Box<SourceRectangle>>,
+    stretch:           Stretch,
 }
 
 impl BlipFill {
     #[inline]
-    pub fn get_rotate_with_shape(&self) -> &bool {
-        self.rotate_with_shape.get_value()
+    #[must_use]
+    pub fn rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
+    pub fn get_rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape()
     }
 
     #[inline]
@@ -32,13 +58,27 @@ impl BlipFill {
     }
 
     #[inline]
-    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+    #[must_use]
+    pub fn source_rectangle(&self) -> Option<&SourceRectangle> {
         self.source_rectangle.as_deref()
     }
 
     #[inline]
-    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle()")]
+    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+        self.source_rectangle()
+    }
+
+    #[inline]
+    pub fn source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
         self.source_rectangle.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle_mut()")]
+    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+        self.source_rectangle_mut()
     }
 
     #[inline]
@@ -48,13 +88,27 @@ impl BlipFill {
     }
 
     #[inline]
-    pub fn get_blip(&self) -> &Blip {
+    #[must_use]
+    pub fn blip(&self) -> &Blip {
         &self.blip
     }
 
     #[inline]
-    pub fn get_blip_mut(&mut self) -> &mut Blip {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip()")]
+    pub fn get_blip(&self) -> &Blip {
+        self.blip()
+    }
+
+    #[inline]
+    pub fn blip_mut(&mut self) -> &mut Blip {
         &mut self.blip
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_mut()")]
+    pub fn get_blip_mut(&mut self) -> &mut Blip {
+        self.blip_mut()
     }
 
     #[inline]
@@ -64,13 +118,27 @@ impl BlipFill {
     }
 
     #[inline]
-    pub fn get_stretch(&self) -> &Stretch {
+    #[must_use]
+    pub fn stretch(&self) -> &Stretch {
         &self.stretch
     }
 
     #[inline]
-    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stretch()")]
+    pub fn get_stretch(&self) -> &Stretch {
+        self.stretch()
+    }
+
+    #[inline]
+    pub fn stretch_mut(&mut self) -> &mut Stretch {
         &mut self.stretch
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use stretch_mut()")]
+    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+        self.stretch_mut()
     }
 
     #[inline]
@@ -130,9 +198,9 @@ impl BlipFill {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:blipFill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.rotate_with_shape.has_value() {
-            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()))
+            attributes.push(("rotWithShape", self.rotate_with_shape.value_string()).into());
         }
         write_start_tag(writer, "xdr:blipFill", attributes, false);
 

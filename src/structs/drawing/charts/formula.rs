@@ -1,36 +1,67 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:f
 use super::super::super::Address;
 use super::super::super::StringValue;
-use crate::helper::address::*;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::{
+    helper::address::is_address,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node_no_escape,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Formula {
-    address: Address,
+    address:      Address,
     string_value: StringValue,
 }
 
 impl Formula {
-    pub fn get_address(&self) -> &Address {
+    #[must_use]
+    pub fn address(&self) -> &Address {
         &self.address
     }
 
-    pub fn get_address_mut(&mut self) -> &mut Address {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> &Address {
+        self.address()
+    }
+
+    pub fn address_mut(&mut self) -> &mut Address {
         &mut self.address
     }
 
-    pub fn get_address_str(&self) -> String {
+    #[deprecated(since = "3.0.0", note = "Use address_mut()")]
+    pub fn get_address_mut(&mut self) -> &mut Address {
+        self.address_mut()
+    }
+
+    #[must_use]
+    pub fn address_str(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_str().to_string();
+            return self.string_value.value_str().to_string();
         }
-        self.address.get_address()
+        self.address.address()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address_str()")]
+    pub fn get_address_str(&self) -> String {
+        self.address_str()
     }
 
     pub fn set_address(&mut self, value: Address) -> &mut Self {
@@ -81,7 +112,7 @@ impl Formula {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:f
         write_start_tag(writer, "c:f", vec![], false);
-        write_text_node_no_escape(writer, self.get_address_str());
+        write_text_node_no_escape(writer, self.address_str());
         write_end_tag(writer, "c:f");
     }
 }
@@ -89,10 +120,10 @@ impl AdjustmentCoordinateWithSheet for Formula {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -106,10 +137,10 @@ impl AdjustmentCoordinateWithSheet for Formula {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.adjustment_remove_coordinate_with_sheet(
             sheet_name,

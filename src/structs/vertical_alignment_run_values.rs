@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum VerticalAlignmentRunValues {
     Baseline,
@@ -14,7 +15,7 @@ impl Default for VerticalAlignmentRunValues {
 }
 impl EnumTrait for VerticalAlignmentRunValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Baseline => "baseline",
             Self::Subscript => "subscript",

@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum CellFormulaValues {
     Array,
@@ -15,7 +16,7 @@ impl Default for CellFormulaValues {
 }
 impl EnumTrait for CellFormulaValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Array => "array",
             Self::DataTable => "dataTable",

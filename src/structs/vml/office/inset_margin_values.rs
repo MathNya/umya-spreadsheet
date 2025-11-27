@@ -1,17 +1,14 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
+
+use super::super::super::EnumTrait;
+#[derive(Clone, Debug, Default)]
 pub enum InsetMarginValues {
+    #[default]
     Auto,
     Custom,
 }
-impl Default for InsetMarginValues {
-    fn default() -> Self {
-        Self::Auto
-    }
-}
 impl EnumTrait for InsetMarginValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Auto => "auto",
             Self::Custom => "custom",
@@ -20,6 +17,7 @@ impl EnumTrait for InsetMarginValues {
 }
 impl FromStr for InsetMarginValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "auto" => Ok(Self::Auto),

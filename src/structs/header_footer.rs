@@ -1,12 +1,26 @@
 // headerFooter
-use crate::reader::driver::*;
-use crate::structs::OddFooter;
-use crate::structs::OddHeader;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::{
+        OddFooter,
+        OddHeader,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct HeaderFooter {
@@ -16,13 +30,27 @@ pub struct HeaderFooter {
 
 impl HeaderFooter {
     #[inline]
-    pub fn get_odd_header(&self) -> &OddHeader {
+    #[must_use]
+    pub fn odd_header(&self) -> &OddHeader {
         &self.odd_header
     }
 
     #[inline]
-    pub fn get_odd_header_mut(&mut self) -> &mut OddHeader {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use odd_header()")]
+    pub fn get_odd_header(&self) -> &OddHeader {
+        self.odd_header()
+    }
+
+    #[inline]
+    pub fn odd_header_mut(&mut self) -> &mut OddHeader {
         &mut self.odd_header
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use odd_header_mut()")]
+    pub fn get_odd_header_mut(&mut self) -> &mut OddHeader {
+        self.odd_header_mut()
     }
 
     #[inline]
@@ -32,13 +60,27 @@ impl HeaderFooter {
     }
 
     #[inline]
-    pub fn get_odd_footer(&self) -> &OddFooter {
+    #[must_use]
+    pub fn odd_footer(&self) -> &OddFooter {
         &self.odd_footer
     }
 
     #[inline]
-    pub fn get_odd_footer_mut(&mut self) -> &mut OddFooter {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use odd_footer()")]
+    pub fn get_odd_footer(&self) -> &OddFooter {
+        self.odd_footer()
+    }
+
+    #[inline]
+    pub fn odd_footer_mut(&mut self) -> &mut OddFooter {
         &mut self.odd_footer
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use odd_footer_mut()")]
+    pub fn get_odd_footer_mut(&mut self) -> &mut OddFooter {
+        self.odd_footer_mut()
     }
 
     #[inline]
@@ -85,10 +127,10 @@ impl HeaderFooter {
             write_start_tag(writer, "headerFooter", vec![], false);
 
             // oddHeader
-            self.get_odd_header().write_to(writer);
+            self.odd_header().write_to(writer);
 
             // oddFooter
-            self.get_odd_footer().write_to(writer);
+            self.odd_footer().write_to(writer);
 
             write_end_tag(writer, "headerFooter");
         }
