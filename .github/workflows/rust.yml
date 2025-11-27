@@ -15,6 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@nightly
 
     - name: Install Rust
       run: rustup component add rustfmt clippy
@@ -22,5 +23,5 @@ jobs:
     - name: Run Lint & Tests
       run: |
         cargo clippy -- -D warnings
-        cargo fmt --all -- --check
+        cargo +nightly fmt --all
         cargo test
