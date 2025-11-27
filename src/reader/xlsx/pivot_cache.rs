@@ -1,24 +1,17 @@
-use std::io;
-
 use quick_xml::{
     Reader,
     events::Event,
 };
 
-use super::XlsxError;
 use crate::structs::{
     PivotCacheDefinition,
-    Workbook,
+    Worksheet,
+    raw::RawFile,
 };
 
-pub(crate) fn read<R: io::Read + io::Seek>(
-    arv: &mut zip::ZipArchive<R>,
-    wb: &mut Workbook,
-    target: &str,
-    cache_id: &str,
-) -> Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(&format!("xl/{target}"))?);
-    let mut reader = Reader::from_reader(r);
+pub(crate) fn read(worksheet: &mut Worksheet, pivot_cache_file: &RawFile) {
+    let data = std::io::Cursor::new(pivot_cache_file.file_data());
+    let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
     let mut buf = Vec::new();
     let mut pivot_cache_def = PivotCacheDefinition::default();
@@ -46,18 +39,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         buf.clear();
     }
 
+    dbg!(pivot_cache_def.id());
+
     // Associate the cache definition with pivot tables that use this cache_id
-    if let Ok(cache_id_num) = cache_id.parse::<u32>() {
-        for sheet_index in 0..wb.sheet_count() {
-            if let Ok(sheet) = wb.sheet_mut(sheet_index) {
-                for pivot_table in sheet.pivot_tables_mut() {
-                    if pivot_table.pivot_table_definition().cache_id() == cache_id_num {
-                        pivot_table.set_pivot_cache_definition(pivot_cache_def.clone());
-                    }
-                }
-            }
+    for pivot_table in worksheet.pivot_tables_mut() {
+        if pivot_table.pivot_table_definition().cache_id() == 1 {
+            pivot_table.set_pivot_cache_definition(pivot_cache_def.clone());
         }
     }
-
-    Ok(())
 }

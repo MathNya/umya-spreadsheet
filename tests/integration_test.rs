@@ -2194,3 +2194,16 @@ fn issue_297() {
     let path = std::path::Path::new("./tests/result_files/r_issue_297.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&to_book, path);
 }
+
+#[test]
+fn issue_298() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/issue_298.xlsx");
+    let book = reader::xlsx::lazy_read(path).unwrap();
+
+    let cells = book.lazy_read_sheet_cells(0).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/r_issue_298.xlsx");
+    let _unused = writer::xlsx::write(&book, path);
+}
