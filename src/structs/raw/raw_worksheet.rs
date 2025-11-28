@@ -3,6 +3,8 @@ use std::io;
 use crate::{
     helper::const_str::{
         PKG_DRAWINGS_RELS,
+        PKG_PIVOT_CACHE_RELS,
+        PKG_PIVOT_TABLE_RELS,
         PKG_SHEET,
         PKG_SHEET_RELS,
         PKG_VML_DRAWING_RELS,
@@ -108,6 +110,22 @@ impl RawWorksheet {
     #[deprecated(since = "3.0.0", note = "Use vml_drawing_relationships()")]
     pub(crate) fn get_vml_drawing_relationships(&self) -> Option<&RawRelationships> {
         self.vml_drawing_relationships()
+    }
+
+    pub(crate) fn pivot_table_relationships(&self) -> Option<&RawRelationships> {
+        self.relationships_list().iter().find(|&relationships| {
+            relationships
+                .file_target()
+                .starts_with(PKG_PIVOT_TABLE_RELS)
+        })
+    }
+
+    pub(crate) fn pivot_cache_relationships(&self) -> Option<&RawRelationships> {
+        self.relationships_list().iter().find(|&relationships| {
+            relationships
+                .file_target()
+                .starts_with(PKG_PIVOT_CACHE_RELS)
+        })
     }
 
     pub(crate) fn read<R: io::Read + io::Seek>(

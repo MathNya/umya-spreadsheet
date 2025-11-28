@@ -99,6 +99,10 @@ declare_const_strings! {
     PKG_VBA_PROJECT      => "xl/vbaProject.bin",
     PKG_JSA_PROJECT      => "xl/jsaProject.bin",
     PKG_VML_DRAWING_RELS => "xl/drawings/_rels/vmlDrawing",
+    PKG_PIVOT_TABLE      => "xl/pivotTables",
+    PKG_PIVOT_TABLE_RELS => "xl/pivotTables/_rels/pivotTable",
+    PKG_PIVOT_CACHE      => "xl/pivotCache",
+    PKG_PIVOT_CACHE_RELS => "xl/pivotCache/_rels/pivotCache",
     PKG_WORKBOOK         => "xl/workbook.xml",
     PKG_WORKBOOK_RELS    => "xl/_rels/workbook.xml.rels",
 

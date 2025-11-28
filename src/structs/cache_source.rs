@@ -86,7 +86,6 @@ impl CacheSource {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -118,12 +117,11 @@ impl CacheSource {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource
         let empty_flg = self.worksheet_source.is_none();
         let attributes: crate::structs::AttrCollection =
-            vec![("type", self.r#type.hash_string()).into()];
+            vec![("type", self.r#type.value_string()).into()];
 
         write_start_tag(writer, "cacheSource", attributes, empty_flg);
 

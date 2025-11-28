@@ -15,13 +15,11 @@ use crate::{
         MC_NS,
         SHEET_MAIN_NS,
         SHEET_MS_REVISION_NS,
-    },
-    reader::driver::{
+    }, reader::driver::{
         get_attribute,
         set_string_from_xml,
         xml_read_loop,
-    },
-    structs::{
+    }, structs::{
         BooleanValue,
         ByteValue,
         ColumnFields,
@@ -33,11 +31,10 @@ use crate::{
         RowItems,
         StringValue,
         UInt32Value,
-    },
-    writer::driver::{
+    }, writer::driver::{
         write_end_tag,
         write_start_tag,
-    },
+    }
 };
 
 #[derive(Clone, Default, Debug)]

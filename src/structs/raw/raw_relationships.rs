@@ -102,6 +102,13 @@ impl RawRelationships {
         self.relationship_by_rid(r_id)
     }
 
+    pub(crate) fn relationship_by_type(&self, rtype: &str) -> &RawRelationship {
+        self.relationship_list()
+            .iter()
+            .find(|relationship| relationship.get_type() == rtype)
+            .unwrap_or_else(|| panic!("Not found relationship with Type: {rtype}."))
+    }
+
     #[inline]
     pub(crate) fn add_relationship_list(&mut self, value: RawRelationship) -> &mut Self {
         self.relationship_list.push(value);

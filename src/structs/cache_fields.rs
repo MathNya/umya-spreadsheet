@@ -55,11 +55,10 @@ impl CacheFields {
     }
 
     #[inline]
-    #[allow(dead_code, unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        e: &BytesStart,
+        _e: &BytesStart,
     ) {
         xml_read_loop!(
             reader,
@@ -80,7 +79,6 @@ impl CacheFields {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheFields
         write_start_tag(

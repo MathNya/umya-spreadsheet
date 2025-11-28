@@ -11,7 +11,6 @@ use crate::{
     helper::const_str::{
         COMMENTS_NS,
         DRAWINGS_NS,
-        PIVOT_CACHE_DEF_NS,
         PIVOT_TABLE_NS,
         TABLE_NS,
         THEME_NS,
@@ -175,13 +174,13 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                 TABLE_NS => {
                     table::read(worksheet, relationship.raw_file()).unwrap();
                 }
-                // pivot table
+                // pivot table, pivot cache
                 PIVOT_TABLE_NS => {
-                    pivot_table::read(worksheet, relationship.raw_file());
-                }
-                // pivot cache
-                PIVOT_CACHE_DEF_NS => {
-                    pivot_cache::read(worksheet, relationship.raw_file());
+                    pivot_table::read(
+                        worksheet,
+                        relationship.raw_file(),
+                        raw_data_of_worksheet.pivot_table_relationships(),
+                    );
                 }
                 _ => {}
             }

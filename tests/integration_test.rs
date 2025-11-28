@@ -2199,9 +2199,10 @@ fn issue_297() {
 fn issue_298() {
     // reader
     let path = std::path::Path::new("./tests/test_files/issue_298.xlsx");
-    let book = reader::xlsx::lazy_read(path).unwrap();
+    // let book = reader::xlsx::lazy_read(path).unwrap();
+    let book = reader::xlsx::read(path).unwrap();
 
-    let cells = book.lazy_read_sheet_cells(0).unwrap();
+    // let cells = book.lazy_read_sheet_cells(0).unwrap();
 
     // writer
     let path = std::path::Path::new("./tests/result_files/r_issue_298.xlsx");

@@ -103,7 +103,6 @@ impl CacheField {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -131,7 +130,6 @@ impl CacheField {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheField
         write_start_tag(

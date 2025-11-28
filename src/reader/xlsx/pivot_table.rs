@@ -3,14 +3,23 @@ use quick_xml::{
     events::Event,
 };
 
-use crate::structs::{
-    PivotTable,
-    PivotTableDefinition,
-    Worksheet,
-    raw::RawFile,
+use crate::{
+    helper::const_str::PIVOT_CACHE_DEF_NS,
+    raw::RawRelationships,
+    reader::xlsx::pivot_cache,
+    structs::{
+        PivotTable,
+        PivotTableDefinition,
+        Worksheet,
+        raw::RawFile,
+    },
 };
 
-pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
+pub(crate) fn read(
+    worksheet: &mut Worksheet,
+    pivot_table_file: &RawFile,
+    pivot_table_relationships: Option<&RawRelationships>,
+) {
     let data = std::io::Cursor::new(pivot_table_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
@@ -36,5 +45,13 @@ pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
         }
         buf.clear();
     }
+
+    if let Some(rrs_list) = pivot_table_relationships {
+        pivot_cache::read(
+            rrs_list.relationship_by_type(PIVOT_CACHE_DEF_NS).raw_file(),
+            &mut pivot_table,
+        );
+    }
+
     worksheet.add_pivot_table(pivot_table);
 }
