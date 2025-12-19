@@ -188,3 +188,8 @@ Contributions by way of pull requests are welcome!  Please make sure your code u
 cargo +nightly fmt --all
 cargo clippy -- -D warnings
 ```
+
+## Projects using umya-spreadsheet
+Community projects built with `umya-spreadsheet` (not endorsements).
+- [spreadsheet-mcp](https://github.com/PSU3D0/spreadsheet-mcp) - MCP server for spreadsheet analysis/editing (xlsx/xlsm via `umya-spreadsheet`)
+- [formualizer](https://github.com/PSU3D0/formualizer) - Arrow-backed spreadsheet engine and formula parser with excel parity (xlsx/xlsm via `umya-spreadsheet`)
