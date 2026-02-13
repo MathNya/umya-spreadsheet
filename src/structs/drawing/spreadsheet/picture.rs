@@ -129,25 +129,25 @@ impl Picture {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
-                    b"xdr:nvPicPr" => {
+                    b"xdr:nvPicPr" | b"nvPicPr" => {
                         self.non_visual_picture_properties.set_attributes(reader, e);
                     }
-                    b"xdr:blipFill" => {
+                    b"xdr:blipFill" | b"blipFill" => {
                         self.blip_fill
                             .set_attributes(reader, e, drawing_relationships);
                         }
-                    b"xdr:spPr" => {
+                    b"xdr:spPr" | b"spPr" => {
                         self.shape_properties.set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:pic" {
+                if matches!(e.name().into_inner(), b"xdr:pic" | b"pic") {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:pic")
+            Event::Eof => panic!("Error: Could not find {} end element", "pic")
         );
     }
 

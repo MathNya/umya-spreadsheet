@@ -184,11 +184,11 @@ impl BlipFill {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:blipFill" {
+                if matches!(e.name().into_inner(), b"xdr:blipFill" | b"blipFill") {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:blipFill")
+            Event::Eof => panic!("Error: Could not find {} end element", "blipFill")
         );
     }
 

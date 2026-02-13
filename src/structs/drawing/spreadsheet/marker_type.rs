@@ -2,35 +2,24 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
     helper::coordinate::{
-        adjustment_insert_coordinate,
-        adjustment_remove_coordinate,
-        coordinate_from_index,
-        index_from_coordinate,
-        is_remove_coordinate,
+        adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index,
+        index_from_coordinate, is_remove_coordinate,
     },
     traits::AdjustmentCoordinate,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
+    writer::driver::{write_end_tag, write_start_tag, write_text_node},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
-    col:     u32,
+    col: u32,
     col_off: i32,
-    row:     u32,
+    row: u32,
     row_off: i32,
 }
 impl MarkerType {
@@ -153,19 +142,20 @@ impl MarkerType {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:col" => {
+                    b"xdr:col" | b"col" => {
                         self.col = string_value.parse::<u32>().unwrap();
                     }
-                    b"xdr:colOff" => {
+                    b"xdr:colOff" | b"colOff" => {
                         self.col_off = string_value.parse::<i32>().unwrap();
                     }
-                    b"xdr:row" => {
+                    b"xdr:row" | b"row" => {
                         self.row = string_value.parse::<u32>().unwrap();
                     }
-                    b"xdr:rowOff" => {
+                    b"xdr:rowOff" | b"rowOff" => {
                         self.row_off = string_value.parse::<i32>().unwrap();
                     }
-                    b"xdr:from" | b"xdr:to" => return,
+                    b"xdr:from" | b"from" => return,
+                    b"xdr:to" | b"to" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => {

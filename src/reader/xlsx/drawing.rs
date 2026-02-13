@@ -27,7 +27,7 @@ pub(crate) fn read(
     xml_read_loop!(
         reader,
         Event::Start(ref e) => {
-            if e.name().into_inner() == b"xdr:wsDr" {
+            if matches!(e.name().into_inner(), b"xdr:wsDr" | b"wsDr") {
                 let mut obj = WorksheetDrawing::default();
                 obj.set_attributes(
                     &mut reader,

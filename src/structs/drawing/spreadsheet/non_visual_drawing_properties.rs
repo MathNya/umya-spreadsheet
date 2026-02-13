@@ -110,11 +110,11 @@ impl NonVisualDrawingProperties {
         xml_read_loop!(
             reader,
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:cNvPr" {
+                if matches!(e.name().into_inner(), b"xdr:cNvPr" | b"cNvPr") {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:cNvPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "cNvPr")
         );
     }
 
