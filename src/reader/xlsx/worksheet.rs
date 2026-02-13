@@ -1,37 +1,18 @@
 use std::collections::HashMap;
 
-use quick_xml::{
-    Reader,
-    events::Event,
-};
+use quick_xml::{Reader, escape, events::Event};
 
 use super::{
     XlsxError,
-    driver::{
-        get_attribute,
-        get_attribute_value,
-        xml_read_loop,
-    },
+    driver::{get_attribute, get_attribute_value, xml_read_loop},
 };
 use crate::{
     helper::formula::FormulaToken,
     structs::{
-        Cells,
-        Columns,
-        ConditionalFormatting,
-        DataValidations,
-        Hyperlink,
-        OleObjects,
-        Row,
-        SharedStringTable,
-        SheetProtection,
-        Stylesheet,
-        Worksheet,
+        Cells, Columns, ConditionalFormatting, DataValidations, Hyperlink, OleObjects, Row,
+        SharedStringTable, SheetProtection, Stylesheet, Worksheet,
         office2010::excel::DataValidations as DataValidations2010,
-        raw::{
-            RawRelationships,
-            RawWorksheet,
-        },
+        raw::{RawRelationships, RawWorksheet},
     },
 };
 
@@ -287,12 +268,15 @@ fn get_hyperlink(
 
     let coordition = get_attribute(e, b"ref").unwrap_or_default();
     if let Some(v) = get_attribute(e, b"location") {
-        hyperlink.set_url(v);
+        hyperlink.set_url(escape::unescape(&v).unwrap().to_string());
         hyperlink.set_location(true);
+    }
+    if let Some(v) = get_attribute(e, b"tooltip") {
+        hyperlink.set_tooltip(escape::unescape(&v).unwrap().to_string());
     }
     if let Some(v) = get_attribute(e, b"r:id") {
         let relationship = raw_relationships.unwrap().relationship_by_rid(&v);
-        hyperlink.set_url(relationship.target());
+        hyperlink.set_url(escape::unescape(relationship.target()).unwrap().to_string());
     }
     (coordition, hyperlink)
 }

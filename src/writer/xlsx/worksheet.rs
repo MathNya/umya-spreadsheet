@@ -1,43 +1,21 @@
-use std::{
-    collections::HashMap,
-    io,
-    sync::RwLock,
-};
+use std::{collections::HashMap, io, sync::RwLock};
 
 use quick_xml::{
     Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
+    events::{BytesDecl, Event},
 };
 
 use super::{
     XlsxError,
-    driver::{
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
+    driver::{write_end_tag, write_new_line, write_start_tag},
 };
 use crate::{
     Row,
     helper::const_str::{
-        MC_NS,
-        PKG_SHEET,
-        REL_OFC_NS,
-        SHEET_DRAWING_NS,
-        SHEET_MAIN_NS,
-        SHEET_MS_MAIN_NS,
+        MC_NS, PKG_SHEET, REL_OFC_NS, SHEET_DRAWING_NS, SHEET_MAIN_NS, SHEET_MS_MAIN_NS,
         SHEETML_AC_NS,
     },
-    structs::{
-        Cell,
-        SharedStringTable,
-        Stylesheet,
-        Worksheet,
-        WriterManager,
-    },
+    structs::{Cell, SharedStringTable, Stylesheet, Worksheet, WriterManager},
 };
 
 type InternalWriter = Writer<io::Cursor<Vec<u8>>>;
@@ -417,6 +395,9 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
             } else {
                 attributes.push(("r:id", &r_id_str).into());
                 r_id += 1;
+            }
+            if !hyperlink.tooltip().is_empty() {
+                attributes.push(("tooltip", hyperlink.tooltip()).into());
             }
             write_start_tag(writer, "hyperlink", attributes, true);
         }
