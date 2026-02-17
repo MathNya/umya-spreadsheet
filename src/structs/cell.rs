@@ -351,6 +351,39 @@ impl Cell {
     }
 
     #[inline]
+    pub fn set_formula_result_number<T>(&mut self, value: T) -> &mut Self
+    where
+        T: Into<f64>,
+    {
+        self.cell_value.set_formula_result_number(value);
+        self
+    }
+
+    #[inline]
+    pub fn set_formula_result_bool(&mut self, value: bool) -> &mut Self {
+        self.cell_value.set_formula_result_bool(value);
+        self
+    }
+
+    #[inline]
+    pub fn set_formula_result_error(&mut self, value: crate::CellErrorType) -> &mut Self {
+        self.cell_value.set_formula_result_error(value);
+        self
+    }
+
+    #[inline]
+    pub fn set_formula_result_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_formula_result_string(value);
+        self
+    }
+
+    #[inline]
+    pub fn set_formula_result_blank(&mut self) -> &mut Self {
+        self.cell_value.set_formula_result_blank();
+        self
+    }
+
+    #[inline]
     pub fn set_blank(&mut self) -> &mut Self {
         self.cell_value.set_blank();
         self

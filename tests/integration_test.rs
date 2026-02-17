@@ -2425,3 +2425,52 @@ fn write_keeps_shared_formula_metadata_stable() {
 
     assert_eq!(rewritten_shared, source_shared);
 }
+
+#[test]
+fn typed_formula_result_helpers_write_expected_types() {
+    let mut book = new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+
+    sheet
+        .get_cell_mut("B1")
+        .set_formula("10/2")
+        .set_formula_result_number(5.0);
+    sheet
+        .get_cell_mut("B2")
+        .set_formula("1=2")
+        .set_formula_result_bool(false);
+    sheet
+        .get_cell_mut("B3")
+        .set_formula("NA()")
+        .set_formula_result_error(CellErrorType::NA);
+    sheet
+        .get_cell_mut("B4")
+        .set_formula("T(\"value\")")
+        .set_formula_result_string("value");
+    sheet
+        .get_cell_mut("B5")
+        .set_formula("1/0")
+        .set_formula_result_blank();
+
+    let xlsx = workbook_to_xlsx_bytes(&book);
+    let sheet_xml = zip_entry_to_string(&xlsx, "xl/worksheets/sheet1.xml");
+
+    let b1 = cell_fragment(&sheet_xml, "B1");
+    assert!(!b1.contains("t=\"str\""));
+    assert!(b1.contains("<v>5</v>"));
+
+    let b2 = cell_fragment(&sheet_xml, "B2");
+    assert!(b2.contains("t=\"b\""));
+    assert!(b2.contains("<v>0</v>"));
+
+    let b3 = cell_fragment(&sheet_xml, "B3");
+    assert!(b3.contains("t=\"e\""));
+    assert!(b3.contains("<v>#N/A</v>"));
+
+    let b4 = cell_fragment(&sheet_xml, "B4");
+    assert!(b4.contains("t=\"str\""));
+    assert!(b4.contains("<v>value</v>"));
+
+    let b5 = cell_fragment(&sheet_xml, "B5");
+    assert!(b5.contains("<v/>"));
+}
