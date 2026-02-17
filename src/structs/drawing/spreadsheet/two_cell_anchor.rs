@@ -342,33 +342,33 @@ impl TwoCellAnchor {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
-                b"xdr:from" => {
+                b"xdr:from" | b"from" => {
                     self.from_marker.set_attributes(reader, e);
                 }
-                b"xdr:to" => {
+                b"xdr:to" | b"to" => {
                     self.to_marker.set_attributes(reader, e);
                 }
-                b"xdr:grpSp" => {
+                b"xdr:grpSp" | b"grpSp" => {
                     let mut obj = GroupShape::default();
                     obj.set_attributes(reader, e, drawing_relationships);
                     self.set_group_shape(obj);
                 }
-                b"xdr:graphicFrame" => {
+                b"xdr:graphicFrame" | b"graphicFrame" => {
                     let mut obj = GraphicFrame::default();
                     obj.set_attributes(reader, e, drawing_relationships);
                     self.set_graphic_frame(obj);
                 }
-                b"xdr:sp" => {
+                b"xdr:sp" | b"sp" => {
                     let mut obj = Shape::default();
                     obj.set_attributes(reader, e, drawing_relationships);
                     self.set_shape(obj);
                 }
-                b"xdr:cxnSp" => {
+                b"xdr:cxnSp" | b"cxnSp" => {
                     let mut obj = ConnectionShape::default();
                     obj.set_attributes(reader, e, drawing_relationships);
                     self.set_connection_shape(obj);
                 }
-                b"xdr:pic" => {
+                b"xdr:pic" | b"pic" => {
                     let mut obj = Picture::default();
                     obj.set_attributes(reader, e, drawing_relationships);
                     self.set_picture(obj);
@@ -377,11 +377,11 @@ impl TwoCellAnchor {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:twoCellAnchor" {
+                if matches!(e.name().into_inner(), b"xdr:twoCellAnchor" | b"twoCellAnchor") {
                     return
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:twoCellAnchor")
+            Event::Eof => panic!("Error: Could not find {} end element", "twoCellAnchor")
         );
     }
 

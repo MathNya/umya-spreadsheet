@@ -100,11 +100,11 @@ impl NonVisualPictureDrawingProperties {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:cNvPicPr" {
+                if matches!(e.name().into_inner(), b"xdr:cNvPicPr" | b"cNvPicPr") {
                     return
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:cNvPicPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "cNvPicPr")
         );
     }
 

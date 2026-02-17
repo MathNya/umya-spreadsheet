@@ -402,11 +402,11 @@ impl ShapeProperties {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:spPr" {
+                if matches!(e.name().into_inner(), b"xdr:spPr" | b"spPr") {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "xdr:spPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "spPr")
         );
     }
 

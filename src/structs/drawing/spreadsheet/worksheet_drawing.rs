@@ -2,48 +2,23 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    Reader, Writer,
+    events::{BytesStart, Event},
 };
 
-use super::{
-    ConnectionShape,
-    GraphicFrame,
-    OneCellAnchor,
-    Picture,
-    Shape,
-    TwoCellAnchor,
-};
+use super::{ConnectionShape, GraphicFrame, OneCellAnchor, Picture, Shape, TwoCellAnchor};
 use crate::{
-    helper::const_str::{
-        DRAWINGML_MAIN_NS,
-        SHEET_DRAWING_NS,
-    },
+    helper::const_str::{DRAWINGML_MAIN_NS, SHEET_DRAWING_NS},
     reader::driver::xml_read_loop,
-    structs::{
-        Chart,
-        Image,
-        OleObjects,
-        raw::RawRelationships,
-    },
-    traits::{
-        AdjustmentCoordinate,
-        AdjustmentCoordinateWithSheet,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    structs::{Chart, Image, OleObjects, raw::RawRelationships},
+    traits::{AdjustmentCoordinate, AdjustmentCoordinateWithSheet},
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection:           Vec<Image>,
-    chart_collection:           Vec<Chart>,
+    image_collection: Vec<Image>,
+    chart_collection: Vec<Chart>,
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
@@ -448,7 +423,7 @@ impl WorksheetDrawing {
                     b"mc:AlternateContent" => {
                         is_alternate_content = true;
                     }
-                    b"xdr:oneCellAnchor" => {
+                    b"xdr:oneCellAnchor" | b"oneCellAnchor" => {
                         if is_alternate_content {
                             continue;
                         }
@@ -462,7 +437,7 @@ impl WorksheetDrawing {
                             self.add_one_cell_anchor_collection(obj);
                         }
                     }
-                    b"xdr:twoCellAnchor" => {
+                    b"xdr:twoCellAnchor" | b"twoCellAnchor" => {
                         let os = ole_objects.ole_object_mut();
                         if is_alternate_content && !os.is_empty() {
                             os[ole_index]
@@ -501,7 +476,7 @@ impl WorksheetDrawing {
                     b"mc:AlternateContent" => {
                         is_alternate_content = false;
                     }
-                    b"xdr:wsDr" => return,
+                    b"xdr:wsDr" | b"wsDr" => return,
                     _ => (),
                 }
             },
