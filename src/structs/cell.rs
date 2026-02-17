@@ -703,8 +703,7 @@ impl Cell {
                     write_text_node(writer, prm);
                 }
                 "e" => {
-                    let prm = "#VALUE!";
-                    write_text_node(writer, prm);
+                    write_text_node(writer, self.value());
                 }
                 _ => write_text_node_conversion(writer, self.value()),
             }

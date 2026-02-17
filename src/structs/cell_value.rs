@@ -52,7 +52,15 @@ impl CellValue {
     #[inline]
     pub(crate) fn data_type_crate(&self) -> &str {
         match &self.formula {
-            Some(_) => "str",
+            Some(_) => match &self.raw_value {
+                CellRawValue::String(_) | CellRawValue::RichText(_) | CellRawValue::Lazy(_) => {
+                    "str"
+                }
+                CellRawValue::Bool(_) => "b",
+                CellRawValue::Error(_) => "e",
+                CellRawValue::Numeric(_) => "n",
+                CellRawValue::Empty => "",
+            },
             None => self.raw_value.data_type(),
         }
     }
@@ -439,5 +447,29 @@ mod tests {
         let cell = sheet.cell_value("A7");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Null));
+    }
+
+    #[test]
+    fn formula_cached_value_data_type_tracks_raw_value_kind() {
+        let mut obj = CellValue::default();
+
+        obj.set_formula("1+1").set_formula_result_default("2");
+        assert_eq!(obj.data_type_crate(), "n");
+
+        obj.set_formula_result_default("TRUE");
+        assert_eq!(obj.data_type_crate(), "b");
+
+        obj.set_formula_result_default("#N/A");
+        assert_eq!(obj.data_type_crate(), "e");
+
+        obj.set_formula_result_default("OK");
+        assert_eq!(obj.data_type_crate(), "str");
+
+        obj.set_formula_result_default("");
+        assert_eq!(obj.data_type_crate(), "");
+
+        obj.remove_formula();
+        obj.set_value_string("OK");
+        assert_eq!(obj.data_type_crate(), "s");
     }
 }
