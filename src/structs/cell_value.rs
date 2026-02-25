@@ -52,7 +52,15 @@ impl CellValue {
     #[inline]
     pub(crate) fn data_type_crate(&self) -> &str {
         match &self.formula {
-            Some(_) => "str",
+            Some(_) => match &self.raw_value {
+                CellRawValue::String(_) | CellRawValue::RichText(_) | CellRawValue::Lazy(_) => {
+                    "str"
+                }
+                CellRawValue::Bool(_) => "b",
+                CellRawValue::Error(_) => "e",
+                CellRawValue::Numeric(_) => "n",
+                CellRawValue::Empty => "",
+            },
             None => self.raw_value.data_type(),
         }
     }
@@ -266,6 +274,59 @@ impl CellValue {
         self
     }
 
+    /// Sets a formula cached result as a numeric value.
+    ///
+    /// This method only updates the cached value (`<v>`) and does not remove
+    /// the formula object (`<f>`).
+    #[inline]
+    pub fn set_formula_result_number<T>(&mut self, value: T) -> &mut Self
+    where
+        T: Into<f64>,
+    {
+        self.raw_value = CellRawValue::Numeric(value.into());
+        self
+    }
+
+    /// Sets a formula cached result as a boolean value.
+    ///
+    /// This method only updates the cached value (`<v>`) and does not remove
+    /// the formula object (`<f>`).
+    #[inline]
+    pub fn set_formula_result_bool(&mut self, value: bool) -> &mut Self {
+        self.raw_value = CellRawValue::Bool(value);
+        self
+    }
+
+    /// Sets a formula cached result as an Excel error value.
+    ///
+    /// This method only updates the cached value (`<v>`) and does not remove
+    /// the formula object (`<f>`).
+    #[inline]
+    pub fn set_formula_result_error(&mut self, value: CellErrorType) -> &mut Self {
+        self.raw_value = CellRawValue::Error(value);
+        self
+    }
+
+    /// Sets a formula cached result as a string value.
+    ///
+    /// This method only updates the cached value (`<v>`) and does not remove
+    /// the formula object (`<f>`).
+    #[inline]
+    pub fn set_formula_result_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.raw_value = CellRawValue::String(value.into().into_boxed_str());
+        self
+    }
+
+    /// Sets a formula cached result as blank.
+    ///
+    /// This method only updates the cached value (`<v>`) and does not remove
+    /// the formula object (`<f>`).
+    #[inline]
+    pub fn set_formula_result_blank(&mut self) -> &mut Self {
+        self.raw_value = CellRawValue::Empty;
+        self
+    }
+
     #[inline]
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value_crate(value);
@@ -439,5 +500,58 @@ mod tests {
         let cell = sheet.cell_value("A7");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Null));
+    }
+
+    #[test]
+    fn formula_cached_value_data_type_tracks_raw_value_kind() {
+        let mut obj = CellValue::default();
+
+        obj.set_formula("1+1").set_formula_result_default("2");
+        assert_eq!(obj.data_type_crate(), "n");
+
+        obj.set_formula_result_default("TRUE");
+        assert_eq!(obj.data_type_crate(), "b");
+
+        obj.set_formula_result_default("#N/A");
+        assert_eq!(obj.data_type_crate(), "e");
+
+        obj.set_formula_result_default("OK");
+        assert_eq!(obj.data_type_crate(), "str");
+
+        obj.set_formula_result_default("");
+        assert_eq!(obj.data_type_crate(), "");
+
+        obj.remove_formula();
+        obj.set_value_string("OK");
+        assert_eq!(obj.data_type_crate(), "s");
+    }
+
+    #[test]
+    fn typed_formula_result_helpers_preserve_formula() {
+        let mut obj = CellValue::default();
+        obj.set_formula("A1+1");
+
+        obj.set_formula_result_number(3.5);
+        assert_eq!(obj.formula(), "A1+1");
+        assert_eq!(obj.raw_value, CellRawValue::Numeric(3.5));
+
+        obj.set_formula_result_bool(false);
+        assert_eq!(obj.formula(), "A1+1");
+        assert_eq!(obj.raw_value, CellRawValue::Bool(false));
+
+        obj.set_formula_result_error(CellErrorType::Ref);
+        assert_eq!(obj.formula(), "A1+1");
+        assert_eq!(obj.raw_value, CellRawValue::Error(CellErrorType::Ref));
+
+        obj.set_formula_result_string("OK");
+        assert_eq!(obj.formula(), "A1+1");
+        assert!(matches!(
+            &obj.raw_value,
+            CellRawValue::String(value) if value.as_ref() == "OK"
+        ));
+
+        obj.set_formula_result_blank();
+        assert_eq!(obj.formula(), "A1+1");
+        assert_eq!(obj.raw_value, CellRawValue::Empty);
     }
 }

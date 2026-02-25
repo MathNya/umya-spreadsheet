@@ -3,7 +3,10 @@
 
 extern crate chrono;
 extern crate umya_spreadsheet;
-use std::time::Instant;
+use std::{
+    io::Read,
+    time::Instant,
+};
 
 use umya_spreadsheet::*;
 
@@ -2207,4 +2210,267 @@ fn issue_298() {
     // writer
     let path = std::path::Path::new("./tests/result_files/r_issue_298.xlsx");
     let _unused = writer::xlsx::write(&book, path);
+}
+
+fn workbook_to_xlsx_bytes(book: &Workbook) -> Vec<u8> {
+    let mut output = Vec::new();
+    writer::xlsx::write_writer(book, &mut output).unwrap();
+    output
+}
+
+fn zip_entry_to_string(xlsx: &[u8], entry_name: &str) -> String {
+    let cursor = std::io::Cursor::new(xlsx);
+    let mut archive = zip::ZipArchive::new(cursor).unwrap();
+    let mut entry = archive.by_name(entry_name).unwrap();
+    let mut xml = String::new();
+    entry.read_to_string(&mut xml).unwrap();
+    xml
+}
+
+fn cell_fragment(sheet_xml: &str, coordinate: &str) -> String {
+    let start = sheet_xml
+        .find(&format!("<c r=\"{coordinate}\""))
+        .expect("cell not found in sheet xml");
+    let fragment = &sheet_xml[start..];
+
+    if let Some(end) = fragment.find("</c>") {
+        return fragment[..(end + 4)].to_string();
+    }
+
+    let end = fragment
+        .find("/>")
+        .expect("cell node should be either empty or explicitly closed");
+    fragment[..(end + 2)].to_string()
+}
+
+fn shared_formula_signatures(
+    sheet_xml: &str,
+) -> Vec<(String, Option<String>, Option<String>, Option<String>)> {
+    let mut reader = quick_xml::Reader::from_str(sheet_xml);
+    reader.config_mut().trim_text(true);
+
+    let mut signatures = Vec::new();
+    let mut buf = Vec::new();
+    let mut current_cell = String::new();
+    let mut shared_si: Option<String> = None;
+    let mut shared_ref: Option<String> = None;
+    let mut shared_text: Option<String> = None;
+    let mut in_shared_formula = false;
+
+    loop {
+        match reader.read_event_into(&mut buf) {
+            Ok(quick_xml::events::Event::Start(ref e)) => match e.name().into_inner() {
+                b"c" => {
+                    current_cell.clear();
+                    for attribute in e.attributes().flatten() {
+                        if attribute.key.into_inner() == b"r" {
+                            current_cell = String::from_utf8_lossy(attribute.value.as_ref()).into();
+                        }
+                    }
+                }
+                b"f" => {
+                    let mut formula_type: Option<String> = None;
+                    shared_si = None;
+                    shared_ref = None;
+                    shared_text = None;
+                    for attribute in e.attributes().flatten() {
+                        let value = String::from_utf8_lossy(attribute.value.as_ref()).into_owned();
+                        match attribute.key.into_inner() {
+                            b"t" => formula_type = Some(value),
+                            b"si" => shared_si = Some(value),
+                            b"ref" => shared_ref = Some(value),
+                            _ => {}
+                        }
+                    }
+                    in_shared_formula = formula_type.as_deref() == Some("shared");
+                }
+                _ => {}
+            },
+            Ok(quick_xml::events::Event::Empty(ref e)) => {
+                if e.name().into_inner() == b"f" {
+                    let mut formula_type: Option<String> = None;
+                    let mut si: Option<String> = None;
+                    let mut reference: Option<String> = None;
+                    for attribute in e.attributes().flatten() {
+                        let value = String::from_utf8_lossy(attribute.value.as_ref()).into_owned();
+                        match attribute.key.into_inner() {
+                            b"t" => formula_type = Some(value),
+                            b"si" => si = Some(value),
+                            b"ref" => reference = Some(value),
+                            _ => {}
+                        }
+                    }
+                    if formula_type.as_deref() == Some("shared") {
+                        signatures.push((current_cell.clone(), si, reference, None));
+                    }
+                }
+            }
+            Ok(quick_xml::events::Event::Text(e)) => {
+                if in_shared_formula {
+                    shared_text = Some(e.unescape().unwrap().into_owned());
+                }
+            }
+            Ok(quick_xml::events::Event::End(ref e)) => {
+                if e.name().into_inner() == b"f" {
+                    if in_shared_formula {
+                        signatures.push((
+                            current_cell.clone(),
+                            shared_si.clone(),
+                            shared_ref.clone(),
+                            shared_text.clone(),
+                        ));
+                    }
+                    in_shared_formula = false;
+                    shared_si = None;
+                    shared_ref = None;
+                    shared_text = None;
+                }
+            }
+            Ok(quick_xml::events::Event::Eof) => break,
+            Err(e) => panic!("failed to parse sheet xml: {e}"),
+            _ => {}
+        }
+        buf.clear();
+    }
+
+    signatures
+}
+
+#[test]
+fn formula_cached_values_are_written_with_typed_xml_and_roundtrip() {
+    let mut book = new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+
+    sheet
+        .get_cell_mut("A1")
+        .set_formula("1+1")
+        .set_formula_result_default("2");
+    sheet
+        .get_cell_mut("A2")
+        .set_formula("1=1")
+        .set_formula_result_default("TRUE");
+    sheet
+        .get_cell_mut("A3")
+        .set_formula("NA()")
+        .set_formula_result_default("#N/A");
+    sheet
+        .get_cell_mut("A4")
+        .set_formula("T(\"ok\")")
+        .set_formula_result_default("ok");
+    sheet
+        .get_cell_mut("A5")
+        .set_formula("1/0")
+        .set_formula_result_default("");
+
+    let xlsx = workbook_to_xlsx_bytes(&book);
+    let sheet_xml = zip_entry_to_string(&xlsx, "xl/worksheets/sheet1.xml");
+
+    let a1 = cell_fragment(&sheet_xml, "A1");
+    assert!(a1.contains("<f>1+1</f>"));
+    assert!(a1.contains("<v>2</v>"));
+    assert!(!a1.contains("t=\"str\""));
+    assert!(!a1.contains("t=\"b\""));
+    assert!(!a1.contains("t=\"e\""));
+
+    let a2 = cell_fragment(&sheet_xml, "A2");
+    assert!(a2.contains("t=\"b\""));
+    assert!(a2.contains("<v>1</v>"));
+
+    let a3 = cell_fragment(&sheet_xml, "A3");
+    assert!(a3.contains("t=\"e\""));
+    assert!(a3.contains("<v>#N/A</v>"));
+
+    let a4 = cell_fragment(&sheet_xml, "A4");
+    assert!(a4.contains("t=\"str\""));
+    assert!(a4.contains("<v>ok</v>"));
+
+    let a5 = cell_fragment(&sheet_xml, "A5");
+    assert!(a5.contains("<v/>"));
+
+    let roundtrip = reader::xlsx::read_reader(std::io::Cursor::new(xlsx), true).unwrap();
+    let roundtrip_sheet = roundtrip.sheet(0).unwrap();
+
+    let a1_cell = roundtrip_sheet.get_cell("A1").unwrap();
+    assert_eq!(a1_cell.formula(), "1+1");
+    assert_eq!(a1_cell.raw_value(), &CellRawValue::Numeric(2f64));
+
+    let a2_cell = roundtrip_sheet.get_cell("A2").unwrap();
+    assert_eq!(a2_cell.formula(), "1=1");
+    assert_eq!(a2_cell.raw_value(), &CellRawValue::Bool(true));
+
+    let a3_cell = roundtrip_sheet.get_cell("A3").unwrap();
+    assert_eq!(a3_cell.formula(), "NA()");
+    assert_eq!(a3_cell.raw_value(), &CellRawValue::Error(CellErrorType::NA));
+
+    let a4_cell = roundtrip_sheet.get_cell("A4").unwrap();
+    assert_eq!(a4_cell.formula(), "T(\"ok\")");
+    assert!(matches!(
+        a4_cell.raw_value(),
+        CellRawValue::String(value) if value.as_ref() == "ok"
+    ));
+}
+
+#[test]
+fn write_keeps_shared_formula_metadata_stable() {
+    let source_path = std::path::Path::new("./tests/test_files/issue_194.xlsx");
+    let source_bytes = std::fs::read(source_path).unwrap();
+    let source_sheet_xml = zip_entry_to_string(&source_bytes, "xl/worksheets/sheet1.xml");
+    let source_shared = shared_formula_signatures(&source_sheet_xml);
+    assert!(!source_shared.is_empty());
+
+    let workbook = reader::xlsx::read_reader(std::io::Cursor::new(source_bytes), true).unwrap();
+    let rewritten = workbook_to_xlsx_bytes(&workbook);
+    let rewritten_sheet_xml = zip_entry_to_string(&rewritten, "xl/worksheets/sheet1.xml");
+    let rewritten_shared = shared_formula_signatures(&rewritten_sheet_xml);
+
+    assert_eq!(rewritten_shared, source_shared);
+}
+
+#[test]
+fn typed_formula_result_helpers_write_expected_types() {
+    let mut book = new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+
+    sheet
+        .get_cell_mut("B1")
+        .set_formula("10/2")
+        .set_formula_result_number(5.0);
+    sheet
+        .get_cell_mut("B2")
+        .set_formula("1=2")
+        .set_formula_result_bool(false);
+    sheet
+        .get_cell_mut("B3")
+        .set_formula("NA()")
+        .set_formula_result_error(CellErrorType::NA);
+    sheet
+        .get_cell_mut("B4")
+        .set_formula("T(\"value\")")
+        .set_formula_result_string("value");
+    sheet
+        .get_cell_mut("B5")
+        .set_formula("1/0")
+        .set_formula_result_blank();
+
+    let xlsx = workbook_to_xlsx_bytes(&book);
+    let sheet_xml = zip_entry_to_string(&xlsx, "xl/worksheets/sheet1.xml");
+
+    let b1 = cell_fragment(&sheet_xml, "B1");
+    assert!(!b1.contains("t=\"str\""));
+    assert!(b1.contains("<v>5</v>"));
+
+    let b2 = cell_fragment(&sheet_xml, "B2");
+    assert!(b2.contains("t=\"b\""));
+    assert!(b2.contains("<v>0</v>"));
+
+    let b3 = cell_fragment(&sheet_xml, "B3");
+    assert!(b3.contains("t=\"e\""));
+    assert!(b3.contains("<v>#N/A</v>"));
+
+    let b4 = cell_fragment(&sheet_xml, "B4");
+    assert!(b4.contains("t=\"str\""));
+    assert!(b4.contains("<v>value</v>"));
+
+    let b5 = cell_fragment(&sheet_xml, "B5");
+    assert!(b5.contains("<v/>"));
 }
