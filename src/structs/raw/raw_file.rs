@@ -73,7 +73,7 @@ impl RawFile {
         target: &str,
     ) {
         let path_str = join_paths(base_path, target);
-        let Ok(file) = arv.by_name(&path_str) else {
+        let Ok(file) = zip_by_name(arv, &path_str) else {
             // File not found in archive — skip gracefully.
             self.set_file_target(path_str);
             return;

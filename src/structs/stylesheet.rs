@@ -181,10 +181,7 @@ impl Stylesheet {
 
     #[inline]
     pub(crate) fn get_style(&self, id: usize) -> Style {
-        self.maked_style_list
-            .get(id)
-            .cloned()
-            .unwrap_or_default()
+        self.maked_style_list.get(id).cloned().unwrap_or_default()
     }
 
     pub(crate) fn make_style(&mut self) -> &mut Self {

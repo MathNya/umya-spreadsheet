@@ -2106,3 +2106,63 @@ fn issue_293() {
     let path = std::path::Path::new("./tests/result_files/r_issue_293.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+// --- Panic safety: backslash zip paths (Windows-generated XLSX) ---------------
+
+#[test]
+fn backslash_paths_tdf131575() {
+    let path = std::path::Path::new("./tests/test_files/tdf131575.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn backslash_paths_tdf76115() {
+    let path = std::path::Path::new("./tests/test_files/tdf76115.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn backslash_paths_49609() {
+    let path = std::path::Path::new("./tests/test_files/49609.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+// --- Panic safety: missing optional styles.xml --------------------------------
+
+#[test]
+fn missing_styles_56278() {
+    let path = std::path::Path::new("./tests/test_files/56278.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn missing_styles_tdf121887() {
+    let path = std::path::Path::new("./tests/test_files/tdf121887.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn missing_styles_59021() {
+    let path = std::path::Path::new("./tests/test_files/59021.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+// --- Panic safety: arithmetic overflow / unwrap on None -----------------------
+
+#[test]
+fn overflow_functions_excel_2010() {
+    let path = std::path::Path::new("./tests/test_files/functions-excel-2010.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn overflow_formula_eval_test_data() {
+    let path = std::path::Path::new("./tests/test_files/FormulaEvalTestData_Copy.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn missing_attr_64450() {
+    let path = std::path::Path::new("./tests/test_files/64450.xlsx");
+    let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}

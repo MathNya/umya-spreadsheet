@@ -17,7 +17,7 @@ use crate::structs::Worksheet;
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
 ) -> result::Result<Spreadsheet, XlsxError> {
-    let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK)?);
+    let r = io::BufReader::new(zip_by_name(arv, PKG_WORKBOOK)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
     let mut spreadsheet = Spreadsheet::default();

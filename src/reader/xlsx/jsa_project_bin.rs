@@ -9,7 +9,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     spreadsheet: &mut Spreadsheet,
 ) -> result::Result<(), XlsxError> {
-    let mut r = io::BufReader::new(match arv.by_name(PKG_JSA_PROJECT) {
+    let mut r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_JSA_PROJECT) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
             return Ok(());

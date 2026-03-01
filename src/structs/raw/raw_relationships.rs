@@ -68,7 +68,7 @@ impl RawRelationships {
     ) -> bool {
         let data = {
             let path_str = join_paths(base_path, target);
-            let file_path = match arv.by_name(&path_str) {
+            let file_path = match zip_by_name(arv, &path_str) {
                 Ok(v) => v,
                 Err(_) => {
                     return false;

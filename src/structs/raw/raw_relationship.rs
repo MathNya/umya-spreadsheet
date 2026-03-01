@@ -87,9 +87,18 @@ impl RawRelationship {
         arv: &mut zip::read::ZipArchive<A>,
         base_path: &str,
     ) {
-        self.set_id(get_attribute(e, b"Id").unwrap());
-        self.set_type(get_attribute(e, b"Type").unwrap());
-        self.set_target(get_attribute(e, b"Target").unwrap());
+        let Some(id) = get_attribute(e, b"Id") else {
+            return;
+        };
+        let Some(type_val) = get_attribute(e, b"Type") else {
+            return;
+        };
+        let Some(target) = get_attribute(e, b"Target") else {
+            return;
+        };
+        self.set_id(id);
+        self.set_type(type_val);
+        self.set_target(target);
         if let Some(v) = get_attribute(e, b"TargetMode") {
             self.set_target_mode(v);
         }

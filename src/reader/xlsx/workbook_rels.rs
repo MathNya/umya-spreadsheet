@@ -10,7 +10,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
     spreadsheet: &mut Spreadsheet,
 ) -> result::Result<Vec<(String, String, String)>, XlsxError> {
-    let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK_RELS)?);
+    let r = io::BufReader::new(zip_by_name(arv, PKG_WORKBOOK_RELS)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 
