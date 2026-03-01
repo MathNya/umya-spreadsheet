@@ -76,11 +76,11 @@ impl IconSet {
                     }
                 },
                 Event::End(ref e) => {
-                    if e.name().into_inner() == b"dataBar" {
+                    if e.name().into_inner() == b"iconSet" {
                         return
                     }
                 },
-                Event::Eof => panic!("Error: Could not find {} end element", "dataBar")
+                Event::Eof => return
         );
     }
 

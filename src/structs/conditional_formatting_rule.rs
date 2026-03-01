@@ -270,9 +270,10 @@ impl ConditionalFormattingRule {
         set_string_from_xml!(self, e, operator, "operator");
 
         if let Some(v) = get_attribute(e, b"dxfId") {
-            let dxf_id = v.parse::<usize>().unwrap();
-            let style = differential_formats.get_style(dxf_id);
-            self.set_style(style);
+            if let Ok(dxf_id) = v.parse::<usize>() {
+                let style = differential_formats.get_style(dxf_id);
+                self.set_style(style);
+            }
         }
 
         set_string_from_xml!(self, e, priority, "priority");
@@ -321,7 +322,7 @@ impl ConditionalFormattingRule {
                     return
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "cfRule")
+            Event::Eof => return
         );
     }
 

@@ -24,7 +24,13 @@ impl Int32Value {
 
     #[inline]
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(value.into().parse::<i32>().unwrap())
+        let s = value.into();
+        self.set_value(s.parse::<i32>().unwrap_or_else(|_| {
+            s.parse::<i64>()
+                .ok()
+                .and_then(|v| i32::try_from(v).ok())
+                .unwrap_or(0)
+        }))
     }
 
     #[inline]

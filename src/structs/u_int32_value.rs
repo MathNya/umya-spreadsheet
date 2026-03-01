@@ -21,7 +21,13 @@ impl UInt32Value {
 
     #[inline]
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(value.into().parse::<u32>().unwrap())
+        let s = value.into();
+        self.set_value(s.parse::<u32>().unwrap_or_else(|_| {
+            s.parse::<u64>()
+                .ok()
+                .and_then(|v| u32::try_from(v).ok())
+                .unwrap_or(u32::MAX)
+        }))
     }
 
     #[inline]

@@ -181,7 +181,10 @@ impl Stylesheet {
 
     #[inline]
     pub(crate) fn get_style(&self, id: usize) -> Style {
-        self.maked_style_list.get(id).unwrap().clone()
+        self.maked_style_list
+            .get(id)
+            .cloned()
+            .unwrap_or_default()
     }
 
     pub(crate) fn make_style(&mut self) -> &mut Self {
@@ -232,8 +235,9 @@ impl Stylesheet {
         }
         if apply {
             let id = *cell_format.get_font_id() as usize;
-            let obj = self.fonts.get_font().get(id).unwrap();
-            style.set_font(obj.clone());
+            if let Some(obj) = self.fonts.get_font().get(id) {
+                style.set_font(obj.clone());
+            }
         }
 
         // fill
@@ -246,8 +250,9 @@ impl Stylesheet {
         }
         if apply {
             let id = *cell_format.get_fill_id() as usize;
-            let obj = self.fills.get_fill().get(id).unwrap();
-            style.set_fill(obj.clone());
+            if let Some(obj) = self.fills.get_fill().get(id) {
+                style.set_fill(obj.clone());
+            }
         }
 
         // borders
@@ -260,8 +265,9 @@ impl Stylesheet {
         }
         if apply {
             let id = *cell_format.get_border_id() as usize;
-            let obj = self.borders.get_borders().get(id).unwrap();
-            style.set_borders(obj.clone());
+            if let Some(obj) = self.borders.get_borders().get(id) {
+                style.set_borders(obj.clone());
+            }
         }
 
         // format_id

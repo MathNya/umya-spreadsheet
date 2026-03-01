@@ -86,7 +86,11 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     let sections: Vec<&str> = split(&SECTION_REGEX, &format).collect();
 
-    let (_, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
+    let Ok(parsed_val) = value.parse::<f64>() else {
+        return value.to_string();
+    };
+
+    let (_, split_format, split_value) = split_format(sections, &parsed_val);
     format = Cow::Owned(split_format);
     value = Cow::Owned(split_value);
 
@@ -99,17 +103,20 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     //  Check for date/time characters (not inside quotes)
 
+    let reparsed = value.parse::<f64>().unwrap_or(0.0);
+
     if DATE_TIME_REGEX.is_match(&format).unwrap_or(false) {
         // datetime format
-        value = date_formater::format_as_date(&value.parse::<f64>().unwrap(), &format);
+        value = date_formater::format_as_date(&reparsed, &format);
     } else if format.starts_with('"') && format.ends_with('"') {
-        let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
-        value = Cow::Owned(conv_format.to_string());
+        if let Ok(conv_format) = format.trim_matches('"').parse::<f64>() {
+            value = Cow::Owned(conv_format.to_string());
+        }
     } else if PERCENT_DOLLAR_REGEX.is_match(&format).unwrap_or(false) {
         // % number format
-        value = percentage_formater::format_as_percentage(&value.parse::<f64>().unwrap(), &format);
+        value = percentage_formater::format_as_percentage(&reparsed, &format);
     } else {
-        value = number_formater::format_as_number(&value.parse::<f64>().unwrap(), &format);
+        value = number_formater::format_as_number(&reparsed, &format);
     }
     value.trim().to_string()
 }
@@ -175,18 +182,18 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     match cnt {
         2 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap_or(0.0);
+            if !split_format_compare(value, &condops[0], &condval_one, ">=", &0f64) {
                 color = &colors[1];
                 format = &converted_sections[1];
             }
         }
         3 | 4 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            let condval_two = &condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
-                if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap_or(0.0);
+            let condval_two = condvals[1].parse::<f64>().unwrap_or(0.0);
+            if !split_format_compare(value, &condops[0], &condval_one, ">", &0f64) {
+                if split_format_compare(value, &condops[1], &condval_two, "<", &0f64) {
                     color = &colors[1];
                     format = &converted_sections[1];
                 } else {

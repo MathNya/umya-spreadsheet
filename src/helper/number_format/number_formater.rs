@@ -53,13 +53,13 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
             //println!("format as fraction {} {}", value, format);
-            value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
+            value = format_as_fraction(&value.parse::<f64>().unwrap_or(0.0), &format);
         }
     } else {
         // Handle the number itself
 
         // scale number
-        value = (value.parse::<f64>().unwrap() / scale).to_string();
+        value = (value.parse::<f64>().unwrap_or(0.0) / scale).to_string();
         // Strip #
         format = format.replace('#', "0");
         // Remove \
@@ -114,11 +114,12 @@ fn format_straight_numeric_value(
 ) -> String {
     let mut value = value.to_string();
 
-    let right = matches.get(3).unwrap();
+    let empty = String::new();
+    let right = matches.get(3).unwrap_or(&empty);
 
     // minimun width of formatted number (including dot)
     if *use_thousands {
-        value = value.parse::<f64>().unwrap().separate_with_commas();
+        value = value.parse::<f64>().unwrap_or(0.0).separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
     let left_value = blocks[0].to_string();
@@ -134,13 +135,13 @@ fn format_straight_numeric_value(
             right_value = right.to_string();
         } else if right.len() > right_value.len() {
             let pow = 10i32.pow(right.len() as u32);
-            right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
+            right_value = format!("{}", right_value.parse::<i32>().unwrap_or(0) * pow);
         } else {
             let mut right_value_conv: String = right_value.chars().take(right.len()).collect();
             let ajst_str: String = right_value.chars().skip(right.len()).take(1).collect();
-            let ajst_int = ajst_str.parse::<i32>().unwrap();
+            let ajst_int = ajst_str.parse::<i32>().unwrap_or(0);
             if ajst_int > 4 {
-                right_value_conv = (right_value_conv.parse::<i32>().unwrap() + 1).to_string();
+                right_value_conv = (right_value_conv.parse::<i32>().unwrap_or(0) + 1).to_string();
             }
             right_value = right_value_conv;
         }
@@ -210,7 +211,7 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
         let mut number = *number;
         let mut offset: usize = 0;
         for (block, pos) in masking_blocks.iter().rev() {
-            let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
+            let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap_or(1.0);
             let size = block.len();
             offset = *pos;
 
@@ -249,14 +250,14 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
             masks = merge_complex_number_format_masks(&numbers, &masks);
         }
         let result1 =
-            complex_number_format_mask(&numbers[0].parse::<f64>().unwrap(), &masks[0], &false);
+            complex_number_format_mask(&numbers[0].parse::<f64>().unwrap_or(0.0), &masks[0], &false);
         let result2 = complex_number_format_mask(
             &numbers[1]
                 .chars()
                 .rev()
                 .collect::<String>()
                 .parse::<f64>()
-                .unwrap(),
+                .unwrap_or(0.0),
             &masks[1].chars().rev().collect::<String>(),
             &false,
         )

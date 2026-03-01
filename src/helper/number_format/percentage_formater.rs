@@ -11,7 +11,7 @@ pub(crate) fn format_as_percentage<'input>(value: &f64, format: &'input str) -> 
     };
     value = format!(
         "{:0width$.len$}%",
-        (100f64 * &value.parse::<f64>().unwrap()).round(),
+        (100f64 * &value.parse::<f64>().unwrap_or(0.0)).round(),
         width = 1,
         len = len
     );
