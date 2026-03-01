@@ -577,8 +577,10 @@ impl Cell {
         }
 
         if let Some(v) = get_attribute(e, b"s") {
-            let style = stylesheet.style(v.parse::<usize>().unwrap());
-            self.set_style(style);
+            if let Ok(id) = v.parse::<usize>() {
+                let style = stylesheet.style(id);
+                self.set_style(style);
+            }
         }
 
         if let Some(v) = get_attribute(e, b"t") {
@@ -626,12 +628,14 @@ impl Cell {
                             self.set_value_string_crate(&string_value);
                         }
                         "s" => {
-                            let index = string_value.parse::<usize>().unwrap();
-                            let shared_string_item = shared_string_table
-                                .shared_string_item()
-                                .get(index)
-                                .unwrap();
-                            self.set_shared_string_item(shared_string_item);
+                            if let Ok(index) = string_value.parse::<usize>() {
+                                if let Some(shared_string_item) = shared_string_table
+                                    .shared_string_item()
+                                    .get(index)
+                                {
+                                    self.set_shared_string_item(shared_string_item);
+                                }
+                            }
                         }
                         "b" => {
                             let prm = string_value == "1";

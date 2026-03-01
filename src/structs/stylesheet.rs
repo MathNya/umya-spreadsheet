@@ -312,7 +312,7 @@ impl Stylesheet {
 
     #[inline]
     pub(crate) fn style(&self, id: usize) -> Style {
-        self.maked_style_list.get(id).unwrap().clone()
+        self.maked_style_list.get(id).cloned().unwrap_or_default()
     }
 
     #[inline]
@@ -369,8 +369,9 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.font_id() as usize;
-            let obj = self.fonts.font().get(id).unwrap();
-            style.set_font(obj.clone());
+            if let Some(obj) = self.fonts.font().get(id) {
+                style.set_font(obj.clone());
+            }
         }
 
         // fill
@@ -382,9 +383,10 @@ impl Stylesheet {
             apply = cell_format.apply_fill();
         }
         if apply {
-            let id = cell_format.fill_id() as usize;
-            let obj = self.fills.fill().get(id).unwrap();
-            style.set_fill(obj.clone());
+            let id = cell_format.get_fill_id() as usize;
+            if let Some(obj) = self.fills.fill().get(id) {
+                style.set_fill(obj.clone());
+            }
         }
 
         // borders
@@ -397,8 +399,9 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.border_id() as usize;
-            let obj = self.borders.borders().get(id).unwrap();
-            style.set_borders(obj.clone());
+            if let Some(obj) = self.borders.borders().get(id) {
+                style.set_borders(obj.clone());
+            }
         }
 
         // format_id

@@ -115,9 +115,17 @@ impl RawFile {
         target: &str,
     ) {
         let path_str = join_paths(base_path, target);
-        let mut r = io::BufReader::new(arv.by_name(&path_str).unwrap());
+        let Ok(file) = arv.by_name(&path_str) else {
+            // File not found in archive — skip gracefully.
+            self.set_file_target(path_str);
+            return;
+        };
+        let mut r = io::BufReader::new(file);
         let mut buf = Vec::new();
-        r.read_to_end(&mut buf).unwrap();
+        if r.read_to_end(&mut buf).is_err() {
+            self.set_file_target(path_str);
+            return;
+        }
 
         self.set_file_target(path_str);
         self.set_file_data(&buf);
