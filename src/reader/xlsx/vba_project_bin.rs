@@ -13,7 +13,7 @@ pub(crate) fn read<R: Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
-    let mut r = io::BufReader::new(match arv.by_name(PKG_VBA_PROJECT) {
+    let mut r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_VBA_PROJECT) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
             return Ok(());

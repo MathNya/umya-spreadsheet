@@ -18,8 +18,16 @@ use crate::{
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
-) -> Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(PKG_STYLES)?);
+) -> result::Result<(), XlsxError> {
+    let r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_STYLES) {
+        Ok(v) => v,
+        Err(zip::result::ZipError::FileNotFound) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e.into());
+        }
+    });
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 

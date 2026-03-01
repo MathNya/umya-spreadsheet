@@ -316,15 +316,17 @@ impl CellFormula {
                 Some((parent_cell_reference_str, token)) => {
                     let parent_cell = index_from_coordinate(parent_cell_reference_str);
                     let self_cell = index_from_coordinate(cell_reference_str);
-                    let parent_col_num = parent_cell.0.unwrap();
-                    let parent_row_num = parent_cell.1.unwrap();
-                    let self_col_num = self_cell.0.unwrap();
-                    let self_row_num = self_cell.1.unwrap();
+                    let (Some(parent_col_num), Some(parent_row_num), ..) = parent_cell else {
+                        return;
+                    };
+                    let (Some(self_col_num), Some(self_row_num), ..) = self_cell else {
+                        return;
+                    };
 
                     let root_col_num = parent_col_num;
                     let root_row_num = parent_row_num;
-                    let offset_col_num = self_col_num - root_col_num;
-                    let offset_row_num = self_row_num - parent_row_num;
+                    let offset_col_num = self_col_num.wrapping_sub(root_col_num);
+                    let offset_row_num = self_row_num.wrapping_sub(root_row_num);
 
                     let mut token_new = token.clone();
                     let value = adjustment_insert_formula_coordinate(

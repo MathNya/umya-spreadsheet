@@ -123,8 +123,11 @@ impl RawRelationships {
     ) -> bool {
         let data = {
             let path_str = join_paths(base_path, target);
-            let Ok(file_path) = arv.by_name(&path_str) else {
-                return false;
+            let file_path = match zip_by_name(arv, &path_str) {
+                Ok(v) => v,
+                Err(_) => {
+                    return false;
+                }
             };
             self.set_file_target(path_str);
             let mut r = io::BufReader::new(file_path);

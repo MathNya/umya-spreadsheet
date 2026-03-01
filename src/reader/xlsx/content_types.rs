@@ -21,7 +21,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(CONTENT_TYPES)?);
+    let r = io::BufReader::new(zip_by_name(arv, CONTENT_TYPES)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
     let mut list: Vec<(String, String)> = Vec::new();

@@ -19,7 +19,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
-    let r = io::BufReader::new(match arv.by_name(PKG_SHARED_STRINGS) {
+    let r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_SHARED_STRINGS) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
             return Ok(());

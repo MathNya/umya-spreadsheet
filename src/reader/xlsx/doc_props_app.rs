@@ -15,7 +15,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
-    let r = io::BufReader::new(match arv.by_name(ARC_APP) {
+    let r = io::BufReader::new(match super::driver::zip_by_name(arv, ARC_APP) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
             return Ok(());

@@ -629,9 +629,8 @@ impl Cell {
                         }
                         "s" => {
                             if let Ok(index) = string_value.parse::<usize>() {
-                                if let Some(shared_string_item) = shared_string_table
-                                    .shared_string_item()
-                                    .get(index)
+                                if let Some(shared_string_item) =
+                                    shared_string_table.shared_string_item().get(index)
                                 {
                                     self.set_shared_string_item(shared_string_item);
                                 }
