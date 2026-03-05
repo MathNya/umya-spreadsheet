@@ -189,6 +189,7 @@ impl Cell {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn hyperlink_mut(&mut self) -> &mut Hyperlink {
         if self.hyperlink.is_some() {
             return self.hyperlink.as_mut().unwrap();

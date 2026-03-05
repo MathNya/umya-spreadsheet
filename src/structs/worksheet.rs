@@ -1650,6 +1650,7 @@ impl Worksheet {
 
     /// Get Tab Color in mutable.
     #[inline]
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn tab_color_mut(&mut self) -> &mut Color {
         if self.tab_color.is_some() {
             return self.tab_color.as_mut().unwrap();

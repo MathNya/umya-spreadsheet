@@ -879,8 +879,8 @@ pub fn adjustment_formula_coordinate(
             let mut has_error = false;
             for coordinate in &coordinate_list {
                 let cell = index_from_coordinate(coordinate);
-                if cell.0.is_some() {
-                    let mut col_num = cell.0.unwrap();
+                if let Some(cell_0) = cell.0 {
+                    let mut col_num = cell_0;
                     let mut row_num = cell.1.unwrap();
                     let is_lock_col = cell.2.unwrap();
                     let is_lock_row = cell.3.unwrap();
@@ -944,26 +944,36 @@ pub fn adjustment_insert_formula_coordinate(
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
                     let cell = index_from_coordinate(coordinate);
-                    if cell.0.is_some() && cell.1.is_some() {
-                        let mut col_num = cell.0.unwrap();
-                        let mut row_num = cell.1.unwrap();
-                        let is_lock_col = cell.2.unwrap_or(false);
-                        let is_lock_row = cell.3.unwrap_or(false);
-                        if !is_lock_col {
-                            col_num =
-                                adjustment_insert_coordinate(col_num, root_col_num, offset_col_num);
+                    if let Some(cell_0) = cell.0 {
+                        if let Some(cell_1) = cell.1 {
+                            let mut col_num = cell_0;
+                            let mut row_num = cell_1;
+                            let is_lock_col = cell.2.unwrap_or(false);
+                            let is_lock_row = cell.3.unwrap_or(false);
+                            if !is_lock_col {
+                                col_num = adjustment_insert_coordinate(
+                                    col_num,
+                                    root_col_num,
+                                    offset_col_num,
+                                );
+                            }
+                            if !is_lock_row {
+                                row_num = adjustment_insert_coordinate(
+                                    row_num,
+                                    root_row_num,
+                                    offset_row_num,
+                                );
+                            }
+                            let new_corrdinate = coordinate_from_index_with_lock(
+                                col_num,
+                                row_num,
+                                is_lock_col,
+                                is_lock_row,
+                            );
+                            coordinate_list_new.push(new_corrdinate);
+                        } else {
+                            coordinate_list_new.push((*coordinate).to_string());
                         }
-                        if !is_lock_row {
-                            row_num =
-                                adjustment_insert_coordinate(row_num, root_row_num, offset_row_num);
-                        }
-                        let new_corrdinate = coordinate_from_index_with_lock(
-                            col_num,
-                            row_num,
-                            is_lock_col,
-                            is_lock_row,
-                        );
-                        coordinate_list_new.push(new_corrdinate);
                     } else {
                         coordinate_list_new.push((*coordinate).to_string());
                     }
@@ -1000,8 +1010,8 @@ pub fn adjustment_remove_formula_coordinate(
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
                     let cell = index_from_coordinate(coordinate);
-                    if cell.0.is_some() {
-                        let mut col_num = cell.0.unwrap();
+                    if let Some(cell_0) = cell.0 {
+                        let mut col_num = cell_0;
                         let mut row_num = cell.1.unwrap();
                         let is_lock_col = cell.2.unwrap();
                         let is_lock_row = cell.3.unwrap();

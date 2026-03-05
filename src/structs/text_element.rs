@@ -63,6 +63,7 @@ impl TextElement {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn run_properties_mut(&mut self) -> &mut Font {
         if self.run_properties.is_some() {
             return self.run_properties.as_mut().unwrap();

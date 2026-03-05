@@ -44,6 +44,7 @@ impl Fill {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn pattern_fill_mut(&mut self) -> &mut PatternFill {
         if self.pattern_fill.is_some() {
             return self.pattern_fill.as_mut().unwrap();
@@ -79,6 +80,7 @@ impl Fill {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn gradient_fill_mut(&mut self) -> &mut GradientFill {
         if self.gradient_fill.is_some() {
             return self.gradient_fill.as_mut().unwrap();
