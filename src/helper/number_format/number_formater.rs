@@ -107,7 +107,7 @@ fn format_straight_numeric_value(
         if right_value == "0" {
             right_value.clone_from(right);
         } else if right.len() > right_value.len() {
-            let pow = 10i64.pow(right.len().min(18) as u32);
+            let pow = 10i64.pow(u32::try_from(right.len().min(18)).expect("REASON"));
             right_value = format!(
                 "{}",
                 right_value.parse::<i64>().unwrap_or(0).saturating_mul(pow)
@@ -205,11 +205,8 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
         if masks.len() > 2 {
             masks = merge_complex_number_format_masks(&numbers, &masks);
         }
-        let result1 = complex_number_format_mask(
-            numbers[0].parse::<f64>().unwrap_or(0.0),
-            &masks[0],
-            false,
-        );
+        let result1 =
+            complex_number_format_mask(numbers[0].parse::<f64>().unwrap_or(0.0), &masks[0], false);
         let result2 = complex_number_format_mask(
             numbers[1]
                 .chars()

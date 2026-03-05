@@ -105,10 +105,9 @@ pub(crate) fn zip_by_name<'a, R: io::Read + io::Seek>(
 
     // 2. Backslash variant: "xl/workbook.xml" → "xl\\workbook.xml"
     let backslash_name = name.replace('/', "\\");
-    if backslash_name != name {
-        if arv.by_name(&backslash_name).is_ok() {
+    if backslash_name != name
+        && arv.by_name(&backslash_name).is_ok() {
             return arv.by_name(&backslash_name);
-        }
     }
 
     // 3. Case-insensitive scan with separator normalization

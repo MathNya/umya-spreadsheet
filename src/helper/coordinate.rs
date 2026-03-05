@@ -287,7 +287,7 @@ pub fn coordinate_from_index_with_lock(
 /// ```
 #[inline]
 pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if (num >= root_num && offset_num != 0) {
+    if num >= root_num && offset_num != 0 {
         num.saturating_add(offset_num)
     } else {
         num
@@ -323,7 +323,7 @@ pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: 
 /// ```
 #[inline]
 pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if (num >= root_num && offset_num != 0) {
+    if num >= root_num && offset_num != 0 {
         num.saturating_sub(offset_num)
     } else {
         num

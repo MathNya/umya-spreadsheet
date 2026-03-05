@@ -5,7 +5,10 @@ use std::{
 
 use crate::{
     XlsxError,
-    reader::driver::join_paths,
+    reader::driver::{
+        join_paths,
+        zip_by_name,
+    },
     structs::{
         StringValue,
         WriterManager,

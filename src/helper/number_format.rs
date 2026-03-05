@@ -201,7 +201,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
             absval = absval.abs();
             let condval_one = condvals[0].parse::<f64>().unwrap_or(0.0);
             if !split_format_compare(value, condops[0], condval_one, ">=", 0f64) {
-                color = &colors[1];
+                color = colors[1];
                 format = &converted_sections[1];
             }
         }

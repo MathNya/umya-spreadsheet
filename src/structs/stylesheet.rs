@@ -383,7 +383,7 @@ impl Stylesheet {
             apply = cell_format.apply_fill();
         }
         if apply {
-            let id = cell_format.get_fill_id() as usize;
+            let id = cell_format.fill_id() as usize;
             if let Some(obj) = self.fills.fill().get(id) {
                 style.set_fill(obj.clone());
             }

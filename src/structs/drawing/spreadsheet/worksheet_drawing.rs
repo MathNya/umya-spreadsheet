@@ -2,23 +2,48 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{ConnectionShape, GraphicFrame, OneCellAnchor, Picture, Shape, TwoCellAnchor};
+use super::{
+    ConnectionShape,
+    GraphicFrame,
+    OneCellAnchor,
+    Picture,
+    Shape,
+    TwoCellAnchor,
+};
 use crate::{
-    helper::const_str::{DRAWINGML_MAIN_NS, SHEET_DRAWING_NS},
+    helper::const_str::{
+        DRAWINGML_MAIN_NS,
+        SHEET_DRAWING_NS,
+    },
     reader::driver::xml_read_loop,
-    structs::{Chart, Image, OleObjects, raw::RawRelationships},
-    traits::{AdjustmentCoordinate, AdjustmentCoordinateWithSheet},
-    writer::driver::{write_end_tag, write_start_tag},
+    structs::{
+        Chart,
+        Image,
+        OleObjects,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection: Vec<Image>,
-    chart_collection: Vec<Chart>,
+    image_collection:           Vec<Image>,
+    chart_collection:           Vec<Chart>,
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }

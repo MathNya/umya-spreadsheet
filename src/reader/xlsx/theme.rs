@@ -15,7 +15,7 @@ pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     target: &str,
 ) -> Result<Theme, XlsxError> {
-    let r = io::BufReader::new(super::driver::zip_by_name(arv, &format!("xl/{}", target))?);
+    let r = io::BufReader::new(super::driver::zip_by_name(arv, &format!("xl/{target}"))?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 

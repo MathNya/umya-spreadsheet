@@ -18,7 +18,7 @@ use crate::{
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     wb: &mut Workbook,
-) -> result::Result<(), XlsxError> {
+) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_STYLES) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {

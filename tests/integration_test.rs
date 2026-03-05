@@ -2475,7 +2475,8 @@ fn typed_formula_result_helpers_write_expected_types() {
     assert!(b5.contains("<v/>"));
 }
 
-// --- Panic safety: backslash zip paths (Windows-generated XLSX) ---------------
+// --- Panic safety: backslash zip paths (Windows-generated XLSX)
+// ---------------
 
 #[test]
 fn backslash_paths_tdf131575() {
@@ -2495,7 +2496,8 @@ fn backslash_paths_49609() {
     let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 }
 
-// --- Panic safety: missing optional styles.xml --------------------------------
+// --- Panic safety: missing optional styles.xml
+// --------------------------------
 
 #[test]
 fn missing_styles_56278() {
@@ -2515,7 +2517,8 @@ fn missing_styles_59021() {
     let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 }
 
-// --- Panic safety: arithmetic overflow / unwrap on None -----------------------
+// --- Panic safety: arithmetic overflow / unwrap on None
+// -----------------------
 
 #[test]
 fn overflow_functions_excel_2010() {
