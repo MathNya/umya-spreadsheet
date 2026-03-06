@@ -12,7 +12,13 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        toolchain:
+          - "1.79.0"
+          - stable
+          - beta
+          - nightly
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@nightly
