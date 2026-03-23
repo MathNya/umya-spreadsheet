@@ -128,6 +128,12 @@ impl Table {
 
     #[inline]
     #[must_use]
+    pub fn columns_mut(&mut self) -> &mut [TableColumn] {
+        &mut self.columns
+    }
+
+    #[inline]
+    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use columns()")]
     pub fn get_columns(&self) -> &[TableColumn] {
         self.columns()
