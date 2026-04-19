@@ -146,7 +146,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
 
             // Add pivot tables and caches
             let pivot_table_no_list = pivot_table::write(worksheet, &mut writer_manager)?;
-            let pivot_cache_no_list = pivot_cache::write(worksheet, &mut writer_manager)?;
+            let pivot_cache_no_list = pivot_cache::write(worksheet, &mut writer_manager);
 
             // Add worksheet relationships
             worksheet_rels::write(

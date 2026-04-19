@@ -55,8 +55,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         false,
     );
 
-    let mut r_id = 1;
-    for (key, value) in rel_list {
+    for (r_id, (key, value)) in (1..).zip(rel_list.iter()) {
         if key == "IMAGE" {
             is_write = write_relationship(
                 &mut writer,
@@ -66,7 +65,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 "",
             );
         }
-        r_id += 1;
     }
 
     write_end_tag(&mut writer, "Relationships");

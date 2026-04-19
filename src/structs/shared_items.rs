@@ -1,6 +1,6 @@
 // sharedItems
 use std::io::Cursor;
-
+use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -123,6 +123,22 @@ impl SharedItems {
     pub fn set_max_value(&mut self, value: f64) -> &mut Self {
         self.max_value.set_value(value);
         self
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(format!(
+                "{}{}{}{}{}{}",
+                &self.contains_semi_mixed_types.value_string(),
+                &self.contains_string.value_string(),
+                &self.contains_number.value_string(),
+                &self.contains_integer.value_string(),
+                &self.min_value.value_string(),
+                &self.max_value.value_string(),
+            ))
+        )
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

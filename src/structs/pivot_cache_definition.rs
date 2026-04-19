@@ -1,6 +1,6 @@
 // pivotCacheDefinition
 use std::io::Cursor;
-
+use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -257,6 +257,25 @@ impl PivotCacheDefinition {
         cache_def.set_min_refreshable_version(3);
 
         cache_def
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(format!(
+                "{}{}{}{}{}{}{}{}{}",
+                &self.id.value_str(),
+                &self.refreshed_by.value_str(),
+                &self.refreshed_date.value_string(),
+                &self.created_version.value_string(),
+                &self.refreshed_version.value_string(),
+                &self.min_refreshable_version.value_string(),
+                &self.record_count.value_string(),
+                &self.cache_source.hash_code(),
+                &self.cache_fields.hash_code(),
+            ))
+        )
     }
     
     #[inline]

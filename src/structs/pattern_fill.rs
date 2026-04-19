@@ -146,11 +146,11 @@ impl PatternFill {
         let foreground_color = self
             .foreground_color
             .as_ref()
-            .map_or("None".into(), |v| v.get_hash_code());
+            .map_or("None".into(), |v| v.hash_code());
         let background_color = self
             .background_color
             .as_ref()
-            .map_or("None".into(), |v| v.get_hash_code());
+            .map_or("None".into(), |v| v.hash_code());
         format!(
             "{:x}",
             md5::Md5::digest(format!(

@@ -57,8 +57,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         false,
     );
 
-    let mut r_id = 1;
-    for chart_no in chart_no_list {
+    for (r_id, chart_no) in (1..).zip(chart_no_list.iter()) {
         is_write = write_relationship(
             &mut writer,
             r_id,
@@ -66,11 +65,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             format!("../charts/chart{chart_no}.xml").as_str(),
             "",
         );
-        r_id += 1;
     }
 
-    let mut r_id = 1;
-    for (key, value) in rel_list {
+    for (r_id, (key, value)) in (1..).zip(rel_list.iter()) {
         if key == "IMAGE" {
             is_write = write_relationship(
                 &mut writer,
@@ -80,7 +77,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 "",
             );
         }
-        r_id += 1;
     }
     write_end_tag(&mut writer, "Relationships");
 

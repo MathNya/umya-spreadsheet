@@ -474,7 +474,7 @@ impl Color {
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -485,6 +485,12 @@ impl Color {
                 self.tint.map_or(String::new(), |v| v.to_string())
             ))
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use tint()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     // When opened in software such as Excel, it is visually blank.

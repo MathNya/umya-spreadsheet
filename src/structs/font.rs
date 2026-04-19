@@ -623,7 +623,7 @@ impl Font {
                 &self.font_italic.val.hash_string(),
                 &self.font_underline.val.hash_string(),
                 &self.font_strike.val.hash_string(),
-                &self.color.get_hash_code(),
+                &self.color.hash_code(),
                 &self.font_char_set.val.hash_string(),
                 &self.font_scheme.val.hash_string(),
                 &self.vertical_text_alignment.val.hash_string(),

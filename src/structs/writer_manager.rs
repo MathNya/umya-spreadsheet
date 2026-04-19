@@ -45,7 +45,7 @@ pub struct WriterManager<'a, W: io::Seek + io::Write> {
     is_light: bool,
     table_no: i32,
     pivot_table_no: i32,
-    pivot_cache_no: i32,
+    pivot_cache_hash_list: Vec<String>,
 }
 
 impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
@@ -57,7 +57,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             is_light: false,
             table_no: 0,
             pivot_table_no: 0,
-            pivot_cache_no: 0,
+            pivot_cache_hash_list: Vec::new(),
         }
     }
 
@@ -92,9 +92,13 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     }
 
     #[inline]
-    pub fn next_pivot_cache_no(&mut self) -> i32 {
-        self.pivot_cache_no += 1;
-        self.pivot_cache_no
+    pub fn get_pivot_cache_no(&mut self, hash: &str) -> (bool, i32) {
+        if let Some(v) = self.pivot_cache_hash_list.iter().position(|x| x == hash) {
+            (true, i32::try_from(v + 1).unwrap())
+        } else {
+            self.pivot_cache_hash_list.push(hash.to_string());
+            (false, i32::try_from(self.pivot_cache_hash_list.len()).unwrap())
+        }
     }
 
     #[inline]

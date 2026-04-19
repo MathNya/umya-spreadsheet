@@ -1,6 +1,6 @@
 // cacheField
 use std::io::Cursor;
-
+use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -100,6 +100,19 @@ impl CacheField {
     pub fn set_shared_items(&mut self, value: SharedItems) -> &mut Self {
         self.shared_items = value;
         self
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(format!(
+                "{}{}{}",
+                &self.name.value_str(),
+                &self.number_format_id.value_string(),
+                &self.shared_items.hash_code(),
+            ))
+        )
     }
 
     #[inline]

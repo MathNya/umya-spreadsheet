@@ -1,6 +1,6 @@
 // cacheFields
 use std::io::Cursor;
-
+use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -52,6 +52,14 @@ impl CacheFields {
     pub fn add_list_mut(&mut self, value: CacheField) -> &mut Self {
         self.list.push(value);
         self
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(self.list.iter().map(CacheField::hash_code).collect::<String>())
+        )
     }
 
     #[inline]

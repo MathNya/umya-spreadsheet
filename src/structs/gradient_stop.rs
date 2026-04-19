@@ -90,7 +90,7 @@ impl GradientStop {
             md5::Md5::digest(format!(
                 "{}{}",
                 &self.position.value_string(),
-                &self.color.get_hash_code(),
+                &self.color.hash_code(),
             ))
         )
     }

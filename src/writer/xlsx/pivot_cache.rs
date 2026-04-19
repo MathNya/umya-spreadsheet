@@ -8,10 +8,7 @@ use quick_xml::{
     },
 };
 
-use super::{
-    XlsxError,
-    driver::write_new_line,
-};
+use super::driver::write_new_line;
 use crate::structs::{
     Worksheet,
     WriterManager,
@@ -20,9 +17,14 @@ use crate::structs::{
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> Result<Vec<String>, XlsxError> {
+) -> Vec<String> {
     let mut pivot_cache_no_list = Vec::<String>::new();
     for pivot_table in worksheet.pivot_tables() {
+        let (find, no) = writer_mng
+            .get_pivot_cache_no(pivot_table.pivot_cache_definition().hash_code().as_str());
+        if find {
+            continue;
+        }
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
@@ -38,9 +40,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         // Write pivot cache definition
         pivot_table.pivot_cache_definition().write_to(&mut writer);
 
-        let pivot_cache_no = writer_mng.next_pivot_cache_no();
-        writer_mng.add_file_at_pivot_cache(writer, pivot_cache_no)?;
-        pivot_cache_no_list.push(pivot_cache_no.to_string());
+        pivot_cache_no_list.push(no.to_string());
     }
-    Ok(pivot_cache_no_list)
+    pivot_cache_no_list
 }

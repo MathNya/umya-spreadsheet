@@ -1,6 +1,6 @@
 // worksheetSource
 use std::io::Cursor;
-
+use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -52,6 +52,14 @@ impl WorksheetSource {
         address.range_mut().set_range(reference);
         ws_source.set_address(address);
         ws_source
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(self.address.address()),
+        )
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
