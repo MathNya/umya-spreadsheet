@@ -8,7 +8,10 @@ use quick_xml::{
     },
 };
 
-use super::driver::write_new_line;
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
 use crate::structs::{
     Worksheet,
     WriterManager,
@@ -17,7 +20,7 @@ use crate::structs::{
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> Vec<String> {
+) -> Result<Vec<String>, XlsxError> {
     let mut pivot_cache_no_list = Vec::<String>::new();
     for pivot_table in worksheet.pivot_tables() {
         let (find, no) = writer_mng
@@ -39,8 +42,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // Write pivot cache definition
         pivot_table.pivot_cache_definition().write_to(&mut writer);
-
+        writer_mng.add_file_at_pivot_cache(writer, no)?;
         pivot_cache_no_list.push(no.to_string());
     }
-    pivot_cache_no_list
+    Ok(pivot_cache_no_list)
 }
