@@ -46,7 +46,7 @@ impl Field {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // pivotField
+        // field
         write_start_tag(
             writer,
             "field",

@@ -39,8 +39,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         pivot_table.pivot_table_definition().write_to(&mut writer);
 
         let pivot_table_no = writer_mng.next_pivot_table_no();
-        writer_mng.add_file_at_pivot_table(writer, pivot_table_no)?;
         pivot_table_no_list.push(pivot_table_no.to_string());
+        writer_mng.add_file_at_pivot_table(writer, pivot_table_no)?;
     }
     Ok(pivot_table_no_list)
 }

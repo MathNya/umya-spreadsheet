@@ -55,18 +55,24 @@ impl PivotFields {
     }
 
     #[inline]
-    #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        e: &BytesStart,
+        _e: &BytesStart,
     ) {
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"pivotField" {
                     let mut obj = PivotField::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
+                    self.add_list_mut(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"pivotField" {
+                    let mut obj = PivotField::default();
+                    obj.set_attributes(reader, e, false);
                     self.add_list_mut(obj);
                 }
             },
@@ -80,7 +86,6 @@ impl PivotFields {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotFields
         write_start_tag(

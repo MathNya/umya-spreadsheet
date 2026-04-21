@@ -129,7 +129,14 @@ impl CacheField {
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"sharedItems" {
                     let mut obj = SharedItems::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
+                    self.set_shared_items(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"sharedItems" {
+                    let mut obj = SharedItems::default();
+                    obj.set_attributes(reader, e, false);
                     self.set_shared_items(obj);
                 }
             },

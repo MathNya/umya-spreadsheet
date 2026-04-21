@@ -120,6 +120,8 @@ pub_mod_use![
     pub int32_value,
     pub int64_value,
     pub italic,
+    pub item,
+    pub items,
     pub item_values,
     pub location,
     pub member_property_index,

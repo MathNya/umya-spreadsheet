@@ -8,14 +8,13 @@ use quick_xml::{
 };
 
 use crate::{
-    reader::driver::get_attribute,
-    structs::Address,
-    writer::driver::write_start_tag,
+    StringValue, reader::driver::get_attribute, set_string_from_xml, structs::Address, writer::driver::write_start_tag
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetSource {
     address: Address,
+    name: StringValue,
 }
 
 impl WorksheetSource {
@@ -44,6 +43,18 @@ impl WorksheetSource {
         self
     }
 
+    #[inline]
+    #[must_use]
+    pub fn name(&self) -> &str {
+        self.name.value_str()
+    }
+
+    #[inline]
+    pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.name.set_value(value);
+        self
+    }
+
     /// Create a new worksheet source with sheet name and range
     pub fn new_simple(sheet: impl Into<String>, reference: impl Into<String>) -> Self {
         let mut ws_source = Self::default();
@@ -58,7 +69,11 @@ impl WorksheetSource {
     pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::Md5::digest(self.address.address()),
+            md5::Md5::digest(format!(
+                "{}{}",
+                self.address.address(),
+                self.name.value_str()
+            ))
         )
     }
 
@@ -75,15 +90,22 @@ impl WorksheetSource {
             address.set_sheet_name(v);
         }
         self.set_address(address);
+        
+        set_string_from_xml!(self, e, name, "name");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // worksheetSource
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let ref_str = self.address.range().range();
-        attributes.push(("ref", &ref_str).into());
+        if !ref_str.is_empty() {
+            attributes.push(("ref", &ref_str).into());
+        }
         if self.address.sheet_name() != "" {
             attributes.push(("sheet", self.address.sheet_name()).into());
+        }
+        if self.name.has_value() {
+            attributes.push(("name", self.name.value_str()).into());
         }
         write_start_tag(writer, "worksheetSource", attributes, true);
     }
