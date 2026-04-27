@@ -212,7 +212,8 @@
     clippy::module_name_repetitions,
     clippy::similar_names,
     clippy::too_many_lines,
-    clippy::struct_field_names
+    clippy::struct_field_names,
+    clippy::collapsible_match
 )]
 
 extern crate chrono;
