@@ -29,5 +29,5 @@ jobs:
     - name: Run Lint & Tests
       run: |
         cargo clippy -- -D warnings
-        cargo +nightly fmt --all
+        cargo +nightly fmt --all --check
         cargo test
