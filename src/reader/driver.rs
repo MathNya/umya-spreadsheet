@@ -147,11 +147,13 @@ pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -
     }
 
     // 2. For namespaced keys like "r:id", fall back to matching the local name
-    //    ("id") against any attribute whose local name matches.
-    let local_name = match key.iter().position(|&b| b == b':') {
-        Some(pos) => &key[pos + 1..],
-        None => return None, // Only fall back for namespaced keys
+    //    ("id") against any attribute whose local name matches. Returns early if
+    //    ':' is not found.
+    let local_name = {
+        let pos = key.iter().position(|&b| b == b':')?;
+        &key[pos + 1..]
     };
+
     e.attributes()
         .with_checks(false)
         .find_map(|attr| match attr {
