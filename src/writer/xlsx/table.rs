@@ -79,6 +79,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             false,
         );
         let mut col_id = 1;
+        // `col_id` starts from 1 and is an i32 not usize as provided by enumerate
+        #[expect(clippy::explicit_counter_loop)]
         for col in cols {
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             let col_id_str = col_id.to_string();
