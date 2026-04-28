@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use fancy_regex::Captures;
 
 use crate::helper::{
-    date::excel_to_date_time_object,
+    date::excel_to_date_time_jiff,
     utils::compile_regex,
 };
 
@@ -48,8 +48,8 @@ const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     ("D", "%d"),
     // seconds
     ("ss", "%S"),
-    // fractional seconds - no rust equivalent
-    (".s", ""),
+    // fractional seconds
+    (".s", "%f"),
 ];
 
 const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H")];
@@ -115,6 +115,6 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<'_, str> {
         caps_string.to_lowercase()
     });
 
-    let date_obj = excel_to_date_time_object(value, None);
-    Cow::Owned(date_obj.format(&format).to_string())
+    let date_obj = excel_to_date_time_jiff(value);
+    Cow::Owned(date_obj.strftime(format.as_bytes()).to_string())
 }

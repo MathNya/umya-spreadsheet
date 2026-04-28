@@ -55,7 +55,7 @@ use crate::structs::{
 ///     .get_style_mut("A1");
 ///
 /// // fill color on red.
-/// style.set_background_color(Color::COLOR_RED);
+/// style.set_background_color(Color::COLOR_RED_STR);
 /// ```
 ///
 /// ## change font color

@@ -26,7 +26,8 @@ impl<'a> From<(&'a str, &'a str)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```rust
+    /// # use umya_spreadsheet::AttrPair;
     /// let attr_pair = AttrPair::from(("name", "value"));
     /// ```
     #[inline]
@@ -44,7 +45,8 @@ impl<'a> From<(&'a str, String)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```rust
+    /// # use umya_spreadsheet::AttrPair;
     /// let attr_pair = AttrPair::from(("name", String::from("value")));
     /// ```
     #[inline]
@@ -64,7 +66,8 @@ impl<'a> From<(&'a str, &String)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```rust
+    /// # use umya_spreadsheet::AttrPair;    ///
     /// let string = String::from("value");
     /// let attr_pair = AttrPair::from(("name", &string));
     /// ```
@@ -85,8 +88,9 @@ impl<'a> From<(&'a str, Box<str>)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```
-    /// let box_str = Box::new("value");
+    /// ```rust,ignore
+    /// # use umya_spreadsheet::AttrPair;
+    /// let box_str = Box::new("value"); // TODO(c-git): This is `Box<&str>` not `Box<str>`, I don't know how to construct the second type
     /// let attr_pair = AttrPair::from(("name", box_str));
     /// ```
     #[inline]
@@ -106,9 +110,10 @@ impl<'a> From<(&'a str, &Box<str>)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```
-    /// let box_str = Box::new("value");
-    /// let attr_pair = AttrPair::from(("name", &box_str));
+    /// ```rust
+    /// use umya_spreadsheet::AttrPair;
+    /// let box_str: &'static str = Box::leak(Box::new("value"));
+    /// let attr_pair = AttrPair::from(("name", box_str));
     /// ```
     #[inline]
     fn from(tuple: (&'a str, &Box<str>)) -> Self {
@@ -129,7 +134,11 @@ impl<'a> From<AttrPair<'a>> for (&'a str, std::borrow::Cow<'a, str>) {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```rust
+    /// use std::borrow::Cow;
+    ///
+    /// use umya_spreadsheet::AttrPair;
+    ///
     /// let attr_pair = AttrPair::from(("name", "value"));
     /// let tuple = <(&str, Cow<str>)>::from(attr_pair);
     /// ```

@@ -93,7 +93,7 @@ impl GradientFill {
         }
         format!(
             "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.degree.value_string(), value,))
+            md5::Md5::digest(format!("{}{}", &self.degree.value_string(), value))
         )
     }
 

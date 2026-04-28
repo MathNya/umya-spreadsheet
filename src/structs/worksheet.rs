@@ -463,7 +463,9 @@ impl Worksheet {
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(1,
     ///   1)`
     /// # Examples
-    /// ```
+    /// ```rust
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.sheet_mut(0).unwrap();
     /// worksheet.remove_cell("A1");
     /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
     /// worksheet.remove_cell((1, 1));
@@ -547,13 +549,15 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
     #[inline]
     #[must_use]
     pub fn cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.cells.iter_all_cell_values_by_range_sorted_by_row(range).collect()
+        self.cells
+            .iter_all_cell_values_by_range_sorted_by_row(range)
+            .collect()
     }
 
     #[inline]
@@ -563,7 +567,8 @@ impl Worksheet {
         self.cell_value_by_range(range)
     }
 
-    /// Get the upper-left corner cell of a cell inside a merged cell range (if any).
+    /// Get the upper-left corner cell of a cell inside a merged cell range (if
+    /// any).
     pub fn map_merged_cell<T>(&self, coordinate: T) -> (u32, u32)
     where
         T: Into<CellCoordinates>,
@@ -599,7 +604,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let style = worksheet.get_style("A1");
     /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
     /// let style = worksheet.get_style((1, 1));
@@ -670,13 +675,13 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut style = umya_spreadsheet::Style::default();
     /// style
     ///     .get_borders_mut()
     ///     .get_bottom_mut()
     ///     .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
-    /// worksheet.set_style_by_range("A1:A3", style);
+    /// worksheet.set_style_by_range("A1:A3", &style);
     /// ```
     pub fn set_style_by_range(&mut self, range: &str, style: &Style) -> &mut Self {
         let coordinate_list = get_coordinate_list(range);
@@ -949,7 +954,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.add_merge_cells("A1:C5");
     /// ```
     #[inline]
@@ -1344,7 +1349,7 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.insert_new_row(&2, &3);
+    /// worksheet.insert_new_row(2, 3);
     /// ```
     #[inline]
     pub fn insert_new_row(&mut self, row_index: u32, num_rows: u32) {
@@ -1370,10 +1375,10 @@ impl Worksheet {
     /// * `column` - Specify point of insert. ex) "B"
     /// * `num_columns` - Specify number to insert. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.insert_new_column("B", &3);
+    /// worksheet.insert_new_column("B", 3);
     /// ```
     #[inline]
     pub fn insert_new_column(&mut self, column: &str, num_columns: u32) {
@@ -1400,10 +1405,10 @@ impl Worksheet {
     /// * `column_index` - Specify point of insert. ex) 2
     /// * `num_columns` - Specify number to insert. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.insert_new_column_by_index(&2, &3);
+    /// worksheet.insert_new_column_by_index(2, 3);
     /// ```
     #[inline]
     pub fn insert_new_column_by_index(&mut self, column_index: u32, num_columns: u32) {
@@ -1432,7 +1437,7 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.remove_row(&2, &3);
+    /// worksheet.remove_row(2, 3);
     /// ```
     #[inline]
     pub fn remove_row(&mut self, row_index: u32, num_rows: u32) {
@@ -1457,7 +1462,7 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.remove_column("B", &3);
+    /// worksheet.remove_column("B", 3);
     /// ```
     #[inline]
     pub fn remove_column(&mut self, column: &str, num_columns: u32) {
@@ -1484,10 +1489,10 @@ impl Worksheet {
     /// * `column_index` - Specify point of remove. ex) 2
     /// * `num_columns` - Specify number to remove. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.sheet_mut(0).unwrap();
-    /// worksheet.remove_column_by_index(&2, &3);
+    /// worksheet.remove_column_by_index(2, 3);
     /// ```
     #[inline]
     pub fn remove_column_by_index(&mut self, column_index: u32, num_columns: u32) {
@@ -2723,8 +2728,8 @@ impl Worksheet {
         column: i32,
         is_move: bool,
     ) -> &mut Self {
-        // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
-        // impossible)
+        // Check to ensure coordinates to move are within range (eg: moving A1 cells to
+        // the left is impossible)
         let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range);
         if (num_traits::cast::<_, i32>(col_start).unwrap() + column) < 1
             || (num_traits::cast::<_, i32>(row_start).unwrap() + row) < 1

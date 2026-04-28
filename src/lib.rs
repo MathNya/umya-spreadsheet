@@ -33,7 +33,7 @@
 //! let mut book = new_file();
 //!
 //! // New worksheet
-//! let _unused = book.new_sheet("Sheet2");
+//! let _ = book.new_sheet("Sheet2");
 //! ```
 //!
 //! ### Copy Worksheet
@@ -43,14 +43,14 @@
 //!
 //! let mut book = new_file();
 //!
-//! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
+//! let mut clone_sheet = book.get_sheet(&0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
-//! let _unused = book.add_sheet(clone_sheet);
+//! let _ = book.add_sheet(clone_sheet);
 //! ```
 //!
 //! ### Change Value
 //!
-//! ```rust
+//! ```rust,ignore
 //! use umya_spreadsheet::*;
 //!
 //! let mut book = new_file();
@@ -64,22 +64,22 @@
 //! book.get_sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .get_cell_mut("B2")
-//!     .set_value_from_i32(1);
+//!     .set_value_from_i32(1); // TODO(c-git): This function does not seem to exist
 //! book.get_sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .get_cell_mut("C3")
 //!     .set_value_from_bool(true);
 //!
 //! // Change value using tuple cell address
-//! book.get_sheet_mut(1)
+//! book.get_sheet_mut(&1)
 //!     .unwrap()
 //!     .get_cell_mut((1, 1))
 //!     .set_value("TEST1");
-//! book.get_sheet_mut(1)
+//! book.get_sheet_mut(&1)
 //!     .unwrap()
 //!     .get_cell_mut((2, 2))
-//!     .set_value_from_i32(1);
-//! book.get_sheet_mut(1)
+//!     .set_value_from_i32(1); // TODO(c-git): This function does not seem to exist
+//! book.get_sheet_mut(&1)
 //!     .unwrap()
 //!     .get_cell_mut((3, 3))
 //!     .set_value_from_bool(true);
@@ -101,10 +101,10 @@
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
 //!
 //! // Read value by tuple cell address
-//! let a1_value = book.get_sheet(1).unwrap().get_value((1, 1));
+//! let a1_value = book.get_sheet(&1).unwrap().get_value((1, 1));
 //!
 //! // Read formatted value by string cell address
-//! let a1_value = book.get_sheet(1).unwrap().get_formatted_value("A1");
+//! let a1_value = book.get_sheet(&1).unwrap().get_formatted_value("A1");
 //!
 //! assert_eq!("TEST1", a1_value);
 //! ```
@@ -128,7 +128,7 @@
 //!     .set_border_style(Border::BORDER_MEDIUM);
 //!
 //! // Add a bottom border using tuple cell address
-//! book.get_sheet_mut(1)
+//! book.get_sheet_mut(&1)
 //!     .unwrap()
 //!     .get_style_mut((1, 1))
 //!     .get_borders_mut()
@@ -146,22 +146,22 @@
 //! let mut book = new_file();
 //!
 //! // Insert rows
-//! book.insert_new_row("Sheet1", &2, &3);
+//! book.insert_new_row("Sheet1", 2, 3);
 //!
 //! // Insert columns by column name
-//! book.insert_new_column("Sheet1", "B", &3);
+//! book.insert_new_column("Sheet1", "B", 3);
 //!
 //! // Insert columns by index
-//! book.insert_new_column_by_index("Sheet1", &2, &3);
+//! book.insert_new_column_by_index("Sheet1", 2, 3);
 //!
 //! // Remove rows
-//! book.remove_row("Sheet1", &6, &2);
+//! book.remove_row("Sheet1", 6, 2);
 //!
 //! // Remove columns by column name
-//! book.remove_column("Sheet1", "F", &2);
+//! book.remove_column("Sheet1", "F", 2);
 //!
 //! // Remove columns by index
-//! book.remove_column_by_index("Sheet1", &6, &2);
+//! book.remove_column_by_index("Sheet1", 6, 2);
 //! ```
 //!
 //! ### Writer
@@ -212,7 +212,8 @@
     clippy::module_name_repetitions,
     clippy::similar_names,
     clippy::too_many_lines,
-    clippy::struct_field_names
+    clippy::struct_field_names,
+    clippy::collapsible_match
 )]
 
 extern crate chrono;

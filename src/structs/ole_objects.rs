@@ -93,6 +93,8 @@ impl OleObjects {
             // mc:AlternateContent
             let mut r = r_id;
             let mut o = ole_id;
+            // o does not start from 0 as provided by enumerate
+            #[expect(clippy::explicit_counter_loop)]
             for obj in &self.ole_object {
                 obj.write_to(writer, r, o);
                 r += 2;
