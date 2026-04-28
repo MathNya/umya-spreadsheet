@@ -126,10 +126,12 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
 /// assert_eq!(timestamp, 44197.5); // Represents 2021-01-01 12:00:00
 /// ```
 ///
-/// # Panics
+/// # Note
 ///
-/// This function may panic if the provided date and time components are
-/// invalid.
+/// - Earliest valid date in excel under the Windows 1900 system is 1899-12-31
+///   at 00:00. This function will return a negative number for earlier dates
+///   which is not valid in excel.
+/// - Invalid components are not check and will just return invalid values
 #[inline]
 #[must_use]
 pub fn convert_date(
@@ -177,10 +179,12 @@ pub fn convert_date(
 /// assert_eq!(timestamp, 44197.5); // Represents 2021-01-01 12:00:00
 /// ```
 ///
-/// # Panics
+/// # Note
 ///
-/// This function may panic if the provided date and time components are
-/// invalid.
+/// - Earliest valid date in excel under the Windows 1900 system is 1899-12-31
+///   at 00:00. This function will return a negative number for earlier dates
+///   which is not valid in excel.
+/// - Invalid components are not check and will just return invalid values
 #[inline]
 #[must_use]
 pub fn convert_date_windows_1900(
@@ -229,10 +233,12 @@ pub fn convert_date_windows_1900(
 /// assert_eq!(timestamp, 42735.5); // Represents 2021-01-01 12:00:00
 /// ```
 ///
-/// # Panics
+/// # Note
 ///
-/// This function may panic if the provided date and time components are
-/// invalid.
+/// - Earliest valid date in excel under the Mac 1904 system is 1904-01-01 at
+///   00:00. This function will return a negative number for earlier dates which
+///   is not valid in excel.
+/// - Invalid components are not check and will just return invalid values
 #[inline]
 #[must_use]
 pub fn convert_date_mac_1904(
@@ -288,10 +294,15 @@ pub fn convert_date_mac_1904(
 /// assert_eq!(timestamp_mac, 42735.5); // Represents 2021-01-01 12:00:00 in Mac 1904 system
 /// ```
 ///
-/// # Panics
+/// # Note
 ///
-/// This function may panic if the provided date and time components are
-/// invalid.
+/// - Earliest valid date in excel under the Windows 1900 system is 1899-12-31
+///   at 00:00. This function will return a negative number for earlier dates
+///   which is not valid in excel.
+/// - Earliest valid date in excel under the Mac 1904 system is 1904-01-01 at
+///   00:00. This function will return a negative number for earlier dates which
+///   is not valid in excel.
+/// - Invalid components are not check and will just return invalid values
 #[must_use]
 pub fn convert_date_crate(
     year: i32,
