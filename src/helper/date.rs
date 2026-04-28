@@ -2,19 +2,18 @@ use chrono::{
     Duration,
     NaiveDateTime,
 };
-use jiff::civil;
 use num_traits::cast;
 
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
 pub const CALENDAR_MAC_1904: &str = "1904";
 pub const DEFAULT_TIMEZONE: &str = "UTC";
 
-/// Converts an Excel timestamp to a `NaiveDateTime` object.
+/// Converts an Excel timestamp to a [`NaiveDateTime`] object.
 ///
 /// This function takes an Excel timestamp, which is a numeric representation of
-/// a date and time, and converts it into a `NaiveDateTime` object. The integer
-/// part of the timestamp represents the number of days since a base date, while
-/// the fractional part represents the time of day.
+/// a date and time, and converts it into a [`NaiveDateTime`] object. The
+/// integer part of the timestamp represents the number of days since a base
+/// date, while the fractional part represents the time of day.
 ///
 /// # Parameters
 ///
@@ -23,7 +22,7 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///
 /// # Returns
 ///
-/// Returns a `NaiveDateTime` object representing the converted date and time.
+/// Returns a [`NaiveDateTime`] object representing the converted date and time.
 /// This object does not contain any timezone information.
 ///
 /// # Behavior
@@ -32,6 +31,9 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///   1900 leap year bug in Excel by using December 31, 1899, as the base date.
 /// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899,
 ///   as the base date.
+/// - This uses the Windows 1900 scheme which is more common.
+/// - Since 1900-02-29 is not a valid date this function returns 1900-03-01 in
+///   that case.
 ///
 /// # Example
 ///
@@ -39,7 +41,7 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// # use umya_spreadsheet::helper::date::excel_to_date_time_chrono;
 /// # use chrono::{Datelike, Timelike};
 /// let timestamp = 44197.5; // Represents 2021-01-01 12:00:00
-/// let date_time = excel_to_date_time_chrono(timestamp, None);
+/// let date_time = excel_to_date_time_chrono(timestamp);
 /// assert_eq!(date_time.year(), 2021);
 /// assert_eq!(date_time.month(), 1);
 /// assert_eq!(date_time.day(), 1);
@@ -70,8 +72,47 @@ pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
         + Duration::seconds(cast(seconds).unwrap())
 }
 
+/// Converts an Excel timestamp to a [`jiff::civil::DateTime`] object.
+///
+/// This function takes an Excel timestamp, which is a numeric representation of
+/// a date and time, and converts it into a [`jiff::civil::DateTime`] object.
+/// The integer part of the timestamp represents the number of days since a base
+/// date, while the fractional part represents the time of day.
+///
+/// # Parameters
+///
+/// - `excel_timestamp: f64` The Excel timestamp to be converted and it is
+///   treated as an Excel date.
+///
+/// # Returns
+///
+/// Returns a [`jiff::civil::DateTime`] object representing the converted date
+/// and time. This object does not contain any timezone information.
+///
+/// # Behavior
+///
+/// - If `excel_timestamp` is between 1 and 60, the function accounts for the
+///   1900 leap year bug in Excel by using December 31, 1899, as the base date.
+/// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899,
+///   as the base date.
+/// - This uses the Windows 1900 scheme which is more common.
+/// - Since 1900-02-29 is not a valid date this function returns 1900-03-01 in
+///   that case.
+///
+/// # Example
+///
+/// ```rust
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_jiff;
+/// let timestamp = 44197.5; // Represents 2021-01-01 12:00:00
+/// let date_time = excel_to_date_time_jiff(timestamp);
+/// assert_eq!(date_time.year(), 2021);
+/// assert_eq!(date_time.month(), 1);
+/// assert_eq!(date_time.day(), 1);
+/// assert_eq!(date_time.hour(), 12);
+/// assert_eq!(date_time.minute(), 0);
+/// ```
 #[must_use]
-pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> civil::DateTime {
+pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
     todo!()
 }
 
@@ -438,12 +479,12 @@ mod tests {
     #[case(44197.5, "2021-01-01 12:00:00")]
     #[case(42735.5, "2016-12-31 12:00:00")]
     fn excel_to_date_time(#[case] excel_timestamp: f64, #[case] expected: &str) {
-        // let actual = excel_to_date_time_jiff(excel_timestamp);
-        // assert_eq!(
-        //     actual.strftime("yyyy-mm-dd hh:mm:ss").to_string(),
-        //     expected,
-        //     "jiff conversion is incorrect"
-        // );
+        let actual = excel_to_date_time_jiff(excel_timestamp);
+        assert_eq!(
+            actual.strftime("yyyy-mm-dd hh:mm:ss").to_string(),
+            expected,
+            "jiff conversion is incorrect"
+        );
 
         let actual = excel_to_date_time_chrono(excel_timestamp);
         assert_eq!(
