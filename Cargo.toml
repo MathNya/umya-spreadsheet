@@ -25,6 +25,7 @@ fancy-regex = "0.14.0"
 hmac = "0.12.1"
 html_parser = "0.7.0"
 imagesize = "0.14"
+jiff = { version = "0.2.24", default-features = false }
 md-5 = "0.10.6"
 num-traits = "0.2.19"
 paste = "1.0.15"

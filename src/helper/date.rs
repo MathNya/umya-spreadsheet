@@ -2,6 +2,7 @@ use chrono::{
     Duration,
     NaiveDateTime,
 };
+use jiff::civil;
 use num_traits::cast;
 
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
@@ -43,10 +44,10 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// # Example
 ///
 /// ```rust
-/// # use umya_spreadsheet::helper::date::excel_to_date_time_object;
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_chrono;
 /// # use chrono::{Datelike, Timelike};
 /// let timestamp = 44197.5; // Represents 2021-01-01 12:00:00
-/// let date_time = excel_to_date_time_object(timestamp, None);
+/// let date_time = excel_to_date_time_chrono(timestamp, None);
 /// assert_eq!(date_time.year(), 2021);
 /// assert_eq!(date_time.month(), 1);
 /// assert_eq!(date_time.day(), 1);
@@ -59,12 +60,7 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// This function will panic if the parsing of the base date fails. Ensure that
 /// the input timestamp is valid and within the expected range.
 #[must_use]
-pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>) -> NaiveDateTime {
-    let _time_zone = match time_zone {
-        Some(v) => v,
-        None => DEFAULT_TIMEZONE.to_owned(),
-    };
-
+pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
     let base_date = if excel_timestamp < 1f64 {
         // Unix timestamp base date
         NaiveDateTime::parse_from_str("1970-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
@@ -90,6 +86,26 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
         + Duration::hours(cast(hours).unwrap())
         + Duration::minutes(cast(minutes).unwrap())
         + Duration::seconds(cast(seconds).unwrap())
+}
+
+#[must_use]
+pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> civil::DateTime {
+    todo!()
+}
+
+/// See docs for `excel_to_date_time_chrono` for details on how this function
+/// works. Note that the `time_zone` is not used and is ignored. Excel doesn't
+/// store associated timezone info with the dates.
+#[must_use]
+#[deprecated(
+    since = "3.0.0",
+    note = "Please use `excel_to_date_time_jiff` or `excel_to_date_time_chrono` instead"
+)]
+pub fn excel_to_date_time_object(
+    excel_timestamp: f64,
+    _time_zone: Option<String>,
+) -> NaiveDateTime {
+    excel_to_date_time_chrono(excel_timestamp)
 }
 
 /// Converts a date and time to an Excel timestamp using the Windows 1900 date
