@@ -18,10 +18,8 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///
 /// # Parameters
 ///
-/// - `excel_timestamp: f64` The Excel timestamp to be converted. If the value
-///   is less than 1, it is treated as a Unix timestamp (seconds since January
-///   1, 1970). If the value is greater than or equal to 1, it is treated as an
-///   Excel date.
+/// - `excel_timestamp: f64` The Excel timestamp to be converted and it is
+///   treated as an Excel date.
 ///
 /// # Returns
 ///
@@ -30,8 +28,6 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///
 /// # Behavior
 ///
-/// - If `excel_timestamp` is less than 1, it is interpreted as a Unix
-///   timestamp, using January 1, 1970, as the base date.
 /// - If `excel_timestamp` is between 1 and 60, the function accounts for the
 ///   1900 leap year bug in Excel by using December 31, 1899, as the base date.
 /// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899,
@@ -52,16 +48,11 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// ```
 #[must_use]
 pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
-    let base_date = if excel_timestamp < 1f64 {
-        // Unix timestamp base date
-        NaiveDateTime::parse_from_str("1970-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
-    } else {
+    let base_date = if excel_timestamp < 61f64 {
         // Allow adjustment for 1900 Leap Year in MS Excel
-        if excel_timestamp < 60f64 {
-            NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
-        } else {
-            NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()
-        }
+        NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
+    } else {
+        NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()
     };
 
     let days = excel_timestamp.floor();
@@ -432,14 +423,14 @@ mod tests {
     #[rstest]
     #[case(0.0, "1899-12-31 00:00:00")]
     #[case(0.25, "1899-12-31 06:00:00")]
-    #[case(0.5, "1899-12-31 012:00:00")]
+    #[case(0.5, "1899-12-31 12:00:00")]
     #[case(1.0, "1900-01-01 00:00:00")]
     #[case(1.5, "1900-01-01 12:00:00")]
     #[case(30.0, "1900-01-30 00:00:00")]
     #[case(59.25, "1900-02-28 06:00:00")]
     #[case(59.99, "1900-02-28 23:45:36")]
-    #[case(60.0, "1900-02-29 00:00:00")]
-    #[case(60.5, "1900-02-29 12:00:00")]
+    #[case(60.0, "1900-03-01 00:00:00")] // Shows in excel as 1900-02-29 but this date is not real and not representable
+    #[case(60.5, "1900-03-01 12:00:00")] // Shows in excel as 1900-02-29 but this date is not real and not representable
     #[case(61.75, "1900-03-01 18:00:00")]
     #[case(62.0, "1900-03-02 00:00:00")]
     #[case(100.0, "1900-04-09 00:00:00")]
