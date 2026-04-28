@@ -48,8 +48,8 @@ const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     ("D", "%d"),
     // seconds
     ("ss", "%S"),
-    // fractional seconds - no rust equivalent
-    (".s", ""),
+    // fractional seconds
+    (".s", "%f"),
 ];
 
 const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H")];
