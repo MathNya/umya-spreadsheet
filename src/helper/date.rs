@@ -54,11 +54,6 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// assert_eq!(date_time.hour(), 12);
 /// assert_eq!(date_time.minute(), 0);
 /// ```
-///
-/// # Panics
-///
-/// This function will panic if the parsing of the base date fails. Ensure that
-/// the input timestamp is valid and within the expected range.
 #[must_use]
 pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
     let base_date = if excel_timestamp < 1f64 {
