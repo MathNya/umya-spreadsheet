@@ -346,3 +346,79 @@ pub fn convert_date_crate(
     // Return the final Excel date and time
     f64::from(julian_date) + time_in_days
 }
+
+#[cfg(test)]
+mod tests {
+    use rstest::rstest;
+
+    use super::*;
+    const ALLOWED_ERROR_FLOAT_CMP: f64 = 0.0001;
+
+    #[rstest]
+    #[case(1899, 12, 31, 0, 0, 0, 0.0)]
+    #[case(1899, 12, 31, 6, 0, 0, 0.25)]
+    #[case(1899, 12, 31, 12, 0, 0, 0.5)]
+    #[case(1900, 1, 1, 0, 0, 0, 1.0)]
+    #[case(1900, 1, 1, 12, 0, 0, 1.5)]
+    #[case(1900, 1, 30, 0, 0, 0, 30.0)]
+    #[case(1900, 2, 28, 6, 0, 0, 59.25)]
+    #[case(1900, 2, 28, 23, 45, 36, 59.99)]
+    #[case(1900, 2, 29, 0, 0, 0, 60.0)]
+    #[case(1900, 2, 29, 12, 0, 0, 60.5)]
+    #[case(1900, 3, 1, 18, 0, 0, 61.75)]
+    #[case(1900, 3, 2, 0, 0, 0, 62.0)]
+    #[case(1900, 4, 9, 0, 0, 0, 100.0)]
+    #[case(1900, 7, 18, 0, 0, 0, 200.0)]
+    #[case(2021, 1, 1, 12, 0, 0, 44197.5)]
+    #[case(2016, 12, 31, 12, 0, 0, 42735.5)]
+    fn test_convert_date_windows_1900(
+        #[case] year: i32,
+        #[case] month: i32,
+        #[case] day: i32,
+        #[case] hours: i32,
+        #[case] minutes: i32,
+        #[case] seconds: i32,
+        #[case] excel_timestamp: f64,
+    ) {
+        let expected = excel_timestamp;
+        let actual = convert_date_windows_1900(year, month, day, hours, minutes, seconds);
+        assert!(
+            (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
+            "Actual: {actual}, Expected: {expected} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+        );
+    }
+
+    #[rstest]
+    #[case(1904, 1, 1, 0, 0, 0, 0.0)]
+    #[case(1904, 1, 1, 6, 0, 0, 0.25)]
+    #[case(1904, 1, 1, 12, 0, 0, 0.5)]
+    #[case(1904, 1, 2, 0, 0, 0, 1.0)]
+    #[case(1904, 1, 2, 12, 0, 0, 1.5)]
+    #[case(1904, 1, 31, 0, 0, 0, 30.0)]
+    #[case(1904, 2, 29, 6, 0, 0, 59.25)]
+    #[case(1904, 2, 29, 23, 45, 36, 59.99)]
+    #[case(1904, 3, 1, 0, 0, 0, 60.0)]
+    #[case(1904, 3, 1, 12, 0, 0, 60.5)]
+    #[case(1904, 3, 2, 18, 0, 0, 61.75)]
+    #[case(1904, 3, 3, 0, 0, 0, 62.0)]
+    #[case(1904, 4, 10, 0, 0, 0, 100.0)]
+    #[case(1904, 7, 19, 0, 0, 0, 200.0)]
+    #[case(2025, 1, 2, 12, 0, 0, 44197.5)]
+    #[case(2021, 1, 1, 12, 0, 0, 42735.5)]
+    fn test_convert_date_mac_1904(
+        #[case] year: i32,
+        #[case] month: i32,
+        #[case] day: i32,
+        #[case] hours: i32,
+        #[case] minutes: i32,
+        #[case] seconds: i32,
+        #[case] excel_timestamp: f64,
+    ) {
+        let expected = excel_timestamp;
+        let actual = convert_date_mac_1904(year, month, day, hours, minutes, seconds);
+        assert!(
+            (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
+            "Actual: {actual}, Expected: {expected} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+        );
+    }
+}
