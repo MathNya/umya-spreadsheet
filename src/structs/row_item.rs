@@ -158,7 +158,7 @@ impl RowItem {
 
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flg = self.member_property_index.is_some();
+        let empty_flg = self.member_property_index.is_none();
         // i
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let index_str = self.index.value_string();

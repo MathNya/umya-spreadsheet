@@ -11,7 +11,7 @@ use quick_xml::{
 };
 
 use crate::{
-    helper::const_str::{
+    RowFields, helper::const_str::{
         MC_NS,
         SHEET_MAIN_NS,
         SHEET_MS_REVISION_NS,
@@ -60,6 +60,7 @@ pub struct PivotTableDefinition {
     created_version:            ByteValue,
     location:                   Location,
     pivot_fields:               PivotFields,
+    row_fields:                 RowFields,
     row_items:                  RowItems,
     column_fields:              ColumnFields,
     column_items:               ColumnItems,
@@ -490,6 +491,23 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
+    pub fn row_fields(&self) -> &RowFields {
+        &self.row_fields
+    }
+
+    #[inline]
+    pub fn row_fields_mut(&mut self) -> &mut RowFields {
+        &mut self.row_fields
+    }
+
+    #[inline]
+    pub fn set_row_fields(&mut self, value: RowFields) -> &mut Self {
+        self.row_fields = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn row_items(&self) -> &RowItems {
         &self.row_items
     }
@@ -712,6 +730,11 @@ impl PivotTableDefinition {
                     obj.set_attributes(reader, e);
                     self.set_pivot_fields(obj);
                 }
+                if e.name().into_inner() == b"rowFields" {
+                    let mut obj = RowFields::default();
+                    obj.set_attributes(reader, e);
+                    self.set_row_fields(obj);
+                }
                 if e.name().into_inner() == b"rowItems" {
                     let mut obj = RowItems::default();
                     obj.set_attributes(reader, e);
@@ -743,7 +766,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
         let mut attributes: crate::structs::AttrCollection = vec![
@@ -873,6 +895,9 @@ impl PivotTableDefinition {
 
         // pivotFields
         self.pivot_fields.write_to(writer);
+
+        // rowFields
+        self.row_fields.write_to(writer);
 
         // rowItems
         self.row_items.write_to(writer);

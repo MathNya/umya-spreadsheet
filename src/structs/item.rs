@@ -80,7 +80,7 @@ impl Item {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let index_str = self.index.value_string();
         if self.index.has_value() {
-            attributes.push(("i", &index_str).into());
+            attributes.push(("x", &index_str).into());
         }
         let item_type_str = self.item_type.value_string();
         if self.item_type.has_value() {

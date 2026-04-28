@@ -47,17 +47,16 @@ impl MemberPropertyIndex {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        set_string_from_xml!(self, e, val, "val");
+        set_string_from_xml!(self, e, val, "v");
     }
 
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.val.has_value() {
-            let mut attributes: crate::structs::AttrCollection = Vec::new();
-            let val = self.val.value_string();
-            attributes.push(("val", &val).into());
-            write_start_tag(writer, "x", attributes, true);
+            attributes.push(("v", self.val.value_string()).into());
         }
+        write_start_tag(writer, "x", attributes, true);
     }
 }

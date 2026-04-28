@@ -1,4 +1,4 @@
-// colFields
+// rowFields
 use std::io::Cursor;
 
 use quick_xml::{
@@ -11,19 +11,17 @@ use quick_xml::{
 };
 
 use crate::{
-    reader::driver::xml_read_loop,
-    structs::Field,
-    writer::driver::{
+    Field, reader::driver::xml_read_loop, writer::driver::{
         write_end_tag,
         write_start_tag,
-    },
+    }
 };
 
 #[derive(Clone, Default, Debug)]
-pub struct ColumnFields {
+pub struct RowFields {
     list: Vec<Field>,
 }
-impl ColumnFields {
+impl RowFields {
     #[inline]
     #[must_use]
     pub fn list(&self) -> &[Field] {
@@ -47,7 +45,7 @@ impl ColumnFields {
     pub fn get_list_mut(&mut self) -> &mut Vec<Field> {
         self.list_mut()
     }
-
+    
     #[inline]
     pub fn add_list_mut(&mut self, value: Field) -> &mut Self {
         self.list.push(value);
@@ -70,31 +68,31 @@ impl ColumnFields {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"colFields" {
+                if e.name().into_inner() == b"rowFields" {
                     return
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "colFields")
+            Event::Eof => panic!("Error: Could not find {} end element", "rowFields")
         );
     }
 
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if !self.list.is_empty() {
-            // colFields
+            // rowFields
             write_start_tag(
                 writer,
-                "colFields",
+                "rowFields",
                 vec![("count", self.list.len().to_string()).into()],
                 false,
             );
 
-            // i
-            for i in &self.list {
-                i.write_to(writer);
+            // field
+            for obj in &self.list {
+                obj.write_to(writer);
             }
 
-            write_end_tag(writer, "colFields");
+            write_end_tag(writer, "rowFields");
         }
     }
 }

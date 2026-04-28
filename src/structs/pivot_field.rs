@@ -8,15 +8,13 @@ use quick_xml::{
 };
 
 use crate::{
-    reader::driver::{
+    EnumValue, PivotTableAxisValues, reader::driver::{
         get_attribute,
         set_string_from_xml,
-    },
-    structs::{
+    }, structs::{
         BooleanValue,
         Items,
-    },
-    writer::driver::{write_end_tag, write_start_tag}, xml_read_loop,
+    }, writer::driver::{write_end_tag, write_start_tag}, xml_read_loop
 };
 
 #[derive(Clone, Default, Debug)]
@@ -24,6 +22,7 @@ pub struct PivotField {
     data_field: BooleanValue,
     show_all:   BooleanValue,
     items: Items,
+    axis: EnumValue<PivotTableAxisValues>,
 }
 impl PivotField {
     #[inline]
@@ -83,6 +82,18 @@ impl PivotField {
     }
 
     #[inline]
+    #[must_use]
+    pub fn axis(&self) -> &PivotTableAxisValues {
+        self.axis.value()
+    }
+
+    #[inline]
+    pub fn set_axis(&mut self, value: PivotTableAxisValues) -> &mut Self {
+        self.axis.set_value(value);
+        self
+    }
+
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -91,6 +102,7 @@ impl PivotField {
     ) {
         set_string_from_xml!(self, e, data_field, "dataField");
         set_string_from_xml!(self, e, show_all, "showAll");
+        set_string_from_xml!(self, e, axis, "axis");
 
         if empty_flg {
             return;
@@ -120,6 +132,9 @@ impl PivotField {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.data_field.has_value() {
             attributes.push(("dataField", self.data_field.value_string()).into());
+        }
+        if self.axis.has_value() {
+            attributes.push(("axis", self.axis.value_string()).into());
         }
         if self.show_all.has_value() {
             attributes.push(("showAll", self.show_all.value_string()).into());

@@ -165,12 +165,12 @@ impl PivotTableStyle {
             writer,
             "pivotTableStyleInfo",
             vec![
-                ("dataField", self.name.value_str()).into(),
-                ("showAll", self.show_row_headers.value_string()).into(),
-                ("showAll", self.show_column_headers.value_string()).into(),
-                ("showAll", self.show_row_stripes.value_string()).into(),
-                ("showAll", self.show_column_stripes.value_string()).into(),
-                ("showAll", self.show_last_column.value_string()).into(),
+                ("name", self.name.value_str()).into(),
+                ("showRowHeaders", self.show_row_headers.value_string()).into(),
+                ("showColHeaders", self.show_column_headers.value_string()).into(),
+                ("showRowStripes", self.show_row_stripes.value_string()).into(),
+                ("showColStripes", self.show_column_stripes.value_string()).into(),
+                ("showLastColumn", self.show_last_column.value_string()).into(),
             ],
             true,
         );

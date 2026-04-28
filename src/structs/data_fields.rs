@@ -82,19 +82,21 @@ impl DataFields {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // dataFields
-        write_start_tag(
-            writer,
-            "dataFields",
-            vec![("count", self.list.len().to_string()).into()],
-            false,
-        );
+        if !self.list.is_empty() {
+            // dataFields
+            write_start_tag(
+                writer,
+                "dataFields",
+                vec![("count", self.list.len().to_string()).into()],
+                false,
+            );
 
-        // dataField
-        for sheet_view in &self.list {
-            sheet_view.write_to(writer);
+            // dataField
+            for sheet_view in &self.list {
+                sheet_view.write_to(writer);
+            }
+
+            write_end_tag(writer, "dataFields");
         }
-
-        write_end_tag(writer, "dataFields");
     }
 }
