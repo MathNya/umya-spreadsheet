@@ -428,4 +428,37 @@ mod tests {
             "Actual: {actual}, Expected: {expected} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
         );
     }
+
+    #[rstest]
+    #[case(0.0, "1899-12-31 00:00:00")]
+    #[case(0.25, "1899-12-31 06:00:00")]
+    #[case(0.5, "1899-12-31 012:00:00")]
+    #[case(1.0, "1900-01-01 00:00:00")]
+    #[case(1.5, "1900-01-01 12:00:00")]
+    #[case(30.0, "1900-01-30 00:00:00")]
+    #[case(59.25, "1900-02-28 06:00:00")]
+    #[case(59.99, "1900-02-28 23:45:36")]
+    #[case(60.0, "1900-02-29 00:00:00")]
+    #[case(60.5, "1900-02-29 12:00:00")]
+    #[case(61.75, "1900-03-01 18:00:00")]
+    #[case(62.0, "1900-03-02 00:00:00")]
+    #[case(100.0, "1900-04-09 00:00:00")]
+    #[case(200.0, "1900-07-18 00:00:00")]
+    #[case(44197.5, "2021-01-01 12:00:00")]
+    #[case(42735.5, "2016-12-31 12:00:00")]
+    fn excel_to_date_time(#[case] excel_timestamp: f64, #[case] expected: &str) {
+        // let actual = excel_to_date_time_jiff(excel_timestamp);
+        // assert_eq!(
+        //     actual.strftime("yyyy-mm-dd hh:mm:ss").to_string(),
+        //     expected,
+        //     "jiff conversion is incorrect"
+        // );
+
+        let actual = excel_to_date_time_chrono(excel_timestamp);
+        assert_eq!(
+            actual.format("%F %T").to_string(),
+            expected,
+            "chrono conversion is incorrect"
+        );
+    }
 }
