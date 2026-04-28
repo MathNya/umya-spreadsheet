@@ -315,7 +315,7 @@ pub fn convert_date_crate(
 ) -> f64 {
     // Initialize the base date and leap year for the calendar
     let (base_date, is_leap_year) = if is_calendar_windows_1900 {
-        let is_leap = i32::from(!(year == 1900 && month <= 2));
+        let is_leap = i32::from(!((year == 1900 && month <= 2) || (year == 1899)));
         (2_415_020, is_leap)
     } else {
         (2_416_481, 0)
