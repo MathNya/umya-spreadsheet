@@ -2,6 +2,7 @@ use chrono::{
     Duration,
     NaiveDateTime,
 };
+use jiff::ToSpan as _;
 use num_traits::cast;
 
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
@@ -113,7 +114,18 @@ pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
 /// ```
 #[must_use]
 pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
-    todo!()
+    let base_date = if excel_timestamp < 61f64 {
+        // Allow adjustment for 1900 Leap Year in MS Excel
+        jiff::civil::datetime(1899, 12, 31, 0, 0, 0, 0)
+    } else {
+        jiff::civil::datetime(1899, 12, 30, 0, 0, 0, 0)
+    };
+
+    let days = excel_timestamp.floor();
+    let milliseconds: i64 = cast((excel_timestamp - days) * (24.0 * 60.0 * 60.0 * 1000.0)).unwrap();
+    let days: i64 = cast(days).unwrap();
+
+    base_date + days.day().milliseconds(milliseconds)
 }
 
 /// See docs for `excel_to_date_time_chrono` for details on how this function
@@ -481,7 +493,7 @@ mod tests {
     fn excel_to_date_time(#[case] excel_timestamp: f64, #[case] expected: &str) {
         let actual = excel_to_date_time_jiff(excel_timestamp);
         assert_eq!(
-            actual.strftime("yyyy-mm-dd hh:mm:ss").to_string(),
+            actual.strftime("%F %T").to_string(),
             expected,
             "jiff conversion is incorrect"
         );
