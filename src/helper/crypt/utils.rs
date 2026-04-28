@@ -14,16 +14,18 @@
 //! # Examples
 //!
 //! Generate random bytes:
-//! ```
-//! use crate::helper::crypto::generate_random_bytes;
+//! ```rust,ignore
+//! // Unable to run because function is private
+//! use umya_spreadsheet::helper::crypt::generate_random_bytes;
 //!
 //! generate_random_bytes!(salt, 16);
 //! // `salt` now contains 16 cryptographically secure random bytes
 //! ```
 //!
 //! Concatenate buffers and compute hash:
-//! ```
-//! use crate::helper::crypto::{
+//! ```rust,ignore
+//! // Unable to run because function is private
+//! use umya_spreadsheet::helper::crypt::{
 //!     buffer_concat,
 //!     hash_concatenated,
 //! };
@@ -73,7 +75,8 @@ use sha2::{
 ///
 /// # Example
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because macro is private
 /// generate_random_bytes!(random_bytes, 16);
 /// // `random_bytes` now contains 16 random bytes.
 /// ```
@@ -100,7 +103,8 @@ macro_rules! generate_random_bytes {
 ///
 /// # Example
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because function is private
 /// let buffer1 = b"Hello, ";
 /// let buffer2 = b"world!";
 /// let result = buffer_concat(&[buffer1, buffer2]);
@@ -133,7 +137,8 @@ pub(crate) fn buffer_concat(buffers: &[&[u8]]) -> Vec<u8> {
 ///
 /// # Example
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because function is private
 /// let buffer1 = b"Hello, ";
 /// let buffer2 = b"world!";
 /// let hash = hash_concatenated(&[buffer1, buffer2]);

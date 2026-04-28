@@ -50,7 +50,9 @@ fn index_to_alpha(index: u32) -> String {
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because function is private
+/// // use umya_spreadsheet::helper::coordinate::alpha_to_index;
 /// let index = alpha_to_index("AA");
 /// assert_eq!(index, 27);
 /// ```
@@ -91,7 +93,8 @@ where
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
+/// # use umya_spreadsheet::helper::coordinate::column_index_from_string;
 /// let index = column_index_from_string("AA");
 /// assert_eq!(index, 27);
 ///
@@ -130,7 +133,8 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
+/// # use umya_spreadsheet::helper::coordinate::string_from_column_index;
 /// let label = string_from_column_index(1);
 /// assert_eq!(label, "A");
 ///
@@ -177,6 +181,7 @@ pub fn string_from_column_index(column_index: u32) -> String {
 /// # Examples
 ///
 /// ```
+/// # use umya_spreadsheet::helper::coordinate::index_from_coordinate;
 /// let (col, row, col_lock, row_lock) = index_from_coordinate("$AB$12");
 /// assert_eq!(col, Some(28)); // 'AB' corresponds to column index 28
 /// assert_eq!(row, Some(12));
@@ -231,6 +236,7 @@ where
 /// # Examples
 ///
 /// ```
+/// # use umya_spreadsheet::helper::coordinate::coordinate_from_index;
 /// let coordinate = coordinate_from_index(1, 1);
 /// assert_eq!(coordinate, "A1");
 ///
@@ -278,7 +284,9 @@ pub fn coordinate_from_index_with_lock(
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to rub because it's private
+/// // use umya_spreadsheet::helper::coordinate::adjustment_insert_coordinate;
 /// let adjusted = adjustment_insert_coordinate(5, 3, 2);
 /// assert_eq!(adjusted, 7); // 5 + 2 since 5 >= 3 and offset is not zero
 ///
@@ -314,7 +322,9 @@ pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: 
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because it's private
+/// // use umya_spreadsheet::helper::coordinate::adjustment_remove_coordinate;
 /// let adjusted = adjustment_remove_coordinate(5, 3, 2);
 /// assert_eq!(adjusted, 3); // 5 - 2 since 5 >= 3 and offset is not zero
 ///
@@ -349,7 +359,9 @@ pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: 
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust,ignore
+/// // Unable to run because it's private
+/// // use umya_spreadsheet::helper::coordinate::is_remove_coordinate;
 /// let is_removable = is_remove_coordinate(5, 3, 2);
 /// assert_eq!(is_removable, true); // 5 is within the range [3, 5)
 ///
