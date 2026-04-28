@@ -435,7 +435,7 @@ mod tests {
         let actual = convert_date_windows_1900(year, month, day, hours, minutes, seconds);
         assert!(
             (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
-            "Actual: {actual}, Expected: {expected} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+            "Expected: {expected}, Actual: {actual} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
         );
     }
 
@@ -469,7 +469,7 @@ mod tests {
         let actual = convert_date_mac_1904(year, month, day, hours, minutes, seconds);
         assert!(
             (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
-            "Actual: {actual}, Expected: {expected} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+            "Expected: {expected}, Actual: {actual} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
         );
     }
 
@@ -493,15 +493,15 @@ mod tests {
     fn excel_to_date_time(#[case] excel_timestamp: f64, #[case] expected: &str) {
         let actual = excel_to_date_time_jiff(excel_timestamp);
         assert_eq!(
-            actual.strftime("%F %T").to_string(),
             expected,
+            actual.strftime("%F %T").to_string(),
             "jiff conversion is incorrect"
         );
 
         let actual = excel_to_date_time_chrono(excel_timestamp);
         assert_eq!(
-            actual.format("%F %T").to_string(),
             expected,
+            actual.format("%F %T").to_string(),
             "chrono conversion is incorrect"
         );
     }
