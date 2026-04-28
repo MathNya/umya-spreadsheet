@@ -116,7 +116,7 @@ impl NumberingFormat {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let _unused = worksheet
     ///     .get_style_mut("C30")
     ///     .get_number_format_mut()

@@ -1906,7 +1906,7 @@ fn issue_233() {
     let path = std::path::Path::new("./tests/test_files/issue_233.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
 
-    // book.get_sheet_mut(0).unwrap().cleanup();
+    // book.get_sheet_mut(&0).unwrap().cleanup();
 
     let path = std::path::Path::new("./tests/result_files/issue_233.xlsx");
     let _unused = writer::xlsx::write(&book, path);

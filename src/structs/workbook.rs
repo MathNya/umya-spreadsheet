@@ -61,7 +61,7 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_row("Sheet1", &2, &3);
+    /// book.insert_new_row("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
@@ -76,7 +76,7 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column("Sheet1", "B", &3);
+    /// book.insert_new_column("Sheet1", "B", 3);
     /// ```
     #[inline]
     pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
@@ -89,9 +89,9 @@ impl Workbook {
     /// * `column_index` - Specify point of insert. ex) 2
     /// * `num_columns` - Specify number to insert. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column_by_index("Sheet1", &2, &3);
+    /// book.insert_new_column_by_index("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn insert_new_column_by_index(
@@ -109,9 +109,9 @@ impl Workbook {
     /// * `row_index` - Specify point of remove. ex) 1
     /// * `num_rows` - Specify number to remove. ex) &2
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_row("Sheet1", &2, &3);
+    /// book.remove_row("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
@@ -124,9 +124,9 @@ impl Workbook {
     /// * `column` - Specify point of remove. ex) "B"
     /// * `num_columns` - Specify number to remove. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column("Sheet1", "B", &3);
+    /// book.remove_column("Sheet1", "B", 3);
     /// ```
     #[inline]
     pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
@@ -139,9 +139,9 @@ impl Workbook {
     /// * `column_index` - Specify point of remove. ex) 2
     /// * `num_columns` - Specify number to remove. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column_by_index("Sheet1", &2, &3);
+    /// book.remove_column_by_index("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn remove_column_by_index(
@@ -159,7 +159,7 @@ impl Workbook {
     /// # Return value
     /// *`Vec<&CellValue>` - `CellValue` List.
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```

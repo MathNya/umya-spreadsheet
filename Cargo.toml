@@ -41,8 +41,6 @@ zip = { version = "2.2.2", default-features = false, features = ["deflate"] }
 hex-literal = "0.4.1"
 rstest = { version = "0.26.1", default-features = false }
 
-[lib]
-doctest = false
 
 [features]
 

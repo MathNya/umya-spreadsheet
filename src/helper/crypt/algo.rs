@@ -17,14 +17,20 @@
 //!
 //! # Examples
 //!
-//! ```
-//! use crate::helper::crypt;
+//! ```rust,ignore
+//! // // Unable to run because `crypt_package`` function is private
+//! # let salt = unimplemented!();
+//! # let key = unimplemented!();
+//! # let input_data = unimplemented!();
+//! # let iv = unimplemented!();
+//! # let data = unimplemented!();
+//! use umya_spreadsheet::helper::crypt;
 //!
 //! // Encrypt package data
-//! let encrypted = crypt::crypt_package(true, 16, &salt, &key, &input_data);
+//! let encrypted = crypt::algo::crypt_package(true, 16, &salt, &key, &input_data);
 //!
 //! // Perform raw AES-256-CBC encryption
-//! let result = crypt::crypt(true, &key, &iv, &data).expect("Encryption failed");
+//! let result = crypt::encrypt(true, &key, &iv, &data).expect("Encryption failed");
 //! ```
 //!
 //! # Implementation Details

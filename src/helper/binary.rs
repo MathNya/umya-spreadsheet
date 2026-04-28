@@ -24,7 +24,8 @@ use crate::structs::MediaObject;
 ///
 /// # Example
 ///
-/// ```
+/// ```rust,no_run
+/// # use umya_spreadsheet::helper::binary::make_media_object;
 /// let media_object = make_media_object("path/to/image.png");
 /// ```
 #[must_use]
