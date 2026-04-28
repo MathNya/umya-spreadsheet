@@ -43,6 +43,8 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// # Example
 ///
 /// ```rust
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_object;
+/// # use chrono::{Datelike, Timelike};
 /// let timestamp = 44204.5; // Represents 2021-01-01 12:00:00
 /// let date_time = excel_to_date_time_object(timestamp, None);
 /// assert_eq!(date_time.year(), 2021);
@@ -119,6 +121,7 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
 /// # Example
 ///
 /// ```rust
+/// # use umya_spreadsheet::helper::date::convert_date;
 /// let timestamp = convert_date(2021, 1, 1, 12, 0, 0);
 /// assert_eq!(timestamp, 44204.5); // Represents 2021-01-01 12:00:00
 /// ```
@@ -169,6 +172,7 @@ pub fn convert_date(
 /// # Example
 ///
 /// ```rust
+/// # use umya_spreadsheet::helper::date::convert_date_windows_1900;
 /// let timestamp = convert_date_windows_1900(2021, 1, 1, 12, 0, 0);
 /// assert_eq!(timestamp, 44204.5); // Represents 2021-01-01 12:00:00
 /// ```
@@ -220,6 +224,7 @@ pub fn convert_date_windows_1900(
 /// # Example
 ///
 /// ```rust
+/// # use umya_spreadsheet::helper::date::convert_date_mac_1904;
 /// let timestamp = convert_date_mac_1904(2021, 1, 1, 12, 0, 0);
 /// assert_eq!(timestamp, 44204.5); // Represents 2021-01-01 12:00:00
 /// ```
@@ -275,6 +280,7 @@ pub fn convert_date_mac_1904(
 /// # Example
 ///
 /// ```rust
+/// # use umya_spreadsheet::helper::date::convert_date_crate;
 /// let timestamp_windows = convert_date_crate(2021, 1, 1, 12, 0, 0, true);
 /// assert_eq!(timestamp_windows, 44204.5); // Represents 2021-01-01 12:00:00 in Windows 1900 system
 ///
