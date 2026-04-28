@@ -23,10 +23,6 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///   1, 1970). If the value is greater than or equal to 1, it is treated as an
 ///   Excel date.
 ///
-/// - `time_zone: Option<String>` An optional string representing the desired
-///   time zone. If `None`, the function will use a default time zone obtained
-///   from the `get_default_timezone()` function.
-///
 /// # Returns
 ///
 /// Returns a `NaiveDateTime` object representing the converted date and time.
