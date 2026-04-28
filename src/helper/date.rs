@@ -122,10 +122,10 @@ pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
     };
 
     let days = excel_timestamp.floor();
-    let milliseconds: i64 = cast((excel_timestamp - days) * (24.0 * 60.0 * 60.0 * 1000.0)).unwrap();
+    let seconds: i64 = cast(((excel_timestamp - days) * (24.0 * 60.0 * 60.0)).round()).unwrap();
     let days: i64 = cast(days).unwrap();
 
-    base_date + days.day().milliseconds(milliseconds)
+    base_date + days.day().seconds(seconds)
 }
 
 /// See docs for `excel_to_date_time_chrono` for details on how this function
