@@ -67,7 +67,7 @@ impl<'a> From<(&'a str, &String)> for AttrPair<'a> {
     /// # Example
     ///
     /// ```rust
-    /// # use umya_spreadsheet::AttrPair;    ///
+    /// # use umya_spreadsheet::AttrPair;
     /// let string = String::from("value");
     /// let attr_pair = AttrPair::from(("name", &string));
     /// ```
