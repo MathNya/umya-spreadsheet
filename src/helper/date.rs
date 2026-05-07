@@ -128,6 +128,51 @@ pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
     base_date + days.day().milliseconds(milliseconds)
 }
 
+/// Converts a timestamp to a f64
+///
+/// This function takes a jiff timestamp and converts it into a f64 value that
+/// represents an excel timestamp. See [`excel_to_date_time_jiff`] for more
+/// details on the format of excel timestamps.
+///
+/// # Returns
+///
+/// Returns a f64 representing the an excel timestamp
+///
+/// # Example
+///
+/// ```rust
+/// # use umya_spreadsheet::helper::date::jiff_date_time_to_excel;
+/// // Represents 2021-01-01 12:00:00
+/// let value = jiff::civil::datetime(2021, 1, 1, 12, 0, 0, 0);
+/// let timestamp = jiff_date_time_to_excel(value);
+/// assert!((timestamp - 44197.5).abs() < 0.00001);
+/// ```
+///
+/// # Note
+///
+/// - Earliest valid date in excel under the Windows 1900 system is 1899-12-31
+///   at 00:00. This function will return a negative number for earlier dates
+///   which is not valid in excel.
+#[must_use]
+pub fn jiff_date_time_to_excel(value: jiff::civil::DateTime) -> f64 {
+    // Effective epoch is different depending on the date because Excel treats 1900
+    // as a leap year but it wasn't and thus the epoch is moved back a day if the
+    // date is after the "leap day" to add an extra day to match Excel
+    let epoch = if (value.year() < 1990 && value.month() < 3) || value.year() == 1899 {
+        jiff::civil::datetime(1899, 12, 31, 0, 0, 0, 0)
+    } else {
+        // Less one day to account for "leap day"
+        jiff::civil::datetime(1899, 12, 30, 0, 0, 0, 0)
+    };
+    let duration = (value - epoch)
+        .to_duration(jiff::SpanRelativeTo::days_are_24_hours())
+        .expect(
+            "will not panic because we have provided a way for it to handle units larger than \
+             hours",
+        );
+    duration.as_millis_f64() / (24.0 * 60.0 * 60.0 * 1000.0)
+}
+
 /// See docs for `excel_to_date_time_chrono` for details on how this function
 /// works. Note that the `time_zone` is not used and is ignored. Excel doesn't
 /// store associated timezone info with the dates.
@@ -432,10 +477,34 @@ mod tests {
         #[case] excel_timestamp: f64,
     ) {
         let expected = excel_timestamp;
+
+        // Test fn convert_date_windows_1900
         let actual = convert_date_windows_1900(year, month, day, hours, minutes, seconds);
         assert!(
             (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
-            "Expected: {expected}, Actual: {actual} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+            "convert_date_windows_1900 failed Expected: {expected}, Actual: {actual}, Tolerance: \
+             {ALLOWED_ERROR_FLOAT_CMP}"
+        );
+
+        // Test fn jiff_date_time_to_excel
+        if year == 1900 && month == 2 && day == 29 {
+            // Skip this test, because this date is not representable in jiff because it
+            // never happened
+            return;
+        }
+        let actual = jiff_date_time_to_excel(jiff::civil::datetime(
+            year.try_into().unwrap(),
+            month.try_into().unwrap(),
+            day.try_into().unwrap(),
+            hours.try_into().unwrap(),
+            minutes.try_into().unwrap(),
+            seconds.try_into().unwrap(),
+            0,
+        ));
+        assert!(
+            (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
+            "jiff_date_time_to_excel failed Expected: {expected}, Actual: {actual}, Tolerance: \
+             {ALLOWED_ERROR_FLOAT_CMP}"
         );
     }
 
@@ -469,7 +538,7 @@ mod tests {
         let actual = convert_date_mac_1904(year, month, day, hours, minutes, seconds);
         assert!(
             (actual - expected).abs() < ALLOWED_ERROR_FLOAT_CMP,
-            "Expected: {expected}, Actual: {actual} - Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
+            "Expected: {expected}, Actual: {actual}, Tolerance: {ALLOWED_ERROR_FLOAT_CMP}"
         );
     }
 
