@@ -2,9 +2,9 @@ name: umya-spreadsheet
 
 on:
   push:
-    branches: ["*"]
+    branches: [ "*" ]
   pull_request:
-    branches: ["*"]
+    branches: [ "*" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -20,16 +20,16 @@ jobs:
           - beta
           - nightly
     steps:
-    - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@master
-      with:
-          toolchain: ${{ matrix.toolchain }} 
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
 
-    - name: Install Rust
-      run: rustup component add rustfmt clippy
+      - name: Install Rust
+        run: rustup component add rustfmt clippy
 
-    - name: Run Lint & Tests
-      run: |
-        cargo clippy -- -D warnings
-        cargo +nightly fmt --all --check
-        cargo test
+      - name: Run Lint & Tests
+        run: |
+          cargo clippy -- -D warnings
+          cargo +nightly fmt --all --check
+          cargo test
