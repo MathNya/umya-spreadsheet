@@ -409,7 +409,7 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
         write_start_tag(writer, "hyperlinks", vec![], false);
 
         for (coordition, hyperlink) in worksheet.hyperlink_collection() {
-            let r_id_str = format!("rId{}", &r_id);
+            let r_id_str = format!("rId{r_id}");
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             attributes.push(("ref", &coordition).into());
             if hyperlink.location() {
@@ -473,13 +473,13 @@ fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id
 /// The next available relationship ID
 fn write_drawings(writer: &mut InternalWriter, worksheet: &Worksheet, mut r_id: i32) -> i32 {
     if worksheet.has_drawing_object() {
-        let r_id_str = format!("rId{}", &r_id);
+        let r_id_str = format!("rId{r_id}");
         write_start_tag(writer, "drawing", vec![("r:id", &r_id_str).into()], true);
         r_id += 1;
     }
 
     if worksheet.has_legacy_drawing() {
-        let r_id_str = format!("rId{}", &r_id);
+        let r_id_str = format!("rId{r_id}");
         write_start_tag(
             writer,
             "legacyDrawing",
@@ -509,7 +509,7 @@ fn write_tables_and_objects(writer: &mut InternalWriter, worksheet: &Worksheet, 
             false,
         );
         for _table in worksheet.tables() {
-            let r_id_str = format!("rId{}", &r_id);
+            let r_id_str = format!("rId{r_id}");
             write_start_tag(writer, "tablePart", vec![("r:id", &r_id_str).into()], true);
             r_id += 1;
         }
