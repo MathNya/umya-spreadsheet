@@ -26,10 +26,18 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
 
       - name: Install Rust
-        run: rustup component add rustfmt clippy
+        run: rustup component add clippy
 
       - name: Run Lint & Tests
         run: |
           cargo clippy -- -D warnings
-          cargo +nightly fmt --all --check
           cargo test
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Install Rust
+        run: rustup component add rustfmt
+      - name: Check formatting
+        run: cargo +nightly fmt --all --check
