@@ -17,23 +17,15 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
 
     let result: String;
     if format.contains('0') {
-        return format!(
-            "{}{} {}/{}",
-            &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
-        );
+        return format!("{sign}{integer_part} {adjusted_decimal_part}/{adjusted_decimal_divisor}");
     }
 
     if format.contains('#') {
         if integer_part == 0f64 {
-            result = format!(
-                "{}{}/{}",
-                &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-            );
+            result = format!("{sign}{adjusted_decimal_part}/{adjusted_decimal_divisor}");
         } else {
-            result = format!(
-                "{}{} {}/{}",
-                &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
-            );
+            result =
+                format!("{sign}{integer_part} {adjusted_decimal_part}/{adjusted_decimal_divisor}");
         }
         return result;
     }
@@ -44,16 +36,11 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
         if integer_part == 0f64 {
             integer_part_str = String::new();
         }
-        result = format!(
-            "{}{} {}/{}",
-            &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
-        );
+        result =
+            format!("{sign}{integer_part_str} {adjusted_decimal_part}/{adjusted_decimal_divisor}");
     } else {
         adjusted_decimal_part += integer_part * adjusted_decimal_divisor;
-        result = format!(
-            "{}{}/{}",
-            &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-        );
+        result = format!("{sign}{adjusted_decimal_part}/{adjusted_decimal_divisor}");
     }
 
     result

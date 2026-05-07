@@ -65,8 +65,8 @@ impl Protection {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.locked.hash_string(),
-                &self.hidden.hash_string()
+                self.locked.hash_string(),
+                self.hidden.hash_string()
             ))
         )
     }

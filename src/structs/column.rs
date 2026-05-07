@@ -228,9 +228,9 @@ impl Column {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}",
-                &self.width.value_string(),
-                &self.hidden.value_string(),
-                &self.best_fit.value_string(),
+                self.width.value_string(),
+                self.hidden.value_string(),
+                self.best_fit.value_string(),
             ))
         )
     }
@@ -261,16 +261,14 @@ impl AdjustmentValue for Column {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.value() >= root_num {
-            self.col_num
-                .set_value(self.col_num.value() + offset_num);
+            self.col_num.set_value(self.col_num.value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.value() >= root_num {
-            self.col_num
-                .set_value(self.col_num.value() - offset_num);
+            self.col_num.set_value(self.col_num.value() - offset_num);
         }
     }
 

@@ -101,7 +101,7 @@ impl Border {
     pub fn get_border_style(&self) -> &str {
         self.border_style()
     }
-    
+
     #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
@@ -112,8 +112,8 @@ impl Border {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.style.value_string(),
-                &self.color().unwrap_or_default().argb_str()
+                self.style.value_string(),
+                self.color().unwrap_or_default().argb_str()
             ))
         )
     }
@@ -122,7 +122,7 @@ impl Border {
     pub(crate) fn get_hash_code(&self) -> String {
         self.hash_code()
     }
-    
+
     // When opened in software such as Excel, it is visually blank.
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {

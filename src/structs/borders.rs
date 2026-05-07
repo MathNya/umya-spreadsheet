@@ -167,15 +167,15 @@ impl Borders {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}{}{}",
-                &self.get_left_border().hash_code(),
-                &self.get_right_border().hash_code(),
-                &self.get_top_border().hash_code(),
-                &self.get_bottom_border().hash_code(),
-                &self.get_diagonal_border().hash_code(),
-                &self.get_vertical_border().hash_code(),
-                &self.get_horizontal_border().hash_code(),
-                &self.diagonal_down.value_string(),
-                &self.diagonal_up.value_string()
+                self.get_left_border().hash_code(),
+                self.get_right_border().hash_code(),
+                self.get_top_border().hash_code(),
+                self.get_bottom_border().hash_code(),
+                self.get_diagonal_border().hash_code(),
+                self.get_vertical_border().hash_code(),
+                self.get_horizontal_border().hash_code(),
+                self.diagonal_down.value_string(),
+                self.diagonal_up.value_string()
             ))
         )
     }

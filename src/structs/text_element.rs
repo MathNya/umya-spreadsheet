@@ -131,7 +131,7 @@ impl TextElement {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.text.value(),
+                self.text.value(),
                 match &self.run_properties {
                     Some(v) => {
                         v.hash_code()

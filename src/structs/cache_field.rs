@@ -1,5 +1,6 @@
 // cacheField
 use std::io::Cursor;
+
 use md5::Digest;
 use quick_xml::{
     Reader,
@@ -108,9 +109,9 @@ impl CacheField {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}",
-                &self.name.value_str(),
-                &self.number_format_id.value_string(),
-                &self.shared_items.hash_code(),
+                self.name.value_str(),
+                self.number_format_id.value_string(),
+                self.shared_items.hash_code(),
             ))
         )
     }
@@ -157,11 +158,7 @@ impl CacheField {
             "cacheField",
             vec![
                 ("name", self.name.value_str()).into(),
-                (
-                    "numFmtId",
-                    &self.number_format_id.value_string(),
-                )
-                    .into(),
+                ("numFmtId", &self.number_format_id.value_string()).into(),
             ],
             false,
         );

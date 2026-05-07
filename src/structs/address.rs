@@ -135,10 +135,7 @@ impl Address {
                 with_space_char = "'";
             }
         }
-        format!(
-            "{}{}{}!{}",
-            &with_space_char, sheet_name, &with_space_char, range
-        )
+        format!("{with_space_char}{sheet_name}{with_space_char}!{range}")
     }
 
     #[deprecated(since = "3.0.0", note = "Use address_crate()")]
