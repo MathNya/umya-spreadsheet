@@ -571,7 +571,9 @@ fn handle_special_characters(
             value.clear();
         }
 
-        let mut obj = stack.pop().unwrap();
+        let Some(mut obj) = stack.pop() else {
+            return false;
+        };
         obj.set_value("");
         obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
         stack.push(obj.clone());

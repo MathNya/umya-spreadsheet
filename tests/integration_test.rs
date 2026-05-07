@@ -2537,3 +2537,13 @@ fn missing_attr_64450() {
     let path = std::path::Path::new("./tests/test_files/64450.xlsx");
     let _book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 }
+
+#[test]
+fn test_remove_row() {
+    let path = std::path::Path::new("./tests/test_files/RemoveRow.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let sheet = book.sheet_mut(0).unwrap();
+    sheet.remove_row(3, 1);
+    let out = std::path::Path::new("./tests/result_files/RemoveRow.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
+}
