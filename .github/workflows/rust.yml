@@ -21,7 +21,9 @@ jobs:
           - nightly
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@nightly
+    - uses: dtolnay/rust-toolchain@master
+      with:
+          toolchain: ${{ matrix.toolchain }} 
 
     - name: Install Rust
       run: rustup component add rustfmt clippy
