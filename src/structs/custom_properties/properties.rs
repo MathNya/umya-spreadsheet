@@ -118,7 +118,7 @@ impl Properties {
         );
         let mut pid = 2;
         // `pid` starts from 2 no 0 and is an i32 not usize as provided by enumerate
-        #[expect(clippy::explicit_counter_loop)]
+        #[allow(clippy::explicit_counter_loop)]
         for v in &self.custom_document_property_list {
             v.write_to(writer, pid);
             pid += 1;
