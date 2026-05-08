@@ -21,7 +21,9 @@ pub struct Range {
 impl Range {
     pub fn set_range<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let org_value = value.into();
-        let coordinate_collection: Vec<&str> = org_value.split(':').collect();
+        // Split any page reference
+        let (_name, rng) = org_value.split_once('!').unwrap_or(("", &org_value));
+        let coordinate_collection: Vec<&str> = rng.split(':').collect();
 
         assert!(
             matches!(coordinate_collection.len(), 1 | 2),
