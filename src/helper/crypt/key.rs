@@ -19,7 +19,8 @@
 //! # Examples
 //!
 //! Generate an HMAC:
-//! ```
+//! ```rust,ignore
+//! // Unable to run because function is private
 //! use crate::crypto::hmac;
 //!
 //! let key = b"secret_key";
@@ -28,7 +29,8 @@
 //! ```
 //!
 //! Create a key from password:
-//! ```
+//! ```rust,ignore
+//! // Unable to run because function is private
 //! use crate::crypto::convert_password_to_key;
 //!
 //! let password = "MyPassword123";

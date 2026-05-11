@@ -109,10 +109,10 @@ impl Alignment {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}",
-                &self.horizontal.hash_string(),
-                &self.vertical.hash_string(),
-                &self.wrap_text.hash_string(),
-                &self.text_rotation.hash_string(),
+                self.horizontal.hash_string(),
+                self.vertical.hash_string(),
+                self.wrap_text.hash_string(),
+                self.text_rotation.hash_string(),
             ))
         )
     }

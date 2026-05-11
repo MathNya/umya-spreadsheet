@@ -1,6 +1,10 @@
 // sharedItems
-use std::{fmt, str::FromStr};
-use std::io::Cursor;
+use std::{
+    fmt,
+    io::Cursor,
+    str::FromStr,
+};
+
 use md5::Digest;
 use quick_xml::{
     Reader,
@@ -11,15 +15,21 @@ use quick_xml::{
     },
 };
 
-use crate::writer::driver::write_end_tag;
 use crate::{
-    CellErrorType, reader::driver::{
+    CellErrorType,
+    reader::driver::{
         get_attribute,
         set_string_from_xml,
-    }, structs::{
+    },
+    structs::{
         BooleanValue,
         DoubleValue,
-    }, writer::driver::write_start_tag, xml_read_loop
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
@@ -51,7 +61,7 @@ impl fmt::Display for SharedItemValue {
             Self::Date(v) | Self::String(v) => write!(f, "{v}"),
             Self::Error(e) => write!(f, "{e}"),
             Self::Empty => write!(f, ""),
-            Self::Numeric(v) => write!(f, "{}", &v),
+            Self::Numeric(v) => write!(f, "{v}"),
         }
     }
 }
@@ -159,21 +169,35 @@ impl SharedItems {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}",
-                &self.contains_semi_mixed_types.value_string(),
-                &self.contains_string.value_string(),
-                &self.contains_number.value_string(),
-                &self.contains_integer.value_string(),
-                &self.min_value.value_string(),
-                &self.max_value.value_string(),
-                self.items.iter().map(|v|match v {
-                    SharedItemValue::Bool(v) => {format!("Bool|||{v}")},
-                    SharedItemValue::Date(v) => {format!("Date|||{v}")},
-                    SharedItemValue::Error(v) => {format!("Error|||{v}")},
-                    SharedItemValue::Empty => {"Empty|||".to_string()},
-                    SharedItemValue::Numeric(v) => {format!("Numeric|||{v}")},
-                    SharedItemValue::String(v) => {format!("String|||{v}")},
-                })
-                .collect::<String>()
+                self.contains_semi_mixed_types.value_string(),
+                self.contains_string.value_string(),
+                self.contains_number.value_string(),
+                self.contains_integer.value_string(),
+                self.min_value.value_string(),
+                self.max_value.value_string(),
+                self.items
+                    .iter()
+                    .map(|v| match v {
+                        SharedItemValue::Bool(v) => {
+                            format!("Bool|||{v}")
+                        }
+                        SharedItemValue::Date(v) => {
+                            format!("Date|||{v}")
+                        }
+                        SharedItemValue::Error(v) => {
+                            format!("Error|||{v}")
+                        }
+                        SharedItemValue::Empty => {
+                            "Empty|||".to_string()
+                        }
+                        SharedItemValue::Numeric(v) => {
+                            format!("Numeric|||{v}")
+                        }
+                        SharedItemValue::String(v) => {
+                            format!("String|||{v}")
+                        }
+                    })
+                    .collect::<String>()
             ))
         )
     }
@@ -253,7 +277,13 @@ impl SharedItems {
         // sharedItems
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.contains_semi_mixed_types.has_value() {
-            attributes.push(("containsSemiMixedTypes", self.contains_semi_mixed_types.value_string()).into());
+            attributes.push(
+                (
+                    "containsSemiMixedTypes",
+                    self.contains_semi_mixed_types.value_string(),
+                )
+                    .into(),
+            );
         }
         if self.contains_string.has_value() {
             attributes.push(("containsString", self.contains_string.value_string()).into());
@@ -273,12 +303,7 @@ impl SharedItems {
         if !self.items.is_empty() {
             attributes.push(("count", self.items.len().to_string()).into());
         }
-        write_start_tag(
-            writer,
-            "sharedItems",
-            attributes,
-            self.items.is_empty(),
-        );
+        write_start_tag(writer, "sharedItems", attributes, self.items.is_empty());
 
         if !self.items.is_empty() {
             for item in &self.items {
@@ -294,12 +319,7 @@ impl SharedItems {
                 if let Some(value) = v {
                     attributes.push(("v", value).into());
                 }
-                write_start_tag(
-                    writer,
-                    tag,
-                    attributes,
-                    true,
-                );
+                write_start_tag(writer, tag, attributes, true);
             }
             write_end_tag(writer, "sharedItems");
         }

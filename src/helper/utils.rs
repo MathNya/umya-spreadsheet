@@ -5,16 +5,25 @@
 ///
 /// # Usage
 /// ```
-/// use std::io;
+/// # use std::{io,fmt};
 ///
-/// use my_error::MyErrorKind;
+/// use umya_spreadsheet::from_err;
 ///
-/// from_err!(io::Error, MyError, Io);
+/// #[derive(Debug)]
+/// enum MyError {
+///     Io(std::io::Error),
+/// };
+/// # impl fmt::Display for MyError {
+/// #   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+/// #       unimplemented!()
+/// #   }
+/// # }
+/// # impl std::error::Error for MyError {}
+///
+/// from_err!(std::io::Error, MyError, Io);
 ///
 /// let io_err = io::Error::new(io::ErrorKind::Other, "An I/O error occurred");
 /// let my_err: MyError = io_err.into();
-///
-/// assert_eq!(my_err.kind(), MyErrorKind::Io);
 /// ```
 #[macro_export]
 macro_rules! from_err {
@@ -78,7 +87,8 @@ macro_rules! assert_sha256 {
 /// A macro that compiles a regular expression and caches it.
 ///
 /// # Usage
-/// ```
+/// ```rust,ignore
+/// // Unable to run because function is private
 /// let re = compile_regex!(r"^\d+$");
 ///
 /// assert!(re.is_match("123").unwrap());

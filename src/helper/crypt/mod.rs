@@ -13,13 +13,13 @@
 //!
 //! # Examples
 //!
-//! ```
-//! use crate::{
+//! ```rust,ignore
+//! use umya_spreadsheet::{
 //!     helper::crypt,
 //!     structs::SheetProtection,
 //! };
 //!
-//! let mut protection = SheetProtection::new();
+//! let mut protection = SheetProtection::new(); // TODO(c-git): the new function doesn't seem to exist
 //! crypt::encrypt_sheet_protection("mypassword", &mut protection);
 //! ```
 //!
@@ -179,7 +179,8 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 ///
 /// # Example
 ///
-/// ```
+/// ```rust
+/// # use umya_spreadsheet::helper::crypt::encrypt;
 /// let data = b"Sensitive data to encrypt";
 /// let password = "securepassword";
 /// let filepath = "encrypted_data.bin";

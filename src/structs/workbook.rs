@@ -61,7 +61,7 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_row("Sheet1", &2, &3);
+    /// book.insert_new_row("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
@@ -76,7 +76,7 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column("Sheet1", "B", &3);
+    /// book.insert_new_column("Sheet1", "B", 3);
     /// ```
     #[inline]
     pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
@@ -89,9 +89,9 @@ impl Workbook {
     /// * `column_index` - Specify point of insert. ex) 2
     /// * `num_columns` - Specify number to insert. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column_by_index("Sheet1", &2, &3);
+    /// book.insert_new_column_by_index("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn insert_new_column_by_index(
@@ -109,9 +109,9 @@ impl Workbook {
     /// * `row_index` - Specify point of remove. ex) 1
     /// * `num_rows` - Specify number to remove. ex) &2
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_row("Sheet1", &2, &3);
+    /// book.remove_row("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
@@ -124,9 +124,9 @@ impl Workbook {
     /// * `column` - Specify point of remove. ex) "B"
     /// * `num_columns` - Specify number to remove. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column("Sheet1", "B", &3);
+    /// book.remove_column("Sheet1", "B", 3);
     /// ```
     #[inline]
     pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
@@ -139,9 +139,9 @@ impl Workbook {
     /// * `column_index` - Specify point of remove. ex) 2
     /// * `num_columns` - Specify number to remove. ex) 3
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column_by_index("Sheet1", &2, &3);
+    /// book.remove_column_by_index("Sheet1", 2, 3);
     /// ```
     #[inline]
     pub fn remove_column_by_index(
@@ -159,7 +159,7 @@ impl Workbook {
     /// # Return value
     /// *`Vec<&CellValue>` - `CellValue` List.
     /// # Examples
-    /// ```
+    /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```
@@ -560,13 +560,14 @@ impl Workbook {
             Some(v) => {
                 if v.is_deserialized() {
                     Ok(v)
-                 } else {
-                    Err("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize")
-                 }
-            },
-            None => {
-                Err("Not found.")
+                } else {
+                    Err(
+                        "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, \
+                         index: usize",
+                    )
+                }
             }
+            None => Err("Not found."),
         }
     }
 
@@ -597,9 +598,7 @@ impl Workbook {
         let shared_string_table = self.shared_string_table();
         self.work_sheet_collection
             .get(index)
-            .map(|v| {
-                v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet())
-            })
+            .map(|v| v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet()))
             .ok_or("Not found.")
     }
 
@@ -617,11 +616,13 @@ impl Workbook {
     pub fn sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
-        self.work_sheet_collection.get_mut(index).map(|v| {
-            raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
-            v
-        })
-        .ok_or("Not found.")
+        self.work_sheet_collection
+            .get_mut(index)
+            .map(|v| {
+                raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
+                v
+            })
+            .ok_or("Not found.")
     }
 
     #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]
@@ -642,7 +643,10 @@ impl Workbook {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet_by_name_mut()")]
-    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, &'static str> {
+    pub fn get_sheet_by_name_mut(
+        &mut self,
+        sheet_name: &str,
+    ) -> Result<&mut Worksheet, &'static str> {
         self.sheet_by_name_mut(sheet_name)
     }
 
@@ -760,9 +764,7 @@ impl Workbook {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
         worksheet.set_name(sheet_title.into());
-        worksheet
-            .sheet_format_properties_mut()
-            .set_defalut_value();
+        worksheet.sheet_format_properties_mut().set_defalut_value();
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
@@ -884,9 +886,10 @@ impl Workbook {
     pub fn pivot_caches(&self) -> Vec<(String, String, String)> {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
-            let val3_up = format!("xl/{}", &val3);
-            
-            // Check if this cache is referenced by any worksheet's pivot cache definitions (for existing files)
+            let val3_up = format!("xl/{val3}");
+
+            // Check if this cache is referenced by any worksheet's pivot cache definitions
+            // (for existing files)
             let mut found_in_raw_data = false;
             for worksheet in self.sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.pivot_cache_definition_collection() {
@@ -903,10 +906,13 @@ impl Workbook {
                 }
             }
 
-            // If not found in raw data, check if any worksheet has pivot tables (for newly created pivot tables)
+            // If not found in raw data, check if any worksheet has pivot tables (for newly
+            // created pivot tables)
             if !found_in_raw_data {
                 for worksheet in self.sheet_collection_no_check() {
-                    if !worksheet.pivot_tables().is_empty() && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3) {
+                    if !worksheet.pivot_tables().is_empty()
+                        && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
+                    {
                         result.push((val1.to_string(), val2.to_string(), val3.to_string()));
                         break;
                     }

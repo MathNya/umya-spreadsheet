@@ -95,7 +95,7 @@ pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
         return hls;
     }
 
-    hls.l = (min + max) / 2.0;
+    hls.l = f64::midpoint(min, max);
 
     if hls.l <= 0.5 {
         hls.s = delta / (max + min);

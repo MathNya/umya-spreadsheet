@@ -25,14 +25,14 @@ Please be aware of this.
 Copies the style of the specified column or row.
 ```rust
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(0).unwrap();
+let sheet = book.get_sheet_mut(&0).unwrap();
 sheet.copy_row_styling(&3, &5, None, None);
 sheet.copy_col_styling(&3, &5, None, None);
 ```
 #### * The function to create a new comment has been implemented.
 ```rust
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(0).unwrap();
+let sheet = book.get_sheet_mut(&0).unwrap();
 let mut comment = Comment::default();
 comment.new_comment("B2");
 comment.set_text_string("TEST");
@@ -95,13 +95,13 @@ let mut book = umya_spreadsheet::new_file();
 book.get_sheet_by_name("Sheet1").unwrap().get_cell("A1").get_value();
 book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
 book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
-book.get_sheet_mut(0).unwrap().get_cell((1, 1)).get_value();
+book.get_sheet_mut(&0).unwrap().get_cell((1, 1)).get_value();
 ```
 ### Change Value
 ```rust
 let mut book = umya_spreadsheet::new_file();
 book.get_sheet_by_name_mut("Sheet1").unwrap().get_cell_mut("A1").set_value("TEST1");
-book.get_sheet_mut(0).unwrap().get_cell_mut("A1").set_value("TEST2");
+book.get_sheet_mut(&0).unwrap().get_cell_mut("A1").set_value("TEST2");
 ```
 ### Move Values
 ```rust

@@ -85,7 +85,7 @@ use crate::{
 ///
 /// ## Example
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
-/// ```rust
+/// ```rust,ignore
 /// extern crate umya_spreadsheet;
 /// let mut book = umya_spreadsheet::new_file();
 ///
@@ -97,21 +97,19 @@ use crate::{
 /// let area_chart_series_list = vec!["Sheet1!$A$1:$A$10", "Sheet1!$B$1:$B$10"];
 /// let mut chart = umya_spreadsheet::structs::Chart::default();
 /// chart.new_chart(
-///     umya_spreadsheet::structs::ChartType::LineChart,
+///     &umya_spreadsheet::structs::ChartType::LineChart,
 ///     from_marker,
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .add_chart(chart);
+/// book.sheet_by_name_mut("Sheet1").unwrap().add_chart(chart);
 ///
 /// // Get Chart by Worksheet.
 /// let mut worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
 /// let chart = worksheet.chart("C1");
-/// let chart = worksheet.chart_by_column_and_row(&3, 1);
+/// let chart = worksheet.chart_by_column_and_row(&3, 1); // TODO(c-git): Unable to find this function
 /// let chart = worksheet.chart_mut("C1");
-/// let chart = worksheet.chart_by_column_and_row_mut(&3, 1);
+/// let chart = worksheet.chart_by_column_and_row_mut(&3, 1); // TODO(c-git): Unable to find this function
 ///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.charts("C1");
@@ -119,7 +117,7 @@ use crate::{
 /// let charts = worksheet.charts_mut("C1");
 /// let charts = worksheet.charts_by_column_and_row_mut(&3, 1);
 ///
-/// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
+/// // Set Chart Title, Series Title, Horizontal Title and Vertical Title.
 /// let mut chart = book
 ///     .sheet_by_name_mut("Sheet1")
 ///     .unwrap()

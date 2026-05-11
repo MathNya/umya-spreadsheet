@@ -1,5 +1,6 @@
 // pivotCacheDefinition
 use std::io::Cursor;
+
 use md5::Digest;
 use quick_xml::{
     Reader,
@@ -265,19 +266,19 @@ impl PivotCacheDefinition {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}{}{}",
-                &self.id.value_str(),
-                &self.refreshed_by.value_str(),
-                &self.refreshed_date.value_string(),
-                &self.created_version.value_string(),
-                &self.refreshed_version.value_string(),
-                &self.min_refreshable_version.value_string(),
-                &self.record_count.value_string(),
-                &self.cache_source.hash_code(),
-                &self.cache_fields.hash_code(),
+                self.id.value_str(),
+                self.refreshed_by.value_str(),
+                self.refreshed_date.value_string(),
+                self.created_version.value_string(),
+                self.refreshed_version.value_string(),
+                self.min_refreshable_version.value_string(),
+                self.record_count.value_string(),
+                self.cache_source.hash_code(),
+                self.cache_fields.hash_code(),
             ))
         )
     }
-    
+
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -354,13 +355,7 @@ impl PivotCacheDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(
-                (
-                    "minRefreshableVersion",
-                    &min_refreshable_version_str,
-                )
-                    .into(),
-            );
+            attributes.push(("minRefreshableVersion", &min_refreshable_version_str).into());
         }
         let record_count_str = self.record_count.value_string();
         if self.record_count.has_value() {

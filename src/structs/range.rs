@@ -75,7 +75,7 @@ impl Range {
     pub fn range(&self) -> String {
         let mut result = self.coordinate_start();
         if self.end_col.is_some() || self.end_row.is_some() {
-            result = format!("{}:{}", result, &self.coordinate_end());
+            result = format!("{}:{}", result, self.coordinate_end());
         }
         result
     }

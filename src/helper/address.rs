@@ -42,7 +42,8 @@ pub fn join_address(sheet_name: &str, address: &str) -> String {
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
+/// # use umya_spreadsheet::helper::address::is_address;
 /// let valid_address = "$A1";
 /// assert!(is_address(valid_address));
 ///

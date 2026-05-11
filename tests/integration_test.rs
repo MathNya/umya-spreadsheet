@@ -166,10 +166,17 @@ fn read_and_wite_method(book: &mut Workbook) {
     assert_eq!("2:33 pm", book.sheet(0).unwrap().get_formatted_value("B24"));
     assert_eq!("5.00%", book.sheet(0).unwrap().get_formatted_value("B25"));
     assert_eq!("1/2", book.sheet(0).unwrap().get_formatted_value("B26"));
+
+    // Was "12/15/2020 14:01" but because of change to millisecond precision when we
+    // switched to jiff the input value of 44180.584027777775 is actually
+    // 2020-12-15T14:00:59.999 which is almost 14:01 but not quite and because of
+    // how formatting is done you get the value of seconds not the rounded off value
+    // of seconds and hence you get 14:00 instead
     assert_eq!(
-        "12/15/2020 14:01",
+        "12/15/2020 14:00",
         book.sheet(0).unwrap().get_formatted_value("B27")
     );
+
     assert_eq!("444", book.sheet(0).unwrap().get_formatted_value("B28"));
     assert_eq!(
         "14-Dec-20",
@@ -1906,7 +1913,7 @@ fn issue_233() {
     let path = std::path::Path::new("./tests/test_files/issue_233.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
 
-    // book.get_sheet_mut(0).unwrap().cleanup();
+    // book.get_sheet_mut(&0).unwrap().cleanup();
 
     let path = std::path::Path::new("./tests/result_files/issue_233.xlsx");
     let _unused = writer::xlsx::write(&book, path);
