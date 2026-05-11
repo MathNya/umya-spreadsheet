@@ -197,7 +197,7 @@ pub fn index_from_coordinate<T>(coordinate: T) -> CellIndex
 where
     T: AsRef<str>,
 {
-    let re = compile_regex!(r"((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?");
+    let re = compile_regex!(r"^((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?$");
 
     re.captures(coordinate.as_ref())
         .ok()
@@ -548,6 +548,11 @@ mod tests {
         assert_eq!(
             index_from_coordinate("$5"),
             (None, Some(5), None, Some(true))
+        );
+        // Check to ensure a Table Index isn't misread
+        assert_eq!(
+            index_from_coordinate("Table1[[#This Row]"),
+            (None, None, None, None)
         );
     }
 }
