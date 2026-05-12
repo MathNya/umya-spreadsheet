@@ -84,7 +84,7 @@ impl WorksheetDrawing {
     pub fn image(&self, col: u32, row: u32) -> Option<&Image> {
         self.image_collection
             .iter()
-            .find(|&image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .find(|&image| image.col() == col - 1 && image.row() == row - 1)
     }
 
     #[inline]
@@ -98,7 +98,7 @@ impl WorksheetDrawing {
     pub fn image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
         self.image_collection
             .iter_mut()
-            .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .find(|image| image.col() == col - 1 && image.row() == row - 1)
     }
 
     #[inline]
@@ -112,7 +112,7 @@ impl WorksheetDrawing {
     pub fn images(&self, col: u32, row: u32) -> Vec<&Image> {
         self.image_collection
             .iter()
-            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .filter(|image| image.col() == col - 1 && image.row() == row - 1)
             .collect()
     }
 
@@ -127,7 +127,7 @@ impl WorksheetDrawing {
     pub fn images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
         self.image_collection
             .iter_mut()
-            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .filter(|image| image.col() == col - 1 && image.row() == row - 1)
             .collect()
     }
 

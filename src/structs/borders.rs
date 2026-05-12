@@ -72,8 +72,16 @@ macro_rules! border_accessors {
                         self
                     }
 
+                    pub fn [<$fn_name>](&self) -> &Border {
+                        &self.data[BordersIndex::$index as usize]
+                    }
+
                     pub fn [<get_ $fn_name>](&self) -> &Border {
                         &self.data[BordersIndex::$index as usize]
+                    }
+
+                    pub fn [<$fn_name _mut>](&mut self) -> &mut Border {
+                        &mut self.data[BordersIndex::$index as usize]
                     }
 
                     pub fn [<get_ $fn_name _mut>](&mut self) -> &mut Border {

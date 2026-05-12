@@ -25,14 +25,14 @@ Please be aware of this.
 Copies the style of the specified column or row.
 ```rust
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(&0).unwrap();
+let sheet = book.sheet_mut(&0).unwrap();
 sheet.copy_row_styling(&3, &5, None, None);
 sheet.copy_col_styling(&3, &5, None, None);
 ```
 #### * The function to create a new comment has been implemented.
 ```rust
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(&0).unwrap();
+let sheet = book.sheet_mut(&0).unwrap();
 let mut comment = Comment::default();
 comment.new_comment("B2");
 comment.set_text_string("TEST");
@@ -92,28 +92,28 @@ let _unused =  umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path
 ### Read Value
 ```rust
 let mut book = umya_spreadsheet::new_file();
-book.get_sheet_by_name("Sheet1").unwrap().get_cell("A1").get_value();
-book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
-book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
-book.get_sheet_mut(&0).unwrap().get_cell((1, 1)).get_value();
+book.sheet_by_name("Sheet1").unwrap().cell("A1").value();
+book.sheet_by_name("Sheet1").unwrap().cell((1, 1)).value();
+book.sheet_by_name("Sheet1").unwrap().cell((1, 1)).value();
+book.sheet_mut(&0).unwrap().cell((1, 1)).value();
 ```
 ### Change Value
 ```rust
 let mut book = umya_spreadsheet::new_file();
-book.get_sheet_by_name_mut("Sheet1").unwrap().get_cell_mut("A1").set_value("TEST1");
-book.get_sheet_mut(&0).unwrap().get_cell_mut("A1").set_value("TEST2");
+book.sheet_by_name_mut("Sheet1").unwrap().cell_mut("A1").set_value("TEST1");
+book.sheet_mut(&0).unwrap().cell_mut("A1").set_value("TEST2");
 ```
 ### Move Values
 ```rust
 let range = "A1:A3";
 let row = 10;
 let column = 2;
-book.get_sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
+book.sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
 ```
 ### Change Style
 ```rust
 let mut book = umya_spreadsheet::new_file();
-let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+let mut style = book.sheet_by_name_mut("Sheet1").unwrap().style_mut("A1");
 // fill color on red.
 style.set_background_color(umya_spreadsheet::Color::COLOR_RED);
 ```
@@ -136,7 +136,7 @@ chart.new_chart(
     to_marker,
     area_chart_series_list,
 );
-book.get_sheet_by_name_mut("Sheet1").unwrap()
+book.sheet_by_name_mut("Sheet1").unwrap()
     .add_chart(chart);
 ```
 
@@ -151,7 +151,7 @@ let _unused =  book.new_sheet("Sheet2");
 update_excel(&mut book);
 
 fn update_excel(book:  &mut Workbook) {
-   book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("Test"); 
+   book.sheet_by_name_mut("Sheet2").unwrap().cell_mut("A1").set_value("Test"); 
 }
 ```
 

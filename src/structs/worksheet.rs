@@ -2538,7 +2538,7 @@ impl Worksheet {
     pub(crate) fn media_object_collection(&self) -> Vec<&MediaObject> {
         let mut list: Vec<&MediaObject> = Vec::new();
         for image in self.worksheet_drawing().image_collection() {
-            for media_object in image.get_media_object() {
+            for media_object in image.media_object() {
                 let is_new = !list
                     .iter()
                     .any(|v| v.image_name() == media_object.image_name());

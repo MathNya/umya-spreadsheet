@@ -47,33 +47,33 @@ pub struct Image {
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.get_sheet_by_name_mut("Sheet1")
+/// book.sheet_by_name_mut("Sheet1")
 ///     .unwrap()
 ///     .add_image(image);
 ///
 /// // Get Image by Worksheet.
-/// let worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-/// let image = worksheet.get_image_mut("B3");
-/// let image = worksheet.get_image_by_column_and_row_mut(&2, &1);
+/// let worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
+/// let image = worksheet.image_mut("B3");
+/// let image = worksheet.image_by_column_and_row_mut(&2, &1);
 ///
 /// // Use this if there are multiple Images in a given cell.
-/// let images = worksheet.get_images("B3");
-/// let images = worksheet.get_images_by_column_and_row(&2, 1); // TODO(c-git): Unable to find this function
-/// let images = worksheet.get_images_mut("B3");
-/// let images = worksheet.get_images_by_column_and_row_mut(&2, 1); // TODO(c-git): Unable to find this function
+/// let images = worksheet.images("B3");
+/// let images = worksheet.images_by_column_and_row(&2, 1); // TODO(c-git): Unable to find this function
+/// let images = worksheet.images_mut("B3");
+/// let images = worksheet.images_by_column_and_row_mut(&2, 1); // TODO(c-git): Unable to find this function
 ///
 /// // Download Image
-/// book.get_sheet_by_name("Sheet1")
+/// book.sheet_by_name("Sheet1")
 ///     .unwrap()
-///     .get_image_collection()
+///     .image_collection()
 ///     .get(0)
 ///     .unwrap()
 ///     .download_image("./tests/result_files/bbb.png");
 ///
 /// // Change Image
-/// book.get_sheet_by_name_mut("Sheet1")
+/// book.sheet_by_name_mut("Sheet1")
 ///     .unwrap()
-///     .get_image_collection_mut()
+///     .image_collection_mut()
 ///     .get_mut(0)
 ///     .unwrap()
 ///     .change_image("./images/sample1.png");
@@ -221,7 +221,7 @@ impl Image {
 
     #[inline]
     pub fn change_image(&mut self, path: &str) {
-        let marker = self.get_from_marker_type().clone();
+        let marker = self.from_marker_type().clone();
         self.remove_two_cell_anchor();
         self.remove_one_cell_anchor();
         self.new_image(path, marker);
@@ -229,19 +229,19 @@ impl Image {
 
     #[inline]
     pub fn download_image(&self, path: &str) {
-        fs::write(path, self.get_image_data()).unwrap();
+        fs::write(path, self.image_data()).unwrap();
     }
 
     #[inline]
     #[must_use]
     pub fn has_image(&self) -> bool {
-        !self.get_media_object().is_empty()
+        !self.media_object().is_empty()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_image_name(&self) -> &str {
-        match self.get_media_object().first() {
+    pub fn image_name(&self) -> &str {
+        match self.media_object().first() {
             Some(v) => v.image_name(),
             None => "",
         }
@@ -249,8 +249,15 @@ impl Image {
 
     #[inline]
     #[must_use]
-    pub fn get_image_data(&self) -> &[u8] {
-        match self.get_media_object().first() {
+    #[deprecated(since = "3.0.0", note = "Use image_name()")]
+    pub fn get_image_name(&self) -> &str {
+        self.image_name()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn image_data(&self) -> &[u8] {
+        match self.media_object().first() {
             Some(v) => v.image_data(),
             None => &[0u8; 0],
         }
@@ -258,31 +265,66 @@ impl Image {
 
     #[inline]
     #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image_data()")]
+    pub fn get_image_data(&self) -> &[u8] {
+        self.image_data()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn image_data_base64(&self) -> String {
+        STANDARD.encode(self.image_data())
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image_data_base64()")]
     pub fn get_image_data_base64(&self) -> String {
-        STANDARD.encode(self.get_image_data())
+        self.image_data_base64()
     }
 
     #[inline]
     #[must_use]
+    pub fn coordinate(&self) -> String {
+        self.from_marker_type().coordinate()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
     pub fn get_coordinate(&self) -> String {
-        self.get_from_marker_type().coordinate()
+        self.coordinate()
     }
 
     #[inline]
     #[must_use]
+    pub fn col(&self) -> u32 {
+        self.from_marker_type().col()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col()")]
     pub fn get_col(&self) -> u32 {
-        self.get_from_marker_type().col()
+        self.col()
     }
 
     #[inline]
     #[must_use]
+    pub fn row(&self) -> u32 {
+        self.from_marker_type().row()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row()")]
     pub fn get_row(&self) -> u32 {
-        self.get_from_marker_type().row()
+        self.row()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_from_marker_type(&self) -> &MarkerType {
+    pub fn from_marker_type(&self) -> &MarkerType {
         if let Some(anchor) = self.two_cell_anchor() {
             return anchor.from_marker();
         }
@@ -294,13 +336,27 @@ impl Image {
 
     #[inline]
     #[must_use]
-    pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
+    #[deprecated(since = "3.0.0", note = "Use from_marker_type()")]
+    pub fn get_from_marker_type(&self) -> &MarkerType {
+        self.from_marker_type()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn to_marker_type(&self) -> Option<&MarkerType> {
         self.two_cell_anchor()
             .as_ref()
             .map(|anchor| anchor.to_marker())
     }
 
-    pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use to_marker_type()")]
+    pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
+        self.to_marker_type()
+    }
+
+    pub(crate) fn media_object(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
         if let Some(anchor) = self.two_cell_anchor() {
             if let Some(v) = anchor.picture() {
@@ -348,6 +404,11 @@ impl Image {
             }
         }
         result
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use media_object()")]
+    pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {
+        self.media_object()
     }
 
     #[inline]
