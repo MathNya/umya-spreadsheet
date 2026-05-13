@@ -1,6 +1,8 @@
 use std::{
+    fs::File,
     io,
     io::Cursor,
+    path::Path,
 };
 
 use quick_xml::Writer;
@@ -34,6 +36,7 @@ use crate::{
         Workbook,
         XlsxError,
     },
+    reader::driver::zip_by_name,
     writer::driver::{
         make_file_from_bin,
         make_file_from_writer,
@@ -118,6 +121,23 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
             make_file_from_bin(target, self.arv, data, None, self.is_light)?;
+            self.files.push(target.to_string());
+        }
+        Ok(())
+    }
+
+    #[inline]
+    pub(crate) fn add_raw_copy<P: AsRef<Path>>(
+        &mut self,
+        target: &str,
+        source_path: P,
+        source_target: &str,
+    ) -> Result<(), XlsxError> {
+        if !self.check_file_exist(target) {
+            let file = File::open(source_path)?;
+            let mut archive = zip::read::ZipArchive::new(file)?;
+            let source = zip_by_name(&mut archive, source_target)?;
+            self.arv.raw_copy_file_rename(source, target)?;
             self.files.push(target.to_string());
         }
         Ok(())

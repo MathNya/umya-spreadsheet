@@ -1,4 +1,7 @@
-use std::io;
+use std::{
+    io,
+    path::Path,
+};
 
 use crate::{
     helper::const_str::{
@@ -137,7 +140,25 @@ impl RawWorksheet {
 
         let base_path = self.worksheet_file().path();
         let target = self.worksheet_file().make_rel_name();
-        self.read_rawrelationships(arv, &base_path, &target);
+        self.read_rawrelationships(arv, &base_path, &target, None);
+    }
+
+    pub(crate) fn read_lazy<R: io::Read + io::Seek, P: AsRef<Path>>(
+        &mut self,
+        arv: &mut zip::read::ZipArchive<R>,
+        target: &str,
+        source_file: P,
+    ) {
+        self.worksheet_file_mut().set_attributes_from_source(
+            arv,
+            "xl",
+            target,
+            source_file.as_ref(),
+        );
+
+        let base_path = self.worksheet_file().path();
+        let target = self.worksheet_file().make_rel_name();
+        self.read_rawrelationships(arv, &base_path, &target, Some(source_file.as_ref()));
     }
 
     pub(crate) fn read_rawrelationships<R: io::Read + io::Seek>(
@@ -145,16 +166,31 @@ impl RawWorksheet {
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,
         target: &str,
+        source_file: Option<&Path>,
     ) {
         let mut obj = RawRelationships::default();
-        if obj.set_attributes(arv, base_path, target) {
+        if obj.set_attributes(arv, base_path, target, source_file) {
             for relationship in obj.relationship_list() {
                 let rels_base_path = relationship.raw_file().path();
                 let rels_target = relationship.raw_file().make_rel_name();
-                self.read_rawrelationships(arv, &rels_base_path, &rels_target);
+                self.read_rawrelationships(arv, &rels_base_path, &rels_target, source_file);
             }
             self.set_relationships(obj);
         }
+    }
+
+    pub(crate) fn load_file_data_from_source(&mut self) -> Result<(), XlsxError> {
+        self.worksheet_file_mut().load_file_data_from_source()?;
+        self.load_relationship_file_data_from_source()
+    }
+
+    pub(crate) fn load_relationship_file_data_from_source(&mut self) -> Result<(), XlsxError> {
+        for relationships in self.relationships_list_mut() {
+            for relationship in relationships.relationship_list_mut() {
+                relationship.raw_file_mut().load_file_data_from_source()?;
+            }
+        }
+        Ok(())
     }
 
     pub(crate) fn write<W: io::Seek + io::Write>(
@@ -164,7 +200,7 @@ impl RawWorksheet {
     ) -> Result<(), XlsxError> {
         // Add worksheet
         let target = format!("{PKG_SHEET}{sheet_no}.xml");
-        writer_mng.add_bin(&target, self.worksheet_file().file_data())?;
+        self.worksheet_file().write_to_target(&target, writer_mng)?;
 
         // Add worksheet rels
         for relationships in self.relationships_list() {

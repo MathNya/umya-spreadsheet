@@ -1,4 +1,8 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    fs::File,
+    io,
+};
 
 use quick_xml::{
     Reader,
@@ -12,11 +16,13 @@ use super::{
         get_attribute,
         get_attribute_value,
         xml_read_loop,
+        zip_by_name,
     },
 };
 use crate::{
     helper::formula::FormulaToken,
     structs::{
+        Cell,
         Cells,
         Columns,
         ConditionalFormatting,
@@ -42,7 +48,42 @@ pub(crate) fn read(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Result<(), XlsxError> {
-    let data = std::io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
+    if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file() {
+        if !raw_data_of_worksheet.worksheet_file().has_file_data() {
+            let file = File::open(source_file)?;
+            let mut archive = zip::read::ZipArchive::new(file)?;
+            let source = zip_by_name(
+                &mut archive,
+                raw_data_of_worksheet.worksheet_file().file_target(),
+            )?;
+            let reader = io::BufReader::new(source);
+            return read_from_reader(
+                worksheet,
+                reader,
+                raw_data_of_worksheet,
+                shared_string_table,
+                stylesheet,
+            );
+        }
+    }
+
+    let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
+    read_from_reader(
+        worksheet,
+        data,
+        raw_data_of_worksheet,
+        shared_string_table,
+        stylesheet,
+    )
+}
+
+fn read_from_reader<R: io::BufRead>(
+    worksheet: &mut Worksheet,
+    data: R,
+    raw_data_of_worksheet: &RawWorksheet,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+) -> Result<(), XlsxError> {
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
@@ -238,7 +279,29 @@ pub(crate) fn read_lite(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Cells {
-    let data = std::io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
+    if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file() {
+        if !raw_data_of_worksheet.worksheet_file().has_file_data() {
+            let file = File::open(source_file).unwrap();
+            let mut archive = zip::read::ZipArchive::new(file).unwrap();
+            let source = zip_by_name(
+                &mut archive,
+                raw_data_of_worksheet.worksheet_file().file_target(),
+            )
+            .unwrap();
+            let reader = io::BufReader::new(source);
+            return read_lite_from_reader(reader, shared_string_table, stylesheet);
+        }
+    }
+
+    let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
+    read_lite_from_reader(data, shared_string_table, stylesheet)
+}
+
+fn read_lite_from_reader<R: io::BufRead>(
+    data: R,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+) -> Cells {
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
 
@@ -278,6 +341,119 @@ pub(crate) fn read_lite(
     );
 
     cells
+}
+
+pub(crate) fn read_cells_stream<F>(
+    raw_data_of_worksheet: &RawWorksheet,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+    callback: F,
+) -> Result<(), XlsxError>
+where
+    F: FnMut(&Cell),
+{
+    if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file() {
+        if !raw_data_of_worksheet.worksheet_file().has_file_data() {
+            let file = File::open(source_file)?;
+            let mut archive = zip::read::ZipArchive::new(file)?;
+            let source = zip_by_name(
+                &mut archive,
+                raw_data_of_worksheet.worksheet_file().file_target(),
+            )?;
+            let reader = io::BufReader::new(source);
+            return read_cells_stream_from_reader(
+                reader,
+                shared_string_table,
+                stylesheet,
+                callback,
+            );
+        }
+    }
+
+    let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
+    read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback)
+}
+
+fn read_cells_stream_from_reader<R, F>(
+    data: R,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+    mut callback: F,
+) -> Result<(), XlsxError>
+where
+    R: io::BufRead,
+    F: FnMut(&Cell),
+{
+    let mut reader = Reader::from_reader(data);
+    reader.config_mut().trim_text(true);
+    let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
+
+    xml_read_loop!(
+        reader,
+        Event::Start(ref e) => {
+            if e.name().into_inner() == b"row" {
+                read_row_cells_stream(
+                    &mut reader,
+                    shared_string_table,
+                    stylesheet,
+                    &mut formula_shared_list,
+                    &mut callback,
+                );
+            }
+        },
+        Event::Eof => break,
+    );
+
+    Ok(())
+}
+
+fn read_row_cells_stream<R, F>(
+    reader: &mut Reader<R>,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+    formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
+    callback: &mut F,
+) where
+    R: io::BufRead,
+    F: FnMut(&Cell),
+{
+    xml_read_loop!(
+        reader,
+        Event::Empty(ref e) => {
+            if e.name().into_inner() == b"c" {
+                let mut obj = Cell::default();
+                obj.set_attributes(
+                    reader,
+                    e,
+                    shared_string_table,
+                    stylesheet,
+                    true,
+                    formula_shared_list,
+                );
+                callback(&obj);
+            }
+        },
+        Event::Start(ref e) => {
+            if e.name().into_inner() == b"c" {
+                let mut obj = Cell::default();
+                obj.set_attributes(
+                    reader,
+                    e,
+                    shared_string_table,
+                    stylesheet,
+                    false,
+                    formula_shared_list,
+                );
+                callback(&obj);
+            }
+        },
+        Event::End(ref e) => {
+            if e.name().into_inner() == b"row" {
+                return
+            }
+        },
+        Event::Eof => panic!("Error: Could not find {} end element", "row")
+    );
 }
 
 fn get_hyperlink(

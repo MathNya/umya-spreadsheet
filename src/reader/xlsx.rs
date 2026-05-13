@@ -18,6 +18,7 @@ use crate::{
         VML_DRAWING_NS,
     },
     structs::{
+        Cell,
         SharedStringTable,
         Stylesheet,
         Workbook,
@@ -58,6 +59,14 @@ pub fn read_reader<R: io::Read + io::Seek>(
     reader: R,
     with_sheet_read: bool,
 ) -> Result<Workbook, XlsxError> {
+    read_reader_with_source(reader, with_sheet_read, None)
+}
+
+fn read_reader_with_source<R: io::Read + io::Seek>(
+    reader: R,
+    with_sheet_read: bool,
+    source_file: Option<&Path>,
+) -> Result<Workbook, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
     let mut book = workbook::read(&mut arv)?;
@@ -86,7 +95,10 @@ pub fn read_reader<R: io::Read + io::Seek>(
                 continue;
             }
             let mut raw_worksheet = RawWorksheet::default();
-            raw_worksheet.read(&mut arv, rel_target);
+            match source_file {
+                Some(source_file) => raw_worksheet.read_lazy(&mut arv, rel_target, source_file),
+                None => raw_worksheet.read(&mut arv, rel_target),
+            }
             sheet.set_raw_data_of_worksheet(raw_worksheet);
         }
     }
@@ -129,7 +141,42 @@ pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
 #[inline]
 pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
-    read_reader(file, false)
+    read_reader_with_source(file, false, Some(path))
+}
+
+/// Stream cells from a worksheet without deserializing the worksheet into
+/// memory.
+///
+/// This is intended for very large sheets where building a full [`Worksheet`]
+/// would allocate too much memory. The callback receives one parsed [`Cell`] at
+/// a time; the cell is dropped before the next cell is parsed.
+pub fn read_sheet_by_name_stream<P, F>(
+    path: P,
+    sheet_name: &str,
+    callback: F,
+) -> Result<(), XlsxError>
+where
+    P: AsRef<Path>,
+    F: FnMut(&Cell),
+{
+    let book = lazy_read(path.as_ref())?;
+    let Some(worksheet) = book
+        .sheet_collection_no_check()
+        .iter()
+        .find(|worksheet| worksheet.name() == sheet_name)
+    else {
+        return Err(XlsxError::CellError(format!(
+            "Worksheet '{sheet_name}' not found."
+        )));
+    };
+    let shared_string_table = book.shared_string_table();
+    let shared_string_table = &*shared_string_table.read().unwrap();
+    worksheet::read_cells_stream(
+        worksheet.raw_data_of_worksheet(),
+        shared_string_table,
+        book.stylesheet(),
+        callback,
+    )
 }
 
 pub(crate) fn raw_to_deserialize_by_worksheet(
@@ -141,7 +188,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         return;
     }
 
-    let raw_data_of_worksheet = worksheet.raw_data_of_worksheet().clone();
+    let mut raw_data_of_worksheet = worksheet.take_raw_data_of_worksheet();
     let shared_string_table = &*shared_string_table.read().unwrap();
     worksheet::read(
         worksheet,
@@ -150,6 +197,9 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         stylesheet,
     )
     .unwrap();
+    raw_data_of_worksheet
+        .load_relationship_file_data_from_source()
+        .unwrap();
 
     if let Some(v) = raw_data_of_worksheet.worksheet_relationships() {
         for relationship in v.relationship_list() {
@@ -196,6 +246,4 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
             }
         }
     }
-
-    worksheet.remove_raw_data_of_worksheet();
 }
