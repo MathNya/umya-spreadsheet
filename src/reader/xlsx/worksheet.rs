@@ -376,8 +376,7 @@ fn read_cells_stream_from_reader<R, F>(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
     mut callback: F,
-) -> ()
-where
+) where
     R: io::BufRead,
     F: FnMut(&Cell),
 {
