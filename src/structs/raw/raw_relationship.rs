@@ -154,7 +154,7 @@ impl RawRelationship {
                     source_file,
                 ),
                 None => self.raw_file_mut().set_attributes(arv, base_path, &target),
-            };
+            }
         }
     }
 

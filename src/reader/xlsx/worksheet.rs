@@ -361,17 +361,14 @@ where
                 raw_data_of_worksheet.worksheet_file().file_target(),
             )?;
             let reader = io::BufReader::new(source);
-            return read_cells_stream_from_reader(
-                reader,
-                shared_string_table,
-                stylesheet,
-                callback,
-            );
+            read_cells_stream_from_reader(reader, shared_string_table, stylesheet, callback);
+            return Ok(());
         }
     }
 
     let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
-    read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback)
+    read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback);
+    Ok(())
 }
 
 fn read_cells_stream_from_reader<R, F>(
@@ -379,7 +376,7 @@ fn read_cells_stream_from_reader<R, F>(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
     mut callback: F,
-) -> Result<(), XlsxError>
+) -> ()
 where
     R: io::BufRead,
     F: FnMut(&Cell),
@@ -403,8 +400,6 @@ where
         },
         Event::Eof => break,
     );
-
-    Ok(())
 }
 
 fn read_row_cells_stream<R, F>(
