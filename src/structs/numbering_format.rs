@@ -116,10 +116,10 @@ impl NumberingFormat {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let mut worksheet = book.sheet_mut(0).unwrap();
     /// let _unused = worksheet
-    ///     .get_style_mut("C30")
-    ///     .get_number_format_mut()
+    ///     .style_mut("C30")
+    ///     .number_format_mut()
     ///     .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {

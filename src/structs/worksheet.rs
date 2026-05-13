@@ -549,8 +549,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
+    /// let mut worksheet = book.sheet_mut(0).unwrap();
+    /// let mut cell_value_List = worksheet.cell_value_by_range("A1:C5");
     /// ```
     #[inline]
     #[must_use]
@@ -604,10 +604,10 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let style = worksheet.get_style("A1");
+    /// let worksheet = book.sheet(0).unwrap();
+    /// let style = worksheet.style("A1");
     /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
-    /// let style = worksheet.get_style((1, 1));
+    /// let style = worksheet.style((1, 1));
     /// ```
     #[inline]
     pub fn style<T>(&self, coordinate: T) -> &Style
@@ -675,11 +675,11 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let mut worksheet = book.sheet_mut(0).unwrap();
     /// let mut style = umya_spreadsheet::Style::default();
     /// style
-    ///     .get_borders_mut()
-    ///     .get_bottom_mut()
+    ///     .borders_mut()
+    ///     .bottom_mut()
     ///     .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     /// worksheet.set_style_by_range("A1:A3", &style);
     /// ```
@@ -954,7 +954,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let mut worksheet = book.sheet_mut(0).unwrap();
     /// worksheet.add_merge_cells("A1:C5");
     /// ```
     #[inline]

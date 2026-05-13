@@ -17,29 +17,29 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
 /// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
+///     .sheet_by_name_mut("Sheet1")
 ///     .unwrap()
-///     .get_style_mut("D2");
+///     .style_mut("D2");
 ///
 /// // add bottom border
 /// style
-///     .get_borders_mut()
-///     .get_bottom_mut()
+///     .borders_mut()
+///     .bottom_mut()
 ///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add top border
 /// style
-///     .get_borders_mut()
-///     .get_top_mut()
+///     .borders_mut()
+///     .top_mut()
 ///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add left border
 /// style
-///     .get_borders_mut()
-///     .get_left_mut()
+///     .borders_mut()
+///     .left_mut()
 ///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add right border
 /// style
-///     .get_borders_mut()
-///     .get_right_mut()
+///     .borders_mut()
+///     .right_mut()
 ///     .set_border_style(Border::BORDER_MEDIUM);
 /// ```
 ///
@@ -50,9 +50,9 @@ use crate::structs::{
 ///
 /// let mut book = new_file();
 /// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
+///     .sheet_by_name_mut("Sheet1")
 ///     .unwrap()
-///     .get_style_mut("A1");
+///     .style_mut("A1");
 ///
 /// // fill color on red.
 /// style.set_background_color(Color::COLOR_RED_STR);
@@ -65,14 +65,14 @@ use crate::structs::{
 ///
 /// let mut book = new_file();
 /// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
+///     .sheet_by_name_mut("Sheet1")
 ///     .unwrap()
-///     .get_style_mut("A1");
+///     .style_mut("A1");
 ///
 /// // font color on red.
 /// style
-///     .get_font_mut()
-///     .get_color_mut()
+///     .font_mut()
+///     .color_mut()
 ///     .set_argb(Color::COLOR_RED);
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]

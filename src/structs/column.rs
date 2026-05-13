@@ -25,15 +25,15 @@ use crate::{
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-/// worksheet.get_column_dimension_mut("A").set_auto_width(true);
+/// let mut worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
+/// worksheet.column_dimension_mut("A").set_auto_width(true);
 /// ```
 /// ## set manual width
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-/// worksheet.get_column_dimension_mut("A").set_width(60f64);
+/// let mut worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
+/// worksheet.column_dimension_mut("A").set_width(60f64);
 /// ```
 #[derive(Clone, Debug)]
 pub struct Column {

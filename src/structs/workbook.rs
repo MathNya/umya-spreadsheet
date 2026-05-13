@@ -161,7 +161,7 @@ impl Workbook {
     /// # Examples
     /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
+    /// let mut cell_value_List = book.cell_value_by_address("Sheet1!A1:C5");
     /// ```
     #[inline]
     #[must_use]

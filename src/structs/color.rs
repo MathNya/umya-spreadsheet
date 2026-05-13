@@ -345,7 +345,7 @@ impl Color {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let theme = book.get_theme();
+    /// let theme = book.theme();
     /// ```
     #[must_use]
     pub fn argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {

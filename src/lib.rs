@@ -43,7 +43,7 @@
 //!
 //! let mut book = new_file();
 //!
-//! let mut clone_sheet = book.sheet(&0).unwrap().clone();
+//! let mut clone_sheet = book.sheet(0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
 //! let _ = book.add_sheet(clone_sheet);
 //! ```
@@ -101,10 +101,10 @@
 //! let a1_value = book.sheet_by_name("Sheet2").unwrap().value("A1");
 //!
 //! // Read value by tuple cell address
-//! let a1_value = book.sheet(&1).unwrap().value((1, 1));
+//! let a1_value = book.sheet(1).unwrap().value((1, 1));
 //!
 //! // Read formatted value by string cell address
-//! let a1_value = book.sheet(&1).unwrap().formatted_value("A1");
+//! let a1_value = book.sheet(1).unwrap().formatted_value("A1");
 //!
 //! assert_eq!("TEST1", a1_value);
 //! ```
@@ -128,7 +128,7 @@
 //!     .set_border_style(Border::BORDER_MEDIUM);
 //!
 //! // Add a bottom border using tuple cell address
-//! book.sheet_mut(&1)
+//! book.sheet_mut(1)
 //!     .unwrap()
 //!     .style_mut((1, 1))
 //!     .borders_mut()

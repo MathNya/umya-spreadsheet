@@ -26,13 +26,13 @@ use crate::structs::{
 /// let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
 ///
 /// let mut book = umya_spreadsheet::new_file();
-/// let mut sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-/// sheet.get_cell_mut("A1").set_rich_text(richtext);
+/// let mut sheet = book.sheet_by_name_mut("Sheet1").unwrap();
+/// sheet.cell_mut("A1").set_rich_text(richtext);
 /// // Enable line breaks.
 /// sheet
-///     .get_cell_mut("A1")
-///     .get_style_mut()
-///     .get_alignment_mut()
+///     .cell_mut("A1")
+///     .style_mut()
+///     .alignment_mut()
 ///     .set_wrap_text(true);
 /// ```
 #[inline]
