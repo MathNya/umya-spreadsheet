@@ -1,6 +1,11 @@
 use std::{
+    fs::File,
     io,
     io::Read,
+    path::{
+        Path,
+        PathBuf,
+    },
 };
 
 use crate::{
@@ -19,6 +24,7 @@ use crate::{
 pub(crate) struct RawFile {
     file_target: StringValue,
     file_data:   Vec<u8>,
+    source_file: Option<PathBuf>,
 }
 impl RawFile {
     #[inline]
@@ -89,6 +95,16 @@ impl RawFile {
     }
 
     #[inline]
+    pub(crate) fn has_file_data(&self) -> bool {
+        !self.file_data.is_empty()
+    }
+
+    #[inline]
+    pub(crate) fn source_file(&self) -> Option<&Path> {
+        self.source_file.as_deref()
+    }
+
+    #[inline]
     #[deprecated(since = "3.0.0", note = "Use file_data()")]
     pub(crate) fn get_file_data(&self) -> &[u8] {
         self.file_data()
@@ -108,6 +124,12 @@ impl RawFile {
     #[inline]
     pub(crate) fn set_file_data(&mut self, value: &[u8]) -> &mut Self {
         self.file_data = value.into();
+        self
+    }
+
+    #[inline]
+    pub(crate) fn set_source_file<P: AsRef<Path>>(&mut self, value: P) -> &mut Self {
+        self.source_file = Some(value.as_ref().to_path_buf());
         self
     }
 
@@ -131,16 +153,60 @@ impl RawFile {
         }
 
         self.set_file_target(path_str);
-        self.set_file_data(&buf);
+        self.file_data = buf;
+    }
+
+    pub(crate) fn set_attributes_from_source<R: Read + io::Seek, P: AsRef<Path>>(
+        &mut self,
+        arv: &mut zip::read::ZipArchive<R>,
+        base_path: &str,
+        target: &str,
+        source_file: P,
+    ) {
+        let path_str = join_paths(base_path, target);
+        if zip_by_name(arv, &path_str).is_err() {
+            self.set_file_target(path_str);
+            return;
+        }
+
+        self.set_file_target(path_str);
+        self.set_source_file(source_file);
+    }
+
+    pub(crate) fn load_file_data_from_source(&mut self) -> Result<(), XlsxError> {
+        if !self.file_data.is_empty() || self.file_target().is_empty() {
+            return Ok(());
+        }
+        let Some(source_file) = self.source_file.as_ref() else {
+            return Ok(());
+        };
+
+        let file = File::open(source_file)?;
+        let mut archive = zip::read::ZipArchive::new(file)?;
+        let mut source = zip_by_name(&mut archive, self.file_target())?;
+        let mut buf = Vec::new();
+        source.read_to_end(&mut buf)?;
+        self.file_data = buf;
+        Ok(())
+    }
+
+    pub(crate) fn write_to_target<W: io::Seek + io::Write>(
+        &self,
+        target: &str,
+        writer_mng: &mut WriterManager<W>,
+    ) -> Result<(), XlsxError> {
+        if !self.file_data().is_empty() {
+            writer_mng.add_bin(target, self.file_data())?;
+        } else if let Some(source_file) = self.source_file.as_ref() {
+            writer_mng.add_raw_copy(target, source_file, self.file_target())?;
+        }
+        Ok(())
     }
 
     pub(crate) fn write_to<W: io::Seek + io::Write>(
         &self,
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
-        if !self.file_data().is_empty() {
-            writer_mng.add_bin(self.file_target(), self.file_data())?;
-        }
-        Ok(())
+        self.write_to_target(self.file_target(), writer_mng)
     }
 }

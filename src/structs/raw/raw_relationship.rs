@@ -1,6 +1,7 @@
 use std::{
     io,
     io::Cursor,
+    path::Path,
 };
 
 use quick_xml::{
@@ -126,6 +127,7 @@ impl RawRelationship {
         e: &BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
         base_path: &str,
+        source_file: Option<&Path>,
     ) {
         let Some(id) = get_attribute(e, b"Id") else {
             return;
@@ -144,7 +146,15 @@ impl RawRelationship {
         }
         if self.target_mode() != "External" {
             let target = self.target().to_string();
-            self.raw_file_mut().set_attributes(arv, base_path, &target);
+            match source_file {
+                Some(source_file) => self.raw_file_mut().set_attributes_from_source(
+                    arv,
+                    base_path,
+                    &target,
+                    source_file,
+                ),
+                None => self.raw_file_mut().set_attributes(arv, base_path, &target),
+            }
         }
     }
 

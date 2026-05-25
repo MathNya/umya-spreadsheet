@@ -73,7 +73,84 @@ pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
         + Duration::seconds(cast(seconds).unwrap())
 }
 
-/// Converts an Excel timestamp to a [`jiff::civil::DateTime`] object.
+/// Converts an Excel timestamp to a three parts: Base Date, Days, Time
+/// The function is provided for maximum flexibility but for most use cases
+/// you'll want the simpler [`excel_to_date_time_jiff`]
+/// which returns a single [`jiff::civil::DateTime`].
+///
+/// This function takes an Excel timestamp, which is a numeric representation of
+/// a date and time, and converts it into the parts needed to create a
+/// [`jiff::civil::DateTime`] object. The integer part of the timestamp
+/// represents the number of days since a base date, while the fractional part
+/// represents the time of day.
+///
+///
+/// # Parameters
+///
+/// - `excel_timestamp: f64` The Excel timestamp to be converted and it is
+///   treated as an Excel date under the Windows 1900 scheme.
+///
+/// # Returns
+///
+/// This function returns three pieces that can be used to construct a date/time
+/// - The effective base date: as a [`jiff::civil::Date`] object this is not
+///   always the same date to account for a compatibility bug in Excel where a
+///   it treats 1900 as a leap year while it is not in reality. This object does
+///   not contain any timezone information.
+/// - The number of days since the base date (The integer part of the input)
+/// - The time part which is the fraction of the day (The fractional part of the
+///   input)
+///
+/// # Behavior
+///
+/// - If `excel_timestamp` is in the range 1 to 60, the function accounts for
+///   the 1900 leap year bug in Excel by using December 31, 1899, as the base
+///   date.
+/// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899,
+///   as the base date.
+/// - This uses the Windows 1900 scheme which is more common.
+///
+/// # Example
+///
+/// ```rust
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_parts;
+/// let timestamp = 44197.5; // Represents 2021-01-01 12:00:00
+/// let (base_date, days, time) = excel_to_date_time_parts(timestamp);
+/// assert_eq!(base_date.year(), 1899);
+/// assert_eq!(base_date.month(), 12);
+/// assert_eq!(base_date.day(), 30);
+/// assert_eq!(days, 44197);
+/// assert_eq!(time, 0.5);
+///
+/// let timestamp = 20.40625; // Represents 1900-01-20 09:45:00
+/// let (base_date, days, time) = excel_to_date_time_parts(timestamp);
+/// assert_eq!(base_date.year(), 1899);
+/// assert_eq!(base_date.month(), 12);
+/// assert_eq!(base_date.day(), 31); // Note using 31 because before March 1st
+/// assert_eq!(days, 20);
+/// assert_eq!(time, 0.40625);
+/// ```
+#[must_use]
+pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64, f64) {
+    let base_date = if excel_timestamp < 61f64 {
+        // Allow adjustment for 1900 Leap Year in MS Excel
+        jiff::civil::date(1899, 12, 31)
+    } else {
+        jiff::civil::date(1899, 12, 30)
+    };
+
+    let days = excel_timestamp.floor();
+    let time = excel_timestamp - days;
+    let days: i64 = cast(days).unwrap();
+
+    (base_date, days, time)
+}
+
+/// Converts an Excel timestamp to a [`jiff::civil::DateTime`] object with
+/// second precision. If you need millisecond precision use
+/// [`excel_to_date_time_jiff_millisecond`]. Note that because of how date
+/// formatting is often done. If you plan to only show up to seconds you'll
+/// probably want second precision in the value.
 ///
 /// This function takes an Excel timestamp, which is a numeric representation of
 /// a date and time, and converts it into a [`jiff::civil::DateTime`] object.
@@ -114,18 +191,58 @@ pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
 /// ```
 #[must_use]
 pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
-    let base_date = if excel_timestamp < 61f64 {
-        // Allow adjustment for 1900 Leap Year in MS Excel
-        jiff::civil::datetime(1899, 12, 31, 0, 0, 0, 0)
-    } else {
-        jiff::civil::datetime(1899, 12, 30, 0, 0, 0, 0)
-    };
+    let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
+    let seconds: i64 = cast((time * (24.0 * 60.0 * 60.0)).round()).unwrap();
 
-    let days = excel_timestamp.floor();
-    let milliseconds: i64 = cast((excel_timestamp - days) * (24.0 * 60.0 * 60.0 * 1000.0)).unwrap();
-    let days: i64 = cast(days).unwrap();
+    base_date.at(0, 0, 0, 0) + days.day().seconds(seconds)
+}
 
-    base_date + days.day().milliseconds(milliseconds)
+/// Converts an Excel timestamp to a [`jiff::civil::DateTime`] object with
+/// millisecond precision. If you don't need millisecond precision you may want
+/// to use [`excel_to_date_time_jiff`] as if you only work this seconds this
+/// will give you the rounding you probably expect.
+///
+/// See [`excel_to_date_time_jiff`] for more details as these functions are the
+/// same aside for the difference in precision.
+///
+/// # Example
+///
+/// ```rust
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_jiff_millisecond;
+/// let timestamp = 44197.5; // Represents 2021-01-01 12:00:00
+/// let date_time = excel_to_date_time_jiff_millisecond(timestamp);
+/// assert_eq!(date_time.year(), 2021);
+/// assert_eq!(date_time.month(), 1);
+/// assert_eq!(date_time.day(), 1);
+/// assert_eq!(date_time.hour(), 12);
+/// assert_eq!(date_time.minute(), 0);
+/// ```
+///
+/// The following example demonstrates the difference between the two levels of
+/// precision
+///
+/// ```rust
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_jiff_millisecond;
+/// # use umya_spreadsheet::helper::date::excel_to_date_time_jiff;
+/// let timestamp = 44180.584027777775;
+/// let rounded_to_seconds = excel_to_date_time_jiff(timestamp);
+/// let to_milliseconds = excel_to_date_time_jiff_millisecond(timestamp);
+///
+/// assert_eq!(
+///     rounded_to_seconds.strftime("%F %T%.f").to_string(),
+///     "2020-12-15 14:01:00"
+/// );
+/// assert_eq!(
+///     to_milliseconds.strftime("%F %T%.f").to_string(),
+///     "2020-12-15 14:00:59.999"
+/// );
+/// ```
+#[must_use]
+pub fn excel_to_date_time_jiff_millisecond(excel_timestamp: f64) -> jiff::civil::DateTime {
+    let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
+    let milliseconds: i64 = cast(time * 24.0 * 60.0 * 60.0 * 1000.0).unwrap();
+
+    base_date.at(0, 0, 0, 0) + days.day().milliseconds(milliseconds)
 }
 
 /// Converts a timestamp to a f64
