@@ -38,7 +38,7 @@ pub struct Image {
     one_cell_anchor: Option<Box<OneCellAnchor>>,
 }
 /// ## Example
-/// ```rust,ignore
+/// ```rust
 /// extern crate umya_spreadsheet;
 /// let mut book = umya_spreadsheet::new_file();
 ///
@@ -47,20 +47,16 @@ pub struct Image {
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .add_image(image);
+/// book.sheet_by_name_mut("Sheet1").unwrap().add_image(image);
 ///
 /// // Get Image by Worksheet.
 /// let worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
 /// let image = worksheet.image_mut("B3");
-/// let image = worksheet.image_by_column_and_row_mut(&2, &1);
+/// let image = worksheet.image_by_column_and_row_mut(2, 1);
 ///
 /// // Use this if there are multiple Images in a given cell.
 /// let images = worksheet.images("B3");
-/// let images = worksheet.images_by_column_and_row(&2, 1); // TODO(c-git): Unable to find this function
 /// let images = worksheet.images_mut("B3");
-/// let images = worksheet.images_by_column_and_row_mut(&2, 1); // TODO(c-git): Unable to find this function
 ///
 /// // Download Image
 /// book.sheet_by_name("Sheet1")
