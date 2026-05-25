@@ -15,43 +15,24 @@
 
 Please mention in issues if you have any questions.
 
-## Update details
-### ver 2.2.0
-#### * Increased processing speed and reduced memory consumption.(Thank you. [schungx](https://github.com/schungx),[mxsrm](https://github.com/mxsrm))
-The return type has been changed in some functions.
-Please be aware of this.
+## Version 3.0.0 has been released
+This update contains breaking changes.
+Please refer to this page when upgrading from version 2.x to 3.x.
+https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md
 
-#### * copy_row_styling(),copy_col_styling() is now available.
-Copies the style of the specified column or row.
-```rust
-let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.sheet_mut(&0).unwrap();
-sheet.copy_row_styling(&3, &5, None, None);
-sheet.copy_col_styling(&3, &5, None, None);
-```
-#### * The function to create a new comment has been implemented.
-```rust
-let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.sheet_mut(&0).unwrap();
-let mut comment = Comment::default();
-comment.new_comment("B2");
-comment.set_text_string("TEST");
-sheet.add_comments(comment);
-```
-#### * Minor bug fixes
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.2.0"
+umya-spreadsheet = "3.0.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.2.0", features = ["js"] }
+umya-spreadsheet = { version = "3.0.0", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "2.2.0", features = ["image/png"] }
+umya-spreadsheet = { version = "3.0.0", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
@@ -188,6 +169,54 @@ Contributions by way of pull requests are welcome!  Please make sure your code u
 cargo +nightly fmt --all
 cargo clippy -- -D warnings
 ```
+
+## Acknowledgements
+These are the people who have supported the umya-spreadsheet project.
+We would like to express our heartfelt gratitude to them.
+
+[8191](https://github.com/8191), 
+[agentjill](https://github.com/agentjill), 
+[attila-lin](https://github.com/attila-lin), 
+[boseongkim32](https://github.com/boseongkim32), 
+[c-git](https://github.com/c-git), 
+[cstkingkey](https://github.com/cstkingkey), 
+[DaimoniX](https://github.com/DaimoniX), 
+[developer0hye](https://github.com/developer0hye), 
+[fabianboesiger](https://github.com/fabianboesiger), 
+[ggodlewski](https://github.com/ggodlewski), 
+[gitter-badger](https://github.com/gitter-badger), 
+[hackers267](https://github.com/hackers267), 
+[iancormac84](https://github.com/iancormac84), 
+[jimchan3301](https://github.com/jimchan3301), 
+[jmbrunskill](https://github.com/jmbrunskill), 
+[john-dc252](https://github.com/john-dc252), 
+[kazuk](https://github.com/kazuk), 
+[kjh618](https://github.com/kjh618), 
+[KyGost](https://github.com/KyGost), 
+[lanej](https://github.com/lanej), 
+[matt-duch](https://github.com/matt-duch), 
+[mxsrm](https://github.com/mxsrm), 
+[nikvoid](https://github.com/nikvoid), 
+[oxabz](https://github.com/oxabz), 
+[patrickomatic](https://github.com/patrickomatic), 
+[piaoger](https://github.com/piaoger), 
+[popen2](https://github.com/popen2), 
+[PSU3D0](https://github.com/PSU3D0), 
+[RoloEdits](https://github.com/RoloEdits), 
+[SamuelMarks](https://github.com/SamuelMarks), 
+[schungx](https://github.com/schungx), 
+[sjfhsjfh](https://github.com/sjfhsjfh), 
+[tomgroenwoldt](https://github.com/tomgroenwoldt), 
+[tzfun](https://github.com/tzfun), 
+[ubamrein](https://github.com/ubamrein), 
+[usagi](https://github.com/usagi), 
+[vonkruel](https://github.com/vonkruel), 
+[WilliamTCarroll](https://github.com/WilliamTCarroll), 
+[wolfiesch](https://github.com/wolfiesch), 
+[xamgore](https://github.com/xamgore), 
+[yerlibilgin](https://github.com/yerlibilgin), 
+[zjhsd2007](https://github.com/zjhsd2007)
+
 
 ## Projects using umya-spreadsheet
 Community projects built with `umya-spreadsheet` (not endorsements).

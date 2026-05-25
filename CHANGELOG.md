@@ -1,3 +1,50 @@
+# Change Detail -> 3.0.0
+### We have changed the name of the Getter.
+```rust
+// ver2.3.3
+book.get_sheet_mut(&0).unwrap().get_cell_mut("A1").get_value();
+
+// ver3.0.0
+book.sheet_mut(&0).unwrap().cell_mut("A1").value();
+```
+The get_xx() functions are now deprecated, but they can still be used.
+They will be removed at some point.
+
+### “Spreadsheet” has been renamed to “Workbook.”
+* ver2.3.3 https://github.com/MathNya/umya-spreadsheet/blob/2.3.3/src/structs/spreadsheet.rs
+* ver3.0.0 https://github.com/MathNya/umya-spreadsheet/blob/3.0.0/src/structs/workbook.rs
+
+### Processing is now faster.
+
+### Minor bug fixes
+
+# Change Detail -> 2.3.2
+### Bug Fixed #290,#291
+
+# Change Detail -> 2.2.0
+### Increased processing speed and reduced memory consumption.(Thank you. [schungx](https://github.com/schungx),[mxsrm](https://github.com/mxsrm))
+The return type has been changed in some functions.
+Please be aware of this.
+
+### copy_row_styling(),copy_col_styling() is now available.
+Copies the style of the specified column or row.
+```rust
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+let sheet = book.sheet_mut(&0).unwrap();
+sheet.copy_row_styling(&3, &5, None, None);
+sheet.copy_col_styling(&3, &5, None, None);
+```
+### The function to create a new comment has been implemented.
+```rust
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+let sheet = book.sheet_mut(&0).unwrap();
+let mut comment = Comment::default();
+comment.new_comment("B2");
+comment.set_text_string("TEST");
+sheet.add_comments(comment);
+```
+### Minor bug fixes
+
 # Change Detail v1.2.7 -> v2.0.0
 
 --- failure enum_missing: pub enum removed or renamed ---
