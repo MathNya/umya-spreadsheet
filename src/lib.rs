@@ -50,7 +50,7 @@
 //!
 //! ### Change Value
 //!
-//! ```rust,ignore
+//! ```rust
 //! use umya_spreadsheet::*;
 //!
 //! let mut book = new_file();
@@ -68,21 +68,21 @@
 //! book.sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .cell_mut("C3")
-//!     .set_value_from_bool(true);
+//!     .set_value_bool(true);
 //!
 //! // Change value using tuple cell address
-//! book.sheet_mut(&1)
+//! book.sheet_mut(1)
 //!     .unwrap()
 //!     .cell_mut((1, 1))
 //!     .set_value("TEST1");
-//! book.sheet_mut(&1)
+//! book.sheet_mut(1)
 //!     .unwrap()
 //!     .cell_mut((2, 2))
 //!     .set_value_number(1);
-//! book.sheet_mut(&1)
+//! book.sheet_mut(1)
 //!     .unwrap()
 //!     .cell_mut((3, 3))
-//!     .set_value_from_bool(true);
+//!     .set_value_bool(true);
 //! ```
 //!
 //! ### Read Value
