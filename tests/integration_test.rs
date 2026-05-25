@@ -4,13 +4,161 @@
 extern crate chrono;
 extern crate umya_spreadsheet;
 use std::{
-    io::Read,
+    env,
+    ffi::c_void,
+    fs::File,
+    io::{
+        BufWriter,
+        Read,
+    },
+    path::PathBuf,
     time::Instant,
 };
 
 use umya_spreadsheet::*;
 
 use crate::helper::color;
+
+#[cfg(target_os = "linux")]
+fn current_process_memory_mb() -> Option<f64> {
+    process_status_memory_mb("VmRSS:")
+}
+
+#[cfg(target_os = "linux")]
+fn peak_process_memory_mb() -> Option<f64> {
+    process_status_memory_mb("VmHWM:")
+}
+
+#[cfg(target_os = "linux")]
+fn process_status_memory_mb(prefix: &str) -> Option<f64> {
+    let status = std::fs::read_to_string("/proc/self/status").ok()?;
+    status.lines().find_map(|line| {
+        let value = line.strip_prefix(prefix)?.trim();
+        let kb = value.split_whitespace().next()?.parse::<f64>().ok()?;
+        Some(kb / 1024.0)
+    })
+}
+
+#[cfg(windows)]
+fn current_process_memory_mb() -> Option<f64> {
+    process_memory_mb().map(|(_, working_set)| working_set)
+}
+
+#[cfg(windows)]
+fn peak_process_memory_mb() -> Option<f64> {
+    process_memory_mb().map(|(peak_working_set, _)| peak_working_set)
+}
+
+#[cfg(windows)]
+#[repr(C)]
+struct ProcessMemoryCounters {
+    cb:                              u32,
+    page_fault_count:                u32,
+    peak_working_set_size:           usize,
+    working_set_size:                usize,
+    quota_peak_paged_pool_usage:     usize,
+    quota_paged_pool_usage:          usize,
+    quota_peak_non_paged_pool_usage: usize,
+    quota_non_paged_pool_usage:      usize,
+    pagefile_usage:                  usize,
+    peak_pagefile_usage:             usize,
+}
+
+#[cfg(windows)]
+#[link(name = "kernel32")]
+unsafe extern "system" {
+    fn GetCurrentProcess() -> *mut c_void;
+}
+
+#[cfg(windows)]
+#[link(name = "psapi")]
+unsafe extern "system" {
+    fn GetProcessMemoryInfo(
+        process: *mut c_void,
+        counters: *mut ProcessMemoryCounters,
+        size: u32,
+    ) -> i32;
+}
+
+#[cfg(windows)]
+fn process_memory_mb() -> Option<(f64, f64)> {
+    let mut counters = ProcessMemoryCounters {
+        cb:                              std::mem::size_of::<ProcessMemoryCounters>() as u32,
+        page_fault_count:                0,
+        peak_working_set_size:           0,
+        working_set_size:                0,
+        quota_peak_paged_pool_usage:     0,
+        quota_paged_pool_usage:          0,
+        quota_peak_non_paged_pool_usage: 0,
+        quota_non_paged_pool_usage:      0,
+        pagefile_usage:                  0,
+        peak_pagefile_usage:             0,
+    };
+    let ok = unsafe {
+        GetProcessMemoryInfo(
+            GetCurrentProcess(),
+            &mut counters,
+            std::mem::size_of::<ProcessMemoryCounters>() as u32,
+        )
+    };
+    if ok == 0 {
+        return None;
+    }
+    Some((
+        counters.peak_working_set_size as f64 / 1024.0 / 1024.0,
+        counters.working_set_size as f64 / 1024.0 / 1024.0,
+    ))
+}
+
+#[cfg(all(unix, not(target_os = "linux")))]
+fn current_process_memory_mb() -> Option<f64> {
+    let output = std::process::Command::new("ps")
+        .args(["-o", "rss=", "-p", &std::process::id().to_string()])
+        .output()
+        .ok()?;
+    let kb = String::from_utf8(output.stdout)
+        .ok()?
+        .trim()
+        .parse::<f64>()
+        .ok()?;
+    Some(kb / 1024.0)
+}
+
+#[cfg(all(unix, not(target_os = "linux")))]
+fn peak_process_memory_mb() -> Option<f64> {
+    None
+}
+
+#[cfg(not(any(unix, windows)))]
+fn current_process_memory_mb() -> Option<f64> {
+    None
+}
+
+#[cfg(not(any(unix, windows)))]
+fn peak_process_memory_mb() -> Option<f64> {
+    None
+}
+
+fn print_large_file_checkpoint(label: &str, start: Instant) {
+    let elapsed = start.elapsed();
+    let memory = current_process_memory_mb()
+        .map(|value| format!("{value:.1}MB"))
+        .unwrap_or_else(|| "unknown".to_string());
+    let peak_memory = peak_process_memory_mb()
+        .map(|value| format!("{value:.1}MB"))
+        .unwrap_or_else(|| "unknown".to_string());
+    println!(
+        "{label}:{}.{:03}sec memory:{memory} peak:{peak_memory}",
+        elapsed.as_secs(),
+        elapsed.subsec_millis()
+    );
+}
+
+fn profile_input_path() -> PathBuf {
+    env::var_os("UMYA_PROFILE_FILE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("./tests/test_files/aaa_large_string.xlsx"))
+}
 
 #[test]
 fn read_and_wite() {
@@ -113,6 +261,72 @@ fn lazy_read_and_wite_large_string() {
     let _unused = writer::xlsx::write(&book, path);
     let end = start.elapsed();
     println!("write:{}.{:03}sec.", end.as_secs(), end.subsec_millis());
+}
+
+#[test]
+#[ignore]
+fn profile_large_string_memory() {
+    let total = Instant::now();
+    print_large_file_checkpoint("start", total);
+
+    let path = profile_input_path();
+    println!("profile_file:{}", path.display());
+    let mut book = reader::xlsx::lazy_read(&path).unwrap();
+    print_large_file_checkpoint("lazy_read", total);
+
+    if env::var_os("UMYA_PROFILE_DESERIALIZE").is_some() {
+        let sheet_name = env::var("UMYA_PROFILE_SHEET").unwrap_or_else(|_| "Sheet1".to_string());
+        book.read_sheet_by_name(&sheet_name);
+        print_large_file_checkpoint("deserialize_sheet", total);
+    }
+
+    if env::var_os("UMYA_PROFILE_EDIT").is_some() {
+        let ns = book.new_sheet("profile sheet").unwrap();
+        for r in 1..5000 {
+            for c in 1..30 {
+                let cell = ns.cell_mut((c, r));
+                let _unused = cell.set_value_string(format!("r{}c{}", r, c));
+            }
+        }
+        print_large_file_checkpoint("edit", total);
+    }
+
+    let output_path = env::var_os("UMYA_PROFILE_OUTPUT")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("./tests/result_files/profile_large_string.xlsx"));
+    match env::var("UMYA_PROFILE_WRITER").as_deref() {
+        Ok("buffer") => {
+            let file = File::create(&output_path).unwrap();
+            writer::xlsx::write_writer(&book, BufWriter::new(file)).unwrap();
+        }
+        Ok("light") => writer::xlsx::write_light(&book, &output_path).unwrap(),
+        _ => writer::xlsx::write(&book, &output_path).unwrap(),
+    }
+    print_large_file_checkpoint("write", total);
+}
+
+#[test]
+#[ignore]
+fn profile_large_string_stream_memory() {
+    let total = Instant::now();
+    print_large_file_checkpoint("start", total);
+
+    let path = profile_input_path();
+    let sheet_name = env::var("UMYA_PROFILE_SHEET").unwrap_or_else(|_| "Sheet1".to_string());
+    println!("profile_file:{}", path.display());
+    println!("profile_sheet:{sheet_name}");
+
+    let mut cell_count = 0usize;
+    reader::xlsx::read_sheet_by_name_stream(&path, &sheet_name, |_| {
+        cell_count += 1;
+        if cell_count % 500_000 == 0 {
+            print_large_file_checkpoint(&format!("stream_cells_{cell_count}"), total);
+        }
+    })
+    .unwrap();
+
+    println!("stream_cell_count:{cell_count}");
+    print_large_file_checkpoint("stream_done", total);
 }
 
 #[test]

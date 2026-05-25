@@ -1,6 +1,7 @@
 use std::{
     io,
     io::Read,
+    path::Path,
 };
 
 use quick_xml::{
@@ -121,6 +122,7 @@ impl RawRelationships {
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,
         target: &str,
+        source_file: Option<&Path>,
     ) -> bool {
         let data = {
             let path_str = join_paths(base_path, target);
@@ -141,7 +143,7 @@ impl RawRelationships {
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"Relationship" {
                     let mut obj = RawRelationship::default();
-                    obj.set_attributes(&mut reader, e, arv, base_path);
+                    obj.set_attributes(&mut reader, e, arv, base_path, source_file);
                     self.add_relationship_list(obj);
                 }
             },
