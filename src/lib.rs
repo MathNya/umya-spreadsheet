@@ -64,7 +64,7 @@
 //! book.sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .cell_mut("B2")
-//!     .set_value_from_i32(1); // TODO(c-git): This function does not seem to exist
+//!     .set_value_number(1);
 //! book.sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .cell_mut("C3")
@@ -78,7 +78,7 @@
 //! book.sheet_mut(&1)
 //!     .unwrap()
 //!     .cell_mut((2, 2))
-//!     .set_value_from_i32(1); // TODO(c-git): This function does not seem to exist
+//!     .set_value_number(1);
 //! book.sheet_mut(&1)
 //!     .unwrap()
 //!     .cell_mut((3, 3))
