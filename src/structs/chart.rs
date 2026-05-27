@@ -85,7 +85,7 @@ use crate::{
 ///
 /// ## Example
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
-/// ```rust,ignore
+/// ```rust
 /// extern crate umya_spreadsheet;
 /// let mut book = umya_spreadsheet::new_file();
 ///
@@ -107,15 +107,11 @@ use crate::{
 /// // Get Chart by Worksheet.
 /// let mut worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
 /// let chart = worksheet.chart("C1");
-/// let chart = worksheet.chart_by_column_and_row(&3, 1); // TODO(c-git): Unable to find this function
 /// let chart = worksheet.chart_mut("C1");
-/// let chart = worksheet.chart_by_column_and_row_mut(&3, 1); // TODO(c-git): Unable to find this function
 ///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.charts("C1");
-/// let charts = worksheet.charts_by_column_and_row(&3, 1);
 /// let charts = worksheet.charts_mut("C1");
-/// let charts = worksheet.charts_by_column_and_row_mut(&3, 1);
 ///
 /// // Set Chart Title, Series Title, Horizontal Title and Vertical Title.
 /// let mut chart = book
@@ -203,10 +199,7 @@ impl Chart {
 
     pub fn set_series_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
         let mut value_iter = value.into_iter().map(Into::into);
-        for series in self
-            .area_chart_series_list_mut()
-            .area_chart_series_mut()
-        {
+        for series in self.area_chart_series_list_mut().area_chart_series_mut() {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
                 let mut chart_text = ChartText::default();
@@ -226,10 +219,7 @@ impl Chart {
             string_point.numeric_value_mut().set_text(v);
             string_literal.add_string_point_list(string_point);
         }
-        for series in self
-            .area_chart_series_list_mut()
-            .area_chart_series_mut()
-        {
+        for series in self.area_chart_series_list_mut().area_chart_series_mut() {
             if let Some(v) = series.category_axis_data_mut() {
                 v.remove_string_reference();
                 v.set_string_literal(string_literal.clone());
@@ -244,9 +234,7 @@ impl Chart {
 
     #[inline]
     pub fn plot_area_mut(&mut self) -> &mut PlotArea {
-        self.chart_space_mut()
-            .chart_mut()
-            .plot_area_mut()
+        self.chart_space_mut().chart_mut().plot_area_mut()
     }
 
     #[inline]
@@ -286,7 +274,7 @@ impl Chart {
     pub fn two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
         &mut self.two_cell_anchor
     }
-    
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_mut()")]
     pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
@@ -411,7 +399,7 @@ impl Chart {
     pub(crate) fn col(&self) -> u32 {
         self.two_cell_anchor.from_marker().col()
     }
-    
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use col()")]
     pub(crate) fn get_col(&self) -> u32 {
@@ -428,7 +416,7 @@ impl Chart {
     pub(crate) fn get_row(&self) -> u32 {
         self.row()
     }
-    
+
     #[inline]
     fn convert_series(area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
@@ -448,12 +436,8 @@ impl Chart {
                     .set_text("General");
 
                 let mut acs_object = AreaChartSeries::default();
-                acs_object
-                    .index_mut()
-                    .set_val(u32::try_from(idx).unwrap());
-                acs_object
-                    .order_mut()
-                    .set_val(u32::try_from(idx).unwrap());
+                acs_object.index_mut().set_val(u32::try_from(idx).unwrap());
+                acs_object.order_mut().set_val(u32::try_from(idx).unwrap());
                 acs_object.set_values(values);
                 if smooth {
                     acs_object.set_smooth(Smooth::default());
@@ -477,9 +461,7 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut line_chart = LineChart::default();
-        line_chart
-            .grouping_mut()
-            .set_val(GroupingValues::Stacked);
+        line_chart.grouping_mut().set_val(GroupingValues::Stacked);
         line_chart.set_area_chart_series_list(acsl_obj);
         line_chart.show_marker_mut().set_val(true);
         line_chart.add_axis_id(axis_id1);
@@ -500,9 +482,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -518,12 +498,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
@@ -652,9 +628,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -670,12 +644,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
@@ -788,9 +758,7 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph
-            .paragraph_properties_mut()
-            .set_right_to_left("0");
+        paragraph.paragraph_properties_mut().set_right_to_left("0");
         paragraph
             .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
@@ -894,9 +862,7 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph
-            .paragraph_properties_mut()
-            .set_right_to_left("0");
+        paragraph.paragraph_properties_mut().set_right_to_left("0");
         paragraph
             .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
@@ -1095,9 +1061,7 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut area_chart = AreaChart::default();
-        area_chart
-            .grouping_mut()
-            .set_val(GroupingValues::Standard);
+        area_chart.grouping_mut().set_val(GroupingValues::Standard);
         area_chart.set_area_chart_series_list(acsl_obj);
         area_chart.add_axis_id(axis_id1);
         area_chart.add_axis_id(axis_id2);
@@ -1117,9 +1081,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -1135,12 +1097,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1264,9 +1222,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -1282,12 +1238,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1387,9 +1339,7 @@ impl Chart {
         bar_chart
             .bar_direction_mut()
             .set_val(BarDirectionValues::Column);
-        bar_chart
-            .grouping_mut()
-            .set_val(GroupingValues::Stacked);
+        bar_chart.grouping_mut().set_val(GroupingValues::Stacked);
         bar_chart.set_area_chart_series_list(acsl_obj);
         bar_chart.gap_width_mut().set_val(150);
         bar_chart.overlap_mut().set_val(100);
@@ -1414,9 +1364,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -1432,12 +1380,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1539,9 +1483,7 @@ impl Chart {
         bar_3d_chart
             .bar_direction_mut()
             .set_val(BarDirectionValues::Column);
-        bar_3d_chart
-            .grouping_mut()
-            .set_val(GroupingValues::Stacked);
+        bar_3d_chart.grouping_mut().set_val(GroupingValues::Stacked);
         bar_3d_chart.set_area_chart_series_list(acsl_obj);
         bar_3d_chart.gap_width_mut().set_val(150);
         bar_3d_chart.shape_mut().set_val(ShapeValues::Box);
@@ -1566,9 +1508,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -1584,12 +1524,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1691,9 +1627,7 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph
-            .paragraph_properties_mut()
-            .set_right_to_left("0");
+        paragraph.paragraph_properties_mut().set_right_to_left("0");
         paragraph
             .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
@@ -1856,9 +1790,7 @@ impl Chart {
         value_axis_1
             .numbering_format_mut()
             .set_format_code("General");
-        value_axis_1
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis_1.numbering_format_mut().set_source_linked(true);
         value_axis_1
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1868,9 +1800,7 @@ impl Chart {
         value_axis_1
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_1
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        value_axis_1.tick_crossing_axis_mut().set_val(169_590_080);
         value_axis_1
             .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -1889,9 +1819,7 @@ impl Chart {
         value_axis_2
             .numbering_format_mut()
             .set_format_code("General");
-        value_axis_2
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis_2.numbering_format_mut().set_source_linked(true);
         value_axis_2
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -1901,9 +1829,7 @@ impl Chart {
         value_axis_2
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_2
-            .tick_crossing_axis_mut()
-            .set_val(213_468_160);
+        value_axis_2.tick_crossing_axis_mut().set_val(213_468_160);
         value_axis_2
             .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -1912,9 +1838,7 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph
-            .paragraph_properties_mut()
-            .set_right_to_left("0");
+        paragraph.paragraph_properties_mut().set_right_to_left("0");
         paragraph
             .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
@@ -2025,9 +1949,7 @@ impl Chart {
         category_axis
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        category_axis
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        category_axis.tick_crossing_axis_mut().set_val(169_590_080);
         category_axis.auto_labeled_mut().set_val(true);
         category_axis.label_offset_mut().set_val(100);
 
@@ -2043,12 +1965,8 @@ impl Chart {
             .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis
-            .numbering_format_mut()
-            .set_format_code("General");
-        value_axis
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis.numbering_format_mut().set_format_code("General");
+        value_axis.numbering_format_mut().set_source_linked(true);
         value_axis
             .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
@@ -2204,9 +2122,7 @@ impl Chart {
         value_axis_1
             .numbering_format_mut()
             .set_format_code("General");
-        value_axis_1
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis_1.numbering_format_mut().set_source_linked(true);
         value_axis_1
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -2216,9 +2132,7 @@ impl Chart {
         value_axis_1
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_1
-            .tick_crossing_axis_mut()
-            .set_val(169_590_080);
+        value_axis_1.tick_crossing_axis_mut().set_val(169_590_080);
         value_axis_1
             .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -2237,9 +2151,7 @@ impl Chart {
         value_axis_2
             .numbering_format_mut()
             .set_format_code("General");
-        value_axis_2
-            .numbering_format_mut()
-            .set_source_linked(true);
+        value_axis_2.numbering_format_mut().set_source_linked(true);
         value_axis_2
             .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
@@ -2249,9 +2161,7 @@ impl Chart {
         value_axis_2
             .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_2
-            .tick_crossing_axis_mut()
-            .set_val(213_468_160);
+        value_axis_2.tick_crossing_axis_mut().set_val(213_468_160);
         value_axis_2
             .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);

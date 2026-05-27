@@ -88,9 +88,9 @@ impl<'a> From<(&'a str, Box<str>)> for AttrPair<'a> {
     ///
     /// # Example
     ///
-    /// ```rust,ignore
+    /// ```rust
     /// # use umya_spreadsheet::AttrPair;
-    /// let box_str = Box::new("value"); // TODO(c-git): This is `Box<&str>` not `Box<str>`, I don't know how to construct the second type
+    /// let box_str: Box<str> = "value".into();
     /// let attr_pair = AttrPair::from(("name", box_str));
     /// ```
     #[inline]

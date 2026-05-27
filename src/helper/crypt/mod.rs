@@ -11,18 +11,6 @@
 //! document protection, using standardized algorithms and key derivation
 //! functions.
 //!
-//! # Examples
-//!
-//! ```rust,ignore
-//! use umya_spreadsheet::{
-//!     helper::crypt,
-//!     structs::SheetProtection,
-//! };
-//!
-//! let mut protection = SheetProtection::new(); // TODO(c-git): the new function doesn't seem to exist
-//! crypt::encrypt_sheet_protection("mypassword", &mut protection);
-//! ```
-//!
 //! # Security
 //!
 //! The module implements industry-standard cryptographic practices:
