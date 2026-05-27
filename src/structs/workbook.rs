@@ -4,13 +4,10 @@ use std::sync::{
 };
 
 use crate::{
-    StringValue,
-    helper::{
+    StringValue, XlsxError, helper::{
         address::split_address,
         coordinate::column_index_from_string,
-    },
-    reader::xlsx::raw_to_deserialize_by_worksheet,
-    structs::{
+    }, reader::xlsx::raw_to_deserialize_by_worksheet, structs::{
         Address,
         CellValue,
         Cells,
@@ -22,11 +19,10 @@ use crate::{
         WorkbookView,
         Worksheet,
         drawing::Theme,
-    },
-    traits::{
+    }, traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
-    },
+    }
 };
 
 /// A Workbook Object.
@@ -542,38 +538,35 @@ impl Workbook {
     }
 
     #[inline]
-    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
+    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, XlsxError> {
         self.work_sheet_collection
             .iter()
             .position(|sheet| sheet.name() == sheet_name)
-            .ok_or("Not found.")
+            .ok_or(XlsxError::NotFound())
     }
 
     /// Get Work Sheet.
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Result<&Worksheet, &'static str>`.
+    /// * `Result<&Worksheet, XlsxError>`.
     #[inline]
-    pub fn sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
+    pub fn sheet(&self, index: usize) -> Result<&Worksheet, XlsxError> {
         match self.work_sheet_collection.get(index) {
             Some(v) => {
                 if v.is_deserialized() {
                     Ok(v)
                 } else {
-                    Err(
-                        "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, \
-                         index: usize",
-                    )
+                    Err(XlsxError::NotDeserialized())
                 }
             }
-            None => Err("Not found."),
+            None => Err(XlsxError::NotFound()),
         }
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet()")]
-    pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
+    pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, XlsxError> {
         self.sheet(*index)
     }
 
@@ -581,29 +574,29 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<&Worksheet, &'static str>`.
+    /// * `Result<&Worksheet, XlsxError>`.
     #[inline]
-    pub fn sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
+    pub fn sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, XlsxError> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(|index| self.sheet(index))
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet_by_name()")]
-    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
+    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, XlsxError> {
         self.sheet_by_name(sheet_name)
     }
 
-    pub fn lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
+    pub fn lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, XlsxError> {
         let shared_string_table = self.shared_string_table();
         self.work_sheet_collection
             .get(index)
             .map(|v| v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet()))
-            .ok_or("Not found.")
+            .ok_or(XlsxError::NotFound())
     }
 
     #[deprecated(since = "3.0.0", note = "Use lazy_read_sheet_cells()")]
-    pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, &'static str> {
+    pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, XlsxError> {
         self.lazy_read_sheet_cells(*index)
     }
 
@@ -611,9 +604,9 @@ impl Workbook {
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>`.
+    /// * `Result<&mut Worksheet, XlsxError>`.
     #[allow(clippy::manual_inspect)]
-    pub fn sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
+    pub fn sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, XlsxError> {
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
         self.work_sheet_collection
@@ -622,11 +615,11 @@ impl Workbook {
                 raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
                 v
             })
-            .ok_or("Not found.")
+            .ok_or(XlsxError::NotFound())
     }
 
     #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]
-    pub fn get_sheet_mut(&mut self, index: &usize) -> Result<&mut Worksheet, &'static str> {
+    pub fn get_sheet_mut(&mut self, index: &usize) -> Result<&mut Worksheet, XlsxError> {
         self.sheet_mut(*index)
     }
 
@@ -634,9 +627,9 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>`.
+    /// * `Result<&mut Worksheet, XlsxError>`.
     #[inline]
-    pub fn sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, &'static str> {
+    pub fn sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, XlsxError> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(move |index| self.sheet_mut(index))
     }
@@ -646,7 +639,7 @@ impl Workbook {
     pub fn get_sheet_by_name_mut(
         &mut self,
         sheet_name: &str,
-    ) -> Result<&mut Worksheet, &'static str> {
+    ) -> Result<&mut Worksheet, XlsxError> {
         self.sheet_by_name_mut(sheet_name)
     }
 
@@ -692,10 +685,10 @@ impl Workbook {
     /// # Arguments
     /// * `value` - Work Sheet
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
+    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet.
     ///   Err:Error.
     #[inline]
-    pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
+    pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, XlsxError> {
         let title = value.name();
         Workbook::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
@@ -706,11 +699,11 @@ impl Workbook {
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
+    /// * `Result<(), XlsxError>` - OK:removed worksheet. Err:Error.
     #[inline]
-    pub fn remove_sheet(&mut self, index: usize) -> Result<(), &'static str> {
+    pub fn remove_sheet(&mut self, index: usize) -> Result<(), XlsxError> {
         if self.work_sheet_collection.len() <= index {
-            return Err("out of index.");
+            return Err(XlsxError::NotFound());
         }
         self.work_sheet_collection.remove(index);
         Ok(())
@@ -720,14 +713,14 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
-    pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), &'static str> {
+    /// * `Result<(), XlsxError>` - OK:removed worksheet. Err:Error.
+    pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), XlsxError> {
         let cnt_before = self.work_sheet_collection.len();
         self.work_sheet_collection
             .retain(|x| x.name() != sheet_name);
         let cnt_after = self.work_sheet_collection.len();
         if cnt_before == cnt_after {
-            return Err("out of index.");
+            return Err(XlsxError::NotFound());
         }
         Ok(())
     }
@@ -736,13 +729,13 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_title` - sheet title
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
+    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet.
     ///   Err:Error.
     #[inline]
     pub fn new_sheet<S: Into<String>>(
         &mut self,
         sheet_title: S,
-    ) -> Result<&mut Worksheet, &'static str> {
+    ) -> Result<&mut Worksheet, XlsxError> {
         let v = sheet_title.into();
         Workbook::check_sheet_name(self, &v)?;
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
@@ -774,12 +767,12 @@ impl Workbook {
     /// * `index` - target sheet index
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<(), &'static str>` - OK:Success  Err:Error.
+    /// * `Result<(), XlsxError>` - OK:Success  Err:Error.
     pub fn set_sheet_name<S: Into<String>>(
         &mut self,
         index: usize,
         sheet_name: S,
-    ) -> Result<(), &'static str> {
+    ) -> Result<(), XlsxError> {
         let sheet_name_str = sheet_name.into();
         Workbook::check_sheet_name(self, sheet_name_str.as_ref())?;
         self.work_sheet_collection
@@ -787,18 +780,18 @@ impl Workbook {
             .map(|sheet| {
                 sheet.set_name(sheet_name_str);
             })
-            .ok_or("sheet not found.")
+            .ok_or(XlsxError::NotFound())
     }
 
     /// (This method is crate only.)
     /// Check for duplicate sheet name.
-    pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
+    pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), XlsxError> {
         if self
             .work_sheet_collection
             .iter()
             .any(|work_sheet| value == work_sheet.name())
         {
-            Err("name duplicate.")
+            Err(XlsxError::NameDuplicate())
         } else {
             Ok(())
         }

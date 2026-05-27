@@ -74,6 +74,12 @@ pub enum XlsxError {
     Uft8(std::string::FromUtf8Error),
     /// Cell error
     CellError(String),
+    /// Not Found error
+    NotFound(),
+    /// Not Deserialized error
+    NotDeserialized(),
+    /// name duplicate error
+    NameDuplicate(),
 }
 
 from_err!(std::io::Error, XlsxError, Io);
@@ -86,6 +92,9 @@ impl fmt::Display for XlsxError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::XlsxError::{
             CellError,
+            NotFound,
+            NotDeserialized,
+            NameDuplicate,
             Io,
             Uft8,
             Xml,
@@ -97,6 +106,9 @@ impl fmt::Display for XlsxError {
             Zip(s) => write!(f, "ZipError: {s}"),
             Uft8(s) => write!(f, "Uft8Error: {s}"),
             CellError(e) => write!(f, "Unsupported cell error value '{e}'"),
+            NotFound() => write!(f, "Not Found"),
+            NotDeserialized() => write!(f, "Not Deserialized: This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize)"),
+            NameDuplicate() => write!(f, "Name Duplicate"),
         }
     }
 }
