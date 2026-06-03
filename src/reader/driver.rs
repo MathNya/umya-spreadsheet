@@ -95,7 +95,7 @@ pub(crate) fn normalize_path_to_str(path: &str) -> String {
 pub(crate) fn zip_by_name<'a, R: io::Read + io::Seek>(
     arv: &'a mut zip::ZipArchive<R>,
     name: &str,
-) -> Result<zip::read::ZipFile<'a>, zip::result::ZipError> {
+) -> Result<zip::read::ZipFile<'a, R>, zip::result::ZipError> {
     // 1. Exact match (common case)
     if arv.by_name(name).is_ok() {
         // Re-borrow: `by_name` returns a ZipFile that borrows `arv`, so we
