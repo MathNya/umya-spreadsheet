@@ -163,13 +163,7 @@ impl RawFile {
         target: &str,
         source_file: P,
     ) {
-        let path_str = join_paths(base_path, target);
-        if zip_by_name(arv, &path_str).is_err() {
-            self.set_file_target(path_str);
-            return;
-        }
-
-        self.set_file_target(path_str);
+        self.set_attributes(arv, base_path, target);
         self.set_source_file(source_file);
     }
 
