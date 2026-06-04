@@ -2692,3 +2692,65 @@ fn test_remove_row() {
     let out = std::path::Path::new("./tests/result_files/RemoveRow.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
 }
+
+#[test]
+fn alignment_indent_roundtrip() {
+    // Author a workbook with a non-zero `alignment.indent`, write it out,
+    // read it back, and assert the indent attribute survived the round-trip.
+    // Prior to this fix the `indent` attribute was silently dropped on write
+    // because the `Alignment` struct had no field for it.
+    let mut book = umya_spreadsheet::new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+    sheet
+        .cell_mut("A1")
+        .set_value("indented")
+        .style_mut()
+        .alignment_mut()
+        .set_indent(3);
+
+    let out = std::path::Path::new("./tests/result_files/alignment_indent_roundtrip.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
+
+    let book2 = umya_spreadsheet::reader::xlsx::read(out).unwrap();
+    let sheet2 = book2.sheet(0).unwrap();
+    let cell = sheet2.cell("A1").unwrap();
+    let alignment = cell.style().alignment().expect("alignment present");
+    assert_eq!(alignment.indent(), 3, "indent must survive round-trip");
+}
+
+#[test]
+fn alignment_indent_preserved_from_external_xlsx() {
+    // Reproduces the original bug at runtime without depending on the new
+    // `set_indent` / `indent()` API. The fixture xlsx
+    // (`tests/test_files/alignment_indent_input.xlsx`) was authored by
+    // openpyxl and contains `<alignment horizontal="left" indent="3"/>` in
+    // its `xl/styles.xml`. We read it through umya, write it back out, then
+    // inspect the resulting `xl/styles.xml` directly via the `zip` crate
+    // (already a transitive dep) and grep for the indent attribute.
+    //
+    // Before this fix: the reader silently ignored the `indent` attribute
+    // (no field to land it in) and the writer never emitted one, so the
+    // output's `<alignment>` element had no `indent="..."` and this test
+    // FAILED at runtime with `indent attribute missing` in the panic.
+    //
+    // After this fix: the field round-trips and the output xlsx contains
+    // `indent="3"` on the alignment element, exactly as authored.
+    use std::io::Read;
+    let in_path = std::path::Path::new("./tests/test_files/alignment_indent_input.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(in_path).unwrap();
+
+    let out_path = std::path::Path::new("./tests/result_files/alignment_indent_input.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&book, out_path).unwrap();
+
+    let mut zip =
+        zip::ZipArchive::new(std::fs::File::open(out_path).unwrap()).unwrap();
+    let mut styles_xml = String::new();
+    zip.by_name("xl/styles.xml")
+        .unwrap()
+        .read_to_string(&mut styles_xml)
+        .unwrap();
+    assert!(
+        styles_xml.contains("indent=\"3\""),
+        "indent attribute missing from round-tripped styles.xml; got:\n{styles_xml}"
+    );
+}
