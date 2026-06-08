@@ -237,7 +237,7 @@ pub fn write_writer_light<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<
 /// ```
 pub fn write<P: AsRef<Path>>(wb: &Workbook, path: P) -> Result<(), XlsxError> {
     // Fix #328, add default extension
-    let extension = match path.as_ref() {
+    let extension = match path.as_ref().extension() {
         Some(ext) => ext.to_str().unwrap_or("xlsx"),
         None => "xlsx",
     };
