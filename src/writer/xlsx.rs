@@ -236,7 +236,7 @@ pub fn write_writer_light<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<
 /// let _unused = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write<P: AsRef<Path>>(wb: &Workbook, path: P) -> Result<(), XlsxError> {
-    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let extension = path.as_ref().extension().unwrap_or("xlsx").to_str().unwrap_or("xlsx");
     let path_tmp = path
         .as_ref()
         .with_extension(format!("{}{}", extension, "tmp"));
