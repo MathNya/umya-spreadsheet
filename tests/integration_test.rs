@@ -2742,8 +2742,7 @@ fn alignment_indent_preserved_from_external_xlsx() {
     let out_path = std::path::Path::new("./tests/result_files/alignment_indent_input.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, out_path).unwrap();
 
-    let mut zip =
-        zip::ZipArchive::new(std::fs::File::open(out_path).unwrap()).unwrap();
+    let mut zip = zip::ZipArchive::new(std::fs::File::open(out_path).unwrap()).unwrap();
     let mut styles_xml = String::new();
     zip.by_name("xl/styles.xml")
         .unwrap()
