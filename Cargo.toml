@@ -28,7 +28,6 @@ imagesize = "0.14"
 jiff = { version = "0.2.24", default-features = false }
 md-5 = "0.10.6"
 num-traits = "0.2.19"
-paste = "1.0.15"
 phf = { version = "0.11.2", features = ["macros"] }
 quick-xml = { version = "0.37.1", features = ["serialize"] }
 rand = "0.8.5"
