@@ -1,8 +1,13 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    error::Error,
+    fmt,
+};
 
-use html_parser::{
-    Dom,
-    Node,
+use html5gum::{
+    HtmlString,
+    Token,
+    Tokenizer,
 };
 use phf::phf_map;
 
@@ -19,7 +24,7 @@ use crate::structs::{
 /// # Arguments
 /// * `html` - HTML String.
 /// # Return value
-/// * `Result<RichText, html_parser::Error>`
+/// * `Result<RichText, HtmlParseError>`
 /// # Examples
 /// ```
 /// let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
@@ -36,7 +41,7 @@ use crate::structs::{
 ///     .set_wrap_text(true);
 /// ```
 #[inline]
-pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
+pub fn html_to_richtext(html: &str) -> Result<RichText, HtmlParseError> {
     html_to_richtext_custom(html, &DataAnalysis::default())
 }
 
@@ -45,75 +50,141 @@ pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
 /// * `html` - HTML String.
 /// * `method` - struct for analysis.
 /// # Return value
-/// * `Result<RichText, html_parser::Error>`
+/// * `Result<RichText, HtmlParseError>`
 #[inline]
 pub fn html_to_richtext_custom(
     html: &str,
     method: &dyn AnalysisMethod,
-) -> Result<RichText, html_parser::Error> {
-    let dom = Dom::parse(html)?;
-    let data = read_node(&dom.children, &Vec::new());
+) -> Result<RichText, HtmlParseError> {
+    let data = read_html(html)?;
     let result = make_rich_text(&data, method);
     Ok(result)
 }
 
-#[allow(clippy::field_reassign_with_default)]
-fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFlatData> {
-    let mut result: Vec<HtmlFlatData> = Vec::new();
+/// Error emitted while tokenizing HTML input for rich-text conversion.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct HtmlParseError {
+    kind: html5gum::Error,
+}
 
-    if node_list.is_empty() {
-        return result;
+impl HtmlParseError {
+    #[inline]
+    #[must_use]
+    pub const fn new(kind: html5gum::Error) -> Self {
+        Self { kind }
     }
 
-    let mut data = HtmlFlatData::default();
-    data.element.extend_from_slice(parent_element);
+    #[inline]
+    #[must_use]
+    pub const fn kind(&self) -> html5gum::Error {
+        self.kind
+    }
+}
 
-    for node in node_list {
-        match node {
-            Node::Text(text) => {
-                data.text = format!("{}{}", data.text, text);
-            }
-            Node::Element(element) => {
-                if &element.name == "br" {
-                    data.text = format!("{}{}", data.text, "\n");
+impl fmt::Display for HtmlParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "HTML parse error: {}", self.kind)
+    }
+}
+
+impl Error for HtmlParseError {}
+
+impl From<html5gum::Error> for HtmlParseError {
+    #[inline]
+    fn from(value: html5gum::Error) -> Self {
+        Self::new(value)
+    }
+}
+
+fn read_html(html: &str) -> Result<Vec<HtmlFlatData>, HtmlParseError> {
+    let mut result: Vec<HtmlFlatData> = Vec::new();
+    let mut data = HtmlFlatData::default();
+    let mut element_stack: Vec<HfdElement> = Vec::new();
+
+    for token in Tokenizer::new(html) {
+        let token = match token {
+            Ok(token) => token,
+            Err(error) => match error {},
+        };
+
+        match token {
+            Token::StartTag(tag) => {
+                let tag_name = html_string_to_string(&tag.name).to_ascii_lowercase();
+                if tag_name == "br" {
+                    data.text.push('\n');
                     continue;
                 }
-                if !data.text.is_empty() {
-                    result.push(data);
-                    data = HtmlFlatData::default();
-                    data.element.extend_from_slice(parent_element);
+
+                push_text_run(&mut result, &mut data, &element_stack);
+                if !tag.self_closing {
+                    element_stack.push(make_element(tag_name, &tag.attributes));
+                    data.element.clone_from(&element_stack);
                 }
-
-                let mut elm: HfdElement = HfdElement::default();
-                elm.name.clone_from(&element.name);
-
-                elm.attributes = element
-                    .attributes
-                    .iter()
-                    .map(|(name, value)| {
-                        (
-                            name.clone(),
-                            value.as_ref().map(ToString::to_string).unwrap_or_default(),
-                        )
-                    })
-                    .collect();
-
-                elm.classes.clone_from(&element.classes);
-                data.element.push(elm);
-
-                let mut children = read_node(&element.children, &data.element);
-                result.append(&mut children);
-
-                data = HtmlFlatData::default();
-                data.element.extend_from_slice(parent_element);
             }
-            Node::Comment(_) => {}
+            Token::EndTag(tag) => {
+                push_text_run(&mut result, &mut data, &element_stack);
+
+                let tag_name = html_string_to_string(&tag.name).to_ascii_lowercase();
+                if let Some(index) = element_stack
+                    .iter()
+                    .rposition(|element| element.name == tag_name)
+                {
+                    element_stack.truncate(index);
+                }
+                data.element.clone_from(&element_stack);
+            }
+            Token::String(text) => {
+                data.text.push_str(&html_string_to_string(&text.value));
+            }
+            Token::Comment(_) | Token::Doctype(_) => {}
+            Token::Error(error) => return Err(error.value.into()),
         }
     }
-    if !data.text.is_empty() {
-        result.push(data);
+
+    push_text_run(&mut result, &mut data, &element_stack);
+    Ok(result)
+}
+
+fn push_text_run(
+    result: &mut Vec<HtmlFlatData>,
+    data: &mut HtmlFlatData,
+    element_stack: &[HfdElement],
+) {
+    if data.text.is_empty() {
+        return;
     }
-    result
+
+    result.push(std::mem::take(data));
+    data.element.extend_from_slice(element_stack);
+}
+
+fn make_element(
+    name: String,
+    attributes: &std::collections::BTreeMap<HtmlString, html5gum::Spanned<HtmlString, ()>>,
+) -> HfdElement {
+    let mut element = HfdElement {
+        name,
+        ..HfdElement::default()
+    };
+
+    for (name, value) in attributes {
+        let name = html_string_to_string(name).to_ascii_lowercase();
+        let value = html_string_to_string(&value.value);
+
+        if name == "class" {
+            element
+                .classes
+                .extend(value.split_whitespace().map(str::to_string));
+        } else if name != "id" {
+            element.attributes.insert(name, value);
+        }
+    }
+
+    element
+}
+
+fn html_string_to_string(value: &HtmlString) -> String {
+    String::from_utf8_lossy(value.as_ref()).into_owned()
 }
 
 fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMethod) -> RichText {
@@ -820,4 +891,65 @@ static COLOR_MAP: phf::Map<&str, &str> = phf_map! {
 fn convert_test() {
     let html = r#"<font color="red">test</font><br><font class="test" color="green">TE<b>S</b>T<br/>TEST</font>"#;
     let _unused = html_to_richtext(html).unwrap();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn html_to_richtext_decodes_entities_and_preserves_line_breaks() {
+        let rich_text = html_to_richtext("A&amp;B<br>C&nbsp;D").unwrap();
+
+        assert_eq!(rich_text.text(), "A&B\nC\u{a0}D");
+    }
+
+    #[test]
+    fn html_to_richtext_keeps_nested_formatting_on_each_text_run() {
+        let html = r##"<font face="Arial" size="14" color="#48D1CC">TE<b>S</b><br/>T</font>"##;
+        let rich_text = html_to_richtext(html).unwrap();
+        let elements = rich_text.rich_text_elements();
+
+        assert_eq!(elements.len(), 3);
+        assert_eq!(elements[0].text(), "TE");
+        assert_eq!(elements[1].text(), "S");
+        assert_eq!(elements[2].text(), "\nT");
+
+        let regular_font = elements[0].font().unwrap();
+        assert_eq!(regular_font.name(), "Arial");
+        assert!((regular_font.size() - 14.0).abs() < f64::EPSILON);
+        assert_eq!(regular_font.color().argb_str(), "FF48D1CC");
+        assert!(!regular_font.bold());
+
+        let bold_font = elements[1].font().unwrap();
+        assert!(bold_font.bold());
+        assert_eq!(bold_font.name(), "Arial");
+        assert_eq!(bold_font.color().argb_str(), "FF48D1CC");
+    }
+
+    #[test]
+    fn html_to_richtext_maps_supported_inline_tags_to_font_properties() {
+        let html = "<u><i><del><sup>X</sup></del></i></u><sub>Y</sub>";
+        let rich_text = html_to_richtext(html).unwrap();
+        let elements = rich_text.rich_text_elements();
+
+        assert_eq!(elements.len(), 2);
+        assert_eq!(elements[0].text(), "X");
+        assert_eq!(elements[1].text(), "Y");
+
+        let x_font = elements[0].font().unwrap();
+        assert_eq!(x_font.font_underline().val(), &UnderlineValues::Single);
+        assert!(x_font.italic());
+        assert!(x_font.strikethrough());
+        assert_eq!(
+            x_font.vertical_text_alignment().val(),
+            &VerticalAlignmentRunValues::Superscript
+        );
+
+        let y_font = elements[1].font().unwrap();
+        assert_eq!(
+            y_font.vertical_text_alignment().val(),
+            &VerticalAlignmentRunValues::Subscript
+        );
+    }
 }
