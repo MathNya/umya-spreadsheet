@@ -161,7 +161,7 @@ fn parse_into_intermediate_tokens(formula: &str) -> (Vec<FormulaToken>, Vec<Form
     // state flags
     let mut in_string = false;
     let mut in_path = false;
-    let mut in_range = false;
+    let mut range_depth = 0;
     let mut in_error = false;
 
     let mut index = 1;
@@ -188,8 +188,8 @@ fn parse_into_intermediate_tokens(formula: &str) -> (Vec<FormulaToken>, Vec<Form
         }
 
         // bracketed strings (R1C1 range index or workbook name)
-        if in_range {
-            handle_in_range(formula, &mut index, &mut value, &mut in_range);
+        if range_depth > 0 {
+            handle_in_range(formula, &mut index, &mut value, &mut range_depth);
             continue;
         }
 
@@ -212,7 +212,7 @@ fn parse_into_intermediate_tokens(formula: &str) -> (Vec<FormulaToken>, Vec<Form
             &mut tokens1,
             &mut stack,
             &mut in_string,
-            &mut in_range,
+            &mut range_depth,
             &mut in_error,
         ) {
             continue;
@@ -372,11 +372,14 @@ fn handle_in_path(formula: &str, index: &mut usize, value: &mut String, in_path:
     *index += 1;
 }
 
-fn handle_in_range(formula: &str, index: &mut usize, value: &mut String, in_range: &mut bool) {
-    if formula.chars().nth(*index).unwrap() == BRACKET_CLOSE {
-        *in_range = false;
+fn handle_in_range(formula: &str, index: &mut usize, value: &mut String, range_depth: &mut usize) {
+    let current_char = formula.chars().nth(*index).unwrap();
+    if current_char == BRACKET_OPEN {
+        *range_depth += 1;
+    } else if current_char == BRACKET_CLOSE {
+        *range_depth = range_depth.saturating_sub(1);
     }
-    value.push(formula.chars().nth(*index).unwrap());
+    value.push(current_char);
     *index += 1;
 }
 
@@ -424,7 +427,7 @@ fn handle_special_characters(
     tokens1: &mut Vec<FormulaToken>,
     stack: &mut Vec<FormulaToken>,
     in_string: &mut bool,
-    in_range: &mut bool,
+    range_depth: &mut usize,
     in_error: &mut bool,
 ) -> bool {
     let current_char = formula.chars().nth(*index).unwrap();
@@ -459,7 +462,7 @@ fn handle_special_characters(
 
     // handle bracket open
     if current_char == BRACKET_OPEN {
-        *in_range = true;
+        *range_depth = 1;
         value.push(BRACKET_OPEN);
         *index += 1;
         return true;
@@ -596,6 +599,11 @@ fn handle_special_characters(
 
     // handle subexpression/function stop
     if current_char == PAREN_CLOSE {
+        if stack.is_empty() {
+            value.push(current_char);
+            *index += 1;
+            return true;
+        }
         if !value.is_empty() {
             let mut obj = FormulaToken::default();
             obj.set_value(value.clone());
