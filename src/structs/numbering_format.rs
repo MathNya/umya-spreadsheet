@@ -1,6 +1,5 @@
 use std::io::Cursor;
 
-use md5::Digest;
 use phf::phf_map;
 use quick_xml::{
     Reader,
@@ -168,7 +167,7 @@ impl NumberingFormat {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(&*self.format_code))
+        crate::helper::utils::md5_hash(&*self.format_code)
     }
 
     #[inline]

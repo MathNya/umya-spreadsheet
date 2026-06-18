@@ -4,7 +4,6 @@ use std::{
     io::Cursor,
 };
 
-use md5::Digest;
 use phf::phf_map;
 use quick_xml::{
     Reader,
@@ -475,16 +474,13 @@ impl Color {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}",
-                self.indexed.map_or(String::new(), |v| v.to_string()),
-                self.theme_index.map_or(String::new(), |v| v.to_string()),
-                self.argb.map_or(String::new(), Self::argb8_to_hex),
-                self.tint.map_or(String::new(), |v| v.to_string())
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}",
+            self.indexed.map_or(String::new(), |v| v.to_string()),
+            self.theme_index.map_or(String::new(), |v| v.to_string()),
+            self.argb.map_or(String::new(), Self::argb8_to_hex),
+            self.tint.map_or(String::new(), |v| v.to_string())
+        ))
     }
 
     #[inline]

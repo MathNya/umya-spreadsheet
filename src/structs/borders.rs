@@ -1,7 +1,6 @@
 // border
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -501,21 +500,18 @@ impl Borders {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}{}{}{}{}",
-                self.left_border().hash_code(),
-                self.right_border().hash_code(),
-                self.top_border().hash_code(),
-                self.bottom_border().hash_code(),
-                self.diagonal_border().hash_code(),
-                self.vertical_border().hash_code(),
-                self.horizontal_border().hash_code(),
-                self.diagonal_down.value_string(),
-                self.diagonal_up.value_string()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}{}{}{}{}{}",
+            self.left_border().hash_code(),
+            self.right_border().hash_code(),
+            self.top_border().hash_code(),
+            self.bottom_border().hash_code(),
+            self.diagonal_border().hash_code(),
+            self.vertical_border().hash_code(),
+            self.horizontal_border().hash_code(),
+            self.diagonal_down.value_string(),
+            self.diagonal_up.value_string()
+        ))
     }
 
     #[inline]

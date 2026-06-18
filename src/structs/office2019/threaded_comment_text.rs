@@ -50,7 +50,7 @@ impl ThreadedCommentText {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                self.set_value(e.unescape().unwrap());
+                self.set_value(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"text" {

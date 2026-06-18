@@ -129,7 +129,7 @@ impl ToMarker {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
+                Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
                 Ok(Event::End(ref e)) => match e.name().0 {
                     b"xdr:col" => {
                         self.col = string_value.parse::<usize>().unwrap();

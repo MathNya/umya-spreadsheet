@@ -1,7 +1,6 @@
 // dxf
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -172,44 +171,41 @@ impl DifferentialFormat {
     }
 
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}",
-                match &self.font {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.fill {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.borders {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.alignment {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}",
+            match &self.font {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },
+            match &self.fill {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },
+            match &self.borders {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },
+            match &self.alignment {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

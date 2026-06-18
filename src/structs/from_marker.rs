@@ -140,7 +140,7 @@ impl FromMarker {
         let mut string_value: String = String::new();
         xml_read_loop!(
             reader,
-            Event::Text(e) => string_value = e.unescape().unwrap().to_string(),
+            Event::Text(e) => string_value = crate::helper::utils::unescape_xml_text(&e),
             Event::End(ref e) => match e.name().into_inner() {
                 b"xdr:col" => {
                     self.col = string_value.parse::<usize>().unwrap();

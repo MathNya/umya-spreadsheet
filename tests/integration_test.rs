@@ -2452,7 +2452,12 @@ fn shared_formula_signatures(
             }
             Ok(quick_xml::events::Event::Text(e)) => {
                 if in_shared_formula {
-                    shared_text = Some(e.unescape().unwrap().into_owned());
+                    let decoded = e.decode().unwrap();
+                    shared_text = Some(
+                        quick_xml::escape::unescape(decoded.as_ref())
+                            .unwrap()
+                            .into_owned(),
+                    );
                 }
             }
             Ok(quick_xml::events::Event::End(ref e)) => {
