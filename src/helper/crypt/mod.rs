@@ -24,8 +24,6 @@ use std::{
     path::Path,
 };
 
-use rand::Rng;
-
 use crate::structs::{
     SheetProtection,
     WorkbookProtection,
