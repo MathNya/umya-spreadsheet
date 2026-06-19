@@ -14,7 +14,31 @@ pub fn join_address(sheet_name: &str, address: &str) -> String {
     if sheet_name.is_empty() {
         return address.to_string();
     }
+    if sheet_name_needs_quoting(sheet_name) {
+        let escaped = sheet_name.replace('\'', "''");
+        return format!("'{escaped}'!{address}");
+    }
     format!("{sheet_name}!{address}")
+}
+
+/// A sheet name can appear unquoted in a formula only when it is a bare
+/// identifier: it starts with a letter or underscore and otherwise contains
+/// only letters, digits, underscores or periods. Anything else (spaces,
+/// punctuation such as `(`/`)`, a leading digit, …) must be wrapped in single
+/// quotes when re-serialized.
+fn sheet_name_needs_quoting(sheet_name: &str) -> bool {
+    let mut chars = sheet_name.chars();
+    match chars.next() {
+        None => false,
+        Some(first) => {
+            if !(first.is_ascii_alphabetic() || first == '_') {
+                return true;
+            }
+            sheet_name
+                .chars()
+                .any(|c| !(c.is_ascii_alphanumeric() || c == '_' || c == '.'))
+        }
+    }
 }
 
 /// Checks if the given input string is a valid address format.
