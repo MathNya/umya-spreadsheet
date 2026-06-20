@@ -214,7 +214,6 @@ fn parse_into_intermediate_tokens(formula: &str) -> (Vec<FormulaToken>, Vec<Form
             &mut in_string,
             &mut range_depth,
             &mut in_path,
-            &mut in_range,
             &mut in_error,
         ) {
             continue;
@@ -434,7 +433,6 @@ fn handle_special_characters(
     in_string: &mut bool,
     range_depth: &mut usize,
     in_path: &mut bool,
-    in_range: &mut bool,
     in_error: &mut bool,
 ) -> bool {
     let current_char = formula.chars().nth(*index).unwrap();
@@ -1098,7 +1096,13 @@ mod shared_formula_quoted_sheet_tests {
     fn shared_adjustment_preserves_quoted_sheet() {
         let mut tokens = parse_to_tokens(r#"=IF(A2=1,'(1)'!$E$38&"-x","")"#);
         let out = adjustment_insert_formula_coordinate(&mut tokens, 0, 0, 2, 1, "", "Main", true);
-        assert!(out.contains("'(1)'!$E$38"), "quoted sheet ref corrupted: {out}");
-        assert!(!out.contains("(1)!$E$38"), "sheet name lost its quotes: {out}");
+        assert!(
+            out.contains("'(1)'!$E$38"),
+            "quoted sheet ref corrupted: {out}"
+        );
+        assert!(
+            !out.contains("(1)!$E$38"),
+            "sheet name lost its quotes: {out}"
+        );
     }
 }
