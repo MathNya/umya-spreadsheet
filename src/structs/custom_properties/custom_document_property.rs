@@ -168,7 +168,7 @@ impl CustomDocumentProperty {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                value = e.unescape().unwrap().to_string();
+                value = crate::helper::utils::unescape_xml_text(&e);
             },
             Event::End(ref e) => {
                 match e.name().into_inner(){

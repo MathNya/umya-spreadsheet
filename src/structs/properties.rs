@@ -361,7 +361,7 @@ impl Properties {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                value = e.unescape().unwrap().to_string();
+                value = crate::helper::utils::unescape_xml_text(&e);
             },
             Event::End(ref e) => match e.name().into_inner() {
                 b"dc:title" => {self.set_title(std::mem::take(&mut value));},
@@ -398,7 +398,7 @@ impl Properties {
                 }
             },
             Event::Text(e) => {
-                value = e.unescape().unwrap().to_string();
+                value = crate::helper::utils::unescape_xml_text(&e);
             },
             Event::End(ref e) => match e.name().into_inner() {
                 b"Manager" => {self.set_manager(std::mem::take(&mut value));}

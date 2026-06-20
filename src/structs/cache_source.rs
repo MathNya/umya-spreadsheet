@@ -1,7 +1,6 @@
 // cacheSource
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -88,21 +87,18 @@ impl CacheSource {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                self.r#type.value_string(),
-                match &self.worksheet_source {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            self.r#type.value_string(),
+            match &self.worksheet_source {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },
+        ))
     }
 
     #[inline]

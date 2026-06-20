@@ -333,7 +333,7 @@ impl DataValidation {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    value = e.unescape().unwrap().to_string();
+                    value = crate::helper::utils::unescape_xml_text(&e);
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"formula1" => {

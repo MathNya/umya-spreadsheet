@@ -98,7 +98,7 @@ impl Formula {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                self.set_address_str(e.unescape().unwrap());
+                self.set_address_str(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                if  e.name().0 == b"c:f" {

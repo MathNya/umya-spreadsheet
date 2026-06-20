@@ -1,6 +1,5 @@
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -141,28 +140,25 @@ impl Fill {
     }
 
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                match &self.pattern_fill {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "NONE".to_string()
-                    }
-                },
-                match &self.gradient_fill {
-                    Some(v) => {
-                        v.hash_code()
-                    }
-                    None => {
-                        "NONE".to_string()
-                    }
-                },
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            match &self.pattern_fill {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "NONE".to_string()
+                }
+            },
+            match &self.gradient_fill {
+                Some(v) => {
+                    v.hash_code()
+                }
+                None => {
+                    "NONE".to_string()
+                }
+            },
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

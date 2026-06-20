@@ -60,6 +60,7 @@ use std::cmp::Ordering;
 
 use hmac::{
     Hmac,
+    KeyInit,
     Mac,
 };
 use sha2::{

@@ -91,7 +91,7 @@ impl Run {
                 }
             },
             Event::Text(e) => {
-                self.set_text(e.unescape().unwrap());
+                self.set_text(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"a:r" {

@@ -1,7 +1,6 @@
 // border
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -26,8 +25,6 @@ use crate::{
         write_start_tag,
     },
 };
-
-use paste::paste;
 
 pub(crate) enum BordersIndex {
     Left = 0,
@@ -54,50 +51,6 @@ macro_rules! border_const {
     }
 }
 
-macro_rules! border_accessors {
-    ($($fn_name:ident, $index:ident),*) => {
-        impl Borders {
-            paste! {
-                $(
-                    pub fn [<get_ $fn_name _border>](&self) -> &Border {
-                        &self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<get_ $fn_name _border_mut>](&mut self) -> &mut Border {
-                        &mut self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<set_ $fn_name _border>](&mut self, value: Border) -> &mut Self {
-                        self.data[BordersIndex::$index as usize] = value;
-                        self
-                    }
-
-                    pub fn [<$fn_name>](&self) -> &Border {
-                        &self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<get_ $fn_name>](&self) -> &Border {
-                        &self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<$fn_name _mut>](&mut self) -> &mut Border {
-                        &mut self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<get_ $fn_name _mut>](&mut self) -> &mut Border {
-                        &mut self.data[BordersIndex::$index as usize]
-                    }
-
-                    pub fn [<set_ $fn_name>](&mut self, value: Border) -> &mut Self {
-                        self.data[BordersIndex::$index as usize] = value;
-                        self
-                    }
-                )*
-            }
-        }
-    }
-}
-
 border_const! {
     BORDER_DASHDOT => "dashDot",
     BORDER_DASHDOTDOT => "dashDotDot", 
@@ -115,17 +68,393 @@ border_const! {
     BORDER_THIN => "thin"
 }
 
-border_accessors! {
-    left, Left,
-    right, Right,
-    top, Top,
-    bottom, Bottom,
-    diagonal, Diagonal,
-    vertical, Vertical,
-    horizontal, Horizontal
-}
-
 impl Borders {
+
+    #[inline]
+    pub fn left(&self) -> &Border {
+        &self.data[BordersIndex::Left as usize]
+    }
+
+    #[inline]
+    pub fn left_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Left as usize]
+    }
+
+    #[inline]
+    pub fn left_border(&self) -> &Border {
+        self.left()
+    }
+
+    #[inline]
+    pub fn left_border_mut(&mut self) -> &mut Border {
+        self.left_mut()
+    }
+
+    #[inline]
+    pub fn set_left(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Left as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_left_border(&mut self, value: Border) -> &mut Self {
+        self.set_left(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use left()")]
+    pub fn get_left(&self) -> &Border {
+        self.left()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use left_mut()")]
+    pub fn get_left_mut(&mut self) -> &mut Border {
+        self.left_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use left_border()")]
+    pub fn get_left_border(&self) -> &Border {
+        self.left_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use left_border_mut()")]
+    pub fn get_left_border_mut(&mut self) -> &mut Border {
+        self.left_border_mut()
+    }
+
+    #[inline]
+    pub fn right(&self) -> &Border {
+        &self.data[BordersIndex::Right as usize]
+    }
+
+    #[inline]
+    pub fn right_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Right as usize]
+    }
+
+    #[inline]
+    pub fn right_border(&self) -> &Border {
+        self.right()
+    }
+
+    #[inline]
+    pub fn right_border_mut(&mut self) -> &mut Border {
+        self.right_mut()
+    }
+
+    #[inline]
+    pub fn set_right(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Right as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_right_border(&mut self, value: Border) -> &mut Self {
+        self.set_right(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use right()")]
+    pub fn get_right(&self) -> &Border {
+        self.right()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use right_mut()")]
+    pub fn get_right_mut(&mut self) -> &mut Border {
+        self.right_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use right_border()")]
+    pub fn get_right_border(&self) -> &Border {
+        self.right_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use right_border_mut()")]
+    pub fn get_right_border_mut(&mut self) -> &mut Border {
+        self.right_border_mut()
+    }
+
+    #[inline]
+    pub fn top(&self) -> &Border {
+        &self.data[BordersIndex::Top as usize]
+    }
+
+    #[inline]
+    pub fn top_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Top as usize]
+    }
+
+    #[inline]
+    pub fn top_border(&self) -> &Border {
+        self.top()
+    }
+
+    #[inline]
+    pub fn top_border_mut(&mut self) -> &mut Border {
+        self.top_mut()
+    }
+
+    #[inline]
+    pub fn set_top(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Top as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_top_border(&mut self, value: Border) -> &mut Self {
+        self.set_top(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use top()")]
+    pub fn get_top(&self) -> &Border {
+        self.top()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use top_mut()")]
+    pub fn get_top_mut(&mut self) -> &mut Border {
+        self.top_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use top_border()")]
+    pub fn get_top_border(&self) -> &Border {
+        self.top_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use top_border_mut()")]
+    pub fn get_top_border_mut(&mut self) -> &mut Border {
+        self.top_border_mut()
+    }
+
+    #[inline]
+    pub fn bottom(&self) -> &Border {
+        &self.data[BordersIndex::Bottom as usize]
+    }
+
+    #[inline]
+    pub fn bottom_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Bottom as usize]
+    }
+
+    #[inline]
+    pub fn bottom_border(&self) -> &Border {
+        self.bottom()
+    }
+
+    #[inline]
+    pub fn bottom_border_mut(&mut self) -> &mut Border {
+        self.bottom_mut()
+    }
+
+    #[inline]
+    pub fn set_bottom(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Bottom as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_bottom_border(&mut self, value: Border) -> &mut Self {
+        self.set_bottom(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> &Border {
+        self.bottom()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use bottom_mut()")]
+    pub fn get_bottom_mut(&mut self) -> &mut Border {
+        self.bottom_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use bottom_border()")]
+    pub fn get_bottom_border(&self) -> &Border {
+        self.bottom_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use bottom_border_mut()")]
+    pub fn get_bottom_border_mut(&mut self) -> &mut Border {
+        self.bottom_border_mut()
+    }
+
+    #[inline]
+    pub fn diagonal(&self) -> &Border {
+        &self.data[BordersIndex::Diagonal as usize]
+    }
+
+    #[inline]
+    pub fn diagonal_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Diagonal as usize]
+    }
+
+    #[inline]
+    pub fn diagonal_border(&self) -> &Border {
+        self.diagonal()
+    }
+
+    #[inline]
+    pub fn diagonal_border_mut(&mut self) -> &mut Border {
+        self.diagonal_mut()
+    }
+
+    #[inline]
+    pub fn set_diagonal(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Diagonal as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_diagonal_border(&mut self, value: Border) -> &mut Self {
+        self.set_diagonal(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use diagonal()")]
+    pub fn get_diagonal(&self) -> &Border {
+        self.diagonal()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use diagonal_mut()")]
+    pub fn get_diagonal_mut(&mut self) -> &mut Border {
+        self.diagonal_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use diagonal_border()")]
+    pub fn get_diagonal_border(&self) -> &Border {
+        self.diagonal_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use diagonal_border_mut()")]
+    pub fn get_diagonal_border_mut(&mut self) -> &mut Border {
+        self.diagonal_border_mut()
+    }
+
+    #[inline]
+    pub fn vertical(&self) -> &Border {
+        &self.data[BordersIndex::Vertical as usize]
+    }
+
+    #[inline]
+    pub fn vertical_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Vertical as usize]
+    }
+
+    #[inline]
+    pub fn vertical_border(&self) -> &Border {
+        self.vertical()
+    }
+
+    #[inline]
+    pub fn vertical_border_mut(&mut self) -> &mut Border {
+        self.vertical_mut()
+    }
+
+    #[inline]
+    pub fn set_vertical(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Vertical as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_vertical_border(&mut self, value: Border) -> &mut Self {
+        self.set_vertical(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use vertical()")]
+    pub fn get_vertical(&self) -> &Border {
+        self.vertical()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use vertical_mut()")]
+    pub fn get_vertical_mut(&mut self) -> &mut Border {
+        self.vertical_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use vertical_border()")]
+    pub fn get_vertical_border(&self) -> &Border {
+        self.vertical_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use vertical_border_mut()")]
+    pub fn get_vertical_border_mut(&mut self) -> &mut Border {
+        self.vertical_border_mut()
+    }
+
+    #[inline]
+    pub fn horizontal(&self) -> &Border {
+        &self.data[BordersIndex::Horizontal as usize]
+    }
+
+    #[inline]
+    pub fn horizontal_mut(&mut self) -> &mut Border {
+        &mut self.data[BordersIndex::Horizontal as usize]
+    }
+
+    #[inline]
+    pub fn horizontal_border(&self) -> &Border {
+        self.horizontal()
+    }
+
+    #[inline]
+    pub fn horizontal_border_mut(&mut self) -> &mut Border {
+        self.horizontal_mut()
+    }
+
+    #[inline]
+    pub fn set_horizontal(&mut self, value: Border) -> &mut Self {
+        self.data[BordersIndex::Horizontal as usize] = value;
+        self
+    }
+
+    #[inline]
+    pub fn set_horizontal_border(&mut self, value: Border) -> &mut Self {
+        self.set_horizontal(value)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use horizontal()")]
+    pub fn get_horizontal(&self) -> &Border {
+        self.horizontal()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use horizontal_mut()")]
+    pub fn get_horizontal_mut(&mut self) -> &mut Border {
+        self.horizontal_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use horizontal_border()")]
+    pub fn get_horizontal_border(&self) -> &Border {
+        self.horizontal_border()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.1", note = "Use horizontal_border_mut()")]
+    pub fn get_horizontal_border_mut(&mut self) -> &mut Border {
+        self.horizontal_border_mut()
+    }
+
     #[inline]
     pub fn diagonal_down(&self) -> bool {
         self.diagonal_down.value()
@@ -171,21 +500,18 @@ impl Borders {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}{}{}{}{}",
-                self.get_left_border().hash_code(),
-                self.get_right_border().hash_code(),
-                self.get_top_border().hash_code(),
-                self.get_bottom_border().hash_code(),
-                self.get_diagonal_border().hash_code(),
-                self.get_vertical_border().hash_code(),
-                self.get_horizontal_border().hash_code(),
-                self.diagonal_down.value_string(),
-                self.diagonal_up.value_string()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}{}{}{}{}{}",
+            self.left_border().hash_code(),
+            self.right_border().hash_code(),
+            self.top_border().hash_code(),
+            self.bottom_border().hash_code(),
+            self.diagonal_border().hash_code(),
+            self.vertical_border().hash_code(),
+            self.horizontal_border().hash_code(),
+            self.diagonal_down.value_string(),
+            self.diagonal_up.value_string()
+        ))
     }
 
     #[inline]

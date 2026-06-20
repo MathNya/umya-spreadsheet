@@ -1,7 +1,6 @@
 // t
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -45,7 +44,7 @@ impl Text {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(&*self.value))
+        crate::helper::utils::md5_hash(&*self.value)
     }
 
     #[inline]
@@ -62,7 +61,7 @@ impl Text {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                self.set_value(e.unescape().unwrap());
+                self.set_value(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"t" {

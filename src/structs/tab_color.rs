@@ -176,16 +176,13 @@ impl TabColor {
 
     #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}",
-                &self.indexed.get_hash_string(),
-                &self.theme_index.get_hash_string(),
-                &self.argb.get_hash_string(),
-                &self.tint.get_hash_string()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}",
+            &self.indexed.get_hash_string(),
+            &self.theme_index.get_hash_string(),
+            &self.argb.get_hash_string(),
+            &self.tint.get_hash_string()
+        ))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

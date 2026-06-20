@@ -4,7 +4,6 @@ use std::{
     io::Cursor,
 };
 
-use md5::Digest;
 use quick_xml::Writer;
 
 use super::TextElement;
@@ -82,7 +81,7 @@ impl RichText {
         for ele in &self.rich_text_elements {
             write!(value, "{}", ele.hash_code()).unwrap();
         }
-        format!("{:x}", md5::Md5::digest(&value))
+        crate::helper::utils::md5_hash(&value)
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

@@ -61,8 +61,8 @@ use std::io;
 use aes::{
     Aes256,
     cipher::{
-        BlockDecryptMut,
-        BlockEncryptMut,
+        BlockModeDecrypt,
+        BlockModeEncrypt,
         KeyIvInit,
         block_padding::NoPadding,
     },
@@ -197,7 +197,7 @@ pub(crate) fn crypt(encrypt: bool, key: &[u8], iv: &[u8], input: &[u8]) -> Resul
                     .map_err(|e| format!("Error creating cipher: {e}"))?;
                 let mut buffer = input.to_vec();
                 cipher
-                    .encrypt_padded_mut::<NoPadding>(&mut buffer, input.len())
+                    .encrypt_padded::<NoPadding>(&mut buffer, input.len())
                     .map_err(|e| format!("Encryption error: {e}"))?;
                 Ok(buffer)
             } else {
@@ -206,7 +206,7 @@ pub(crate) fn crypt(encrypt: bool, key: &[u8], iv: &[u8], input: &[u8]) -> Resul
                     .map_err(|e| format!("Error creating cipher: {e}"))?;
                 let mut buffer = input.to_vec();
                 cipher
-                    .decrypt_padded_mut::<NoPadding>(&mut buffer)
+                    .decrypt_padded::<NoPadding>(&mut buffer)
                     .map_err(|e| format!("Decryption error: {e}"))?;
                 Ok(buffer)
             }

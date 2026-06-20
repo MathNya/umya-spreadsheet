@@ -5,7 +5,6 @@ use std::{
     str::FromStr,
 };
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -165,41 +164,38 @@ impl SharedItems {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}{}{}",
-                self.contains_semi_mixed_types.value_string(),
-                self.contains_string.value_string(),
-                self.contains_number.value_string(),
-                self.contains_integer.value_string(),
-                self.min_value.value_string(),
-                self.max_value.value_string(),
-                self.items
-                    .iter()
-                    .map(|v| match v {
-                        SharedItemValue::Bool(v) => {
-                            format!("Bool|||{v}")
-                        }
-                        SharedItemValue::Date(v) => {
-                            format!("Date|||{v}")
-                        }
-                        SharedItemValue::Error(v) => {
-                            format!("Error|||{v}")
-                        }
-                        SharedItemValue::Empty => {
-                            "Empty|||".to_string()
-                        }
-                        SharedItemValue::Numeric(v) => {
-                            format!("Numeric|||{v}")
-                        }
-                        SharedItemValue::String(v) => {
-                            format!("String|||{v}")
-                        }
-                    })
-                    .collect::<String>()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}{}{}{}",
+            self.contains_semi_mixed_types.value_string(),
+            self.contains_string.value_string(),
+            self.contains_number.value_string(),
+            self.contains_integer.value_string(),
+            self.min_value.value_string(),
+            self.max_value.value_string(),
+            self.items
+                .iter()
+                .map(|v| match v {
+                    SharedItemValue::Bool(v) => {
+                        format!("Bool|||{v}")
+                    }
+                    SharedItemValue::Date(v) => {
+                        format!("Date|||{v}")
+                    }
+                    SharedItemValue::Error(v) => {
+                        format!("Error|||{v}")
+                    }
+                    SharedItemValue::Empty => {
+                        "Empty|||".to_string()
+                    }
+                    SharedItemValue::Numeric(v) => {
+                        format!("Numeric|||{v}")
+                    }
+                    SharedItemValue::String(v) => {
+                        format!("String|||{v}")
+                    }
+                })
+                .collect::<String>()
+        ))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

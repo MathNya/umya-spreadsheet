@@ -17,9 +17,11 @@ use crate::{
         coordinate::index_from_coordinate,
         formula::{
             FormulaToken,
+            adjustment_formula_coordinate,
             adjustment_insert_formula_coordinate,
             adjustment_remove_formula_coordinate,
             parse_to_tokens,
+            render,
         },
     },
     reader::driver::{
@@ -299,7 +301,7 @@ impl CellFormula {
             xml_read_loop!(
                 reader,
                 Event::Text(e) => {
-                    self.text.set_value(e.unescape().unwrap().to_string());
+                    self.text.set_value(crate::helper::utils::unescape_xml_text(&e));
                 },
                 Event::End(ref e) => {
                     if e.name().into_inner() == b"f" {
@@ -323,22 +325,25 @@ impl CellFormula {
                         return;
                     };
 
-                    let root_col_num = parent_col_num;
-                    let root_row_num = parent_row_num;
-                    let offset_col_num = self_col_num.wrapping_sub(root_col_num);
-                    let offset_row_num = self_row_num.wrapping_sub(root_row_num);
+                    // Shared-formula sibling rebasing: translate every
+                    // RELATIVE reference in the master's formula by
+                    // (self - master) so each sibling references the cells at
+                    // its own offset; absolute refs ($A$1) stay put.
+                    //
+                    // `adjustment_insert_formula_coordinate` has insert-shift
+                    // semantics (shift refs at >= root by N) — the wrong
+                    // primitive here: it left every sibling pointing at the
+                    // master's relative cells (e.g. C1 rendered as `A1+1`
+                    // instead of `B1+1`). `adjustment_formula_coordinate` is
+                    // the translate-to-new-origin primitive.
+                    let offset_col_num: i32 = num_traits::cast::<_, i32>(self_col_num).unwrap()
+                        - num_traits::cast::<_, i32>(parent_col_num).unwrap();
+                    let offset_row_num: i32 = num_traits::cast::<_, i32>(self_row_num).unwrap()
+                        - num_traits::cast::<_, i32>(parent_row_num).unwrap();
 
                     let mut token_new = token.clone();
-                    let value = adjustment_insert_formula_coordinate(
-                        &mut token_new,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                        "",
-                        "",
-                        true,
-                    );
+                    adjustment_formula_coordinate(&mut token_new, offset_col_num, offset_row_num);
+                    let value = render(token_new.as_ref());
                     self.text_view.set_value(value);
                 }
                 None => {

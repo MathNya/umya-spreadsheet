@@ -4,7 +4,6 @@ use std::{
     str::FromStr,
 };
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -612,23 +611,20 @@ impl Font {
     }
 
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}{}{}{}{}{}{}",
-                self.font_name.val.hash_string(),
-                self.font_size.val.hash_string(),
-                self.font_family_numbering.val.hash_string(),
-                self.font_bold.val.hash_string(),
-                self.font_italic.val.hash_string(),
-                self.font_underline.val.hash_string(),
-                self.font_strike.val.hash_string(),
-                self.color.hash_code(),
-                self.font_char_set.val.hash_string(),
-                self.font_scheme.val.hash_string(),
-                self.vertical_text_alignment.val.hash_string(),
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}{}{}{}{}{}{}{}",
+            self.font_name.val.hash_string(),
+            self.font_size.val.hash_string(),
+            self.font_family_numbering.val.hash_string(),
+            self.font_bold.val.hash_string(),
+            self.font_italic.val.hash_string(),
+            self.font_underline.val.hash_string(),
+            self.font_strike.val.hash_string(),
+            self.color.hash_code(),
+            self.font_char_set.val.hash_string(),
+            self.font_scheme.val.hash_string(),
+            self.vertical_text_alignment.val.hash_string(),
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]
