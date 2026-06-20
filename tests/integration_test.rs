@@ -2758,3 +2758,49 @@ fn alignment_indent_preserved_from_external_xlsx() {
         "indent attribute missing from round-tripped styles.xml; got:\n{styles_xml}"
     );
 }
+
+#[test]
+fn shared_formula_siblings_rebase_relative_references() {
+    use umya_spreadsheet::{
+        reader,
+        writer,
+    };
+    let mut book = umya_spreadsheet::new_file();
+    let ws = book.get_sheet_mut(&0).unwrap();
+    ws.get_cell_mut("A1").set_value_number(10);
+    let mut master = umya_spreadsheet::CellFormula::default();
+    master.set_text("A1+1");
+    master.set_formula_type(umya_spreadsheet::CellFormulaValues::Shared);
+    master.set_shared_index(7);
+    master.set_reference("B1:F1");
+    ws.get_cell_mut("B1")
+        .get_cell_value_mut()
+        .set_formula_obj(master);
+    for col in ["C1", "D1", "E1", "F1"] {
+        let mut sib = umya_spreadsheet::CellFormula::default();
+        sib.set_formula_type(umya_spreadsheet::CellFormulaValues::Shared);
+        sib.set_shared_index(7);
+        ws.get_cell_mut(col)
+            .get_cell_value_mut()
+            .set_formula_obj(sib);
+    }
+    let out_dir = std::path::PathBuf::from("./tests/result_files");
+    std::fs::create_dir_all(&out_dir).expect("mkdir");
+    let path = out_dir.join("repro_shared_formula_rebase.xlsx");
+    writer::xlsx::write(&book, &path).expect("write");
+    let book2 = reader::xlsx::read(&path).expect("read");
+    let ws = book2.get_sheet(&0).unwrap();
+    for (addr, want) in [
+        ("B1", "A1+1"),
+        ("C1", "B1+1"),
+        ("D1", "C1+1"),
+        ("E1", "D1+1"),
+        ("F1", "E1+1"),
+    ] {
+        let cell = ws
+            .get_cell(addr)
+            .unwrap_or_else(|| panic!("missing {addr}"));
+        let got = cell.get_cell_value().get_formula();
+        assert_eq!(got, want, "sibling {addr}: expected `{want}`, got `{got}`");
+    }
+}
