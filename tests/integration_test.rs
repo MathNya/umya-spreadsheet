@@ -2760,11 +2760,141 @@ fn alignment_indent_preserved_from_external_xlsx() {
 }
 
 #[test]
+TODO < fix/chart-legend-presence-mathnya-3.0
+fn chart_legend_absence_roundtrips() {
+    // Regression: a chart whose source xlsx has NO <c:legend> must round-trip
+    // through read -> write without umya re-emitting a default legend block.
+    // Demonstrated independent of the new presence API: build a no-legend
+    // fixture from aaa.xlsx (strip <c:legend>..</c:legend> from each chart
+    // part), read+write it, and assert no legend reappears. With the pre-fix
+    // writer (which always called legend.write_to) this fails.
+    use std::io::{
+        Read,
+        Write,
+    };
+
+TODO ---
 fn shared_formula_siblings_rebase_relative_references() {
+TODO >>>>>>> master
     use umya_spreadsheet::{
         reader,
         writer,
     };
+TODO < fix/chart-legend-presence-mathnya-3.0
+
+    let src = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let out_dir = std::path::Path::new("./tests/result_files");
+    std::fs::create_dir_all(out_dir).unwrap();
+
+    let fixture = out_dir.join("aaa_no_legend.xlsx");
+    {
+        let mut zin = zip::ZipArchive::new(std::fs::File::open(src).unwrap()).unwrap();
+        let mut zout = zip::ZipWriter::new(std::fs::File::create(&fixture).unwrap());
+        for i in 0..zin.len() {
+            let mut e = zin.by_index(i).unwrap();
+            let name = e.name().to_string();
+            let mut buf = Vec::new();
+            e.read_to_end(&mut buf).unwrap();
+            if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
+                let mut s = String::from_utf8(buf).unwrap();
+                while let (Some(a), Some(b)) = (s.find("<c:legend>"), s.find("</c:legend>")) {
+                    let end = b + "</c:legend>".len();
+                    s.replace_range(a..end, "");
+                }
+                buf = s.into_bytes();
+            }
+            zout.start_file(name, zip::write::SimpleFileOptions::default())
+                .unwrap();
+            zout.write_all(&buf).unwrap();
+        }
+        zout.finish().unwrap();
+    }
+
+    fn chart_xmls(path: &std::path::Path) -> Vec<String> {
+        let mut zip = zip::ZipArchive::new(std::fs::File::open(path).unwrap()).unwrap();
+        let mut out = Vec::new();
+        for i in 0..zip.len() {
+            let mut e = zip.by_index(i).unwrap();
+            let name = e.name().to_string();
+            if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
+                let mut s = String::new();
+                e.read_to_string(&mut s).unwrap();
+                out.push(s);
+            }
+        }
+        out
+    }
+
+    let pre = chart_xmls(&fixture);
+    assert!(!pre.is_empty(), "fixture should contain chart parts");
+    assert_eq!(
+        pre.iter().filter(|x| x.contains("<c:legend>")).count(),
+        0,
+        "fixture precondition: no chart should have a legend"
+    );
+
+    let book = reader::xlsx::read(&fixture).expect("read no-legend fixture");
+    let out_path = out_dir.join("aaa_no_legend_roundtrip.xlsx");
+    writer::xlsx::write(&book, &out_path).expect("write");
+
+    let after = chart_xmls(&out_path);
+    let regained = after.iter().filter(|x| x.contains("<c:legend>")).count();
+    assert_eq!(
+        regained,
+        0,
+        "read -> write must not re-add legends; {regained}/{} charts regained one",
+        after.len()
+    );
+}
+
+#[test]
+fn set_legend_present_false_suppresses_legend() {
+    // Public API: set_legend_present(false) drops the <c:legend> block on save
+    // (matches Excel's "no legend" toggle / rust_xlsxwriter set_hidden()).
+    use std::io::Read;
+
+    use umya_spreadsheet::{
+        reader,
+        writer,
+    };
+
+    let src = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let out_dir = std::path::Path::new("./tests/result_files");
+    std::fs::create_dir_all(out_dir).unwrap();
+
+    let mut book = reader::xlsx::read(src).expect("read aaa.xlsx");
+    for sheet in book.sheet_collection_mut().iter_mut() {
+        for chart in sheet.chart_collection_mut().iter_mut() {
+            chart
+                .chart_space_mut()
+                .chart_mut()
+                .set_legend_present(false);
+        }
+    }
+    let out_path = out_dir.join("aaa_legend_suppressed.xlsx");
+    writer::xlsx::write(&book, &out_path).expect("write");
+
+    let mut zip = zip::ZipArchive::new(std::fs::File::open(&out_path).unwrap()).unwrap();
+    let mut charts = 0;
+    let mut with_legend = 0;
+    for i in 0..zip.len() {
+        let mut e = zip.by_index(i).unwrap();
+        let name = e.name().to_string();
+        if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
+            charts += 1;
+            let mut s = String::new();
+            e.read_to_string(&mut s).unwrap();
+            if s.contains("<c:legend>") {
+                with_legend += 1;
+            }
+        }
+    }
+    assert!(charts > 0, "aaa.xlsx should contain charts");
+    assert_eq!(
+        with_legend, 0,
+        "set_legend_present(false) should suppress all legends; {with_legend}/{charts} remain"
+    );
+TODO -
     let mut book = umya_spreadsheet::new_file();
     let ws = book.get_sheet_mut(&0).unwrap();
     ws.get_cell_mut("A1").set_value_number(10);
@@ -2803,4 +2933,5 @@ fn shared_formula_siblings_rebase_relative_references() {
         let got = cell.get_cell_value().get_formula();
         assert_eq!(got, want, "sibling {addr}: expected `{want}`, got `{got}`");
     }
+TODO > master
 }

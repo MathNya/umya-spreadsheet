@@ -33,7 +33,7 @@ use crate::{
     xml_read_loop,
 };
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct Chart {
     title:                         Option<Title>,
     auto_title_deleted:            AutoTitleDeleted,
@@ -43,9 +43,38 @@ pub struct Chart {
     back_wall:                     Option<BackWall>,
     plot_area:                     PlotArea,
     legend:                        Legend,
+    /// Tracks whether the source xlsx had a `<c:legend>` element (or the
+    /// caller explicitly opted in via `set_legend` / `set_legend_present`).
+    /// When `false`, `write_to` omits the legend block entirely, matching how
+    /// Excel and `rust_xlsxwriter` signal "no legend on this chart". Without
+    /// this guard a read/write round-trip silently re-emits a default legend
+    /// block on any chart whose source xlsx had none.
+    legend_present:                bool,
     plot_visible_only:             PlotVisibleOnly,
     display_blanks_as:             DisplayBlanksAs,
     show_data_labels_over_maximum: ShowDataLabelsOverMaximum,
+}
+
+impl Default for Chart {
+    fn default() -> Self {
+        Self {
+            title:                         None,
+            auto_title_deleted:            AutoTitleDeleted::default(),
+            view_3d:                       None,
+            floor:                         None,
+            side_wall:                     None,
+            back_wall:                     None,
+            plot_area:                     PlotArea::default(),
+            legend:                        Legend::default(),
+            // Backwards-compat: a default-constructed Chart historically wrote
+            // the legend on save. Preserve that for code that builds a Chart
+            // and then mutates it via `legend_mut()`.
+            legend_present:                true,
+            plot_visible_only:             PlotVisibleOnly::default(),
+            display_blanks_as:             DisplayBlanksAs::default(),
+            show_data_labels_over_maximum: ShowDataLabelsOverMaximum::default(),
+        }
+    }
 }
 
 impl Chart {
@@ -239,6 +268,9 @@ impl Chart {
     }
 
     pub fn legend_mut(&mut self) -> &mut Legend {
+        // Mutable access implies the caller wants the legend to appear; flip
+        // the presence flag so a post-read mutation isn't dropped on save.
+        self.legend_present = true;
         &mut self.legend
     }
 
@@ -249,6 +281,23 @@ impl Chart {
 
     pub fn set_legend(&mut self, value: Legend) -> &mut Self {
         self.legend = value;
+        // Explicit `set_legend` is the strongest "I want this legend" signal.
+        self.legend_present = true;
+        self
+    }
+
+    /// Returns whether the `<c:legend>` block will be emitted on save.
+    #[must_use]
+    pub fn legend_present(&self) -> bool {
+        self.legend_present
+    }
+
+    /// Override legend presence. `set_legend_present(false)` suppresses the
+    /// `<c:legend>` element on save without modifying the legend's contents,
+    /// matching Excel's "no legend" toggle and `rust_xlsxwriter`'s
+    /// `chart.legend().set_hidden()`.
+    pub fn set_legend_present(&mut self, value: bool) -> &mut Self {
+        self.legend_present = value;
         self
     }
 
@@ -344,6 +393,11 @@ impl Chart {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
+        // Reset legend presence so "no legend in source" round-trips through
+        // the writer. Default-constructed Charts have `legend_present == true`
+        // for backwards compatibility; on a real read we start over and let
+        // the loop below set it only if `<c:legend>` is actually present.
+        self.legend_present = false;
         xml_read_loop!(
             reader,
             Event::Start(ref e) => match e.name().into_inner() {
@@ -377,6 +431,7 @@ impl Chart {
                 }
                 b"c:legend" => {
                     self.legend.set_attributes(reader, e);
+                    self.legend_present = true;
                 }
                 _ => (),
             },
@@ -439,8 +494,12 @@ impl Chart {
         // c:plotArea
         self.plot_area.write_to(writer, wb);
 
-        // c:legend
-        self.legend.write_to(writer);
+        // c:legend - gated on `legend_present` so a chart whose source xlsx
+        // had no `<c:legend>` element (or whose author explicitly hid the
+        // legend) round-trips faithfully without re-emitting a default legend.
+        if self.legend_present {
+            self.legend.write_to(writer);
+        }
 
         // c:plotVisOnly
         self.plot_visible_only.write_to(writer);
