@@ -4,7 +4,6 @@ use std::{
     io::Cursor,
 };
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -91,10 +90,7 @@ impl GradientFill {
         for stop in &self.gradient_stop {
             write!(value, "{}", stop.hash_code()).unwrap();
         }
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!("{}{}", self.degree.value_string(), value))
-        )
+        crate::helper::utils::md5_hash(format!("{}{}", self.degree.value_string(), value))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

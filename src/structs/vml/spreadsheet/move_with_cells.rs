@@ -58,7 +58,7 @@ impl MoveWithCells {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                self.value.set_value_string(e.unescape().unwrap());
+                self.value.set_value_string(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"x:MoveWithCells" {

@@ -230,7 +230,7 @@ extern crate byteorder;
 extern crate cbc;
 extern crate cfb;
 extern crate hmac;
-extern crate html_parser;
+extern crate html5gum;
 extern crate rand;
 extern crate sha2;
 

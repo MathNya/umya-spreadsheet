@@ -1,7 +1,6 @@
 // left right top bottom
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -108,14 +107,11 @@ impl Border {
     }
 
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                self.style.value_string(),
-                self.color().unwrap_or_default().argb_str()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            self.style.value_string(),
+            self.color().unwrap_or_default().argb_str()
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

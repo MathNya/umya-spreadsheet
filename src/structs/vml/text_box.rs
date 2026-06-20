@@ -124,7 +124,7 @@ impl TextBox {
                     inner_text = format!("{inner_text}<{tag}>");
                 }
                 Ok(Event::Text(ref e)) => {
-                    let s = e.unescape().unwrap();
+                    let s = crate::helper::utils::unescape_xml_text(e);
                     inner_text = format!("{inner_text}{s}");
                 }
                 Ok(Event::End(ref e)) => {

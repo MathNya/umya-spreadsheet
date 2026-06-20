@@ -301,7 +301,7 @@ impl CellFormula {
             xml_read_loop!(
                 reader,
                 Event::Text(e) => {
-                    self.text.set_value(e.unescape().unwrap().to_string());
+                    self.text.set_value(crate::helper::utils::unescape_xml_text(&e));
                 },
                 Event::End(ref e) => {
                     if e.name().into_inner() == b"f" {

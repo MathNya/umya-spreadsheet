@@ -1,7 +1,6 @@
 // protection
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -61,14 +60,11 @@ impl Protection {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                self.locked.hash_string(),
-                self.hidden.hash_string()
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            self.locked.hash_string(),
+            self.hidden.hash_string()
+        ))
     }
 
     #[inline]

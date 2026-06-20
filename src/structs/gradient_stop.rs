@@ -1,7 +1,6 @@
 // stop
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -85,14 +84,11 @@ impl GradientStop {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                self.position.value_string(),
-                self.color.hash_code(),
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            self.position.value_string(),
+            self.color.hash_code(),
+        ))
     }
 
     #[inline]

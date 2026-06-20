@@ -108,7 +108,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 _ => (),
             },
-            Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
+            Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"table" => {
                     for attr in e.attributes().with_checks(false).flatten() {

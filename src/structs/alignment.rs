@@ -1,7 +1,6 @@
 // alignment
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -124,17 +123,14 @@ impl Alignment {
     }
 
     pub(crate) fn hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}",
-                self.horizontal.hash_string(),
-                self.vertical.hash_string(),
-                self.wrap_text.hash_string(),
-                self.text_rotation.hash_string(),
-                self.indent.hash_string(),
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{}{}{}{}{}",
+            self.horizontal.hash_string(),
+            self.vertical.hash_string(),
+            self.wrap_text.hash_string(),
+            self.text_rotation.hash_string(),
+            self.indent.hash_string(),
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

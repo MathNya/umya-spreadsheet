@@ -1,7 +1,6 @@
 // patternFill
 use std::io::Cursor;
 
-use md5::Digest;
 use quick_xml::{
     Reader,
     Writer,
@@ -151,12 +150,9 @@ impl PatternFill {
             .background_color
             .as_ref()
             .map_or("None".into(), |v| v.hash_code());
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{pattern_type}{foreground_color}{background_color}"
-            ))
-        )
+        crate::helper::utils::md5_hash(format!(
+            "{pattern_type}{foreground_color}{background_color}"
+        ))
     }
 
     #[deprecated(since = "3.0.0", note = "Use hash_code()")]

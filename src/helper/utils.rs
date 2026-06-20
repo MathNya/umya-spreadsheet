@@ -1,5 +1,26 @@
 #![allow(unused_imports)]
 
+use md5::Digest as _;
+
+pub(crate) fn md5_hash(input: impl AsRef<[u8]>) -> String {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+
+    let digest = md5::Md5::digest(input);
+    let mut output = String::with_capacity(digest.len() * 2);
+    for byte in digest.iter().copied() {
+        output.push(HEX[(byte >> 4) as usize] as char);
+        output.push(HEX[(byte & 0x0f) as usize] as char);
+    }
+    output
+}
+
+pub(crate) fn unescape_xml_text(e: &quick_xml::events::BytesText<'_>) -> String {
+    let decoded = e.decode().unwrap();
+    quick_xml::escape::unescape(decoded.as_ref())
+        .unwrap()
+        .into_owned()
+}
+
 /// A macro that implements the `From` trait for converting from one error type
 /// to another.
 ///

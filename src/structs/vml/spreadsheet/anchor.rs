@@ -256,7 +256,7 @@ impl Anchor {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                let text = e.unescape().unwrap();
+                let text = crate::helper::utils::unescape_xml_text(&e);
                 let split_str: Vec<&str> = text.split(',').collect();
                 self.set_left_column(Self::number(split_str.first()));
                 self.set_left_offset(Self::number(split_str.get(1)));
