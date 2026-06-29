@@ -226,9 +226,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn cells_sorted(&self) -> Vec<&Cell> {
-        self.cells
-            .iter_cells_sorted_by_row_column()
-            .collect()
+        self.cells.iter_cells_sorted_by_row_column().collect()
     }
 
     #[inline]
@@ -393,9 +391,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.cells
-            .iter_cells_by_column(column_num)
-            .collect()
+        self.cells.iter_cells_by_column(column_num).collect()
     }
 
     #[inline]
@@ -448,9 +444,7 @@ impl Worksheet {
     /// # Arguments
     /// * `cell` - Cell
     pub fn set_cell(&mut self, cell: Cell) -> &mut Self {
-        let row_dimension = self
-            .row_dimension_mut(cell.coordinate().row_num())
-            .clone();
+        let row_dimension = self.row_dimension_mut(cell.coordinate().row_num()).clone();
         let col_dimension = self
             .column_dimension_by_number_mut(cell.coordinate().col_num())
             .clone();
@@ -814,10 +808,7 @@ impl Worksheet {
     pub fn threaded_comments_to_hashmap(&self) -> HashMap<String, &ThreadedComment> {
         let mut result = HashMap::default();
         for threaded_comment in &self.threaded_comments {
-            result.insert(
-                threaded_comment.coordinate().to_string(),
-                threaded_comment,
-            );
+            result.insert(threaded_comment.coordinate().to_string(), threaded_comment);
         }
         result
     }
@@ -897,10 +888,8 @@ impl Worksheet {
         let mut result: Vec<(String, &Hyperlink)> = Vec::new();
         for cell in self.cells.collection_sorted() {
             if let Some(hyperlink) = cell.hyperlink() {
-                let coordition = coordinate_from_index(
-                    cell.coordinate().col_num(),
-                    cell.coordinate().row_num(),
-                );
+                let coordition =
+                    coordinate_from_index(cell.coordinate().col_num(), cell.coordinate().row_num());
                 result.push((coordition, hyperlink));
             }
         }
@@ -2602,7 +2591,7 @@ impl Worksheet {
         }
         result
     }
-    
+
     #[deprecated(since = "3.0.0", note = "Use pivot_cache_definition_collection()")]
     pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {
         self.pivot_cache_definition_collection()
@@ -2750,7 +2739,8 @@ impl Worksheet {
         let mut copy_cells: Vec<Cell> = self
             .cells
             .iter_all_cells_by_range_sorted_by_row(range)
-            .flatten().cloned()
+            .flatten()
+            .cloned()
             .collect();
 
         // Delete cell information as iterating through in move mode
@@ -2789,10 +2779,7 @@ impl Worksheet {
                         if !cell.is_visually_empty() {
                             return;
                         }
-                        indexes.push((
-                            cell.coordinate().row_num(),
-                            cell.coordinate().col_num(),
-                        ));
+                        indexes.push((cell.coordinate().row_num(), cell.coordinate().col_num()));
                     }
                 }
 
@@ -2921,13 +2908,12 @@ impl AdjustmentCoordinate for Worksheet {
         );
 
         // worksheet_drawing
-        self.worksheet_drawing
-            .adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.worksheet_drawing.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // comments
         for comment in &mut self.comments {
@@ -3022,13 +3008,12 @@ impl AdjustmentCoordinate for Worksheet {
         );
 
         // worksheet_drawing
-        self.worksheet_drawing_mut()
-            .adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.worksheet_drawing_mut().adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // comments
         self.comments.retain(|x| {

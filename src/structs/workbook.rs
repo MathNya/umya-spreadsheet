@@ -4,10 +4,14 @@ use std::sync::{
 };
 
 use crate::{
-    StringValue, XlsxError, helper::{
+    StringValue,
+    XlsxError,
+    helper::{
         address::split_address,
         coordinate::column_index_from_string,
-    }, reader::xlsx::raw_to_deserialize_by_worksheet, structs::{
+    },
+    reader::xlsx::raw_to_deserialize_by_worksheet,
+    structs::{
         Address,
         CellValue,
         Cells,
@@ -19,10 +23,11 @@ use crate::{
         WorkbookView,
         Worksheet,
         drawing::Theme,
-    }, traits::{
+    },
+    traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
-    }
+    },
 };
 
 /// A Workbook Object.
@@ -399,6 +404,13 @@ impl Workbook {
         &self.stylesheet
     }
 
+    /// (This method is crate only.)
+    /// Get Stylesheet.
+    #[inline]
+    pub(crate) fn stylesheet_mut(&mut self) -> &mut Stylesheet {
+        &mut self.stylesheet
+    }
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use stylesheet()")]
     pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
@@ -636,10 +648,7 @@ impl Workbook {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet_by_name_mut()")]
-    pub fn get_sheet_by_name_mut(
-        &mut self,
-        sheet_name: &str,
-    ) -> Result<&mut Worksheet, XlsxError> {
+    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, XlsxError> {
         self.sheet_by_name_mut(sheet_name)
     }
 
@@ -685,14 +694,21 @@ impl Workbook {
     /// # Arguments
     /// * `value` - Work Sheet
     /// # Return value
-    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet.
-    ///   Err:Error.
+    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet. Err:Error.
     #[inline]
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, XlsxError> {
         let title = value.name();
         Workbook::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
+    }
+
+    /// Remove and return all worksheets, leaving the collection empty.
+    /// Used by the streaming writer to take ownership of pre-built sheets while
+    /// keeping the workbook-level configuration.
+    #[inline]
+    pub(crate) fn take_all_sheets(&mut self) -> Vec<Worksheet> {
+        std::mem::take(&mut self.work_sheet_collection)
     }
 
     /// Remove Work Sheet.
@@ -729,8 +745,7 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_title` - sheet title
     /// # Return value
-    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet.
-    ///   Err:Error.
+    /// * `Result<&mut Worksheet, XlsxError>` - OK:added work sheet. Err:Error.
     #[inline]
     pub fn new_sheet<S: Into<String>>(
         &mut self,
