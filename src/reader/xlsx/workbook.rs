@@ -2,7 +2,6 @@ use std::io;
 
 use quick_xml::{
     Reader,
-    escape,
     events::Event,
 };
 
@@ -34,7 +33,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     xml_read_loop!(
         reader,
-        Event::Empty(ref e) => {
+        ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+            let is_empty = matches!(n, Event::Empty(_));
             match e.name().into_inner() {
                 b"workbookView" => {
                     let mut obj = WorkbookView::default();
@@ -47,17 +47,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     wb.set_workbook_protection(obj);
                 }
                 b"sheet" => {
-                    let name_value = get_attribute(e, b"name").unwrap();
-                    let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
-                    let r_id_value = get_attribute(e, b"r:id").unwrap();
-                    let state = get_attribute(e, b"state");
                     let mut worksheet = Worksheet::default();
-                    worksheet.set_name(escape::unescape(&name_value).unwrap());
-                    worksheet.set_sheet_id(sheet_id_value);
-                    worksheet.set_r_id(r_id_value);
-                    if let Some(v) = state {
-                        worksheet.set_state_str(&v);
-                    }
+                    worksheet.set_attributes_from_wookbook(&mut reader, e, is_empty);
                     wb.add_sheet(worksheet).unwrap();
                 }
                 b"pivotCache" => {
@@ -65,14 +56,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let r_id = get_attribute(e, b"r:id").unwrap();
                     wb.add_pivot_caches((r_id, cache_id, String::new()));
                 }
+                b"definedName" => {
+                    let mut obj = DefinedName::default();
+                    obj.set_attributes(&mut reader, e);
+                    defined_names.push(obj);
+                }
                 _ => (),
-            }
-        },
-        Event::Start(ref e) => {
-            if e.name().into_inner() == b"definedName" {
-                let mut obj = DefinedName::default();
-                obj.set_attributes(&mut reader, e);
-                defined_names.push(obj);
             }
         },
         Event::Eof => break

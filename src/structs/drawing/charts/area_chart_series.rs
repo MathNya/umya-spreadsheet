@@ -467,17 +467,19 @@ impl AreaChartSeries {
     ) {
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => match e.name().into_inner() {
-                b"c:tx" => {
-                    let mut obj = ChartText::default();
-                    obj.set_attributes(reader, e);
-                    self.set_chart_text(obj);
-                }
-                b"c:marker" => {
-                    let mut obj = Marker::default();
-                    obj.set_attributes(reader, e, false);
-                    self.set_marker(obj);
-                }
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let _is_empty = matches!(n, Event::Empty(_));
+                match e.name().into_inner() {
+                    b"c:tx" => {
+                        let mut obj = ChartText::default();
+                        obj.set_attributes(reader, e);
+                        self.set_chart_text(obj);
+                    }
+                    b"c:marker" => {
+                        let mut obj = Marker::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_marker(obj);
+                    }
                 b"c:spPr" => {
                     let mut obj = ShapeProperties::default();
                     obj.set_attributes(reader, e);
@@ -513,9 +515,6 @@ impl AreaChartSeries {
                     obj.set_attributes(reader, e);
                     self.set_data_labels(obj);
                 }
-                _ => (),
-            },
-            Event::Empty(ref e) => match e.name().into_inner() {
                 b"c:idx" => {
                     self.index.set_attributes(reader, e);
                 }
@@ -543,6 +542,7 @@ impl AreaChartSeries {
                     self.set_smooth(obj);
                 }
                 _ => (),
+            }
             },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"c:ser" {

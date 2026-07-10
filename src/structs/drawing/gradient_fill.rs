@@ -180,31 +180,17 @@ impl GradientFill {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                 b"a:lin" => {
                     let mut obj = LinearGradientFill::default();
-                    obj.set_attributes(reader, e, true);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_linear_gradient_fill(obj);
                 }
                 b"a:tileRect" => {
                     let obj = TileRectangle::default();
-                    TileRectangle::set_attributes(reader, e, true);
-                    self.set_tile_rectangle(obj);
-                }
-                _ => (),
-                }
-            },
-            Event::Start(ref e) => {
-                match e.name().into_inner() {
-                b"a:lin" => {
-                    let mut obj = LinearGradientFill::default();
-                    obj.set_attributes(reader, e, false);
-                    self.set_linear_gradient_fill(obj);
-                }
-                b"a:tileRect" => {
-                    let obj = TileRectangle::default();
-                    TileRectangle::set_attributes(reader, e, false);
+                    TileRectangle::set_attributes(reader, e, is_empty);
                     self.set_tile_rectangle(obj);
                 }
                 b"a:gsLst" => {

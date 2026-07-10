@@ -79,17 +79,11 @@ impl StyleMatrixReferenceType {
 
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"a:schemeClr" {
                     let mut scheme_color = SchemeColor::default();
-                    scheme_color.set_attributes(reader, e, false);
-                    self.set_scheme_color(scheme_color);
-                }
-            },
-            Event::Empty(ref e) => {
-                if e.name().into_inner() == b"a:schemeClr" {
-                    let mut scheme_color = SchemeColor::default();
-                    scheme_color.set_attributes(reader, e, true);
+                    scheme_color.set_attributes(reader, e, is_empty);
                     self.set_scheme_color(scheme_color);
                 }
             },

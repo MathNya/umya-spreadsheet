@@ -227,43 +227,23 @@ impl Transform2D {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"a:off" => {
-                        self.offset.set_attributes(reader, e, true);
+                        self.offset.set_attributes(reader, e, is_empty);
                     }
                     b"a:ext" => {
-                        self.extents.set_attributes(reader, e, true);
+                        self.extents.set_attributes(reader, e, is_empty);
                     }
                     b"a:chOff" => {
                         let mut obj = Point2DType::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_child_offset(obj);
                     }
                     b"a:chExt" => {
                         let mut obj = PositiveSize2DType::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_child_extents(obj);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Start(ref e) => {
-                match e.name().into_inner() {
-                    b"a:off" => {
-                        self.offset.set_attributes(reader, e, false);
-                    }
-                    b"a:ext" => {
-                        self.extents.set_attributes(reader, e, false);
-                    }
-                    b"a:chOff" => {
-                        let mut obj = Point2DType::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_child_offset(obj);
-                    }
-                    b"a:chExt" => {
-                        let mut obj = PositiveSize2DType::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_child_extents(obj);
                     }
                     _ => (),

@@ -68,17 +68,11 @@ impl DataValidations {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"dataValidation" {
                     let mut obj = DataValidation::default();
-                    obj.set_attributes(reader, e, true);
-                    self.add_data_validation_list(obj);
-                }
-            },
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"dataValidation" {
-                    let mut obj = DataValidation::default();
-                    obj.set_attributes(reader, e, false);
+                    obj.set_attributes(reader, e, is_empty);
                     self.add_data_validation_list(obj);
                 }
             },

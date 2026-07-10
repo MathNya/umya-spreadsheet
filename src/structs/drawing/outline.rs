@@ -422,7 +422,8 @@ impl Outline {
 
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"a:solidFill" => {
                         let mut solid_fill = SolidFill::default();
@@ -436,77 +437,37 @@ impl Outline {
                     }
                     b"a:tailEnd" => {
                         let mut obj = TailEnd::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
                         let obj = NoFill::default();
-                        NoFill::set_attributes(reader, e, false);
+                        NoFill::set_attributes(reader, e, is_empty);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
                         let obj = Bevel::default();
-                        Bevel::set_attributes(reader, e, false);
+                        Bevel::set_attributes(reader, e, is_empty);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
                         let mut obj = Miter::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_miter(obj);
                     }
                     b"a:prstDash" => {
                         let mut obj = PresetDash::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
                         let obj = Round::default();
-                        Round::set_attributes(reader, e, false);
+                        Round::set_attributes(reader, e, is_empty);
                         self.set_round(obj);
                     }
                     b"a:sysClr" => {
                         let mut obj = SystemColor::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_system_color(obj);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
-                    b"a:tailEnd" => {
-                        let mut obj = TailEnd::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_tail_end(obj);
-                    }
-                    b"a:noFill" => {
-                        let obj = NoFill::default();
-                        NoFill::set_attributes(reader, e, true);
-                        self.set_no_fill(obj);
-                    }
-                    b"a:bevel" => {
-                        let obj = Bevel::default();
-                        Bevel::set_attributes(reader, e, true);
-                        self.set_bevel(obj);
-                    }
-                    b"a:miter" => {
-                        let mut obj = Miter::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_miter(obj);
-                    }
-                    b"a:prstDash" => {
-                        let mut obj = PresetDash::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_preset_dash(obj);
-                    }
-                    b"a:round" => {
-                        let obj = Round::default();
-                        Round::set_attributes(reader, e, true);
-                        self.set_round(obj);
-                    }
-                    b"a:sysClr" => {
-                        let mut obj = SystemColor::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_system_color(obj);
                     }
                     _ => (),

@@ -183,18 +183,12 @@ impl Fill {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
-                if e.name().into_inner() == b"patternFill" {
-                    let mut obj = PatternFill::default();
-                    obj.set_attributes(reader, e, true);
-                    self.set_pattern_fill(obj);
-                }
-            },
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_pattern_fill(obj);
                     }
                     b"gradientFill" => {

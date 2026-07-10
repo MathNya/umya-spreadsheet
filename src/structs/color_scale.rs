@@ -85,31 +85,17 @@ impl ColorScale {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"cfvo" => {
                         let mut obj = ConditionalFormatValueObject::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.cfvo_collection.push(obj);
                     }
                     b"color" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e, true);
-                        self.color_collection.push(obj);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Start(ref e) => {
-                match e.name().into_inner() {
-                    b"cfvo" => {
-                        let mut obj = ConditionalFormatValueObject::default();
-                        obj.set_attributes(reader, e, false);
-                        self.cfvo_collection.push(obj);
-                    }
-                    b"color" => {
-                        let mut obj = Color::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.color_collection.push(obj);
                     }
                     _ => (),

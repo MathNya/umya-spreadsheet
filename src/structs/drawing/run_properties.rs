@@ -527,7 +527,8 @@ impl RunProperties {
 
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                 b"a:solidFill" => {
                     let mut obj = SolidFill::default();
@@ -546,38 +547,28 @@ impl RunProperties {
                 }
                 b"a:effectLst" => {
                     let mut effect_list = EffectList::default();
-                    effect_list.set_attributes(reader, e, false);
+                    effect_list.set_attributes(reader, e, is_empty);
                     self.set_effect_list(effect_list);
                 }
-                _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
                 b"a:latin" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e, true);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_latin_font(obj);
                 }
                 b"a:ea" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e, true);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_east_asian_font(obj);
                 }
                 b"a:cs" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e, true);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_complex_script_font(obj);
                 }
                 b"a:noFill" => {
                     let obj = NoFill::default();
-                    NoFill::set_attributes(reader, e, true);
+                    NoFill::set_attributes(reader, e, is_empty);
                     self.set_no_fill(obj);
-                }
-                b"a:effectLst" => {
-                    let mut obj = EffectList::default();
-                    obj.set_attributes(reader, e, true);
-                    self.set_effect_list(obj);
                 }
                 _ => (),
                 }

@@ -542,54 +542,29 @@ impl Borders {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"left" => {
-                        self.data[BordersIndex::Left as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Left as usize].set_attributes(reader, e, is_empty);
                     }
                     b"right" => {
-                        self.data[BordersIndex::Right as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Right as usize].set_attributes(reader, e, is_empty);
                     }
                     b"top" => {
-                        self.data[BordersIndex::Top as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Top as usize].set_attributes(reader, e, is_empty);
                     }
                     b"bottom" => {
-                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, is_empty);
                     }
                     b"diagonal" => {
-                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, is_empty);
                     }
                     b"vertical" => {
-                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, true);
+                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, is_empty);
                     }
                     b"horizontal" => {
-                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, true);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Start(ref e) => {
-                match e.name().into_inner() {
-                    b"left" => {
-                        self.data[BordersIndex::Left as usize].set_attributes(reader, e, false);
-                    }
-                    b"right" => {
-                        self.data[BordersIndex::Right as usize].set_attributes(reader, e, false);
-                    }
-                    b"top" => {
-                        self.data[BordersIndex::Top as usize].set_attributes(reader, e, false);
-                    }
-                    b"bottom" => {
-                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, false);
-                    }
-                    b"diagonal" => {
-                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, false);
-                    }
-                    b"vertical" => {
-                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, false);
-                    }
-                    b"horizontal" => {
-                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, false);
+                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, is_empty);
                     }
                     _ => (),
                 }

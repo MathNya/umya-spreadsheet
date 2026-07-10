@@ -114,17 +114,11 @@ impl ConditionalFormatting {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"cfRule" {
                     let mut obj = ConditionalFormattingRule::default();
-                    obj.set_attributes(reader, e, differential_formats, true);
-                    self.conditional_collection.push(obj);
-                }
-            },
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"cfRule" {
-                    let mut obj = ConditionalFormattingRule::default();
-                    obj.set_attributes(reader, e, differential_formats, false);
+                    obj.set_attributes(reader, e, differential_formats, is_empty);
                     self.conditional_collection.push(obj);
                 }
             },

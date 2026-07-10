@@ -201,14 +201,8 @@ impl TextParagraphPropertiesType {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
-                if e.name().into_inner() == b"a:defRPr" {
-                    let mut obj = RunProperties::default();
-                    obj.set_attributes(reader, e, true);
-                    self.set_default_run_properties(obj);
-                }
-            },
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                 b"a:spcBef" => {
                     let mut obj = SpaceBefore::default();
@@ -222,7 +216,7 @@ impl TextParagraphPropertiesType {
                 }
                 b"a:defRPr" => {
                     let mut obj = RunProperties::default();
-                    obj.set_attributes(reader, e, false);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_default_run_properties(obj);
                 }
                 _ => (),

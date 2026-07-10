@@ -291,17 +291,11 @@ impl PivotCacheDefinition {
 
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"cacheSource" {
                     let mut obj = CacheSource::default();
-                    obj.set_attributes(reader, e, true);
-                    self.set_cache_source(obj);
-                }
-            },
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"cacheSource" {
-                    let mut obj = CacheSource::default();
-                    obj.set_attributes(reader, e, false);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_cache_source(obj);
                 }
                 if e.name().into_inner() == b"cacheFields" {

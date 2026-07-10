@@ -63,17 +63,11 @@ impl ColumnItems {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"i" {
                     let mut obj = RowItem::default();
-                    obj.set_attributes(reader, e, true);
-                    self.add_list_mut(obj);
-                }
-            },
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"i" {
-                    let mut obj = RowItem::default();
-                    obj.set_attributes(reader, e, false);
+                    obj.set_attributes(reader, e, is_empty);
                     self.add_list_mut(obj);
                 }
             },

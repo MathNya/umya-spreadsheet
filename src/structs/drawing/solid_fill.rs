@@ -125,41 +125,22 @@ impl SolidFill {
     ) {
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                 b"a:schemeClr" => {
                     let mut scheme_color = SchemeColor::default();
-                    scheme_color.set_attributes(reader, e, false);
+                    scheme_color.set_attributes(reader, e, is_empty);
                     self.set_scheme_color(scheme_color);
                 }
                 b"a:srgbClr" => {
                     let mut rgb_color_model_hex = RgbColorModelHex::default();
-                    rgb_color_model_hex.set_attributes(reader, e, false);
+                    rgb_color_model_hex.set_attributes(reader, e, is_empty);
                     self.set_rgb_color_model_hex(rgb_color_model_hex);
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
-                    obj.set_attributes(reader, e, false);
-                    self.set_system_color(obj);
-                }
-                _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
-                b"a:schemeClr" => {
-                    let mut scheme_color = SchemeColor::default();
-                    scheme_color.set_attributes(reader, e, true);
-                    self.set_scheme_color(scheme_color);
-                }
-                b"a:srgbClr" => {
-                    let mut rgb_color_model_hex = RgbColorModelHex::default();
-                    rgb_color_model_hex.set_attributes(reader, e, true);
-                    self.set_rgb_color_model_hex(rgb_color_model_hex);
-                }
-                b"a:sysClr" => {
-                    let mut obj = SystemColor::default();
-                    obj.set_attributes(reader, e, true);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_system_color(obj);
                 }
                 _ => (),

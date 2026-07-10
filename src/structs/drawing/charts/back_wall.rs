@@ -86,14 +86,13 @@ impl BackWall {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let _is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"c:thickness" {
                     let mut obj = Thickness::default();
                     obj.set_attributes(reader, e);
                     self.set_thickness(obj);
                 }
-            },
-            Event::Start(ref e) => {
                 if e.name().into_inner() == b"c:spPr" {
                     let mut obj = ShapeProperties::default();
                     obj.set_attributes(reader, e);

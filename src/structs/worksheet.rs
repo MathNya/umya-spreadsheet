@@ -1,5 +1,17 @@
 use std::collections::HashMap;
-
+use quick_xml::{
+    escape,
+    Reader,
+    events::BytesStart,
+    events::Event,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    xml_read_loop,
+};
 use crate::{
     StringValue,
     helper::{
@@ -2878,6 +2890,36 @@ impl Worksheet {
             self.copy_cell_styling((source_col_no, row_no), (target_col_no, row_no));
         }
     }
+
+    pub(crate) fn set_attributes_from_wookbook<R: std::io::BufRead>(
+        &mut self,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
+        empty_flag: bool,
+    ) {
+        let r_id_value = get_attribute(e, b"r:id").unwrap();
+        self.set_r_id(r_id_value);
+        let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
+        self.set_sheet_id(sheet_id_value);
+        let name_value = get_attribute(e, b"name").unwrap();
+        self.set_name(escape::unescape(&name_value).unwrap());
+        set_string_from_xml!(self, e, state, "state");
+
+        if empty_flag {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"sheet" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "sheet")
+        );
+    }
+
 }
 impl AdjustmentCoordinate for Worksheet {
     fn adjustment_insert_coordinate(

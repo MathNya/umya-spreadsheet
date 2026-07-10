@@ -174,7 +174,8 @@ impl AreaChart {
     ) {
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let _is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
@@ -185,11 +186,6 @@ impl AreaChart {
                     b"c:dLbls" => {
                         self.data_labels.set_attributes(reader, e);
                     }
-                    _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
                     b"c:grouping" => {
                         self.grouping.set_attributes(reader, e);
                     }

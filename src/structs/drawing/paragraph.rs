@@ -121,10 +121,11 @@ impl Paragraph {
     ) {
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"a:pPr" => {
-                        self.paragraph_properties.set_attributes(reader, e, false);
+                        self.paragraph_properties.set_attributes(reader, e, is_empty);
                     }
                     b"a:r" => {
                         let mut run = Run::default();
@@ -133,20 +134,7 @@ impl Paragraph {
                     }
                     b"a:endParaRPr" => {
                         let mut run_properties = RunProperties::default();
-                        run_properties.set_attributes(reader, e, false);
-                        self.set_end_para_run_properties(run_properties);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
-                    b"a:pPr" => {
-                        self.paragraph_properties.set_attributes(reader, e, true);
-                    }
-                    b"a:endParaRPr" => {
-                        let mut run_properties = RunProperties::default();
-                        run_properties.set_attributes(reader, e, true);
+                        run_properties.set_attributes(reader, e, is_empty);
                         self.set_end_para_run_properties(run_properties);
                     }
                     _ => (),

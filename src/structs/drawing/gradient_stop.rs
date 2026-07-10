@@ -123,31 +123,17 @@ impl GradientStop {
 
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
-                        obj.set_attributes(reader, e, false);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_scheme_color(obj);
                     }
                     b"a:srgbClr" => {
                         let mut obj = RgbColorModelHex::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_rgb_color_model_hex(obj);
-                    }
-                    _ => (),
-                }
-            },
-            Event::Empty(ref e) => {
-                match e.name().into_inner() {
-                    b"a:schemeClr" => {
-                        let mut obj = SchemeColor::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_scheme_color(obj);
-                    }
-                    b"a:srgbClr" => {
-                        let mut obj = RgbColorModelHex::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.set_rgb_color_model_hex(obj);
                     }
                     _ => (),
