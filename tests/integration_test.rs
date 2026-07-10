@@ -2936,3 +2936,15 @@ fn set_legend_present_false_suppresses_legend() {
         "set_legend_present(false) should suppress all legends; {with_legend}/{charts} remain"
     );
 }
+
+#[test]
+fn issue_336() {
+    let path = std::path::Path::new("./tests/test_files/issue_336.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let sheet = book.sheet_by_name("Sheet1").unwrap();
+    let value = sheet.cell((1, 2)).unwrap().value();
+    assert_eq!(
+        value,
+        "{\"year_month\":{\"year\":2024,\"month\":11},\"period_number\":1}"
+    );
+}
