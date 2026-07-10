@@ -16,43 +16,43 @@ use crate::{
     },
 };
 
-mod chart;
-mod comment;
-mod content_types;
-mod doc_props_app;
-mod doc_props_core;
-mod doc_props_custom;
-mod drawing;
-mod drawing_rels;
-mod embeddings;
-mod jsa_project_bin;
-mod media;
-mod person;
-mod pivot_cache;
-mod pivot_table;
-mod printer_settings;
-mod rels;
-mod shared_strings;
-mod styles;
-mod table;
-mod theme;
-mod threaded_comment;
-mod vba_project_bin;
-mod vml_drawing;
-mod vml_drawing_rels;
-mod workbook;
-mod workbook_rels;
-mod worksheet;
-mod worksheet_rels;
+pub(crate) mod chart;
+pub(crate) mod comment;
+pub(crate) mod content_types;
+pub(crate) mod doc_props_app;
+pub(crate) mod doc_props_core;
+pub(crate) mod doc_props_custom;
+pub(crate) mod drawing;
+pub(crate) mod drawing_rels;
+pub(crate) mod embeddings;
+pub(crate) mod jsa_project_bin;
+pub(crate) mod media;
+pub(crate) mod person;
+pub(crate) mod pivot_cache;
+pub(crate) mod pivot_table;
+pub(crate) mod printer_settings;
+pub(crate) mod rels;
+pub(crate) mod shared_strings;
+pub(crate) mod styles;
+pub(crate) mod table;
+pub(crate) mod theme;
+pub(crate) mod threaded_comment;
+pub(crate) mod vba_project_bin;
+pub(crate) mod vml_drawing;
+pub(crate) mod vml_drawing_rels;
+pub(crate) mod workbook;
+pub(crate) mod workbook_rels;
+pub(crate) mod worksheet;
+pub(crate) mod worksheet_rels;
 
 fn write_zip_to_writer<W: io::Write + io::Seek>(
     wb: &Workbook,
     writer: W,
     is_light: bool,
 ) -> Result<(), XlsxError> {
-    let mut arv = zip::ZipWriter::new(writer);
+    let arv = zip::ZipWriter::new(writer);
+    let mut writer_manager = WriterManager::new(arv);
     {
-        let mut writer_manager = WriterManager::new(&mut arv);
         writer_manager.set_is_light(is_light);
 
         // Add docProps
@@ -187,7 +187,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
         content_types::write(wb, &mut writer_manager)?;
     }
 
-    arv.finish()?;
+    writer_manager.finish()?;
     Ok(())
 }
 

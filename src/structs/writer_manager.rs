@@ -6,6 +6,7 @@ use std::{
 };
 
 use quick_xml::Writer;
+use zip::result::ZipResult;
 
 use crate::{
     helper::const_str::{
@@ -15,6 +16,8 @@ use crate::{
         CUSTOM_PROPS_TYPE,
         DRAWING_TYPE,
         OLE_OBJECT_TYPE,
+        PIVOT_CACHE_DEF_TYPE,
+        PIVOT_TABLE_TYPE,
         PKG_CHARTS,
         PKG_DRAWINGS,
         PKG_EMBEDDINGS,
@@ -24,36 +27,34 @@ use crate::{
         SHEET_TYPE,
         STYLES_TYPE,
         TABLE_TYPE,
-        PIVOT_TABLE_TYPE,
-        PIVOT_CACHE_DEF_TYPE,
         THEME_TYPE,
         VBA_TYPE,
         WORKBOOK_MACRO_TYPE,
         WORKBOOK_TYPE,
         XPROPS_TYPE,
     },
+    reader::driver::zip_by_name,
     structs::{
         Workbook,
         XlsxError,
     },
-    reader::driver::zip_by_name,
     writer::driver::{
         make_file_from_bin,
         make_file_from_writer,
     },
 };
-pub struct WriterManager<'a, W: io::Seek + io::Write> {
-    files:    Vec<String>,
-    arv:      &'a mut zip::ZipWriter<W>,
-    is_light: bool,
-    table_no: i32,
-    pivot_table_no: i32,
+pub struct WriterManager<W: io::Seek + io::Write> {
+    files:                 Vec<String>,
+    arv:                   zip::ZipWriter<W>,
+    is_light:              bool,
+    table_no:              i32,
+    pivot_table_no:        i32,
     pivot_cache_hash_list: Vec<String>,
 }
 
-impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
+impl<W: io::Seek + io::Write> WriterManager<W> {
     #[inline]
-    pub fn new(arv: &'a mut zip::ZipWriter<W>) -> Self {
+    pub fn new(arv: zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
             arv,
@@ -62,6 +63,11 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             pivot_table_no: 0,
             pivot_cache_hash_list: Vec::new(),
         }
+    }
+
+    #[inline]
+    pub fn finish(self) -> ZipResult<W> {
+        self.arv.finish()
     }
 
     #[inline]
@@ -100,7 +106,10 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             (true, i32::try_from(v + 1).unwrap())
         } else {
             self.pivot_cache_hash_list.push(hash.to_string());
-            (false, i32::try_from(self.pivot_cache_hash_list.len()).unwrap())
+            (
+                false,
+                i32::try_from(self.pivot_cache_hash_list.len()).unwrap(),
+            )
         }
     }
 
@@ -111,7 +120,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_writer(target, self.arv, writer, None, self.is_light)?;
+            make_file_from_writer(target, &mut self.arv, writer, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -120,7 +129,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_bin(target, self.arv, data, None, self.is_light)?;
+            make_file_from_bin(target, &mut self.arv, data, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -145,7 +154,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
     #[inline]
     pub(crate) fn get_arv_mut(&mut self) -> &mut zip::ZipWriter<W> {
-        self.arv
+        &mut self.arv
     }
 
     #[inline]

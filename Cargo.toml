@@ -28,8 +28,8 @@ imagesize = "0.14"
 jiff = { version = "0.2", default-features = false }
 md-5 = "0.11"
 num-traits = "0.2.19"
-phf = { version = "0.13", features = ["macros"] }
-quick-xml = { version = "0.40", features = ["serialize"] }
+phf = { version = "0.14", features = ["macros"] }
+quick-xml = { version = "0.41", features = ["serialize"] }
 rand = "0.10"
 rgb = "0.8"
 sha2 = "0.11"
