@@ -26,13 +26,13 @@ https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "3.0.0"
+umya-spreadsheet = "3.0.1"
 
 # WebAssembly support
-umya-spreadsheet = { version = "3.0.0", features = ["js"] }
+umya-spreadsheet = { version = "3.0.1", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "3.0.0", features = ["image/png"] }
+umya-spreadsheet = { version = "3.0.1", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
@@ -176,7 +176,9 @@ We would like to express our heartfelt gratitude to them.
 
 [8191](https://github.com/8191), 
 [agentjill](https://github.com/agentjill), 
+[AlexZhu2001](https://github.com/AlexZhu2001), 
 [attila-lin](https://github.com/attila-lin), 
+[bachhh](https://github.com/bachhh), 
 [boseongkim32](https://github.com/boseongkim32), 
 [c-git](https://github.com/c-git), 
 [cstkingkey](https://github.com/cstkingkey), 
@@ -190,6 +192,7 @@ We would like to express our heartfelt gratitude to them.
 [jimchan3301](https://github.com/jimchan3301), 
 [jmbrunskill](https://github.com/jmbrunskill), 
 [john-dc252](https://github.com/john-dc252), 
+[jon-convexent](https://github.com/jon-convexent), 
 [kazuk](https://github.com/kazuk), 
 [kjh618](https://github.com/kjh618), 
 [KyGost](https://github.com/KyGost), 
@@ -203,6 +206,7 @@ We would like to express our heartfelt gratitude to them.
 [popen2](https://github.com/popen2), 
 [PSU3D0](https://github.com/PSU3D0), 
 [RoloEdits](https://github.com/RoloEdits), 
+[Sachin-Bhat](https://github.com/Sachin-Bhat), 
 [SamuelMarks](https://github.com/SamuelMarks), 
 [schungx](https://github.com/schungx), 
 [sjfhsjfh](https://github.com/sjfhsjfh), 
@@ -210,6 +214,7 @@ We would like to express our heartfelt gratitude to them.
 [tzfun](https://github.com/tzfun), 
 [ubamrein](https://github.com/ubamrein), 
 [usagi](https://github.com/usagi), 
+[verticka](https://github.com/verticka), 
 [vonkruel](https://github.com/vonkruel), 
 [WilliamTCarroll](https://github.com/WilliamTCarroll), 
 [wolfiesch](https://github.com/wolfiesch), 
