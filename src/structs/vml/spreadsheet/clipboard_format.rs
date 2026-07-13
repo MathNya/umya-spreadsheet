@@ -3,15 +3,11 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::BytesStart,
 };
 
 use super::ClipboardFormatValues;
 use crate::{
-    reader::driver::xml_read_loop,
     structs::EnumValue,
     writer::driver::{
         write_end_tag,
@@ -49,20 +45,12 @@ impl ClipboardFormat {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
     ) {
-        xml_read_loop!(
-            reader,
-            Event::Text(e) => {
-                self.value.set_value_string(crate::helper::utils::unescape_xml_text(&e));
-            },
-            Event::End(ref e) => {
-                if e.name().0 == b"x:CF" {
-                    return
-                }
-            },
-            Event::Eof => panic!("Error: Could not find {} end element", "x:CF")
-        );
+        let mut buf = Vec::new();
+        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+        self.value
+            .set_value_string(crate::helper::utils::unescape_xml_text(&text));
     }
 
     #[inline]

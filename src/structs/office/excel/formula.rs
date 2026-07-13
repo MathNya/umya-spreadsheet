@@ -7,10 +7,7 @@ use std::{
 use quick_xml::{
     Reader,
     Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::BytesStart,
 };
 
 use crate::{
@@ -60,29 +57,13 @@ impl Formula {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
     ) {
-        let mut value: String = String::new();
         let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    value = crate::helper::utils::unescape_xml_text(&e);
-                }
-                Ok(Event::End(ref e)) => {
-                    if e.name().into_inner() == b"xm:f" {
-                        let mut obj = Address::default();
-                        obj.set_address(value);
-                        self.value = obj;
-                        return;
-                    }
-                }
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:f"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+        let mut obj = Address::default();
+        obj.set_address(crate::helper::utils::unescape_xml_text(&text));
+        self.value = obj;
     }
 
     #[inline]

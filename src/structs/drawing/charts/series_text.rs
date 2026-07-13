@@ -4,14 +4,10 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::BytesStart,
 };
 
 use crate::{
-    reader::driver::xml_read_loop,
     structs::StringValue,
     writer::driver::{
         write_end_tag,
@@ -45,20 +41,11 @@ impl SeriesText {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
     ) {
-        xml_read_loop!(
-            reader,
-            Event::Text(e) => {
-                self.set_value(crate::helper::utils::unescape_xml_text(&e));
-            },
-            Event::End(ref e) => {
-                if e.name().0 == b"c:tx" {
-                    return
-                }
-            },
-            Event::Eof => panic!("Error: Could not find {} end element", "c:tx")
-        );
+        let mut buf = Vec::new();
+        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+        self.set_value(crate::helper::utils::unescape_xml_text(&text));
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

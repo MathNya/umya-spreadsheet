@@ -3,10 +3,7 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::BytesStart,
 };
 
 use super::{
@@ -20,7 +17,6 @@ use crate::{
     reader::driver::{
         get_attribute,
         set_string_from_xml,
-        xml_read_loop,
     },
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
@@ -218,20 +214,10 @@ impl DefinedName {
         set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
         set_string_from_xml!(self, e, hidden, "hidden");
 
-        let mut value: String = String::new();
-        xml_read_loop!(
-            reader,
-                Event::Text(e) => {
-                    value = crate::helper::utils::unescape_xml_text(&e);
-                },
-                Event::End(ref e) => {
-                    if e.name().into_inner() == b"definedName" {
-                        self.set_address(value);
-                        return
-                    }
-                },
-                Event::Eof => panic!("Error: Could not find {} end element", "definedName")
-        );
+        let mut buf = Vec::new();
+        let text = reader
+                .read_text_into(e.name(), &mut buf).unwrap();
+        self.set_address(crate::helper::utils::unescape_xml_text(&text));
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
