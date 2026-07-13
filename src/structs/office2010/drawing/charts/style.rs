@@ -72,6 +72,7 @@ impl Style {
         self
     }
 
+    #[allow(clippy::redundant_else)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
