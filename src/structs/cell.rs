@@ -651,7 +651,7 @@ impl Cell {
                     },
                     b"is" => {
                         if type_value == "inlineStr" {
-                            self.set_value_crate(&string_value);
+                            self.set_value_string_crate(&string_value);
                         }
                     }
                     b"c" => return,
@@ -822,5 +822,34 @@ impl AdjustmentCoordinateWith2Sheet for Cell {
             root_row_num,
             offset_row_num,
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inline_string_that_looks_numeric_stays_string() {
+        let mut reader = Reader::from_str(r#"<c r="A1" t="inlineStr"><is><t>0050</t></is></c>"#);
+        let cell_start = match reader.read_event().unwrap() {
+            Event::Start(event) => event,
+            event => panic!("expected cell start event, got {event:?}"),
+        };
+        let mut cell = Cell::default();
+        let mut formula_shared_list = HashMap::new();
+
+        cell.set_attributes(
+            &mut reader,
+            &cell_start,
+            &SharedStringTable::default(),
+            &Stylesheet::default(),
+            false,
+            &mut formula_shared_list,
+        );
+
+        assert_eq!(cell.value(), "0050");
+        assert_eq!(cell.data_type(), "s");
+        assert!(cell.value_number().is_none());
     }
 }
