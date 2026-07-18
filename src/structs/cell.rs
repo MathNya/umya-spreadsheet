@@ -530,6 +530,13 @@ impl Cell {
     pub fn formatted_value(&self) -> String {
         let value = self.value();
 
+        if matches!(
+            self.raw_value(),
+            CellRawValue::String(_) | CellRawValue::RichText(_)
+        ) {
+            return value.into_owned();
+        }
+
         // convert value
         let result = match self.style().number_format() {
             Some(number_format) => to_formatted_string(&value, number_format.format_code()),
@@ -849,6 +856,7 @@ mod tests {
         );
 
         assert_eq!(cell.value(), "0050");
+        assert_eq!(cell.formatted_value(), "0050");
         assert_eq!(cell.data_type(), "s");
         assert!(cell.value_number().is_none());
     }
