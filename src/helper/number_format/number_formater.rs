@@ -1,7 +1,5 @@
 use std::borrow::Cow;
 
-use thousands::Separable;
-
 use super::fraction_formater::format_as_fraction;
 use crate::helper::utils::compile_regex;
 
@@ -85,45 +83,104 @@ fn format_straight_numeric_value(
     use_thousands: bool,
     _number_regex: &str,
 ) -> String {
-    let mut value = value.to_string();
-
     let empty = String::new();
     let right = matches.get(3).unwrap_or(&empty);
 
-    // minimun width of formatted number (including dot)
+    // Excel rounds the decimal display value half away from zero to the
+    // format's fractional width. Work on the decimal string directly:
+    // routing ties back through binary floats corrupts them
+    // (39.105 * 100 = 3910.4999… would round down).
+    let value = round_decimal_string(value, right.len());
+
     if use_thousands {
-        value = value.parse::<f64>().unwrap_or(0.0).separate_with_commas();
+        return group_thousands(&value);
     }
-    let blocks: Vec<&str> = value.split('.').collect();
-    let left_value = (*blocks.first().unwrap()).to_string();
-    let mut right_value = match blocks.get(1) {
-        Some(v) => (*v).to_string(),
-        None => String::from("0"),
+    value
+}
+
+/// Round a plain decimal string (as produced by `f64::to_string`) to
+/// `decimals` fractional digits, half away from zero, in pure decimal
+/// arithmetic. Zero-pads when the value has fewer fractional digits than the
+/// format asks for. Falls back to float formatting for exponent notation.
+pub(crate) fn round_decimal_string(value: &str, decimals: usize) -> String {
+    if value.contains(['e', 'E']) {
+        let parsed = value.parse::<f64>().unwrap_or(0.0);
+        return format!("{:.*}", decimals, parsed);
+    }
+
+    let (sign, digits) = match value.strip_prefix('-') {
+        Some(rest) => ("-", rest),
+        None => ("", value),
     };
-    if right.is_empty() {
-        return left_value;
+    let (int_part, frac_part) = digits.split_once('.').unwrap_or((digits, ""));
+
+    if frac_part.len() <= decimals {
+        let mut result = format!("{sign}{int_part}");
+        if decimals > 0 {
+            result.push('.');
+            result.push_str(frac_part);
+            result.push_str(&"0".repeat(decimals - frac_part.len()));
+        }
+        return result;
     }
-    if right.len() != right_value.len() {
-        if right_value == "0" {
-            right_value.clone_from(right);
-        } else if right.len() > right_value.len() {
-            let pow = 10i64.pow(u32::try_from(right.len().min(18)).expect("REASON"));
-            right_value = format!(
-                "{}",
-                right_value.parse::<i64>().unwrap_or(0).saturating_mul(pow)
-            );
-        } else {
-            let mut right_value_conv: String = right_value.chars().take(right.len()).collect();
-            let ajst_str: String = right_value.chars().skip(right.len()).take(1).collect();
-            let ajst_int = ajst_str.parse::<i32>().unwrap_or(0);
-            if ajst_int > 4 {
-                right_value_conv = (right_value_conv.parse::<i32>().unwrap_or(0) + 1).to_string();
+
+    let mut kept: Vec<u8> = int_part
+        .bytes()
+        .chain(frac_part.bytes().take(decimals))
+        .map(|b| b - b'0')
+        .collect();
+    if frac_part.as_bytes()[decimals] >= b'5' {
+        let mut carry = 1u8;
+        for digit in kept.iter_mut().rev() {
+            *digit += carry;
+            carry = *digit / 10;
+            *digit %= 10;
+            if carry == 0 {
+                break;
             }
-            right_value = right_value_conv;
+        }
+        if carry > 0 {
+            kept.insert(0, carry);
         }
     }
-    value = format!("{left_value}.{right_value}");
-    value
+
+    let all: String = kept.iter().map(|d| char::from(b'0' + d)).collect();
+    let split_at = all.len() - decimals;
+    let int_digits = all[..split_at].trim_start_matches('0');
+    let int_digits = if int_digits.is_empty() { "0" } else { int_digits };
+    let mut result = format!("{sign}{int_digits}");
+    if decimals > 0 {
+        result.push('.');
+        result.push_str(&all[split_at..]);
+    }
+    result
+}
+
+/// Insert comma group separators into the integer part of a plain decimal
+/// string, preserving sign and fraction. String-based so values beyond the
+/// integer range keep their digits.
+pub(crate) fn group_thousands(value: &str) -> String {
+    let (sign, digits) = match value.strip_prefix('-') {
+        Some(rest) => ("-", rest),
+        None => ("", value),
+    };
+    let (int_part, frac_part) = match digits.split_once('.') {
+        Some((int_part, frac_part)) => (int_part, Some(frac_part)),
+        None => (digits, None),
+    };
+
+    let mut grouped = String::with_capacity(int_part.len() + int_part.len() / 3);
+    for (index, ch) in int_part.chars().enumerate() {
+        if index > 0 && (int_part.len() - index) % 3 == 0 {
+            grouped.push(',');
+        }
+        grouped.push(ch);
+    }
+
+    match frac_part {
+        Some(frac) => format!("{sign}{grouped}.{frac}"),
+        None => format!("{sign}{grouped}"),
+    }
 }
 
 #[allow(dead_code)]
@@ -226,4 +283,49 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
 
     let result = process_complex_number_format_mask(number, mask);
     format!("{}{}", if sign { "-" } else { "" }, result)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn format_as_number_rounds_half_away_from_zero() {
+        // Excel rounds display values; truncating turned 107310.6 into 107,310.
+        assert_eq!(format_as_number(107310.6, "#,##0"), "107,311");
+        assert_eq!(format_as_number(12.5, "0"), "13");
+        assert_eq!(format_as_number(-12.5, "0"), "-13");
+        assert_eq!(format_as_number(99999.5, "0"), "100000");
+    }
+
+    #[test]
+    fn format_as_number_pads_decimals_to_format_width() {
+        // 39.1 with a two-decimal format printed "39.100" (the fractional
+        // digits were multiplied instead of zero-padded).
+        assert_eq!(format_as_number(39.1, "0.00"), "39.10");
+        assert_eq!(format_as_number(2229.7, "#,##0.00"), "2,229.70");
+        assert_eq!(format_as_number(84.2, "0.00"), "84.20");
+        assert_eq!(format_as_number(39.0, "0.00"), "39.00");
+    }
+
+    #[test]
+    fn format_as_number_rounds_excess_decimals() {
+        assert_eq!(format_as_number(39.105, "0.00"), "39.11");
+        assert_eq!(format_as_number(0.125, "0.00"), "0.13");
+        assert_eq!(format_as_number(1.005, "0.00"), "1.01");
+        assert_eq!(format_as_number(57.67, "0.00"), "57.67");
+    }
+
+    #[test]
+    fn format_as_number_keeps_currency_prefix() {
+        assert_eq!(format_as_number(39.1, "$0.00"), "$39.10");
+        assert_eq!(format_as_number(107310.6, "$#,##0"), "$107,311");
+    }
+
+    #[test]
+    fn format_as_number_thousands_grouping_survives_rounding() {
+        assert_eq!(format_as_number(999999.5, "#,##0"), "1,000,000");
+        assert_eq!(format_as_number(1234567.891, "#,##0.00"), "1,234,567.89");
+        assert_eq!(format_as_number(-1234.5, "#,##0"), "-1,235");
+    }
 }
