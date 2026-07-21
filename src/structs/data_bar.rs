@@ -85,16 +85,17 @@ impl DataBar {
     ) {
         xml_read_loop!(
             reader,
-            Event::Empty(ref e) => {
+            ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
+                let is_empty = matches!(n, Event::Empty(_));
                 match e.name().into_inner() {
                     b"cfvo" => {
                         let mut obj = ConditionalFormatValueObject::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.cfvo_collection.push(obj);
                     }
                     b"color" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e, true);
+                        obj.set_attributes(reader, e, is_empty);
                         self.color_collection.push(obj);
                     }
                     _ => (),
@@ -124,5 +125,51 @@ impl DataBar {
         }
 
         write_end_tag(writer, "dataBar");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn read_data_bar(xml: &str) -> DataBar {
+        let mut reader = Reader::from_reader(std::io::BufReader::new(xml.as_bytes()));
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) | Ok(Event::Empty(ref e))
+                    if e.name().into_inner() == b"dataBar" =>
+                {
+                    let mut obj = DataBar::default();
+                    obj.set_attributes(&mut reader, e);
+                    return obj;
+                }
+                Ok(Event::Eof) => panic!("dataBar element not found"),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    #[test]
+    fn read_child_elements_with_end_tags() {
+        // Writers such as openpyxl emit <cfvo .../> children as
+        // <cfvo ...></cfvo> (Start + End events instead of Empty).
+        let obj = read_data_bar(
+            r#"<dataBar showValue="1" minLength="10" maxLength="90"><cfvo type="num" val="0"></cfvo><cfvo type="num" val="1400"></cfvo><color rgb="FF1E2761"></color></dataBar>"#,
+        );
+        assert_eq!(obj.get_cfvo_collection().len(), 2);
+        assert_eq!(obj.get_color_collection().len(), 1);
+        assert_eq!(obj.get_color_collection()[0].get_argb_str(), "FF1E2761");
+    }
+
+    #[test]
+    fn read_child_elements_self_closing() {
+        let obj = read_data_bar(
+            r#"<dataBar><cfvo type="min"/><cfvo type="max"/><color rgb="FF638EC6"/></dataBar>"#,
+        );
+        assert_eq!(obj.get_cfvo_collection().len(), 2);
+        assert_eq!(obj.get_color_collection().len(), 1);
+        assert_eq!(obj.get_color_collection()[0].get_argb_str(), "FF638EC6");
     }
 }
