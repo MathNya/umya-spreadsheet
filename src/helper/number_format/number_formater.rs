@@ -34,6 +34,7 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
 
         format = trailing_comma_regex.replace_all(&format, "$1").into();
     }
+    let mut attached_affixes = false;
     if fraction_regex.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
             value = format_as_fraction(value.parse::<f64>().unwrap_or(0.0), &format);
@@ -59,23 +60,56 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
                 use_thousands,
                 r"(0+)(\.?)(0*)",
             );
+
+            // Re-attach literal text around the digit placeholders ('#'
+            // became '0' above; quotes and escapes are already stripped).
+            // Excel renders `#,##0.00" €"` with the euro sign after the
+            // digits and wraps parenthesized sections; dropping the affixes
+            // loses currency symbols (office2pdf#365).
+            if let (Some(first), Some(last)) = (m.find('0'), m.rfind('0')) {
+                let prefix = replace_skip_width_placeholders(&m[..first]);
+                let suffix = replace_skip_width_placeholders(&m[last + 1..]);
+                if !prefix.is_empty() || !suffix.is_empty() {
+                    value = format!("{prefix}{value}{suffix}");
+                }
+                attached_affixes = true;
+            }
         }
     }
 
-    let re = compile_regex!(r"\$[^0-9]*");
-    if re.find(&format).ok().flatten().is_some() {
-        let item: Vec<&str> = re
-            .captures(&format)
-            .ok()
-            .flatten()
-            .unwrap()
-            .iter()
-            .map(|ite| ite.unwrap().as_str())
-            .collect();
-        value = format!("{}{}", item.first().unwrap(), value);
+    if !attached_affixes {
+        let re = compile_regex!(r"\$[^0-9]*");
+        if re.find(&format).ok().flatten().is_some() {
+            let item: Vec<&str> = re
+                .captures(&format)
+                .ok()
+                .flatten()
+                .unwrap()
+                .iter()
+                .map(|ite| ite.unwrap().as_str())
+                .collect();
+            value = format!("{}{}", item.first().unwrap(), value);
+        }
     }
 
     Cow::Owned(value)
+}
+
+/// Replace Excel skip-width placeholders (`_` followed by a mimicked
+/// character) with a plain space, which is how they render in practice.
+fn replace_skip_width_placeholders(literal: &str) -> String {
+    let mut result = String::with_capacity(literal.len());
+    let mut chars = literal.chars();
+    while let Some(ch) = chars.next() {
+        if ch == '_' {
+            if chars.next().is_some() {
+                result.push(' ');
+            }
+        } else {
+            result.push(ch);
+        }
+    }
+    result
 }
 
 fn format_straight_numeric_value(
@@ -226,4 +260,28 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
 
     let result = process_complex_number_format_mask(number, mask);
     format!("{}{}", if sign { "-" } else { "" }, result)
+}
+
+#[cfg(test)]
+mod literal_affix_tests {
+    use super::*;
+
+    #[test]
+    fn format_as_number_keeps_quoted_literal_suffix() {
+        // #,##0.00" €" printed only the bare number, dropping the currency
+        // suffix Excel renders after the digits.
+        assert_eq!(format_as_number(1240.0, "#,##0.00\" €\""), "1,240.00 €");
+        assert_eq!(format_as_number(187.55, "#,##0.00\" €\""), "187.55 €");
+    }
+
+    #[test]
+    fn format_as_number_keeps_literal_prefix() {
+        assert_eq!(format_as_number(39.15, "€ 0.00"), "€ 39.15");
+        assert_eq!(format_as_number(39.15, "$0.00"), "$39.15");
+    }
+
+    #[test]
+    fn format_as_number_wraps_parenthesized_sections() {
+        assert_eq!(format_as_number(1234.0, "(#,##0)"), "(1,234)");
+    }
 }
