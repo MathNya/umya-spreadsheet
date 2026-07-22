@@ -1,5 +1,6 @@
-use super::number_formater::round_decimal_string;
 use std::borrow::Cow;
+
+use super::number_formater::round_decimal_string;
 
 pub(crate) fn format_as_percentage(value: f64, format: &str) -> Cow<'_, str> {
     let format = format.replace('%', "");

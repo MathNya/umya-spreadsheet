@@ -105,7 +105,7 @@ fn format_straight_numeric_value(
 pub(crate) fn round_decimal_string(value: &str, decimals: usize) -> String {
     if value.contains(['e', 'E']) {
         let parsed = value.parse::<f64>().unwrap_or(0.0);
-        return format!("{:.*}", decimals, parsed);
+        return format!("{parsed:.decimals$}");
     }
 
     let (sign, digits) = match value.strip_prefix('-') {
@@ -147,7 +147,11 @@ pub(crate) fn round_decimal_string(value: &str, decimals: usize) -> String {
     let all: String = kept.iter().map(|d| char::from(b'0' + d)).collect();
     let split_at = all.len() - decimals;
     let int_digits = all[..split_at].trim_start_matches('0');
-    let int_digits = if int_digits.is_empty() { "0" } else { int_digits };
+    let int_digits = if int_digits.is_empty() {
+        "0"
+    } else {
+        int_digits
+    };
     let mut result = format!("{sign}{int_digits}");
     if decimals > 0 {
         result.push('.');
