@@ -344,6 +344,7 @@ mod tests {
     #[test]
     fn format_as_number_wraps_parenthesized_sections() {
         assert_eq!(format_as_number(1234.0, "(#,##0)"), "(1,234)");
+    }
 
     #[test]
     fn format_as_number_rounds_half_away_from_zero() {

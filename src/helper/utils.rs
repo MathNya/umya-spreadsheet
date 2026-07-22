@@ -21,6 +21,42 @@ pub(crate) fn unescape_xml_text(e: &quick_xml::events::BytesText<'_>) -> String 
         .into_owned()
 }
 
+/// Append a text event to an accumulating element value.
+///
+/// Callers that read element character data must **append** successive text
+/// events rather than overwrite: quick-xml emits numeric character references
+/// (e.g. `&#8211;`) as separate [`Event::GeneralRef`] nodes between
+/// [`Event::Text`] fragments.
+pub(crate) fn append_xml_text(out: &mut String, e: &quick_xml::events::BytesText<'_>) {
+    out.push_str(&unescape_xml_text(e));
+}
+
+/// Append a general/character reference event (`&#…;`, `&amp;`, …) to an
+/// accumulating element value.
+pub(crate) fn append_xml_general_ref(out: &mut String, e: &quick_xml::events::BytesRef<'_>) {
+    if let Ok(Some(ch)) = e.resolve_char_ref() {
+        out.push(ch);
+        return;
+    }
+    // Named entities that quick-xml may surface as GeneralRef when not
+    // expanded into Text.
+    if let Ok(name) = e.decode() {
+        match name.as_ref() {
+            "amp" => out.push('&'),
+            "lt" => out.push('<'),
+            "gt" => out.push('>'),
+            "quot" => out.push('"'),
+            "apos" => out.push('\''),
+            other => {
+                // Preserve unknown refs so callers can still inspect them.
+                out.push('&');
+                out.push_str(other);
+                out.push(';');
+            }
+        }
+    }
+}
+
 /// A macro that implements the `From` trait for converting from one error type
 /// to another.
 ///
