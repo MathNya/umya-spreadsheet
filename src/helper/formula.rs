@@ -9,6 +9,7 @@ use crate::{
             adjustment_remove_coordinate,
             coordinate_from_index_with_lock,
             index_from_coordinate,
+            string_from_column_index,
         },
         range::{
             get_join_range,
@@ -887,33 +888,45 @@ pub fn adjustment_formula_coordinate(
             let coordinate_list = get_split_range(range);
             let mut has_error = false;
             for coordinate in &coordinate_list {
-                let cell = index_from_coordinate(coordinate);
-                if let Some(cell_0) = cell.0 {
-                    let mut col_num = cell_0;
-                    let mut row_num = cell.1.unwrap();
-                    let is_lock_col = cell.2.unwrap();
-                    let is_lock_row = cell.3.unwrap();
-                    if !is_lock_col {
-                        let calc_col_num =
-                            num_traits::cast::<_, i32>(col_num).unwrap() + offset_col_num;
-                        if calc_col_num < 1 {
-                            has_error = true;
-                            break;
+                let (mut col_num, mut row_num, is_lock_col, is_lock_row) =
+                    index_from_coordinate(coordinate);
+                if col_num.is_some() || row_num.is_some() {
+                    if let Some(col_num) = col_num.as_mut() {
+                        if !is_lock_col.unwrap_or_default() {
+                            let calc_col_num =
+                                num_traits::cast::<_, i32>(*col_num).unwrap() + offset_col_num;
+                            if calc_col_num < 1 {
+                                has_error = true;
+                                break;
+                            }
+                            *col_num = num_traits::cast::<_, u32>(calc_col_num).unwrap();
                         }
-                        col_num = num_traits::cast::<_, u32>(calc_col_num).unwrap();
                     }
-                    if !is_lock_row {
-                        let calc_row_num =
-                            num_traits::cast::<_, i32>(row_num).unwrap() + offset_row_num;
-                        if calc_row_num < 1 {
-                            has_error = true;
-                            break;
+                    if let Some(row_num) = row_num.as_mut() {
+                        if !is_lock_row.unwrap_or_default() {
+                            let calc_row_num =
+                                num_traits::cast::<_, i32>(*row_num).unwrap() + offset_row_num;
+                            if calc_row_num < 1 {
+                                has_error = true;
+                                break;
+                            }
+                            *row_num = num_traits::cast::<_, u32>(calc_row_num).unwrap();
                         }
-                        row_num = num_traits::cast::<_, u32>(calc_row_num).unwrap();
                     }
-                    let new_corrdinate =
-                        coordinate_from_index_with_lock(col_num, row_num, is_lock_col, is_lock_row);
-                    coordinate_list_new.push(new_corrdinate);
+                    let mut new_coordinate = String::new();
+                    if let Some(col_num) = col_num {
+                        if is_lock_col.unwrap_or_default() {
+                            new_coordinate.push('$');
+                        }
+                        new_coordinate.push_str(&string_from_column_index(col_num));
+                    }
+                    if let Some(row_num) = row_num {
+                        if is_lock_row.unwrap_or_default() {
+                            new_coordinate.push('$');
+                        }
+                        new_coordinate.push_str(&row_num.to_string());
+                    }
+                    coordinate_list_new.push(new_coordinate);
                 } else {
                     coordinate_list_new.push((*coordinate).to_string());
                 }
@@ -1054,6 +1067,13 @@ pub fn adjustment_remove_formula_coordinate(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn adjusted_formula(formula: &str, offset_col_num: i32, offset_row_num: i32) -> String {
+        let mut tokens = parse_to_tokens(formula);
+        adjustment_formula_coordinate(&mut tokens, offset_col_num, offset_row_num);
+        render(&tokens)
+    }
+
     #[test]
     fn test() {
         let formula = "=10+9";
@@ -1079,6 +1099,42 @@ mod tests {
             format!("={}", render(parse_to_tokens(formula).as_ref())),
             formula
         );
+    }
+
+    #[test]
+    fn shared_formula_adjustment_handles_whole_column_references() {
+        assert_eq!(
+            adjusted_formula("=IF(G3=\"\",\"\",VLOOKUP(G3,A:B,2,FALSE))", 0, 1),
+            "IF(G4=\"\",\"\",VLOOKUP(G4,A:B,2,FALSE))"
+        );
+        assert_eq!(
+            adjusted_formula("=VLOOKUP(G3,A:B,2,FALSE)", 1, 0),
+            "VLOOKUP(H3,B:C,2,FALSE)"
+        );
+        assert_eq!(
+            adjusted_formula("=VLOOKUP(G3,$A:$B,2,FALSE)", 1, 0),
+            "VLOOKUP(H3,$A:$B,2,FALSE)"
+        );
+    }
+
+    #[test]
+    fn shared_formula_adjustment_handles_whole_row_references() {
+        assert_eq!(adjusted_formula("=SUM(1:3)", 0, 2), "SUM(3:5)");
+        assert_eq!(adjusted_formula("=SUM($1:$3)", 0, 2), "SUM($1:$3)");
+    }
+
+    #[test]
+    fn shared_formula_adjustment_preserves_named_ranges() {
+        assert_eq!(
+            adjusted_formula("=SUM(MyNamedRange)", 1, 1),
+            "SUM(MyNamedRange)"
+        );
+    }
+
+    #[test]
+    fn shared_formula_adjustment_reports_out_of_bounds_whole_references() {
+        assert_eq!(adjusted_formula("=SUM(A:B)", -1, 0), "SUM(#REF!)");
+        assert_eq!(adjusted_formula("=SUM(1:3)", 0, -1), "SUM(#REF!)");
     }
 }
 
@@ -1106,3 +1162,4 @@ mod shared_formula_quoted_sheet_tests {
         );
     }
 }
+
