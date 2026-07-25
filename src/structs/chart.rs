@@ -421,7 +421,7 @@ impl Chart {
     fn convert_series(area_chart_series_list: &[&str], smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
         area_chart_series_list
-            .into_iter()
+            .iter()
             .enumerate()
             .for_each(|(idx, area_chart_series)| {
                 let mut values = Values::default();
@@ -597,7 +597,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -738,7 +738,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -842,7 +842,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -1052,7 +1052,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -1191,7 +1191,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -1327,7 +1327,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -1471,7 +1471,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = Self::convert_series(&area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -1610,7 +1610,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
