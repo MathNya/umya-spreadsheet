@@ -29,7 +29,7 @@ pub(crate) struct RawFile {
 impl RawFile {
     #[inline]
     pub(crate) fn file_name(&self) -> &str {
-        self.file_target().split('/').last().unwrap()
+        self.file_target().split('/').next_back().unwrap()
     }
 
     #[inline]

@@ -452,7 +452,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
@@ -1921,7 +1921,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: &[&str]) {
-        let acsl_obj = Self::convert_series(&area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213_468_160);
