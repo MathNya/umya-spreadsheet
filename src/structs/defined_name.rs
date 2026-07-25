@@ -153,41 +153,41 @@ impl DefinedName {
 
     fn split_str<S: Into<String>>(value: S) -> Vec<String> {
         let value = value.into();
-        let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
+        let char_list = value.chars();
         let mut is_pass_s = false;
         let mut is_pass_d = false;
         let mut is_pass_b = 0;
         let mut result: Vec<String> = Vec::new();
         let mut string = String::new();
-        for c in &char_list {
+        for c in char_list {
             match c {
                 '(' => {
                     is_pass_b += 1;
-                    string.push(*c);
+                    string.push(c);
                 }
                 ')' => {
                     is_pass_b -= 1;
-                    string.push(*c);
+                    string.push(c);
                 }
                 '\'' => {
                     is_pass_s = !is_pass_s;
-                    string.push(*c);
+                    string.push(c);
                 }
                 '"' => {
                     is_pass_d = !is_pass_d;
                     if is_pass_s || is_pass_b != 0 {
-                        string.push(*c);
+                        string.push(c);
                     }
                 }
                 ',' => {
                     if !is_pass_s && !is_pass_d && is_pass_b == 0 {
                         result.push(std::mem::take(&mut string));
                     } else {
-                        string.push(*c);
+                        string.push(c);
                     }
                 }
                 _ => {
-                    string.push(*c);
+                    string.push(c);
                 }
             }
         }

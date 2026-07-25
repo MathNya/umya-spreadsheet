@@ -75,7 +75,7 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<'_, str> {
     });
 
     // Only process the non-quoted blocks for date format characters
-    let blocks: Vec<&str> = format.split('"').collect();
+    let blocks = format.split('"');
     let mut converted_blocks: Vec<String> = Vec::new();
     let mut i = 0;
     for block in blocks {

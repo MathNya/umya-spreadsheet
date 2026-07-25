@@ -78,15 +78,18 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
     if !attached_affixes {
         let re = compile_regex!(r"\$[^0-9]*");
         if re.find(&format).ok().flatten().is_some() {
-            let item: Vec<&str> = re
-                .captures(&format)
-                .ok()
-                .flatten()
-                .unwrap()
-                .iter()
-                .map(|ite| ite.unwrap().as_str())
-                .collect();
-            value = format!("{}{}", item.first().unwrap(), value);
+            value = format!(
+                "{}{}",
+                re.captures(&format)
+                    .ok()
+                    .flatten()
+                    .unwrap()
+                    .iter()
+                    .map(|ite| ite.unwrap().as_str())
+                    .next()
+                    .unwrap(),
+                value
+            );
         }
     }
 
@@ -222,7 +225,7 @@ pub(crate) fn group_thousands(value: &str) -> String {
 }
 
 #[allow(dead_code)]
-fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Vec<String> {
+fn merge_complex_number_format_masks(numbers: &[&str], masks: &[String]) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks: Vec<&str> = Vec::new();
 
@@ -287,16 +290,8 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
 
     if split_on_point && mask.contains('.') && number.to_string().contains('.') {
         let number_str = number.to_string();
-        let numbers_as: Vec<&str> = number_str.split('.').collect();
-        let mut numbers: Vec<String> = Vec::new();
-        for n in numbers_as {
-            numbers.push(n.to_string());
-        }
-        let masks_as: Vec<&str> = mask.split('.').collect();
-        let mut masks: Vec<String> = Vec::new();
-        for mask in masks_as {
-            masks.push(mask.to_string());
-        }
+        let numbers: Vec<&str> = number_str.split('.').collect();
+        let mut masks: Vec<String> = mask.split('.').map(String::from).collect();
         if masks.len() > 2 {
             masks = merge_complex_number_format_masks(&numbers, &masks);
         }
@@ -344,6 +339,7 @@ mod tests {
     #[test]
     fn format_as_number_wraps_parenthesized_sections() {
         assert_eq!(format_as_number(1234.0, "(#,##0)"), "(1,234)");
+    }
 
     #[test]
     fn format_as_number_rounds_half_away_from_zero() {
