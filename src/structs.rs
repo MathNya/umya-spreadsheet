@@ -108,6 +108,8 @@ pub_mod_use![
     pub font_size,
     pub font,
     pub formula,
+    pub formula1,
+    pub formula2,
     pub from_marker,
     pub gradient_fill,
     pub gradient_stop,

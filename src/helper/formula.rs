@@ -1162,4 +1162,3 @@ mod shared_formula_quoted_sheet_tests {
         );
     }
 }
-

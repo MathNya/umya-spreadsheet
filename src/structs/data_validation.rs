@@ -1,8 +1,5 @@
 // dataValidation
-use std::{
-    io::Cursor,
-    vec,
-};
+use std::io::Cursor;
 
 use quick_xml::{
     Reader,
@@ -22,11 +19,15 @@ use super::{
     StringValue,
 };
 use crate::{
-    reader::driver::get_attribute,
+    Formula1,
+    Formula2,
+    reader::driver::{
+        xml_read_loop,
+        get_attribute,
+    },
     writer::driver::{
         write_end_tag,
         write_start_tag,
-        write_text_node,
     },
 };
 
@@ -42,8 +43,8 @@ pub struct DataValidation {
     error_title:            StringValue,
     error_messsage:         StringValue,
     sequence_of_references: SequenceOfReferences,
-    formula1:               StringValue,
-    formula2:               StringValue,
+    formula1:               Box<Formula1>,
+    formula2:               Box<Formula2>,
 }
 impl DataValidation {
     #[inline]
@@ -243,7 +244,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn formula1(&self) -> &str {
-        self.formula1.value_str()
+        self.formula1.text()
     }
 
     #[inline]
@@ -255,14 +256,14 @@ impl DataValidation {
 
     #[inline]
     pub fn set_formula1<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula1.set_value(value);
+        self.formula1.set_text(value);
         self
     }
 
     #[inline]
     #[must_use]
     pub fn formula2(&self) -> &str {
-        self.formula2.value_str()
+        self.formula2.text()
     }
 
     #[inline]
@@ -274,7 +275,7 @@ impl DataValidation {
 
     #[inline]
     pub fn set_formula2<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula2.set_value(value);
+        self.formula2.set_text(value);
         self
     }
 
@@ -328,42 +329,34 @@ impl DataValidation {
             return;
         }
 
-        let mut value: String = String::new();
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                // quick-xml may split character data across multiple Text events
-                // interleaved with GeneralRef for numeric character references
-                // (e.g. `&#8211;`). Append rather than overwrite so the full
-                // formula is reconstructed.
-                Ok(Event::Text(e)) => {
-                    crate::helper::utils::append_xml_text(&mut value, &e);
-                }
-                Ok(Event::GeneralRef(e)) => {
-                    crate::helper::utils::append_xml_general_ref(&mut value, &e);
-                }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"formula1" => {
-                        self.formula1.set_value_string(std::mem::take(&mut value));
+                        let mut obj = Formula1::default();
+                        obj.set_attributes(reader, e);
+                        *self.formula1 = obj;
                     }
                     b"formula2" => {
-                        self.formula2.set_value_string(std::mem::take(&mut value));
+                        let mut obj = Formula2::default();
+                        obj.set_attributes(reader, e);
+                        *self.formula2 = obj;
                     }
-                    b"dataValidation" => return,
-                    _ => {}
-                },
-                Ok(Event::Eof) => {
-                    panic!("Error: Could not find {} end element", "dataValidation")
+                    _ => (),
                 }
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => {}
-            }
-            buf.clear();
-        }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"dataValidation" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "dataValidation")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let is_inner = self.formula1.has_value() || self.formula2.has_value();
+        let is_inner = self.formula1.text().is_empty() || self.formula2.text().is_empty();
 
         // dataValidation
         let mut attributes: crate::structs::AttrCollection = Vec::new();
@@ -423,15 +416,13 @@ impl DataValidation {
 
         write_start_tag(writer, "dataValidation", attributes, !is_inner);
         if is_inner {
-            if self.formula1.has_value() {
-                write_start_tag(writer, "formula1", vec![], false);
-                write_text_node(writer, self.formula1.value_str());
-                write_end_tag(writer, "formula1");
+            // formula1
+            if !self.formula1.text().is_empty() {
+                self.formula1.write_to(writer);
             }
-            if self.formula2.has_value() {
-                write_start_tag(writer, "formula2", vec![], false);
-                write_text_node(writer, self.formula2.value_str());
-                write_end_tag(writer, "formula2");
+            // formula2
+            if !self.formula2.text().is_empty() {
+                self.formula2.write_to(writer);
             }
             write_end_tag(writer, "dataValidation");
         }
