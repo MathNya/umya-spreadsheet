@@ -29,9 +29,7 @@ pub(crate) struct RawFile {
 impl RawFile {
     #[inline]
     pub(crate) fn file_name(&self) -> &str {
-        let v: Vec<&str> = self.file_target().split('/').collect();
-        let object_name = v.last().unwrap();
-        object_name
+        self.file_target().split('/').next_back().unwrap()
     }
 
     #[inline]

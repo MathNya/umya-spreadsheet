@@ -158,9 +158,9 @@ mod tests {
         let obj = read_data_bar(
             r#"<dataBar showValue="1" minLength="10" maxLength="90"><cfvo type="num" val="0"></cfvo><cfvo type="num" val="1400"></cfvo><color rgb="FF1E2761"></color></dataBar>"#,
         );
-        assert_eq!(obj.get_cfvo_collection().len(), 2);
-        assert_eq!(obj.get_color_collection().len(), 1);
-        assert_eq!(obj.get_color_collection()[0].get_argb_str(), "FF1E2761");
+        assert_eq!(obj.cfvo_collection().len(), 2);
+        assert_eq!(obj.color_collection().len(), 1);
+        assert_eq!(obj.color_collection()[0].argb_str(), "FF1E2761");
     }
 
     #[test]
@@ -168,8 +168,8 @@ mod tests {
         let obj = read_data_bar(
             r#"<dataBar><cfvo type="min"/><cfvo type="max"/><color rgb="FF638EC6"/></dataBar>"#,
         );
-        assert_eq!(obj.get_cfvo_collection().len(), 2);
-        assert_eq!(obj.get_color_collection().len(), 1);
-        assert_eq!(obj.get_color_collection()[0].get_argb_str(), "FF638EC6");
+        assert_eq!(obj.cfvo_collection().len(), 2);
+        assert_eq!(obj.color_collection().len(), 1);
+        assert_eq!(obj.color_collection()[0].argb_str(), "FF638EC6");
     }
 }

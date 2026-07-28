@@ -2786,7 +2786,7 @@ impl Worksheet {
             if self.rows.row_dimension(row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {
-                    let cells: Vec<&Cell> = self.cells.iter_cells_by_row(row).collect();
+                    let cells = self.cells.iter_cells_by_row(row);
                     for cell in cells {
                         if !cell.is_visually_empty() {
                             return;

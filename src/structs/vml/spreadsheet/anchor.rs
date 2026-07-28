@@ -234,7 +234,7 @@ impl Anchor {
     }
 
     #[inline]
-    fn number(value: Option<&&str>) -> u32 {
+    fn number(value: Option<&str>) -> u32 {
         match value {
             Some(v) => (*v).trim().parse::<u32>().unwrap_or(0),
             None => 0,
@@ -243,7 +243,7 @@ impl Anchor {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use number()")]
-    fn get_number(value: Option<&&str>) -> u32 {
+    fn get_number(value: Option<&str>) -> u32 {
         Self::number(value)
     }
 
@@ -257,15 +257,15 @@ impl Anchor {
             reader,
             Event::Text(e) => {
                 let text = crate::helper::utils::unescape_xml_text(&e);
-                let split_str: Vec<&str> = text.split(',').collect();
-                self.set_left_column(Self::number(split_str.first()));
-                self.set_left_offset(Self::number(split_str.get(1)));
-                self.set_top_row(Self::number(split_str.get(2)));
-                self.set_top_offset(Self::number(split_str.get(3)));
-                self.set_right_column(Self::number(split_str.get(4)));
-                self.set_right_offset(Self::number(split_str.get(5)));
-                self.set_bottom_row(Self::number(split_str.get(6)));
-                self.set_bottom_offset(Self::number(split_str.get(7)));
+                let mut split_str = text.split(',');
+                self.set_left_column(Self::number(split_str.next()));
+                self.set_left_offset(Self::number(split_str.next()));
+                self.set_top_row(Self::number(split_str.next()));
+                self.set_top_offset(Self::number(split_str.next()));
+                self.set_right_column(Self::number(split_str.next()));
+                self.set_right_offset(Self::number(split_str.next()));
+                self.set_bottom_row(Self::number(split_str.next()));
+                self.set_bottom_offset(Self::number(split_str.next()));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"x:Anchor" {

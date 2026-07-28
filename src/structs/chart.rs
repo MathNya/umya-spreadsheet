@@ -339,43 +339,43 @@ impl Chart {
 
         match chart_type {
             ChartType::LineChart => {
-                self.new_chart_line_chart(area_chart_series_list);
+                self.new_chart_line_chart(&area_chart_series_list);
             }
             ChartType::Line3DChart => {
-                self.new_chart_line_3d_chart(area_chart_series_list);
+                self.new_chart_line_3d_chart(&area_chart_series_list);
             }
             ChartType::PieChart => {
-                self.new_chart_pie_chart(area_chart_series_list);
+                self.new_chart_pie_chart(&area_chart_series_list);
             }
             ChartType::Pie3DChart => {
-                self.new_chart_pie_3d_chart(area_chart_series_list);
+                self.new_chart_pie_3d_chart(&area_chart_series_list);
             }
             ChartType::DoughnutChart => {
-                self.new_chart_doughnut_chart(area_chart_series_list);
+                self.new_chart_doughnut_chart(&area_chart_series_list);
             }
             ChartType::AreaChart => {
-                self.new_chart_area_chart(area_chart_series_list);
+                self.new_chart_area_chart(&area_chart_series_list);
             }
             ChartType::Area3DChart => {
-                self.new_chart_area_3d_chart(area_chart_series_list);
+                self.new_chart_area_3d_chart(&area_chart_series_list);
             }
             ChartType::BarChart => {
-                self.new_chart_bar_chart(area_chart_series_list);
+                self.new_chart_bar_chart(&area_chart_series_list);
             }
             ChartType::Bar3DChart => {
-                self.new_chart_bar_3d_chart(area_chart_series_list);
+                self.new_chart_bar_3d_chart(&area_chart_series_list);
             }
             ChartType::OfPieChart => {
-                self.new_chart_of_pie_chart(area_chart_series_list);
+                self.new_chart_of_pie_chart(&area_chart_series_list);
             }
             ChartType::BubbleChart => {
-                self.new_chart_bubble_chart(area_chart_series_list);
+                self.new_chart_bubble_chart(&area_chart_series_list);
             }
             ChartType::RadarChart => {
-                self.new_chart_radar_chart(area_chart_series_list);
+                self.new_chart_radar_chart(&area_chart_series_list);
             }
             ChartType::ScatterChart => {
-                self.new_chart_scatter_chart(area_chart_series_list);
+                self.new_chart_scatter_chart(&area_chart_series_list);
             }
         }
 
@@ -418,17 +418,17 @@ impl Chart {
     }
 
     #[inline]
-    fn convert_series(area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
+    fn convert_series(area_chart_series_list: &[&str], smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
         area_chart_series_list
-            .into_iter()
+            .iter()
             .enumerate()
             .for_each(|(idx, area_chart_series)| {
                 let mut values = Values::default();
                 values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 values
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -451,7 +451,7 @@ impl Chart {
         acsl_obj
     }
 
-    pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
@@ -585,7 +585,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_line_3d_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_line_3d_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut rotate_x = RotateX::default();
         let mut rotate_y = RotateY::default();
         let mut right_angle_axes = RightAngleAxes::default();
@@ -737,7 +737,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
@@ -830,7 +830,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_pie_3d_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_pie_3d_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut rotate_x = RotateX::default();
         let mut rotate_y = RotateY::default();
         let mut right_angle_axes = RightAngleAxes::default();
@@ -940,7 +940,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_doughnut_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_doughnut_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
@@ -950,7 +950,7 @@ impl Chart {
                 let mut string_reference = StringReference::default();
                 string_reference
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
 
                 let mut category_axis_data = CategoryAxisData::default();
                 category_axis_data.set_string_reference(string_reference);
@@ -962,7 +962,7 @@ impl Chart {
                 values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 values
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -1051,7 +1051,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
@@ -1179,7 +1179,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_area_3d_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_area_3d_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut rotate_x = RotateX::default();
         let mut rotate_y = RotateY::default();
         let mut right_angle_axes = RightAngleAxes::default();
@@ -1326,7 +1326,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
@@ -1459,7 +1459,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_bar_3d_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_bar_3d_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut rotate_x = RotateX::default();
         let mut rotate_y = RotateY::default();
         let mut right_angle_axes = RightAngleAxes::default();
@@ -1609,7 +1609,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut show_leader_lines = ShowLeaderLines::default();
@@ -1695,7 +1695,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_bubble_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_bubble_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
@@ -1706,7 +1706,7 @@ impl Chart {
                 x_values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 x_values
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -1720,7 +1720,7 @@ impl Chart {
                 y_values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 y_values
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -1734,7 +1734,7 @@ impl Chart {
                 bubble_size
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 bubble_size
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -1920,7 +1920,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: &[&str]) {
         let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
@@ -2052,7 +2052,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
-    pub(crate) fn new_chart_scatter_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    pub(crate) fn new_chart_scatter_chart(&mut self, area_chart_series_list: &[&str]) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
@@ -2063,7 +2063,7 @@ impl Chart {
                 x_values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 x_values
                     .number_reference_mut()
                     .numbering_cache_mut()
@@ -2077,7 +2077,7 @@ impl Chart {
                 y_values
                     .number_reference_mut()
                     .formula_mut()
-                    .set_address_str(area_chart_series);
+                    .set_address_str(*area_chart_series);
                 y_values
                     .number_reference_mut()
                     .numbering_cache_mut()
