@@ -18,7 +18,6 @@ pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
     reader.config_mut().trim_text(false);
 
     let mut authors: Vec<String> = Vec::new();
-    let mut value: String = String::new();
     xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
@@ -32,13 +31,11 @@ pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
                 obj.set_attributes(&mut reader, e, &authors);
                 worksheet.add_comments(obj);
             }
-        },
-        Event::Text(e) => {
-            value = crate::helper::utils::unescape_xml_text(&e);
-        },
-        Event::End(ref e) => {
-            if e.name().into_inner() == b"author" {
-                authors.push(value.clone());
+            if e.name().into_inner() ==  b"author" {
+                let mut buf = Vec::new();
+                let text = reader
+                    .read_text_into(e.name(), &mut buf).unwrap();
+                authors.push(crate::helper::utils::unescape_xml_text(&text).clone());
             }
         },
         Event::Eof => break,

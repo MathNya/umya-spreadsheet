@@ -24,7 +24,6 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
     let mut buf = Vec::new();
     let mut table = Table::default();
     let mut table_column = TableColumn::default();
-    let mut string_value = String::new();
     loop {
         match reader.read_event_into(&mut buf) {
             Ok(Event::Empty(ref e)) => match e.name().into_inner() {
@@ -108,8 +107,14 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 _ => (),
             },
-            Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                b"calculatedColumnFormula" => {
+                    let mut buf = Vec::new();
+                    let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+                    table_column.set_calculated_column_formula(
+                        crate::helper::utils::unescape_xml_text(&text),
+                    );
+                }
                 b"table" => {
                     for attr in e.attributes().with_checks(false).flatten() {
                         let attr_val = get_attribute_value(&attr)?;
@@ -158,20 +163,15 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 _ => (),
             },
-            Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"calculatedColumnFormula" => {
-                    table_column.set_calculated_column_formula(string_value);
-                    string_value = String::new();
-                }
-                b"tableColumn" => {
+            Ok(Event::End(ref e)) => {
+                if e.name().into_inner() == b"tableColumn" {
                     // add column to table (if it has a name)
                     if !table_column.name().is_empty() {
                         table.add_column(table_column);
                         table_column = TableColumn::default();
                     }
                 }
-                _ => (),
-            },
+            }
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

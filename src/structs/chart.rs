@@ -327,6 +327,7 @@ impl Chart {
         self.chart_space_mut()
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     pub fn new_chart(
         &mut self,
         chart_type: &ChartType,
