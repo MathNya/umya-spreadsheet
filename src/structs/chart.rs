@@ -332,50 +332,50 @@ impl Chart {
         chart_type: &ChartType,
         from_marker: MarkerType,
         to_marker: MarkerType,
-        area_chart_series_list: &[&str],
+        area_chart_series_list: Vec<&str>,
     ) -> &mut Self {
         self.two_cell_anchor.set_from_marker(from_marker);
         self.two_cell_anchor.set_to_marker(to_marker);
 
         match chart_type {
             ChartType::LineChart => {
-                self.new_chart_line_chart(area_chart_series_list);
+                self.new_chart_line_chart(&area_chart_series_list);
             }
             ChartType::Line3DChart => {
-                self.new_chart_line_3d_chart(area_chart_series_list);
+                self.new_chart_line_3d_chart(&area_chart_series_list);
             }
             ChartType::PieChart => {
-                self.new_chart_pie_chart(area_chart_series_list);
+                self.new_chart_pie_chart(&area_chart_series_list);
             }
             ChartType::Pie3DChart => {
-                self.new_chart_pie_3d_chart(area_chart_series_list);
+                self.new_chart_pie_3d_chart(&area_chart_series_list);
             }
             ChartType::DoughnutChart => {
-                self.new_chart_doughnut_chart(area_chart_series_list);
+                self.new_chart_doughnut_chart(&area_chart_series_list);
             }
             ChartType::AreaChart => {
-                self.new_chart_area_chart(area_chart_series_list);
+                self.new_chart_area_chart(&area_chart_series_list);
             }
             ChartType::Area3DChart => {
-                self.new_chart_area_3d_chart(area_chart_series_list);
+                self.new_chart_area_3d_chart(&area_chart_series_list);
             }
             ChartType::BarChart => {
-                self.new_chart_bar_chart(area_chart_series_list);
+                self.new_chart_bar_chart(&area_chart_series_list);
             }
             ChartType::Bar3DChart => {
-                self.new_chart_bar_3d_chart(area_chart_series_list);
+                self.new_chart_bar_3d_chart(&area_chart_series_list);
             }
             ChartType::OfPieChart => {
-                self.new_chart_of_pie_chart(area_chart_series_list);
+                self.new_chart_of_pie_chart(&area_chart_series_list);
             }
             ChartType::BubbleChart => {
-                self.new_chart_bubble_chart(area_chart_series_list);
+                self.new_chart_bubble_chart(&area_chart_series_list);
             }
             ChartType::RadarChart => {
-                self.new_chart_radar_chart(area_chart_series_list);
+                self.new_chart_radar_chart(&area_chart_series_list);
             }
             ChartType::ScatterChart => {
-                self.new_chart_scatter_chart(area_chart_series_list);
+                self.new_chart_scatter_chart(&area_chart_series_list);
             }
         }
 
