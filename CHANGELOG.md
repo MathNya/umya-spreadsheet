@@ -1,3 +1,7 @@
+# Unreleased
+### Bug Fixed
+* Data validation / formula character data containing XML numeric character references (e.g. `&#8211;`) was truncated. `formula1`/`formula2` text is now accumulated across successive `Text` and `GeneralRef` events from quick-xml.
+
 # Change Detail -> 3.0.0
 ### We have changed the name of the Getter.
 ```rust

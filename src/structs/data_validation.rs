@@ -332,8 +332,15 @@ impl DataValidation {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
+                // quick-xml may split character data across multiple Text events
+                // interleaved with GeneralRef for numeric character references
+                // (e.g. `&#8211;`). Append rather than overwrite so the full
+                // formula is reconstructed.
                 Ok(Event::Text(e)) => {
-                    value = crate::helper::utils::unescape_xml_text(&e);
+                    crate::helper::utils::append_xml_text(&mut value, &e);
+                }
+                Ok(Event::GeneralRef(e)) => {
+                    crate::helper::utils::append_xml_general_ref(&mut value, &e);
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"formula1" => {
@@ -428,5 +435,55 @@ impl DataValidation {
             }
             write_end_tag(writer, "dataValidation");
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use quick_xml::Reader;
+
+    #[test]
+    fn formula1_preserves_numeric_character_references() {
+        // Excel/LibreOffice may emit en-dashes as `&#8211;`. quick-xml surfaces
+        // those as GeneralRef events between Text fragments; we must append both.
+        let xml = concat!(
+            r#"<dataValidation type="list" sqref="D41" allowBlank="1">"#,
+            r#"<formula1>"0&#8211;3 years ago,4&#8211;5 years ago,6&#8211;7 years ago"</formula1>"#,
+            r#"</dataValidation>"#,
+        );
+        let mut reader = Reader::from_str(xml);
+        reader.config_mut().trim_text(true);
+        let mut buf = Vec::new();
+        let Event::Start(e) = reader.read_event_into(&mut buf).unwrap() else {
+            panic!("expected Start dataValidation");
+        };
+        let mut dv = DataValidation::default();
+        dv.set_attributes(&mut reader, &e, false);
+        assert_eq!(
+            dv.formula1(),
+            "\"0–3 years ago,4–5 years ago,6–7 years ago\"",
+            "full list formula must survive entity split"
+        );
+        assert_eq!(dv.sequence_of_references().get_sqref(), "D41");
+        assert_eq!(dv.get_type(), &DataValidationValues::List);
+    }
+
+    #[test]
+    fn formula1_plain_text_still_works() {
+        let xml = concat!(
+            r#"<dataValidation type="list" sqref="C5" allowBlank="1">"#,
+            r#"<formula1>"petrol,diesel,LPG,electric"</formula1>"#,
+            r#"</dataValidation>"#,
+        );
+        let mut reader = Reader::from_str(xml);
+        reader.config_mut().trim_text(true);
+        let mut buf = Vec::new();
+        let Event::Start(e) = reader.read_event_into(&mut buf).unwrap() else {
+            panic!("expected Start dataValidation");
+        };
+        let mut dv = DataValidation::default();
+        dv.set_attributes(&mut reader, &e, false);
+        assert_eq!(dv.formula1(), "\"petrol,diesel,LPG,electric\"");
     }
 }

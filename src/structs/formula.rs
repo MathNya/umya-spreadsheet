@@ -101,13 +101,22 @@ impl Formula {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
+        let mut value = String::new();
         xml_read_loop!(
             reader,
+            // Append successive Text / GeneralRef events so character
+            // references (e.g. `&#8211;`) are not dropped mid-formula.
             Event::Text(e) => {
-                self.set_address_str(crate::helper::utils::unescape_xml_text(&e));
+                crate::helper::utils::append_xml_text(&mut value, &e);
+            },
+            Event::GeneralRef(e) => {
+                crate::helper::utils::append_xml_general_ref(&mut value, &e);
             },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"formula" {
+                    if !value.is_empty() {
+                        self.set_address_str(std::mem::take(&mut value));
+                    }
                     return
                 }
             },
