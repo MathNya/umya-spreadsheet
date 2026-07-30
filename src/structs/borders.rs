@@ -536,9 +536,14 @@ impl Borders {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         set_string_from_xml!(self, e, diagonal_up, "diagonalUp");
         set_string_from_xml!(self, e, diagonal_down, "diagonalDown");
+        
+        if empty_flg {
+            return;
+        }
 
         xml_read_loop!(
             reader,

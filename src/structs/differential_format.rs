@@ -234,7 +234,7 @@ impl DifferentialFormat {
                     }
                     b"border" => {
                         let mut obj = Borders::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, false);
                         self.set_borders(obj);
                     }
                     b"alignment" => {

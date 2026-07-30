@@ -84,10 +84,10 @@ impl BordersCrate {
         xml_read_loop!(
             reader,
             ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
-                let _is_empty = matches!(n, Event::Empty(_));
+                let is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"border" {
                     let mut obj = Borders::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, is_empty);
                     self.set_borders(obj);
                 }
             },
