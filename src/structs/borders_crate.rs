@@ -86,7 +86,8 @@ impl BordersCrate {
             ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
                 let _is_empty = matches!(n, Event::Empty(_));
                 if e.name().into_inner() == b"border" {
-                    let obj = Borders::default();
+                    let mut obj = Borders::default();
+                    obj.set_attributes(reader, e);
                     self.set_borders(obj);
                 }
             },

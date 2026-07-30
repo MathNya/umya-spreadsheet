@@ -2948,3 +2948,11 @@ fn issue_336() {
         "{\"year_month\":{\"year\":2024,\"month\":11},\"period_number\":1}"
     );
 }
+
+#[test]
+fn issue_343() {
+    let path = std::path::Path::new("./tests/test_files/issue_343.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let out = std::path::Path::new("./tests/result_files/issue_343.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
+}
