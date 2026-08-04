@@ -3,10 +3,7 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::BytesStart,
 };
 
 use crate::{
@@ -15,7 +12,6 @@ use crate::{
         adjustment_remove_coordinate,
         is_remove_coordinate,
     },
-    reader::driver::xml_read_loop,
     traits::AdjustmentCoordinate,
     writer::driver::{
         write_end_tag,
@@ -251,29 +247,21 @@ impl Anchor {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
     ) {
-        xml_read_loop!(
-            reader,
-            Event::Text(e) => {
-                let text = crate::helper::utils::unescape_xml_text(&e);
-                let mut split_str = text.split(',');
-                self.set_left_column(Self::number(split_str.next()));
-                self.set_left_offset(Self::number(split_str.next()));
-                self.set_top_row(Self::number(split_str.next()));
-                self.set_top_offset(Self::number(split_str.next()));
-                self.set_right_column(Self::number(split_str.next()));
-                self.set_right_offset(Self::number(split_str.next()));
-                self.set_bottom_row(Self::number(split_str.next()));
-                self.set_bottom_offset(Self::number(split_str.next()));
-            },
-            Event::End(ref e) => {
-                if e.name().0 == b"x:Anchor" {
-                    return
-                }
-            },
-            Event::Eof => panic!("Error: Could not find {} end element", "x:Anchor")
+        let mut buf = Vec::new();
+        let text = crate::helper::utils::unescape_xml_text(
+            &reader.read_text_into(e.name(), &mut buf).unwrap(),
         );
+        let mut split_str = text.split(',');
+        self.set_left_column(Self::number(split_str.next()));
+        self.set_left_offset(Self::number(split_str.next()));
+        self.set_top_row(Self::number(split_str.next()));
+        self.set_top_offset(Self::number(split_str.next()));
+        self.set_right_column(Self::number(split_str.next()));
+        self.set_right_offset(Self::number(split_str.next()));
+        self.set_bottom_row(Self::number(split_str.next()));
+        self.set_bottom_offset(Self::number(split_str.next()));
     }
 
     #[inline]

@@ -16,6 +16,8 @@ use crate::writer::driver::{
     write_text_node,
 };
 
+use crate::reader::driver::xml_read_loop;
+
 #[derive(Clone, Default, Debug)]
 pub struct ToMarker {
     col:     usize,
@@ -125,33 +127,40 @@ impl ToMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::new();
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
-                Ok(Event::End(ref e)) => match e.name().0 {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:col" => {
-                        self.col = string_value.parse::<usize>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        self.col = text.parse::<usize>().unwrap();
                     }
                     b"xdr:colOff" => {
-                        self.col_off = string_value.parse::<usize>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        self.col_off = text.parse::<usize>().unwrap();
                     }
                     b"xdr:row" => {
-                        self.row = string_value.parse::<usize>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        self.row = text.parse::<usize>().unwrap();
                     }
                     b"xdr:rowOff" => {
-                        self.row_off = string_value.parse::<usize>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        self.row_off = text.parse::<usize>().unwrap();
                     }
-                    b"to" => return,
                     _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "to"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"to" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "to")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -164,21 +164,43 @@ impl CustomDocumentProperty {
             return;
         }
 
-        let mut value: String = String::new();
         xml_read_loop!(
             reader,
-            Event::Text(e) => {
-                value = crate::helper::utils::unescape_xml_text(&e);
-            },
-            Event::End(ref e) => {
+            Event::Start(ref e) => {
                 match e.name().into_inner(){
-                    b"vt:lpwstr" =>{self.set_value_string(&value);}
-                    b"vt:filetime" =>{self.set_value_date_manual(&value);}
-                    b"vt:i4"=> {self.set_value_number(value.parse::<i32>().unwrap());}
-                    b"vt:bool"=> {self.set_value_bool(matches!(value.as_str(), "true" | "1"));}
-                    b"property"=> {return}
+                    b"vt:lpwstr" =>{
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap()
+                        );
+                        self.set_value_string(text);
+                    }
+                    b"vt:filetime" =>{
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap()
+                        );
+                        self.set_value_date_manual(text);
+                    }
+                    b"vt:i4"=> {
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap()
+                        );
+                        self.set_value_number(text.parse::<i32>().unwrap());
+                    }
+                    b"vt:bool"=> {
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap()
+                        );
+                        self.set_value_bool(matches!(text.as_str(), "true" | "1"));
+                    }
                     _=>{}
                 }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"property" {return}
             },
             Event::Eof => panic!("Error: Could not find {} end element", "property")
         );

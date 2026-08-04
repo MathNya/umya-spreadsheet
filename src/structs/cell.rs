@@ -601,11 +601,9 @@ impl Cell {
             return;
         }
 
-        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
                 Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"f" => {
                         let mut obj = CellFormula::default();
@@ -620,6 +618,40 @@ impl Cell {
                                 reader.config_mut().trim_text(false);
                             }
                         }
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        self.set_value_string_crate(text);
+                        reader.config_mut().trim_text(true);
+
+                    }
+                    b"v" => {
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        match type_value.as_str() {
+                            "str" => {
+                                self.set_value_string_crate(text);
+                            }
+                            "s" => {
+                                if let Ok(index) = text.parse::<usize>() {
+                                    if let Some(shared_string_item) =
+                                        shared_string_table.shared_string_item().get(index)
+                                    {
+                                        self.set_shared_string_item(shared_string_item);
+                                    }
+                                }
+                            }
+                            "b" => {
+                                let prm = text == "1";
+                                self.set_value_bool_crate(prm);
+                            }
+                            "e" => {
+                                self.set_error(text);
+                            }
+                            "" | "n" => {
+                                self.set_value_crate(text);
+                            }
+                            _ => {}
+                        }
                     }
                     _ => (),
                 },
@@ -631,40 +663,7 @@ impl Cell {
                     }
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"v" => match type_value.as_str() {
-                        "str" => {
-                            self.set_value_string_crate(&string_value);
-                        }
-                        "s" => {
-                            if let Ok(index) = string_value.parse::<usize>() {
-                                if let Some(shared_string_item) =
-                                    shared_string_table.shared_string_item().get(index)
-                                {
-                                    self.set_shared_string_item(shared_string_item);
-                                }
-                            }
-                        }
-                        "b" => {
-                            let prm = string_value == "1";
-                            self.set_value_bool_crate(prm);
-                        }
-                        "e" => {
-                            self.set_error(&string_value);
-                        }
-                        "" | "n" => {
-                            self.set_value_crate(&string_value);
-                        }
-                        _ => {}
-                    },
-                    b"is" => {
-                        if type_value == "inlineStr" {
-                            self.set_value_string_crate(&string_value);
-                        }
-                    }
                     b"c" => return,
-                    b"t" => {
-                        reader.config_mut().trim_text(true);
-                    }
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "c"),

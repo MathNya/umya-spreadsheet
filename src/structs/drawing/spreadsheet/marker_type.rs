@@ -147,24 +147,41 @@ impl MarkerType {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => string_value = crate::helper::utils::unescape_xml_text(&e),
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"xdr:col" | b"col" => {
-                        self.col = string_value.parse::<u32>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
+                        self.col = text.parse::<u32>().unwrap();
                     }
                     b"xdr:colOff" | b"colOff" => {
-                        self.col_off = string_value.parse::<i32>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
+                        self.col_off = text.parse::<i32>().unwrap();
                     }
                     b"xdr:row" | b"row" => {
-                        self.row = string_value.parse::<u32>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
+                        self.row = text.parse::<u32>().unwrap();
                     }
                     b"xdr:rowOff" | b"rowOff" => {
-                        self.row_off = string_value.parse::<i32>().unwrap();
+                        let mut buf = Vec::new();
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
+                        self.row_off = text.parse::<i32>().unwrap();
                     }
+                    _ => (),
+                },
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:from" | b"from" | b"xdr:to" | b"to" => return,
                     _ => (),
                 },

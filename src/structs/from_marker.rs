@@ -137,25 +137,35 @@ impl FromMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::new();
         xml_read_loop!(
             reader,
-            Event::Text(e) => string_value = crate::helper::utils::unescape_xml_text(&e),
-            Event::End(ref e) => match e.name().into_inner() {
+            Event::Start(ref e) => match e.name().into_inner() {
                 b"xdr:col" => {
-                    self.col = string_value.parse::<usize>().unwrap();
+                    let mut buf = Vec::new();
+                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    self.col = text.parse::<usize>().unwrap();
                 }
                 b"xdr:colOff" => {
-                    self.col_off = string_value.parse::<usize>().unwrap();
+                    let mut buf = Vec::new();
+                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    self.col_off = text.parse::<usize>().unwrap();
                 }
                 b"xdr:row" => {
-                    self.row = string_value.parse::<usize>().unwrap();
+                    let mut buf = Vec::new();
+                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    self.row = text.parse::<usize>().unwrap();
                 }
                 b"xdr:rowOff" => {
-                    self.row_off = string_value.parse::<usize>().unwrap();
+                    let mut buf = Vec::new();
+                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    self.row_off = text.parse::<usize>().unwrap();
                 }
-                b"from" => return,
                 _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"from" {
+                    return
+                }
             },
             Event::Eof => panic!("Error: Could not find {} end element", "from")
         );

@@ -82,12 +82,21 @@ impl Run {
             reader,
             ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
                 let is_empty = matches!(n, Event::Empty(_));
-                if e.name().0 == b"a:rPr" {
-                    self.run_properties.set_attributes(reader, e, is_empty);
+                match e.name().into_inner(){
+                    b"a:rPr"=> {
+                        self.run_properties.set_attributes(reader, e, is_empty);
+                    }
+                    b"a:t"=> {
+                        if !is_empty {
+                            let mut buf = Vec::new();
+                            let text = crate::helper::utils::unescape_xml_text(
+                                &reader.read_text_into(e.name(), &mut buf).unwrap()
+                            );
+                            self.set_text(text);
+                        }
+                    }
+                    _=>{}
                 }
-            },
-            Event::Text(e) => {
-                self.set_text(crate::helper::utils::unescape_xml_text(&e));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"a:r" {
