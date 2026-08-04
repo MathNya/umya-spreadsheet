@@ -4,6 +4,7 @@ use quick_xml::{
 };
 
 use crate::{
+    OleObject,
     structs::{
         Worksheet,
         raw::{
@@ -40,11 +41,12 @@ pub(crate) fn read(
                             .map(|comment| comment.set_shape(obj));
                         comment_index += 1;
                     } else {
+                        let mut ole = OleObject::default();
+                        ole.set_shape(obj);
                         worksheet
                             .ole_objects_mut()
                             .ole_object_mut()
-                            .get_mut(ole_index)
-                            .map(|ole_obj| ole_obj.set_shape(obj));
+                            .insert(ole_index, ole);
                         ole_index += 1;
                     }
                 }

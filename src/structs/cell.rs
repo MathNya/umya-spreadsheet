@@ -662,10 +662,7 @@ impl Cell {
                         self.cell_value.set_formula_obj(obj);
                     }
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c" => return,
-                    _ => (),
-                },
+                Ok(Event::End(ref e)) => if e.name().into_inner() == b"c" { return },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "c"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
