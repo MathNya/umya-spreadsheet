@@ -156,18 +156,35 @@ impl PageMargins {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pageMargins
+        // If all margins are zero (common for minimal template sheets),
+        // use Excel-compatible defaults to avoid "Line 2, column 0" errors.
+        let is_all_zero = self.left.value() == 0.0
+            && self.right.value() == 0.0
+            && self.top.value() == 0.0
+            && self.bottom.value() == 0.0
+            && self.header.value() == 0.0
+            && self.footer.value() == 0.0;
+
+        let (left, right, top, bottom, header, footer) = if is_all_zero {
+            (
+                "0.7".to_string(),  "0.7".to_string(),
+                "0.75".to_string(), "0.75".to_string(),
+                "0.3".to_string(),  "0.3".to_string(),
+            )
+        } else {
+            (
+                self.left.value_string(),   self.right.value_string(),
+                self.top.value_string(),    self.bottom.value_string(),
+                self.header.value_string(), self.footer.value_string(),
+            )
+        };
+
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let left = self.left.value_string();
         attributes.push(("left", &left).into());
-        let right = self.right.value_string();
         attributes.push(("right", &right).into());
-        let top = self.top.value_string();
         attributes.push(("top", &top).into());
-        let bottom = self.bottom.value_string();
         attributes.push(("bottom", &bottom).into());
-        let header = self.header.value_string();
         attributes.push(("header", &header).into());
-        let footer = self.footer.value_string();
         attributes.push(("footer", &footer).into());
         write_start_tag(writer, "pageMargins", attributes, true);
     }

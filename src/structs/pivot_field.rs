@@ -14,15 +14,17 @@ use crate::{
     }, structs::{
         BooleanValue,
         Items,
+        UInt32Value,
     }, writer::driver::{write_end_tag, write_start_tag}, xml_read_loop
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotField {
-    data_field: BooleanValue,
-    show_all:   BooleanValue,
-    items: Items,
-    axis: EnumValue<PivotTableAxisValues>,
+    data_field:          BooleanValue,
+    show_all:            BooleanValue,
+    items:               Items,
+    axis:                EnumValue<PivotTableAxisValues>,
+    missing_items_limit: UInt32Value,
 }
 impl PivotField {
     #[inline]
@@ -94,6 +96,24 @@ impl PivotField {
     }
 
     #[inline]
+    #[must_use]
+    pub fn missing_items_limit(&self) -> u32 {
+        self.missing_items_limit.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use missing_items_limit()")]
+    pub fn get_missing_items_limit(&self) -> u32 {
+        self.missing_items_limit()
+    }
+
+    #[inline]
+    pub fn set_missing_items_limit(&mut self, value: u32) -> &mut Self {
+        self.missing_items_limit.set_value(value);
+        self
+    }
+
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -103,6 +123,7 @@ impl PivotField {
         set_string_from_xml!(self, e, data_field, "dataField");
         set_string_from_xml!(self, e, show_all, "showAll");
         set_string_from_xml!(self, e, axis, "axis");
+        set_string_from_xml!(self, e, missing_items_limit, "missingItemsLimit");
 
         if empty_flg {
             return;
@@ -138,6 +159,10 @@ impl PivotField {
         }
         if self.show_all.has_value() {
             attributes.push(("showAll", self.show_all.value_string()).into());
+        }
+        if self.missing_items_limit.has_value() {
+            let val = self.missing_items_limit.value_string();
+            attributes.push(("missingItemsLimit", &val).into());
         }
         write_start_tag(
             writer,

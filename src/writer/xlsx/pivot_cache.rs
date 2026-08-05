@@ -43,6 +43,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         // Write pivot cache definition
         pivot_table.pivot_cache_definition().write_to(&mut writer);
         writer_mng.add_file_at_pivot_cache(writer, no)?;
+
+        // Write pivot cache records if available (preserved from template)
+        if pivot_table
+            .pivot_cache_definition()
+            .has_raw_cache_records()
+        {
+            let records_data = pivot_table
+                .pivot_cache_definition()
+                .raw_cache_records()
+                .to_vec();
+            writer_mng.add_file_at_pivot_cache_records(
+                records_data,
+                no,
+            )?;
+        }
+
         pivot_cache_no_list.push(no.to_string());
     }
     Ok(pivot_cache_no_list)

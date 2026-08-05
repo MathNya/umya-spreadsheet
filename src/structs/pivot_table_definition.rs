@@ -50,7 +50,12 @@ pub struct PivotTableDefinition {
     outline:                    BooleanValue,
     outline_data:               BooleanValue,
     multiple_field_filters:     BooleanValue,
+    refresh_on_load:            BooleanValue,
+    row_grand_totals:           BooleanValue,
+    col_grand_totals:           BooleanValue,
+    compact_data:               BooleanValue,
     name:                       StringValue,
+    xr_uid:                     StringValue,
     cache_id:                   UInt32Value,
     indent:                     UInt32Value,
     local_name:                 StringValue,
@@ -279,6 +284,78 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
+    pub fn refresh_on_load(&self) -> bool {
+        self.refresh_on_load.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use refresh_on_load()")]
+    pub fn get_refresh_on_load(&self) -> bool {
+        self.refresh_on_load()
+    }
+
+    #[inline]
+    pub fn set_refresh_on_load(&mut self, value: bool) -> &mut Self {
+        self.refresh_on_load.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn row_grand_totals(&self) -> bool {
+        self.row_grand_totals.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use row_grand_totals()")]
+    pub fn get_row_grand_totals(&self) -> bool {
+        self.row_grand_totals()
+    }
+
+    #[inline]
+    pub fn set_row_grand_totals(&mut self, value: bool) -> &mut Self {
+        self.row_grand_totals.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn col_grand_totals(&self) -> bool {
+        self.col_grand_totals.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use col_grand_totals()")]
+    pub fn get_col_grand_totals(&self) -> bool {
+        self.col_grand_totals()
+    }
+
+    #[inline]
+    pub fn set_col_grand_totals(&mut self, value: bool) -> &mut Self {
+        self.col_grand_totals.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn compact_data(&self) -> bool {
+        self.compact_data.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use compact_data()")]
+    pub fn get_compact_data(&self) -> bool {
+        self.compact_data()
+    }
+
+    #[inline]
+    pub fn set_compact_data(&mut self, value: bool) -> &mut Self {
+        self.compact_data.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn name(&self) -> &str {
         self.name.value_str()
     }
@@ -293,6 +370,25 @@ impl PivotTableDefinition {
     #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn xr_uid(&self) -> &str {
+        self.xr_uid.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use xr_uid()")]
+    pub fn get_xr_uid(&self) -> &str {
+        self.xr_uid()
+    }
+
+    #[inline]
+    pub fn set_xr_uid<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.xr_uid.set_value(value);
         self
     }
 
@@ -687,6 +783,7 @@ impl PivotTableDefinition {
         e: &BytesStart,
     ) {
         set_string_from_xml!(self, e, name, "name");
+        set_string_from_xml!(self, e, xr_uid, "xr:uid");
         set_string_from_xml!(self, e, cache_id, "cacheId");
         set_string_from_xml!(self, e, apply_number_formats, "applyNumberFormats");
         set_string_from_xml!(self, e, apply_border_formats, "applyBorderFormats");
@@ -708,7 +805,11 @@ impl PivotTableDefinition {
         set_string_from_xml!(self, e, indent, "indent");
         set_string_from_xml!(self, e, outline, "outline");
         set_string_from_xml!(self, e, outline_data, "outlineData");
+        set_string_from_xml!(self, e, row_grand_totals, "rowGrandTotals");
+        set_string_from_xml!(self, e, col_grand_totals, "colGrandTotals");
+        set_string_from_xml!(self, e, compact_data, "compactData");
         set_string_from_xml!(self, e, multiple_field_filters, "multipleFieldFilters");
+        set_string_from_xml!(self, e, refresh_on_load, "refreshOnLoad");
 
         xml_read_loop!(
             reader,
@@ -777,6 +878,9 @@ impl PivotTableDefinition {
 
         if self.name.has_value() {
             attributes.push(("name", self.name.value_str()).into());
+        }
+        if self.xr_uid.has_value() {
+            attributes.push(("xr:uid", self.xr_uid.value_str()).into());
         }
         let cache_id_str = self.cache_id.value_string();
         if self.cache_id.has_value() {
@@ -888,6 +992,42 @@ impl PivotTableDefinition {
                     .into(),
             );
         }
+        if self.refresh_on_load.has_value() {
+            attributes.push(
+                (
+                    "refreshOnLoad",
+                    self.refresh_on_load.value_string(),
+                )
+                    .into(),
+            );
+        }
+        if self.row_grand_totals.has_value() {
+            attributes.push(
+                (
+                    "rowGrandTotals",
+                    self.row_grand_totals.value_string(),
+                )
+                    .into(),
+            );
+        }
+        if self.col_grand_totals.has_value() {
+            attributes.push(
+                (
+                    "colGrandTotals",
+                    self.col_grand_totals.value_string(),
+                )
+                    .into(),
+            );
+        }
+        if self.compact_data.has_value() {
+            attributes.push(
+                (
+                    "compactData",
+                    self.compact_data.value_string(),
+                )
+                    .into(),
+            );
+        }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 
         // location
@@ -915,5 +1055,97 @@ impl PivotTableDefinition {
         self.pivot_table_style.write_to(writer);
 
         write_end_tag(writer, "pivotTableDefinition");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_pivot_table_attributes_preserved() {
+        let mut def = PivotTableDefinition::default();
+        def.set_name("TestPivot");
+        def.set_cache_id(1);
+        def.set_refresh_on_load(true);
+        def.set_row_grand_totals(true);
+        def.set_col_grand_totals(false);
+        def.set_compact_data(true);
+        def.set_outline(false);
+        def.set_xr_uid("test-uid-12345");
+
+        assert_eq!(def.name(), "TestPivot");
+        assert!(def.refresh_on_load());
+        assert!(def.row_grand_totals());
+        assert!(!def.col_grand_totals());
+        assert!(def.compact_data());
+        assert!(!def.outline());
+        assert_eq!(def.xr_uid(), "test-uid-12345");
+    }
+
+    #[test]
+    fn test_pivot_table_definition_write_read_roundtrip() {
+        let mut def = PivotTableDefinition::default();
+        def.set_name("RoundTrip");
+        def.set_cache_id(2);
+        def.set_refresh_on_load(true);
+        def.set_row_grand_totals(true);
+        def.set_col_grand_totals(true);
+        def.set_compact_data(false);
+        def.set_xr_uid("uid-roundtrip");
+
+        // Write to XML
+        let mut writer = Writer::new(Cursor::new(Vec::new()));
+        def.write_to(&mut writer);
+        let xml = String::from_utf8(writer.into_inner().into_inner()).unwrap();
+
+        // Verify XML contains the attributes
+        assert!(xml.contains("name=\"RoundTrip\""));
+        assert!(xml.contains("cacheId=\"2\""));
+        assert!(xml.contains("refreshOnLoad=\"1\""));
+        assert!(xml.contains("rowGrandTotals=\"1\""));
+        assert!(xml.contains("colGrandTotals=\"1\""));
+        assert!(xml.contains("compactData=\"0\""));
+        assert!(xml.contains("xr:uid=\"uid-roundtrip\""));
+    }
+
+    #[test]
+    fn test_row_items_multiple_x_children() {
+        use crate::structs::{
+            member_property_index::MemberPropertyIndex,
+            row_item::RowItem,
+            row_items::RowItems,
+        };
+
+        let mut row_items = RowItems::default();
+        let mut item = RowItem::default();
+        item.set_index(0);
+        item.set_item_type(crate::structs::item_values::ItemValues::Data);
+
+        // Simulate 2 row fields => 2 <x/> children
+        let mut x1 = MemberPropertyIndex::default();
+        x1.set_val(0);
+        item.add_member_property_index(x1);
+
+        let mut x2 = MemberPropertyIndex::default();
+        x2.set_val(1);
+        item.add_member_property_index(x2);
+
+        row_items.add_list_mut(item);
+
+        // Write to XML
+        let mut writer = Writer::new(Cursor::new(Vec::new()));
+        row_items.write_to(&mut writer);
+        let xml = String::from_utf8(writer.into_inner().into_inner()).unwrap();
+
+        // Should contain two <x> elements
+        assert_eq!(
+            xml.matches("<x ").count(),
+            2,
+            "Expected 2 <x> elements (one per row field), XML: {}",
+            xml
+        );
+        assert!(xml.contains("v=\"0\""));
+        assert!(xml.contains("v=\"1\""));
     }
 }

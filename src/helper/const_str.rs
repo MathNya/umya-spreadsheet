@@ -47,6 +47,7 @@ declare_const_strings! {
     PACKAGE_NS           => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package",
     PASSWORD_NS          => "http://schemas.microsoft.com/office/2006/keyEncryptor/password",
     PIVOT_CACHE_DEF_NS   => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition",
+    PIVOT_CACHE_REC_NS   => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheRecords",
     PRINTER_SETTINGS_NS  => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings",
     PRNTR_SETTINGS_TYPE  => "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings",
     REL_NS               => "http://schemas.openxmlformats.org/package/2006/relationships",
@@ -67,6 +68,7 @@ declare_const_strings! {
     TABLE_TYPE           => "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml",
     PIVOT_TABLE_TYPE     => "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml",
     PIVOT_CACHE_DEF_TYPE => "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml",
+    PIVOT_CACHE_REC_TYPE => "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml",
     THEME_NS             => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
     THEME_TYPE           => "application/vnd.openxmlformats-officedocument.theme+xml",
     VBA_PROJECT_NS       => "http://schemas.microsoft.com/office/2006/relationships/vbaProject",
@@ -104,6 +106,13 @@ declare_const_strings! {
     PKG_PIVOT_CACHE      => "xl/pivotCache",
     PKG_PIVOT_CACHE_RELS => "xl/pivotCache/_rels/pivotCache",
     PKG_WORKBOOK         => "xl/workbook.xml",
+    // Additional workbook namespace declarations commonly present in Excel-generated files.
+    // These are emitted alongside the standard xmlns and xmlns:r to avoid stripping metadata.
+    MC_IGNORABLE_WB       => "x15 xr xr6 xr10 xr2",
+    X15_NS                => "http://schemas.microsoft.com/office/spreadsheetml/2010/11/main",
+    XR2_NS                => "http://schemas.microsoft.com/office/spreadsheetml/2015/revision2",
+    XR6_NS                => "http://schemas.microsoft.com/office/spreadsheetml/2016/revision6",
+    XR10_NS               => "http://schemas.microsoft.com/office/spreadsheetml/2016/revision10",
     PKG_WORKBOOK_RELS    => "xl/_rels/workbook.xml.rels",
 
     ARC_APP              => "docProps/app.xml",

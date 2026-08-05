@@ -17,6 +17,7 @@ use crate::{
         DRAWING_TYPE,
         OLE_OBJECT_TYPE,
         PIVOT_CACHE_DEF_TYPE,
+        PIVOT_CACHE_REC_TYPE,
         PIVOT_TABLE_TYPE,
         PKG_CHARTS,
         PKG_DRAWINGS,
@@ -314,6 +315,19 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     }
 
     #[inline]
+    pub(crate) fn add_file_at_pivot_cache_records(
+        &mut self,
+        data: Vec<u8>,
+        pivot_cache_no: i32,
+    ) -> Result<(), XlsxError> {
+        let file_path = format!("xl/pivotCache/pivotCacheRecords{pivot_cache_no}.xml");
+        if !self.check_file_exist(&file_path) {
+            self.add_bin(&file_path, &data)?;
+        }
+        Ok(())
+    }
+
+    #[inline]
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
         let extension = format!(".{extension}");
         self.files.iter().any(|file| file.ends_with(&extension))
@@ -351,9 +365,14 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
                 content_type = PIVOT_TABLE_TYPE;
             }
 
-            // Override pivot cache
+            // Override pivot cache definition
             if file.starts_with("/xl/pivotCache/pivotCacheDefinition") {
                 content_type = PIVOT_CACHE_DEF_TYPE;
+            }
+
+            // Override pivot cache records
+            if file.starts_with("/xl/pivotCache/pivotCacheRecords") {
+                content_type = PIVOT_CACHE_REC_TYPE;
             }
 
             // Override comments

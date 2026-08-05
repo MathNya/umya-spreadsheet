@@ -230,6 +230,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         worksheet,
                         relationship.raw_file(),
                         raw_data_of_worksheet.pivot_table_relationships(),
+                        raw_data_of_worksheet.pivot_cache_relationships(),
                     );
                 }
                 _ => {}
