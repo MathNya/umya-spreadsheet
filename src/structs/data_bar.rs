@@ -137,7 +137,7 @@ mod tests {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) | Ok(Event::Empty(ref e))
+                Ok(Event::Start(ref e) | Event::Empty(ref e))
                     if e.name().into_inner() == b"dataBar" =>
                 {
                     let mut obj = DataBar::default();

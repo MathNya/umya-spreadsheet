@@ -51,12 +51,15 @@ mod tests {
     fn format_as_percentage_keeps_decimal_precision() {
         // Rounding to an integer before applying the decimal format code
         // turned 17.309...% into "17.0%".
-        assert_eq!(format_as_percentage(0.1730909090909091, "0.0%"), "17.3%");
+        assert_eq!(
+            format_as_percentage(0.173_090_909_090_909_1, "0.0%"),
+            "17.3%"
+        );
     }
 
     #[test]
     fn format_as_percentage_integer_format() {
-        assert_eq!(format_as_percentage(0.1730909090909091, "0%"), "17%");
+        assert_eq!(format_as_percentage(0.173_090_909_090_909_1, "0%"), "17%");
     }
 
     #[test]
@@ -71,6 +74,6 @@ mod tests {
         // display value (106.5) away from zero.
         assert_eq!(format_as_percentage(1.065, "0%"), "107%");
         assert_eq!(format_as_percentage(0.125, "0.0%"), "12.5%");
-        assert_eq!(format_as_percentage(0.10649999999999999, "0%"), "11%");
+        assert_eq!(format_as_percentage(0.106_499_999_999_999_99, "0%"), "11%");
     }
 }
