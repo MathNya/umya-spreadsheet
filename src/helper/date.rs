@@ -157,6 +157,14 @@ pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64
 /// The integer part of the timestamp represents the number of days since a base
 /// date, while the fractional part represents the time of day.
 ///
+/// The fallible version of this method is [`excel_to_date_time_jiff_checked`].
+///
+/// # Panics
+///
+/// This panics when the input causes the number of days since the `base_date`
+/// to be outside of the supported range for `jiff` spans. See
+/// [`jiff::Span::days`] for relevant bounds.
+///
 /// # Parameters
 ///
 /// - `excel_timestamp: f64` The Excel timestamp to be converted and it is
@@ -191,10 +199,25 @@ pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64
 /// ```
 #[must_use]
 pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
-    let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
-    let seconds: i64 = cast((time * (24.0 * 60.0 * 60.0)).round()).unwrap();
+    excel_to_date_time_jiff_checked(excel_timestamp).expect("input was out of supported range")
+}
 
-    base_date.at(0, 0, 0, 0) + days.day().seconds(seconds)
+/// This is the fallible version of [`excel_to_date_time_jiff`]. See
+/// documentation on that function.
+///
+/// # Error
+///
+/// This returns an error when the input causes the number of days since the
+/// `base_date` to be outside of the supported range for `jiff` spans. See
+/// [`jiff::Span::days`] for relevant bounds.
+pub fn excel_to_date_time_jiff_checked(
+    excel_timestamp: f64,
+) -> Result<jiff::civil::DateTime, jiff::Error> {
+    let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
+    let seconds: i64 = cast((time * (24.0 * 60.0 * 60.0)).round())
+        .expect("this cast should never fail because `time` should be a value between 0 and 1");
+
+    Ok(base_date.at(0, 0, 0, 0) + jiff::Span::new().try_days(days)?.seconds(seconds))
 }
 
 /// Converts an Excel timestamp to a [`jiff::civil::DateTime`] object with
@@ -689,6 +712,15 @@ mod tests {
             expected,
             actual.format("%F %T").to_string(),
             "chrono conversion is incorrect"
+        );
+    }
+
+    #[test]
+    fn excel_to_date_time_checked() {
+        let actual = excel_to_date_time_jiff_checked(123_456_789.0);
+        assert!(
+            actual.is_err(),
+            "Value is out of range of jiff::Span days and should be rejected"
         );
     }
 }
