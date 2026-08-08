@@ -102,12 +102,6 @@ impl PivotField {
     }
 
     #[inline]
-    #[deprecated(since = "3.0.0", note = "Use missing_items_limit()")]
-    pub fn get_missing_items_limit(&self) -> u32 {
-        self.missing_items_limit()
-    }
-
-    #[inline]
     pub fn set_missing_items_limit(&mut self, value: u32) -> &mut Self {
         self.missing_items_limit.set_value(value);
         self

@@ -93,30 +93,42 @@ impl RowItem {
         self
     }
 
+    /// Returns the first `<x/>` child (backward-compatible convenience method).
+    /// Use [`member_property_indices()`] to access all row-field children.
+    #[inline]
+    #[must_use]
+    pub fn member_property_index(&self) -> Option<&MemberPropertyIndex> {
+        self.member_property_indices.first()
+    }
+
+    /// Returns a mutable reference to the first `<x/>` child.
+    #[inline]
+    pub fn member_property_index_mut(&mut self) -> Option<&mut MemberPropertyIndex> {
+        self.member_property_indices.first_mut()
+    }
+
+    /// Sets a single `<x/>` child (replaces any existing entries).
+    /// For multiple row fields, use [`add_member_property_index()`].
+    #[inline]
+    pub fn set_member_property_index_color(&mut self, value: MemberPropertyIndex) -> &mut Self {
+        self.member_property_indices = vec![value];
+        self
+    }
+
+    /// Returns all `<x/>` children — one per row field.
     #[inline]
     #[must_use]
     pub fn member_property_indices(&self) -> &[MemberPropertyIndex] {
         &self.member_property_indices
     }
 
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use member_property_indices()")]
-    pub fn get_member_property_indices(&self) -> &[MemberPropertyIndex] {
-        self.member_property_indices()
-    }
-
+    /// Returns a mutable reference to all `<x/>` children.
     #[inline]
     pub fn member_property_indices_mut(&mut self) -> &mut Vec<MemberPropertyIndex> {
         &mut self.member_property_indices
     }
 
-    #[inline]
-    #[deprecated(since = "3.0.0", note = "Use member_property_indices_mut()")]
-    pub fn get_member_property_indices_mut(&mut self) -> &mut Vec<MemberPropertyIndex> {
-        self.member_property_indices_mut()
-    }
-
+    /// Appends an `<x/>` child. Call once per row field.
     #[inline]
     pub fn add_member_property_index(&mut self, value: MemberPropertyIndex) -> &mut Self {
         self.member_property_indices.push(value);
