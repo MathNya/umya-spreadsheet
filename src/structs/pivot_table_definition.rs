@@ -289,12 +289,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[deprecated(since = "3.0.0", note = "Use refresh_on_load()")]
-    pub fn get_refresh_on_load(&self) -> bool {
-        self.refresh_on_load()
-    }
-
-    #[inline]
     pub fn set_refresh_on_load(&mut self, value: bool) -> &mut Self {
         self.refresh_on_load.set_value(value);
         self
@@ -304,12 +298,6 @@ impl PivotTableDefinition {
     #[must_use]
     pub fn row_grand_totals(&self) -> bool {
         self.row_grand_totals.value()
-    }
-
-    #[inline]
-    #[deprecated(since = "3.0.0", note = "Use row_grand_totals()")]
-    pub fn get_row_grand_totals(&self) -> bool {
-        self.row_grand_totals()
     }
 
     #[inline]
@@ -325,12 +313,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[deprecated(since = "3.0.0", note = "Use col_grand_totals()")]
-    pub fn get_col_grand_totals(&self) -> bool {
-        self.col_grand_totals()
-    }
-
-    #[inline]
     pub fn set_col_grand_totals(&mut self, value: bool) -> &mut Self {
         self.col_grand_totals.set_value(value);
         self
@@ -340,12 +322,6 @@ impl PivotTableDefinition {
     #[must_use]
     pub fn compact_data(&self) -> bool {
         self.compact_data.value()
-    }
-
-    #[inline]
-    #[deprecated(since = "3.0.0", note = "Use compact_data()")]
-    pub fn get_compact_data(&self) -> bool {
-        self.compact_data()
     }
 
     #[inline]
@@ -377,13 +353,6 @@ impl PivotTableDefinition {
     #[must_use]
     pub fn xr_uid(&self) -> &str {
         self.xr_uid.value_str()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use xr_uid()")]
-    pub fn get_xr_uid(&self) -> &str {
-        self.xr_uid()
     }
 
     #[inline]
