@@ -465,14 +465,14 @@ mod tests {
     #[test]
     fn reads_the_xf_id() {
         let obj = read_xf(r#"<xf numFmtId="9" fontId="6" fillId="0" borderId="0" xfId="6" applyFont="1"/>"#);
-        assert_eq!(obj.get_format_id(), 6);
-        assert_eq!(obj.get_number_format_id(), 9);
+        assert_eq!(obj.format_id(), 6);
+        assert_eq!(obj.number_format_id(), 9);
     }
 
     #[test]
     fn an_absent_xf_id_stays_zero() {
         let obj = read_xf(r#"<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>"#);
-        assert_eq!(obj.get_format_id(), 0);
+        assert_eq!(obj.format_id(), 0);
     }
 
     #[test]
@@ -480,6 +480,6 @@ mod tests {
         let obj = read_xf(
             r#"<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="42"><alignment horizontal="center"/></xf>"#,
         );
-        assert_eq!(obj.get_format_id(), 42);
+        assert_eq!(obj.format_id(), 42);
     }
 }
