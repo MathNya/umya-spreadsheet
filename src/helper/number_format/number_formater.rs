@@ -344,7 +344,7 @@ mod tests {
     #[test]
     fn format_as_number_rounds_half_away_from_zero() {
         // Excel rounds display values; truncating turned 107310.6 into 107,310.
-        assert_eq!(format_as_number(107310.6, "#,##0"), "107,311");
+        assert_eq!(format_as_number(107_310.6, "#,##0"), "107,311");
         assert_eq!(format_as_number(12.5, "0"), "13");
         assert_eq!(format_as_number(-12.5, "0"), "-13");
         assert_eq!(format_as_number(99999.5, "0"), "100000");
@@ -371,13 +371,13 @@ mod tests {
     #[test]
     fn format_as_number_keeps_currency_prefix() {
         assert_eq!(format_as_number(39.1, "$0.00"), "$39.10");
-        assert_eq!(format_as_number(107310.6, "$#,##0"), "$107,311");
+        assert_eq!(format_as_number(107_310.6, "$#,##0"), "$107,311");
     }
 
     #[test]
     fn format_as_number_thousands_grouping_survives_rounding() {
-        assert_eq!(format_as_number(999999.5, "#,##0"), "1,000,000");
-        assert_eq!(format_as_number(1234567.891, "#,##0.00"), "1,234,567.89");
+        assert_eq!(format_as_number(999_999.5, "#,##0"), "1,000,000");
+        assert_eq!(format_as_number(1_234_567.891, "#,##0.00"), "1,234,567.89");
         assert_eq!(format_as_number(-1234.5, "#,##0"), "-1,235");
     }
 }

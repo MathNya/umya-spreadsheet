@@ -32,6 +32,10 @@ use umya_spreadsheet::{
 /// intentionally non-ASCII to exercise UTF-8 handling in workbook.xml.
 const SHEETS: [&str; 3] = ["Sheet1", "Sheet2", "データ"];
 
+#[expect(
+    clippy::approx_constant,
+    reason = "used in a test and not worth changing"
+)]
 /// Build a deterministic, multi-sheet workbook covering the common cell value
 /// kinds (string, number, bool, formula) plus a non-ASCII string value.
 fn build_book() -> Workbook {
