@@ -330,6 +330,11 @@ impl CellFormat {
         set_string_from_xml!(self, e, font_id, "fontId");
         set_string_from_xml!(self, e, fill_id, "fillId");
         set_string_from_xml!(self, e, border_id, "borderId");
+        // `xfId` names the cellStyleXfs entry this cellXfs entry inherits
+        // from. Leaving it unread resolved every cell against cellStyleXfs[0],
+        // so a workbook whose Normal style sets applyNumberFormat="0" lost
+        // every number format, and a round trip rewrote each xfId as 0.
+        set_string_from_xml!(self, e, format_id, "xfId");
         set_string_from_xml!(self, e, apply_number_format, "applyNumberFormat");
         set_string_from_xml!(self, e, apply_border, "applyBorder");
         set_string_from_xml!(self, e, apply_font, "applyFont");
@@ -423,5 +428,58 @@ impl CellFormat {
             }
             write_end_tag(writer, "xf");
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn read_xf(xml: &str) -> CellFormat {
+        let mut reader = Reader::from_reader(std::io::BufReader::new(xml.as_bytes()));
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) if e.name().into_inner() == b"xf" => {
+                    let mut obj = CellFormat::default();
+                    obj.set_attributes(&mut reader, e, false);
+                    return obj;
+                }
+                Ok(Event::Empty(ref e)) if e.name().into_inner() == b"xf" => {
+                    let mut obj = CellFormat::default();
+                    obj.set_attributes(&mut reader, e, true);
+                    return obj;
+                }
+                Ok(Event::Eof) => panic!("xf element not found"),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    // `xfId` names the cellStyleXfs entry a cellXfs entry inherits from. It was
+    // written back on save but never read, so every cell resolved against
+    // cellStyleXfs[0]: a workbook whose Normal style carries
+    // applyNumberFormat="0" lost every number format, and a round trip
+    // rewrote each xfId as 0.
+    #[test]
+    fn reads_the_xf_id() {
+        let obj = read_xf(r#"<xf numFmtId="9" fontId="6" fillId="0" borderId="0" xfId="6" applyFont="1"/>"#);
+        assert_eq!(obj.format_id(), 6);
+        assert_eq!(obj.number_format_id(), 9);
+    }
+
+    #[test]
+    fn an_absent_xf_id_stays_zero() {
+        let obj = read_xf(r#"<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>"#);
+        assert_eq!(obj.format_id(), 0);
+    }
+
+    #[test]
+    fn reads_a_non_zero_xf_id_from_a_non_empty_element() {
+        let obj = read_xf(
+            r#"<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="42"><alignment horizontal="center"/></xf>"#,
+        );
+        assert_eq!(obj.format_id(), 42);
     }
 }
