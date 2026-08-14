@@ -47,6 +47,9 @@ pub struct PivotCacheDefinition {
     record_count:            UInt32Value,
     cache_source:            CacheSource,
     cache_fields:            CacheFields,
+    /// Raw XML data for pivotCacheRecords (if available from template).
+    /// Written alongside the cache definition as pivotCacheRecordsN.xml.
+    raw_cache_records:       Vec<u8>,
 }
 
 impl PivotCacheDefinition {
@@ -241,6 +244,24 @@ impl PivotCacheDefinition {
     pub fn set_cache_fields(&mut self, value: CacheFields) -> &mut Self {
         self.cache_fields = value;
         self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn raw_cache_records(&self) -> &[u8] {
+        &self.raw_cache_records
+    }
+
+    #[inline]
+    pub fn set_raw_cache_records(&mut self, value: Vec<u8>) -> &mut Self {
+        self.raw_cache_records = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn has_raw_cache_records(&self) -> bool {
+        !self.raw_cache_records.is_empty()
     }
 
     /// Create a new minimal pivot cache definition with required fields

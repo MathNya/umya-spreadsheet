@@ -4,7 +4,10 @@ use quick_xml::{
 };
 
 use crate::{
-    helper::const_str::PIVOT_CACHE_DEF_NS,
+    helper::const_str::{
+        PIVOT_CACHE_DEF_NS,
+        PIVOT_CACHE_REC_NS,
+    },
     raw::RawRelationships,
     reader::xlsx::pivot_cache,
     structs::{
@@ -19,6 +22,7 @@ pub(crate) fn read(
     worksheet: &mut Worksheet,
     pivot_table_file: &RawFile,
     pivot_table_relationships: Option<&RawRelationships>,
+    pivot_cache_relationships: Option<&RawRelationships>,
 ) {
     let data = std::io::Cursor::new(pivot_table_file.file_data());
     let mut reader = Reader::from_reader(data);
@@ -47,9 +51,19 @@ pub(crate) fn read(
     }
 
     if let Some(rrs_list) = pivot_table_relationships {
+        // Find cache records from the pivot cache definition's own relationships
+        let records_file = pivot_cache_relationships.and_then(|cache_rels| {
+            cache_rels
+                .relationship_list()
+                .iter()
+                .find(|r| r.get_type() == PIVOT_CACHE_REC_NS)
+                .map(|r| r.raw_file())
+        });
+
         pivot_cache::read(
             rrs_list.relationship_by_type(PIVOT_CACHE_DEF_NS).raw_file(),
             &mut pivot_table,
+            records_file,
         );
     }
 

@@ -18,9 +18,16 @@ use super::{
 };
 use crate::{
     helper::const_str::{
+        MC_IGNORABLE_WB,
+        MC_NS,
         PKG_WORKBOOK,
         REL_OFC_NS,
         SHEET_MAIN_NS,
+        SHEET_MS_REVISION_NS,
+        X15_NS,
+        XR2_NS,
+        XR6_NS,
+        XR10_NS,
     },
     structs::{
         Workbook,
@@ -50,6 +57,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         vec![
             ("xmlns", SHEET_MAIN_NS).into(),
             ("xmlns:r", REL_OFC_NS).into(),
+            ("xmlns:mc", MC_NS).into(),
+            ("xmlns:x15", X15_NS).into(),
+            ("xmlns:xr", SHEET_MS_REVISION_NS).into(),
+            ("xmlns:xr2", XR2_NS).into(),
+            ("xmlns:xr6", XR6_NS).into(),
+            ("xmlns:xr10", XR10_NS).into(),
+            ("mc:Ignorable", MC_IGNORABLE_WB).into(),
         ],
         false,
     );

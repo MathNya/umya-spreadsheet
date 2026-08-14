@@ -247,15 +247,23 @@ impl SheetFormatProperties {
             attributes.push(("defaultColWidth", &str_default_column_width).into());
         }
 
-        let str_default_row_height = self.default_row_height.value_string();
-        if self.default_row_height.has_value() {
-            attributes.push(("defaultRowHeight", &str_default_row_height).into());
-        }
+        // Always emit defaultRowHeight — Excel requires it.
+        // Use 14.25 (Excel default) if the template didn't supply one.
+        let str_default_row_height = if self.default_row_height.has_value() {
+            self.default_row_height.value_string()
+        } else {
+            "14.25".to_string()
+        };
+        attributes.push(("defaultRowHeight", &str_default_row_height).into());
 
-        let str_dy_descent = self.dy_descent.value_string();
-        if self.dy_descent.has_value() {
-            attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
-        }
+        // Always emit x14ac:dyDescent — Excel requires it.
+        // Use 0.45 (Excel default) if the template didn't supply one.
+        let str_dy_descent = if self.dy_descent.has_value() {
+            self.dy_descent.value_string()
+        } else {
+            "0.45".to_string()
+        };
+        attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
 
         let str_outline_level_column = self.outline_level_column.value_string();
         if self.outline_level_column.has_value() {
