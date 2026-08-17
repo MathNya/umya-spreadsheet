@@ -1,6 +1,15 @@
-# Unreleased
+# Change Detail -> 3.1.0
+
+### Pivot Tables Update.
+* We have enhanced read and write operations for Pivot Tables.
+(As a result, this update includes some breaking changes.)
+
 ### Bug Fixed
+* We have fixed a bug that caused the grid lines to disappear.
+
 * Data validation / formula character data containing XML numeric character references (e.g. `&#8211;`) was truncated. `formula1`/`formula2` text is now accumulated across successive `Text` and `GeneralRef` events from quick-xml.
+
+### Fixes for other minor bugs
 
 # Change Detail -> 3.0.0
 ### We have changed the name of the Getter.

@@ -26,13 +26,13 @@ https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "3.0.1"
+umya-spreadsheet = "3.1.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "3.0.1", features = ["js"] }
+umya-spreadsheet = { version = "3.1.0", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "3.0.1", features = ["image/png"] }
+umya-spreadsheet = { version = "3.1.0", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
@@ -193,6 +193,7 @@ We would like to express our heartfelt gratitude to them.
 [jmbrunskill](https://github.com/jmbrunskill), 
 [john-dc252](https://github.com/john-dc252), 
 [jon-convexent](https://github.com/jon-convexent), 
+[JunWang-Lin](https://github.com/JunWang-Lin), 
 [kazuk](https://github.com/kazuk), 
 [kjh618](https://github.com/kjh618), 
 [KyGost](https://github.com/KyGost), 
@@ -209,6 +210,7 @@ We would like to express our heartfelt gratitude to them.
 [Sachin-Bhat](https://github.com/Sachin-Bhat), 
 [SamuelMarks](https://github.com/SamuelMarks), 
 [schungx](https://github.com/schungx), 
+[sentinelt](https://github.com/sentinelt), 
 [sjfhsjfh](https://github.com/sjfhsjfh), 
 [tomgroenwoldt](https://github.com/tomgroenwoldt), 
 [tzfun](https://github.com/tzfun), 
@@ -220,6 +222,7 @@ We would like to express our heartfelt gratitude to them.
 [wolfiesch](https://github.com/wolfiesch), 
 [xamgore](https://github.com/xamgore), 
 [yerlibilgin](https://github.com/yerlibilgin), 
+[yoonghm](https://github.com/yoonghm), 
 [zjhsd2007](https://github.com/zjhsd2007)
 
 
