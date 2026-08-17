@@ -317,12 +317,12 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     #[inline]
     pub(crate) fn add_file_at_pivot_cache_records(
         &mut self,
-        data: Vec<u8>,
+        data: &[u8],
         pivot_cache_no: i32,
     ) -> Result<(), XlsxError> {
         let file_path = format!("xl/pivotCache/pivotCacheRecords{pivot_cache_no}.xml");
         if !self.check_file_exist(&file_path) {
-            self.add_bin(&file_path, &data)?;
+            self.add_bin(&file_path, data)?;
         }
         Ok(())
     }

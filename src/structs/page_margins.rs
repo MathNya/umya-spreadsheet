@@ -179,13 +179,14 @@ impl PageMargins {
             )
         };
 
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
-        attributes.push(("left", &left).into());
-        attributes.push(("right", &right).into());
-        attributes.push(("top", &top).into());
-        attributes.push(("bottom", &bottom).into());
-        attributes.push(("header", &header).into());
-        attributes.push(("footer", &footer).into());
+        let attributes: crate::structs::AttrCollection = vec![
+            ("left", &left).into(),
+            ("right", &right).into(),
+            ("top", &top).into(),
+            ("bottom", &bottom).into(),
+            ("header", &header).into(),
+            ("footer", &footer).into(),
+        ];
         write_start_tag(writer, "pageMargins", attributes, true);
     }
 }
