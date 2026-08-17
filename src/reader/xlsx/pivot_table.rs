@@ -18,6 +18,7 @@ use crate::{
     },
 };
 
+#[allow(clippy::redundant_closure_for_method_calls)]
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     pivot_table_file: &RawFile,
