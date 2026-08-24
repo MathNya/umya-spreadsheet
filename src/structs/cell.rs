@@ -655,13 +655,32 @@ impl Cell {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    if e.name().into_inner() == b"f" {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                    b"f" => {
                         let mut obj = CellFormula::default();
                         obj.set_attributes(reader, e, true, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
                     }
-                }
+                    // A self-closing `<v/>` (written by Excel/LibreOffice for an
+                    // empty cached value) still carries the cell's declared type, so
+                    // an empty-string formula result must keep `t="str"` on write.
+                    b"v" => match type_value.as_str() {
+                        "str" => {
+                            self.set_value_string_crate(String::new());
+                        }
+                        "b" => {
+                            self.set_value_bool_crate(false);
+                        }
+                        "e" => {
+                            self.set_error(String::new());
+                        }
+                        "" | "n" => {
+                            self.set_value_crate(String::new());
+                        }
+                        _ => {}
+                    },
+                    _ => (),
+                },
                 Ok(Event::End(ref e)) => if e.name().into_inner() == b"c" { return },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "c"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -855,5 +874,32 @@ mod tests {
         assert_eq!(cell.formatted_value(), "0050");
         assert_eq!(cell.data_type(), "s");
         assert!(cell.value_number().is_none());
+    }
+
+    #[test]
+    fn empty_string_formula_result_keeps_str_type() {
+        // Excel/LibreOffice write an empty cached result as a self-closing `<v/>`.
+        let mut reader = Reader::from_str(r#"<c r="A1" t="str"><f>IF(TRUE,"","x")</f><v/></c>"#);
+        let cell_start = match reader.read_event().unwrap() {
+            Event::Start(event) => event,
+            event => panic!("expected cell start event, got {event:?}"),
+        };
+        let mut cell = Cell::default();
+        let mut formula_shared_list = HashMap::new();
+
+        cell.set_attributes(
+            &mut reader,
+            &cell_start,
+            &SharedStringTable::default(),
+            &Stylesheet::default(),
+            false,
+            &mut formula_shared_list,
+        );
+
+        assert_eq!(cell.formula(), "IF(TRUE,\"\",\"x\")");
+        assert_eq!(cell.value(), "");
+        // The writer emits `t` from `data_type_crate`; it must stay "str" so the
+        // empty-string result is not silently downgraded to a blank/untyped cell.
+        assert_eq!(cell.data_type_crate(), "str");
     }
 }
