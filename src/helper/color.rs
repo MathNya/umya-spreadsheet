@@ -16,12 +16,109 @@ pub struct MsHlsColor {
 
 const RGBMAX: f64 = 255.0;
 const HLSMAX: f64 = 255.0;
+const EXCEL_RGB_MAX: i32 = 255;
+const EXCEL_HLS_MAX: i32 = 240;
+const EXCEL_TINT_SHORT_MAX: f64 = 32_767.0;
+const PERCENT_SCALE: f64 = 100.0;
 
 #[must_use]
 pub fn calc_tint(rgb: &str, tint: f64) -> String {
-    let mut ms_hls = convert_rgb_to_ms_hls(rgb);
-    ms_hls.l = calculate_final_lum_value(tint, f64::from(ms_hls.l));
-    convert_ms_hls_to_rgb(&ms_hls)
+    let tint = normalize_excel_tint(tint);
+    let (hue, luminance, saturation) = convert_rgb_to_excel_hls(rgb);
+    let moved = if tint < 0.0 {
+        f64::from(luminance) * (1.0 + tint)
+    } else {
+        f64::from(luminance) * (1.0 - tint) + f64::from(EXCEL_HLS_MAX) * tint
+    };
+    convert_excel_hls_to_rgb(
+        hue,
+        num_traits::cast::<f64, i32>(moved)
+            .unwrap()
+            .clamp(0, EXCEL_HLS_MAX),
+        saturation,
+    )
+}
+
+/// Recover near-whole-percent tints produced by Excel-compatible encoders.
+///
+/// Workbook fixtures commonly express 80% as `0.79998168889431442`, matching
+/// one step of the legacy signed-short tint range. Treat values within that
+/// step as their nominal whole percentage, but retain more distant arbitrary
+/// OOXML values such as `0.7999`.
+fn normalize_excel_tint(tint: f64) -> f64 {
+    let whole_percent = (tint * PERCENT_SCALE).round() / PERCENT_SCALE;
+    if (tint - whole_percent).abs() <= 1.0 / EXCEL_TINT_SHORT_MAX {
+        whole_percent
+    } else {
+        tint
+    }
+}
+
+/// Convert RGB to the 240-step integer HLS space Excel uses for theme tints.
+///
+/// Using the floating-point 255-step conversion below changes native export
+/// colours by one level. The RGB/HLS conversions round at their integer
+/// stages, while the tint-adjusted luminance is deliberately truncated before
+/// the reverse conversion.
+fn convert_rgb_to_excel_hls(rgb: &str) -> (i32, i32, i32) {
+    let (red, green, blue) = split_rgb(rgb);
+    let brightest = red.max(green).max(blue);
+    let darkest = red.min(green).min(blue);
+    let sum = brightest + darkest;
+    let span = brightest - darkest;
+    let luminance = (sum * EXCEL_HLS_MAX + EXCEL_RGB_MAX) / (2 * EXCEL_RGB_MAX);
+    if span == 0 {
+        return (0, luminance, 0);
+    }
+
+    let saturation = if luminance <= EXCEL_HLS_MAX / 2 {
+        (span * EXCEL_HLS_MAX + sum / 2) / sum
+    } else {
+        (span * EXCEL_HLS_MAX + (2 * EXCEL_RGB_MAX - sum) / 2) / (2 * EXCEL_RGB_MAX - sum)
+    };
+    let distance = |channel: i32| ((brightest - channel) * (EXCEL_HLS_MAX / 6) + span / 2) / span;
+    let hue = if red == brightest {
+        distance(blue) - distance(green)
+    } else if green == brightest {
+        EXCEL_HLS_MAX / 3 + distance(red) - distance(blue)
+    } else {
+        2 * EXCEL_HLS_MAX / 3 + distance(green) - distance(red)
+    };
+    (hue.rem_euclid(EXCEL_HLS_MAX), luminance, saturation)
+}
+
+/// Convert Excel's integer HLS representation back to RGB.
+fn convert_excel_hls_to_rgb(hue: i32, luminance: i32, saturation: i32) -> String {
+    let upper = if luminance <= EXCEL_HLS_MAX / 2 {
+        (luminance * (EXCEL_HLS_MAX + saturation) + EXCEL_HLS_MAX / 2) / EXCEL_HLS_MAX
+    } else {
+        luminance + saturation - (luminance * saturation + EXCEL_HLS_MAX / 2) / EXCEL_HLS_MAX
+    };
+    let lower = 2 * luminance - upper;
+    let channel = |hue_offset: i32| {
+        let level = excel_hue_level(lower, upper, hue + hue_offset);
+        ((level * EXCEL_RGB_MAX + EXCEL_HLS_MAX / 2) / EXCEL_HLS_MAX).clamp(0, EXCEL_RGB_MAX)
+    };
+    join_rgb(
+        channel(EXCEL_HLS_MAX / 3),
+        channel(0),
+        channel(-EXCEL_HLS_MAX / 3),
+    )
+}
+
+/// Interpolate one RGB channel around Excel's integer hue wheel.
+fn excel_hue_level(lower: i32, upper: i32, hue: i32) -> i32 {
+    let hue = hue.rem_euclid(EXCEL_HLS_MAX);
+    let sixth = EXCEL_HLS_MAX / 6;
+    if hue < sixth {
+        lower + ((upper - lower) * hue + EXCEL_HLS_MAX / 12) / sixth
+    } else if hue < EXCEL_HLS_MAX / 2 {
+        upper
+    } else if hue < 2 * EXCEL_HLS_MAX / 3 {
+        lower + ((upper - lower) * (2 * EXCEL_HLS_MAX / 3 - hue) + EXCEL_HLS_MAX / 12) / sixth
+    } else {
+        lower
+    }
 }
 
 #[must_use]
@@ -186,4 +283,70 @@ fn positive_decimal_part(hue: f64) -> f64 {
 #[inline]
 fn to_i32(num: f64) -> i32 {
     num_traits::cast(num.round()).unwrap()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        EXCEL_TINT_SHORT_MAX,
+        calc_tint,
+        normalize_excel_tint,
+    };
+
+    #[test]
+    fn excel_theme_tints_use_the_native_hls_quantization() {
+        let measured = [
+            ("DAB6BA", 0.7999, "F8EFF0"),
+            ("4F81BD", 0.8, "DCE6F1"),
+            ("4F81BD", 0.4, "95B3D7"),
+            ("C0504D", 0.8, "F2DCDB"),
+            ("C0504D", 0.4, "DA9694"),
+            ("5B9BD5", 0.8, "DDEBF7"),
+            ("5B9BD5", 0.4, "9BC2E6"),
+            ("FFFFFF", -0.15, "D9D9D9"),
+        ];
+
+        for (source, tint, expected) in measured {
+            assert_eq!(
+                calc_tint(source, tint),
+                expected,
+                "{source} tinted by {tint}"
+            );
+        }
+    }
+
+    #[test]
+    fn excel_encoded_percent_tints_are_recovered_before_hls_math() {
+        let measured = [
+            ("000000", 0.499_984_740_745_262, "808080"),
+            ("4EA72E", 0.799_981_688_894_314_4, "DAF2D0"),
+            ("4EA72E", 0.599_993_896_298_104_8, "B5E6A2"),
+            ("4EA72E", 0.399_975_585_192_419_2, "8ED973"),
+            ("4E3B30", 0.399_975_585_192_419_2, "A78570"),
+        ];
+
+        for (source, tint, expected) in measured {
+            assert_eq!(
+                calc_tint(source, tint),
+                expected,
+                "{source} tinted by {tint}"
+            );
+        }
+
+        assert_eq!(normalize_excel_tint(0.799_981_688_894_314_4), 0.8);
+        assert_eq!(normalize_excel_tint(0.7999), 0.7999);
+
+        let threshold = 1.0 / EXCEL_TINT_SHORT_MAX;
+        assert_eq!(normalize_excel_tint(0.8 - threshold), 0.8);
+        assert_eq!(
+            normalize_excel_tint(0.8 - threshold - f64::EPSILON),
+            0.8 - threshold - f64::EPSILON
+        );
+    }
+
+    #[test]
+    fn tint_adjusted_luminance_is_truncated_before_rgb_conversion() {
+        // Rounding the 229.5948 luminance would produce F8F1F2 instead.
+        assert_eq!(calc_tint("DAB6BA", 0.7999), "F8EFF0");
+    }
 }
