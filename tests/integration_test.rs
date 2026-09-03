@@ -2372,6 +2372,28 @@ fn zip_entry_to_string(xlsx: &[u8], entry_name: &str) -> String {
     xml
 }
 
+#[test]
+fn row_thick_top_roundtrips() {
+    let mut book = new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+    sheet.cell_mut("A2").set_value("thick top");
+    sheet.row_dimension_mut(2).set_thick_top(true);
+
+    let xlsx = workbook_to_xlsx_bytes(&book);
+    let sheet_xml = zip_entry_to_string(&xlsx, "xl/worksheets/sheet1.xml");
+    assert!(sheet_xml.contains("thickTop=\"1\""));
+
+    let roundtrip = reader::xlsx::read_reader(std::io::Cursor::new(xlsx), true).unwrap();
+    assert!(
+        roundtrip
+            .sheet(0)
+            .unwrap()
+            .row_dimension(2)
+            .unwrap()
+            .thick_top()
+    );
+}
+
 fn cell_fragment(sheet_xml: &str, coordinate: &str) -> String {
     let start = sheet_xml
         .find(&format!("<c r=\"{coordinate}\""))

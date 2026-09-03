@@ -38,6 +38,7 @@ pub struct Row {
     row_num:       UInt32Value,
     height:        DoubleValue,
     descent:       DoubleValue,
+    thick_top:     BooleanValue,
     thick_bot:     BooleanValue,
     custom_height: BooleanValue,
     hidden:        BooleanValue,
@@ -50,6 +51,7 @@ impl Default for Row {
             row_num:       UInt32Value::default(),
             height:        DoubleValue::default(),
             descent:       DoubleValue::default(),
+            thick_top:     BooleanValue::default(),
             thick_bot:     BooleanValue::default(),
             custom_height: BooleanValue::default(),
             hidden:        BooleanValue::default(),
@@ -113,6 +115,25 @@ impl Row {
     #[inline]
     pub fn set_descent(&mut self, value: f64) -> &mut Self {
         self.descent.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn thick_top(&self) -> bool {
+        self.thick_top.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_top()")]
+    pub fn get_thick_top(&self) -> bool {
+        self.thick_top()
+    }
+
+    #[inline]
+    pub fn set_thick_top(&mut self, value: bool) -> &mut Self {
+        self.thick_top.set_value(value);
         self
     }
 
@@ -221,6 +242,7 @@ impl Row {
     ) {
         set_string_from_xml!(self, e, row_num, "r");
         set_string_from_xml!(self, e, height, "ht");
+        set_string_from_xml!(self, e, thick_top, "thickTop");
         set_string_from_xml!(self, e, thick_bot, "thickBot");
         set_string_from_xml!(self, e, custom_height, "customHeight");
         set_string_from_xml!(self, e, hidden, "hidden");
@@ -299,6 +321,9 @@ impl Row {
         let height = self.height.value_string();
         if self.height.value() != 0f64 {
             attributes.push(("ht", &height).into());
+        }
+        if self.thick_top.value() {
+            attributes.push(("thickTop", self.thick_top.value_string()).into());
         }
         if self.thick_bot.value() {
             attributes.push(("thickBot", self.thick_bot.value_string()).into());
