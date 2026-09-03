@@ -447,10 +447,9 @@ fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id
     worksheet.page_margins().write_to(writer);
 
     if worksheet.page_setup().has_param() {
-        worksheet
-            .page_setup()
-            .write_to(writer, &mut num_traits::cast(r_id).unwrap());
-        r_id += 1;
+        let mut r_id_write: usize = num_traits::cast(r_id).unwrap();
+        worksheet.page_setup().write_to(writer, &mut r_id_write);
+        r_id = num_traits::cast(r_id_write).unwrap();
     }
 
     worksheet.header_footer().write_to(writer);
@@ -655,6 +654,31 @@ mod tests {
 
         let result = String::from_utf8(writer.into_inner().into_inner()).unwrap();
         assert!(result.contains("pageMargins"));
+        assert_eq!(r_id, 1);
+    }
+
+    #[test]
+    fn test_write_print_settings_with_params_no_object_data_keeps_rid_stable() {
+        // `write_print_settings` must NOT advance the relationship id for a
+        // pageSetup that carries only attributes (paper size, orientation, ...)
+        // but has no printer-settings `object_data`. The rels writer only emits a
+        // printerSettings relationship when `object_data` is present, so failing
+        // to keep the two in sync emits a `<drawing r:id>` that points at a
+        // non-existent relationship, which Excel then uses to strip the drawing.
+        let mut writer = setup_test_writer();
+        let mut worksheet = setup_test_worksheet();
+        worksheet.page_setup_mut().set_paper_size(9);
+
+        assert!(worksheet.page_setup().has_param());
+        assert!(worksheet.page_setup().object_data().is_none());
+
+        let r_id = write_print_settings(&mut writer, &worksheet, 1);
+
+        let result = String::from_utf8(writer.into_inner().into_inner()).unwrap();
+        assert!(result.contains("pageSetup"));
+        assert!(!result.contains("r:id"));
+        // No printerSettings relationship was written, so the next relationship
+        // id (e.g. the drawing's) must remain unchanged.
         assert_eq!(r_id, 1);
     }
 
