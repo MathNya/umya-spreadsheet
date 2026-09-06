@@ -97,7 +97,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
     let raw_sections: Vec<&str> = split(get_section_regex(), &format).collect();
     let (_, raw_split_format, _) = split_format(raw_sections, parsed_val);
     if let Some(literal) = literal_only_section(&raw_split_format) {
-        return literal.trim().to_string();
+        return literal;
     }
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
@@ -481,7 +481,7 @@ fn test_to_formatted_string_date() {
 fn test_to_formatted_string_zero_section_with_only_escaped_literals() {
     let format = r"#,##0_);[Red]\(#,##0\);\-\ \ ";
 
-    assert_eq!("-", to_formatted_string("0", format));
+    assert_eq!("-  ", to_formatted_string("0", format));
     assert_eq!(
         "FALSE",
         to_formatted_string("0", r#""TRUE";"TRUE";"FALSE""#)
