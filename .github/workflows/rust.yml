@@ -24,10 +24,13 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
-
       - name: Install Rust
         run: rustup component add clippy
-
+      - name: Check Rust version
+        run: |
+          rustc --version
+          cargo --version
+          cargo clippy --version
       - name: Run Lint & Tests
         run: |
           cargo clippy -- -D warnings
