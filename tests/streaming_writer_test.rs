@@ -244,7 +244,8 @@ fn streaming_writer_suppresses_legend_like_normal_writer() {
     let src = std::path::Path::new("./tests/test_files/aaa.xlsx");
 
     let book = reader::xlsx::read(src).expect("read aaa.xlsx");
-    // Sheet names must be captured before the workbook is moved into the writer.
+    // Sheet names must be captured before the workbook is moved into the
+    // writer.
     let sheet_names: Vec<String> = book
         .sheet_collection()
         .iter()

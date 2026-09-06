@@ -157,8 +157,8 @@ impl<W: io::Write + io::Seek> StreamingWriter<W> {
         Some(self.available.remove(pos))
     }
 
-    // flush_sheet write a Worksheet into our zip writer. The object is consumed and
-    // no longer holds in memory, forever lost in the void.
+    // flush_sheet write a Worksheet into our zip writer. The object is consumed
+    // and no longer holds in memory, forever lost in the void.
     #[allow(clippy::needless_pass_by_value)]
     pub fn flush_sheet(&mut self, worksheet: Worksheet) -> Result<(), XlsxError> {
         self.sheet_no += 1;

@@ -295,9 +295,10 @@ pub fn excel_to_date_time_jiff_millisecond(excel_timestamp: f64) -> jiff::civil:
 ///   which is not valid in excel.
 #[must_use]
 pub fn jiff_date_time_to_excel(value: jiff::civil::DateTime) -> f64 {
-    // Effective epoch is different depending on the date because Excel treats 1900
-    // as a leap year but it wasn't and thus the epoch is moved back a day if the
-    // date is after the "leap day" to add an extra day to match Excel
+    // Effective epoch is different depending on the date because Excel treats
+    // 1900 as a leap year but it wasn't and thus the epoch is moved back a
+    // day if the date is after the "leap day" to add an extra day to match
+    // Excel
     let epoch = if (value.year() < 1990 && value.month() < 3) || value.year() == 1899 {
         jiff::civil::datetime(1899, 12, 31, 0, 0, 0, 0)
     } else {
@@ -628,8 +629,8 @@ mod tests {
 
         // Test fn jiff_date_time_to_excel
         if year == 1900 && month == 2 && day == 29 {
-            // Skip this test, because this date is not representable in jiff because it
-            // never happened
+            // Skip this test, because this date is not representable in jiff
+            // because it never happened
             return;
         }
         let actual = jiff_date_time_to_excel(jiff::civil::datetime(

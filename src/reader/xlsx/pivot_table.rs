@@ -52,7 +52,8 @@ pub(crate) fn read(
     }
 
     if let Some(rrs_list) = pivot_table_relationships {
-        // Find cache records from the pivot cache definition's own relationships
+        // Find cache records from the pivot cache definition's own
+        // relationships
         let records_file = pivot_cache_relationships.and_then(|cache_rels| {
             cache_rels
                 .relationship_list()

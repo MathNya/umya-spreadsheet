@@ -90,7 +90,8 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<'_, str> {
                 }
             } else {
                 // 24-hour time format
-                // when [h]:mm format, the [h] should replace to the hours of the value * 24
+                // when [h]:mm format, the [h] should replace to the hours of
+                // the value * 24
                 if block.contains("[h]") {
                     let hours = value * 24f64;
                     block = block.replace("[h]", &hours.to_string());

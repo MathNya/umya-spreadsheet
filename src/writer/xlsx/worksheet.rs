@@ -661,10 +661,11 @@ mod tests {
     fn test_write_print_settings_with_params_no_object_data_keeps_rid_stable() {
         // `write_print_settings` must NOT advance the relationship id for a
         // pageSetup that carries only attributes (paper size, orientation, ...)
-        // but has no printer-settings `object_data`. The rels writer only emits a
-        // printerSettings relationship when `object_data` is present, so failing
-        // to keep the two in sync emits a `<drawing r:id>` that points at a
-        // non-existent relationship, which Excel then uses to strip the drawing.
+        // but has no printer-settings `object_data`. The rels writer only emits
+        // a printerSettings relationship when `object_data` is present,
+        // so failing to keep the two in sync emits a `<drawing r:id>`
+        // that points at a non-existent relationship, which Excel then
+        // uses to strip the drawing.
         let mut writer = setup_test_writer();
         let mut worksheet = setup_test_worksheet();
         worksheet.page_setup_mut().set_paper_size(9);

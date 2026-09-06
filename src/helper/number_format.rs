@@ -111,8 +111,8 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
     value = Cow::Owned(split_value);
 
     // In Excel formats, "_" is used to add spacing,
-    //    The following character indicates the size of the spacing, which we can't
-    // do in HTML, so we just use a standard space
+    //    The following character indicates the size of the spacing, which we
+    // can't do in HTML, so we just use a standard space
     let re = compile_regex!("_.");
     let format = re.replace_all(&format, " ");
 
