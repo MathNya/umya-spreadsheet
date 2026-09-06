@@ -809,16 +809,12 @@ fn should_token_be_math(previous_token: Option<FormulaToken>) -> bool {
         return false;
     }
     let t = previous_token.unwrap();
-    if (t.get_token_type() == &FormulaTokenTypes::Function
+    (t.get_token_type() == &FormulaTokenTypes::Function
         && t.get_token_sub_type() == &FormulaTokenSubTypes::Stop)
         || (t.get_token_type() == &FormulaTokenTypes::Subexpression
             && t.get_token_sub_type() == &FormulaTokenSubTypes::Stop)
         || (t.get_token_type() == &FormulaTokenTypes::OperatorPostfix)
         || (t.get_token_type() == &FormulaTokenTypes::Operand)
-    {
-        return true;
-    }
-    false
 }
 
 fn is_operand_or_close(token: &FormulaToken) -> bool {
