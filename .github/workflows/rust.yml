@@ -39,5 +39,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly
       - name: Install Rust
         run: rustup component add rustfmt
+      - name: Check Rust version
+        run: |
+          rustc +nightly --version
+          cargo +nightly fmt --version
       - name: Check formatting
         run: cargo +nightly fmt --all --check
