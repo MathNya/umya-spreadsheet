@@ -39,7 +39,10 @@ struct Element {
 }
 impl Element {
     fn child(&self, name: &str) -> &Self {
-        self.children.iter().find(|node| node.name == name).unwrap()
+        self.children
+            .iter()
+            .find(|node| node.name == name)
+            .unwrap_or_else(|| panic!("missing {name} in {}", self.name))
     }
 
     fn id(&self, name: &str) -> usize {
@@ -113,14 +116,24 @@ fn expected(key: &str, value: &str, tint: Option<&str>) -> Attributes {
     }
     attrs
 }
-fn style(color: Color) -> Style {
+fn style(color: Color, gradient: bool) -> Style {
     let mut style = Style::default();
     style.font_mut().set_color(color.clone());
-    style
-        .fill_mut()
-        .pattern_fill_mut()
-        .set_foreground_color(color.clone())
-        .set_background_color(color.clone());
+    if gradient {
+        let mut fill = umya::GradientFill::default();
+        for position in [0.0, 1.0] {
+            let mut stop = umya::GradientStop::default();
+            stop.set_position(position).set_color(color.clone());
+            fill.set_gradient_stop(stop);
+        }
+        style.fill_mut().set_gradient_fill(fill);
+    } else {
+        style
+            .fill_mut()
+            .pattern_fill_mut()
+            .set_foreground_color(color.clone())
+            .set_background_color(color.clone());
+    }
     style
         .borders_mut()
         .left_mut()
@@ -128,13 +141,13 @@ fn style(color: Color) -> Style {
     style.borders_mut().left_mut().set_color(color);
     style
 }
-fn fixture(colors: &[Color]) -> umya::Workbook {
+fn fixture(colors: &[Color], gradient: bool) -> umya::Workbook {
     assert!(colors.len() <= 26);
     let mut book = umya::new_file();
     let sheet = book.sheet_mut(0).unwrap();
     for (i, color) in colors.iter().enumerate() {
         let i = u32::try_from(i).unwrap();
-        let style = style(color.clone());
+        let style = style(color.clone(), gradient);
         sheet.cell_mut((i + 1, 1)).set_style(style.clone());
         sheet.row_dimension_mut(i + 3).set_style(style.clone());
         sheet
@@ -154,25 +167,41 @@ fn fixture(colors: &[Color]) -> umya::Workbook {
     }
     book
 }
-fn assert_components(font: &Element, fill: &Element, border: &Element, want: &Attributes) {
+fn assert_components(
+    font: &Element,
+    fill: &Element,
+    border: &Element,
+    want: &Attributes,
+    gradient: bool,
+) {
     assert_eq!(&font.child("color").attrs, want, "font");
-    assert_eq!(
-        &fill.child("patternFill").child("fgColor").attrs,
-        want,
-        "foreground fill"
-    );
-    assert_eq!(
-        &fill.child("patternFill").child("bgColor").attrs,
-        want,
-        "background fill"
-    );
+    if gradient {
+        let stops = &fill.child("gradientFill").children;
+        assert_eq!(stops.len(), 2);
+        for (position, stop) in stops.iter().enumerate() {
+            assert_eq!(stop.name, "stop");
+            assert_eq!(stop.attrs["position"], position.to_string());
+            assert_eq!(&stop.child("color").attrs, want, "gradient stop");
+        }
+    } else {
+        assert_eq!(
+            &fill.child("patternFill").child("fgColor").attrs,
+            want,
+            "foreground fill"
+        );
+        assert_eq!(
+            &fill.child("patternFill").child("bgColor").attrs,
+            want,
+            "background fill"
+        );
+    }
     assert_eq!(
         &border.child("left").child("color").attrs,
         want,
         "left border"
     );
 }
-fn assert_projection(bytes: &[u8], wants: &[Attributes]) {
+fn assert_projection(bytes: &[u8], wants: &[Attributes], gradient: bool) {
     let styles = xml(&part(bytes, "xl/styles.xml"));
     let sheet = xml(&part(bytes, "xl/worksheets/sheet1.xml"));
     let fonts = &styles.child("fonts").children;
@@ -216,6 +245,7 @@ fn assert_projection(bytes: &[u8], wants: &[Attributes]) {
                 &fills[xf.id("fillId")],
                 &borders[xf.id("borderId")],
                 want,
+                gradient,
             );
         }
         let xf = &xfs[cell.id("s")];
@@ -236,6 +266,7 @@ fn assert_projection(bytes: &[u8], wants: &[Attributes]) {
             dxf.child("fill"),
             dxf.child("border"),
             want,
+            gradient,
         );
     }
     for ids in [font_ids, fill_ids, border_ids, dxf_ids] {
@@ -282,11 +313,13 @@ fn expanded_colors(bytes: &[u8]) -> Vec<u8> {
     output.finish().unwrap().into_inner()
 }
 fn check(colors: Vec<Color>, wants: Vec<Attributes>) {
-    let original = save(&fixture(&colors));
-    assert_projection(&original, &wants);
-    for input in [original.clone(), expanded_colors(&original)] {
-        let reopened = umya::reader::xlsx::read_reader(Cursor::new(input), true).unwrap();
-        assert_projection(&save(&reopened), &wants);
+    for gradient in [false, true] {
+        let original = save(&fixture(&colors, gradient));
+        assert_projection(&original, &wants, gradient);
+        for input in [original.clone(), expanded_colors(&original)] {
+            let reopened = umya::reader::xlsx::read_reader(Cursor::new(input), true).unwrap();
+            assert_projection(&save(&reopened), &wants, gradient);
+        }
     }
 }
 #[test]
