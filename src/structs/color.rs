@@ -448,6 +448,7 @@ impl Color {
         self.indexed = None;
         self.theme_index = None;
         self.argb = None;
+        self.tint = None;
         for attr in e.attributes().with_checks(false).flatten() {
             match attr.key.0 {
                 b"auto" => {
@@ -584,5 +585,31 @@ mod tests {
         let theme = Theme::default_value();
         obj.set_theme_index(1);
         assert_eq!(obj.argb_with_theme(&theme), "000000");
+    }
+
+    #[test]
+    fn parsing_resets_tint_and_handles_expanded_automatic_colours() {
+        let mut color = Color::default();
+        let mut reader = Reader::from_str(r#"<color rgb="FFC00000" tint="0.5"/>"#);
+        let mut buf = Vec::new();
+        let first = match reader.read_event_into(&mut buf).unwrap() {
+            Event::Empty(value) => value.into_owned(),
+            _ => unreachable!(),
+        };
+        color.set_attributes(&mut reader, &first, true);
+        assert_eq!(color.tint(), 0.5);
+
+        let mut reader = Reader::from_str(r#"<color auto="false"></color>"#);
+        let second = match reader.read_event_into(&mut buf).unwrap() {
+            Event::Start(value) => value.into_owned(),
+            _ => unreachable!(),
+        };
+        color.set_attributes(&mut reader, &second, false);
+        assert!(!color.automatic());
+        assert_eq!(color.tint(), 0.0);
+
+        let mut writer = Writer::new(Cursor::new(Vec::new()));
+        color.write_to_color(&mut writer);
+        assert_eq!(String::from_utf8(writer.into_inner().into_inner()).unwrap(), r#"<color auto="0"/>"#);
     }
 }

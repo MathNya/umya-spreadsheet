@@ -2515,16 +2515,173 @@ fn color_selectors_survive_styles_xml_serialization() {
 
     let rgb = Color::default().set_argb_str("FF000000").to_owned();
     sheet.style_mut("A1").font_mut().set_color(rgb.clone());
-    sheet.style_mut("A2").borders_mut().left_mut().set_border_style(Border::BORDER_THIN);
-    sheet.style_mut("A2").borders_mut().left_mut().set_color(rgb.clone());
-    sheet.style_mut("A3").fill_mut().pattern_fill_mut().set_foreground_color(rgb);
-    sheet.style_mut("A4").font_mut().set_color(Color::default().set_automatic(true).to_owned());
+    sheet
+        .style_mut("A2")
+        .borders_mut()
+        .left_mut()
+        .set_border_style(Border::BORDER_THIN);
+    sheet
+        .style_mut("A2")
+        .borders_mut()
+        .left_mut()
+        .set_color(rgb.clone());
+    sheet
+        .style_mut("A3")
+        .fill_mut()
+        .pattern_fill_mut()
+        .set_foreground_color(rgb);
+    sheet
+        .style_mut("A4")
+        .font_mut()
+        .set_color(Color::default().set_automatic(true).to_owned());
 
     let xlsx = workbook_to_xlsx_bytes(&book);
     let styles_xml = zip_entry_to_string(&xlsx, "xl/styles.xml");
     // Inspect the ZIP projection: RGB must not be rewritten as indexed.
     assert_eq!(styles_xml.matches(r#"rgb="FF000000""#).count(), 3);
     assert!(styles_xml.contains(r#"<color auto="1"/>"#));
+}
+
+#[test]
+fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
+    let mut book = new_file();
+    let mut themed = Style::default();
+    let mut indexed = Style::default();
+    for (style, theme) in [(&mut themed, true), (&mut indexed, false)] {
+        let mut color = Color::default();
+        if theme {
+            color.set_theme_index(1);
+        } else {
+            color.set_indexed(1);
+        }
+        style.font_mut().set_color(color.clone());
+        style
+            .fill_mut()
+            .pattern_fill_mut()
+            .set_foreground_color(color.clone());
+        style
+            .borders_mut()
+            .left_mut()
+            .set_border_style(Border::BORDER_THIN);
+        style.borders_mut().left_mut().set_color(color);
+    }
+    let sheet = book.sheet_mut(0).unwrap();
+    sheet.cell_mut("A1").set_style(themed.clone());
+    sheet.cell_mut("B1").set_style(indexed.clone());
+    sheet.row_dimension_mut(2).set_style(themed.clone());
+    sheet
+        .column_dimension_by_number_mut(3)
+        .set_style(indexed.clone());
+    let mut rule = ConditionalFormattingRule::default();
+    rule.set_type(ConditionalFormatValues::Expression)
+        .set_priority(1)
+        .set_style(themed);
+    let mut formula = Formula::default();
+    formula.set_string_value("TRUE()");
+    rule.set_formula(formula);
+    let mut group = ConditionalFormatting::default();
+    group.sequence_of_references_mut().set_sqref("A1:B2");
+    group.add_conditional_collection(rule);
+    sheet.add_conditional_formatting_collection(group);
+    let bytes = workbook_to_xlsx_bytes(&book);
+    let styles = zip_entry_to_string(&bytes, "xl/styles.xml");
+    // The cellXfs/dxfs point at different component IDs; raw selectors survive.
+    assert!(styles.matches(r#"theme="1""#).count() >= 4, "{styles}");
+    assert!(styles.matches(r#"indexed="1""#).count() >= 3, "{styles}");
+    let reopened = reader::xlsx::read_reader(std::io::Cursor::new(bytes), true).unwrap();
+    let sheet = reopened.sheet(0).unwrap();
+    assert_eq!(sheet.style("A1").font().unwrap().color().theme_index(), 1);
+    assert_eq!(sheet.style("B1").font().unwrap().color().indexed(), 1);
+    assert_eq!(
+        sheet
+            .row_dimension(2)
+            .unwrap()
+            .style()
+            .font()
+            .unwrap()
+            .color()
+            .theme_index(),
+        1
+    );
+    assert_eq!(
+        sheet
+            .column_dimensions()
+            .iter()
+            .find(|c| c.col_num() == 3)
+            .unwrap()
+            .style()
+            .font()
+            .unwrap()
+            .color()
+            .indexed(),
+        1
+    );
+    assert_eq!(
+        sheet.conditional_formatting_collection()[0].conditional_collection()[0]
+            .style()
+            .unwrap()
+            .font()
+            .unwrap()
+            .color()
+            .theme_index(),
+        1
+    );
+}
+
+#[test]
+fn border_colours_import_on_all_sides_from_expanded_xml() {
+    let mut book = new_file();
+    let borders = book.sheet_mut(0).unwrap().style_mut("C3").borders_mut();
+    borders.set_diagonal_up(true);
+    let mut set_red = |border: &mut Border| {
+        border.set_border_style(Border::BORDER_THIN);
+        border.set_color(Color::default().set_argb_str("FFC00000").to_owned());
+    };
+    set_red(borders.left_mut());
+    set_red(borders.right_mut());
+    set_red(borders.top_mut());
+    set_red(borders.bottom_mut());
+    set_red(borders.diagonal_mut());
+    set_red(borders.vertical_mut());
+    set_red(borders.horizontal_mut());
+    let source = workbook_to_xlsx_bytes(&book);
+    let mut archive = zip::ZipArchive::new(std::io::Cursor::new(source)).unwrap();
+    let mut out = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+    for index in 0..archive.len() {
+        let mut entry = archive.by_index(index).unwrap();
+        let mut data = Vec::new();
+        entry.read_to_end(&mut data).unwrap();
+        if entry.name() == "xl/styles.xml" {
+            data = String::from_utf8(data)
+                .unwrap()
+                .replace(
+                    r#"<color rgb="FFC00000"/>"#,
+                    r#"<color rgb="FFC00000"></color>"#,
+                )
+                .into_bytes();
+        }
+        out.start_file(entry.name(), zip::write::SimpleFileOptions::default())
+            .unwrap();
+        std::io::Write::write_all(&mut out, &data).unwrap();
+    }
+    let reopened = reader::xlsx::read_reader(
+        std::io::Cursor::new(out.finish().unwrap().into_inner()),
+        true,
+    )
+    .unwrap();
+    let borders = reopened.sheet(0).unwrap().style("C3").borders().unwrap();
+    assert!(borders.diagonal_up());
+    for border in [
+        borders.left(),
+        borders.right(),
+        borders.top(),
+        borders.bottom(),
+        borders.diagonal(),
+        borders.vertical(),
+        borders.horizontal(),
+    ] {
+        assert_eq!(border.color().unwrap().argb_str(), "FFC00000");
+    }
 }
 
 #[test]

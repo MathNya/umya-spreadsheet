@@ -148,6 +148,13 @@ impl Border {
                     self.color = Some(Box::new(color));
                 }
             },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"color" {
+                    let mut color = self.color.take().map(|color| *color).unwrap_or_default();
+                    color.set_attributes(reader, e, false);
+                    self.color = Some(Box::new(color));
+                }
+            },
             Event::End(ref e) => {
                 match e.name().into_inner() {
                     b"left"     |
