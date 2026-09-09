@@ -102,75 +102,9 @@ static INDEX_TO_COLOR: phf::Map<u32, ARGB8> = phf_map! {
     63u32 => argb!(0xFF, 0x33, 0x33, 0x33), // Standard Colour #56
 };
 
-static COLOR_STR_TO_INDEX: phf::Map<&'static str, u32> = phf_map! {
-    "FF000000" => 0u32, // System Colour #1 - Black
-    "FFFFFFFF" => 1u32, // System Colour #2 - White
-    "FFFF0000" => 2u32, // System Colour #3 - Red
-    "FF00FF00" => 3u32, // System Colour #4 - Green
-    "FF0000FF" => 4u32, // System Colour #5 - Blue
-    "FFFFFF00" => 5u32, // System Colour #6 - Yellow
-    "FFFF00FF" => 6u32, // System Colour #7- Magenta
-    "FF00FFFF" => 7u32, // System Colour #8- Cyan
-//    "FF000000" => 8u32, // System Colour #1 - Black - Duplicate Key !
-//    "FFFFFFFF" => 9u32, // System Colour #2 - White - Duplicate Key !
-//    "FFFF0000" => 10u32, // System Colour #3 - Red - Duplicate Key !
-//    "FF00FF00" => 11u32, // System Colour #4 - Green - Duplicate Key !
-//    "FF0000FF" => 12u32, // System Colour #5 - Blue - Duplicate Key !
-//    "FFFFFF00" => 13u32, // System Colour #6 - Yellow - Duplicate Key !
-//    "FFFF00FF" => 14u32, // System Colour #7- Magenta - Duplicate Key !
-//    "FF00FFFF" => 15u32, // System Colour #8- Cyan - Duplicate Key !
-    "FF800000" => 16u32, // Standard Colour #9
-    "FF008000" => 17u32, // Standard Colour #10
-    "FF000080" => 18u32, // Standard Colour #11
-    "FF808000" => 19u32, // Standard Colour #12
-    "FF800080" => 20u32, // Standard Colour #13
-    "FF008080" => 21u32, // Standard Colour #14
-    "FFC0C0C0" => 22u32, // Standard Colour #15
-    "FF808080" => 23u32, // Standard Colour #16
-    "FF9999FF" => 24u32, // Chart Fill Colour #17
-    "FF993366" => 25u32, // Chart Fill Colour #18
-    "FFFFFFCC" => 26u32, // Chart Fill Colour #19
-    "FFCCFFFF" => 27u32, // Chart Fill Colour #20
-    "FF660066" => 28u32, // Chart Fill Colour #21
-    "FFFF8080" => 29u32, // Chart Fill Colour #22
-    "FF0066CC" => 30u32, // Chart Fill Colour #23
-    "FFCCCCFF" => 31u32, // Chart Fill Colour #24
-//   "FF000080" => 32u32, // Chart Line Colour #25 - Duplicate Key !
-//   "FFFF00FF" => 33u32, // Chart Line Colour #26 - Duplicate Key !
-//   "FFFFFF00" => 34u32, // Chart Line Colour #27 - Duplicate Key !
-//   "FF00FFFF" => 35u32, // Chart Line Colour #28 - Duplicate Key !
-//   "FF800080" => 36u32, // Chart Line Colour #29 - Duplicate Key !
-//   "FF800000" => 37u32, // Chart Line Colour #30 - Duplicate Key !
-//   "FF008080" => 38u32, // Chart Line Colour #31 - Duplicate Key !
-//   "FF0000FF" => 39u32, // Chart Line Colour #32 - Duplicate Key !
-    "FF00CCFF" => 40u32, // Standard Colour #33
-//   "FFCCFFFF" => 41u32, // Standard Colour #34 - Duplicate Key !
-    "FFCCFFCC" => 42u32, // Standard Colour #35
-    "FFFFFF99" => 43u32, // Standard Colour #36
-    "FF99CCFF" => 44u32, // Standard Colour #37
-    "FFFF99CC" => 45u32, // Standard Colour #38
-    "FFCC99FF" => 46u32, // Standard Colour #39
-    "FFFFCC99" => 47u32, // Standard Colour #40
-    "FF3366FF" => 48u32, // Standard Colour #41
-    "FF33CCCC" => 49u32, // Standard Colour #42
-    "FF99CC00" => 50u32, // Standard Colour #43
-    "FFFFCC00" => 51u32, // Standard Colour #44
-    "FFFF9900" => 52u32, // Standard Colour #45
-    "FFFF6600" => 53u32, // Standard Colour #46
-    "FF666699" => 54u32, // Standard Colour #47
-    "FF969696" => 55u32, // Standard Colour #48
-    "FF003366" => 56u32, // Standard Colour #49
-    "FF339966" => 57u32, // Standard Colour #50
-    "FF003300" => 58u32, // Standard Colour #51
-    "FF333300" => 59u32, // Standard Colour #52
-    "FF993300" => 60u32, // Standard Colour #53
-//    "FF993366" => 61u32, // Standard Colour #54 - Duplicate Key !
-    "FF333399" => 62u32, // Standard Colour #55
-    "FF333333" => 63u32, // Standard Colour #56
-};
-
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Color {
+    automatic:   Option<bool>,
     indexed:     Option<u32>,
     theme_index: Option<u32>,
     argb:        Option<ARGB8>,
@@ -374,32 +308,36 @@ impl Color {
     }
 
     pub fn set_argb<S: Into<ARGB8>>(&mut self, value: S) -> &mut Self {
-        let argb = value.into();
-        let indexed = COLOR_STR_TO_INDEX.get(Self::argb8_to_hex(argb).as_ref());
-
-        if let Some(v) = indexed {
-            self.indexed = Some(*v);
-            self.argb = None;
-        } else {
-            self.indexed = None;
-            self.argb = Some(argb);
-        }
+        self.indexed = None;
+        self.argb = Some(value.into());
         self.theme_index = None;
+        self.automatic = None;
         self
     }
 
     pub fn set_argb_str<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
-        let argb = Self::hex_to_argb8(value.as_ref()).unwrap();
-        let indexed = COLOR_STR_TO_INDEX.get(value.as_ref());
-
-        if let Some(v) = indexed {
-            self.indexed = Some(*v);
-            self.argb = None;
-        } else {
-            self.indexed = None;
-            self.argb = Some(argb);
-        }
+        self.indexed = None;
+        self.argb = Some(Self::hex_to_argb8(value.as_ref()).unwrap());
         self.theme_index = None;
+        self.automatic = None;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn automatic(&self) -> bool {
+        self.automatic.unwrap_or(false)
+    }
+
+    /// Select the OOXML automatic colour.
+    ///
+    /// Automatic is a distinct OOXML selector, not a concrete RGB value.
+    #[inline]
+    pub fn set_automatic(&mut self, value: bool) -> &mut Self {
+        self.automatic = Some(value);
+        self.indexed = None;
+        self.theme_index = None;
+        self.argb = None;
         self
     }
 
@@ -418,6 +356,7 @@ impl Color {
 
     #[inline]
     pub fn set_indexed(&mut self, index: u32) -> &mut Self {
+        self.automatic = None;
         self.indexed = Some(index);
         self.theme_index = None;
         self.argb = None;
@@ -439,6 +378,7 @@ impl Color {
 
     #[inline]
     pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
+        self.automatic = None;
         self.indexed = None;
         self.theme_index = Some(index);
         self.argb = None;
@@ -466,7 +406,8 @@ impl Color {
 
     #[inline]
     pub(crate) fn has_value(&self) -> bool {
-        self.theme_index.is_some()
+        self.automatic.is_some()
+            || self.theme_index.is_some()
             || self.indexed.is_some()
             || self.argb.is_some()
             || self.tint.is_some()
@@ -474,12 +415,14 @@ impl Color {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
+        // Selector kinds are distinct even when they resolve to the same RGB.
         crate::helper::utils::md5_hash(format!(
-            "{}{}{}{}",
-            self.indexed.map_or(String::new(), |v| v.to_string()),
-            self.theme_index.map_or(String::new(), |v| v.to_string()),
+            "auto={:?};indexed={:?};theme={:?};rgb={};tint={:?}",
+            self.automatic,
+            self.indexed,
+            self.theme_index,
             self.argb.map_or(String::new(), Self::argb8_to_hex),
-            self.tint.map_or(String::new(), |v| v.to_string())
+            self.tint,
         ))
     }
 
@@ -501,8 +444,21 @@ impl Color {
         e: &BytesStart,
         empty_flg: bool,
     ) {
+        self.automatic = None;
+        self.indexed = None;
+        self.theme_index = None;
+        self.argb = None;
         for attr in e.attributes().with_checks(false).flatten() {
             match attr.key.0 {
+                b"auto" => {
+                    if let Ok(v) = get_attribute_value(&attr) {
+                        self.automatic = match v.as_str() {
+                            "1" | "true" => Some(true),
+                            "0" | "false" => Some(false),
+                            _ => None,
+                        };
+                    }
+                }
                 b"indexed" => {
                     if let Ok(v) = get_attribute_value(&attr) {
                         if let Ok(num) = v.parse() {
@@ -582,7 +538,9 @@ impl Color {
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        if let Some(theme_index) = self.theme_index {
+        if let Some(automatic) = self.automatic {
+            attributes.push(("auto", if automatic { "1" } else { "0" }).into());
+        } else if let Some(theme_index) = self.theme_index {
             attributes.push(("theme", theme_index.to_string()).into());
         } else if let Some(indexed) = self.indexed {
             attributes.push(("indexed", indexed.to_string()).into());
@@ -619,7 +577,7 @@ mod tests {
 
         let mut obj = Color::default();
         obj.set_argb_str("FFFF8080");
-        assert_eq!(obj.indexed(), 29);
+        assert_eq!(obj.indexed(), 0);
         assert_eq!(obj.argb_str(), "FFFF8080");
 
         let mut obj = Color::default();

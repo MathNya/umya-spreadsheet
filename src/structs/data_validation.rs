@@ -181,7 +181,7 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use error_messsage()")]
+    #[deprecated(since = "3.0.0", note = "Use error_message()")]
     pub fn get_error_message(&self) -> &str {
         self.error_message()
     }

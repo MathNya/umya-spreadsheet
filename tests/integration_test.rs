@@ -2509,6 +2509,25 @@ fn shared_formula_signatures(
 }
 
 #[test]
+fn color_selectors_survive_styles_xml_serialization() {
+    let mut book = new_file();
+    let sheet = book.sheet_mut(0).unwrap();
+
+    let rgb = Color::default().set_argb_str("FF000000").to_owned();
+    sheet.style_mut("A1").font_mut().set_color(rgb.clone());
+    sheet.style_mut("A2").borders_mut().left_mut().set_border_style(Border::BORDER_THIN);
+    sheet.style_mut("A2").borders_mut().left_mut().set_color(rgb.clone());
+    sheet.style_mut("A3").fill_mut().pattern_fill_mut().set_foreground_color(rgb);
+    sheet.style_mut("A4").font_mut().set_color(Color::default().set_automatic(true).to_owned());
+
+    let xlsx = workbook_to_xlsx_bytes(&book);
+    let styles_xml = zip_entry_to_string(&xlsx, "xl/styles.xml");
+    // Inspect the ZIP projection: RGB must not be rewritten as indexed.
+    assert_eq!(styles_xml.matches(r#"rgb="FF000000""#).count(), 3);
+    assert!(styles_xml.contains(r#"<color auto="1"/>"#));
+}
+
+#[test]
 fn formula_cached_values_are_written_with_typed_xml_and_roundtrip() {
     let mut book = new_file();
     let sheet = book.sheet_mut(0).unwrap();
