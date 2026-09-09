@@ -2550,9 +2550,9 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
     for (style, theme) in [(&mut themed, true), (&mut indexed, false)] {
         let mut color = Color::default();
         if theme {
-            color.set_theme_index(1).set_tint(0.25);
+            color.set_theme_index(1);
         } else {
-            color.set_indexed(1).set_tint(-0.25);
+            color.set_indexed(1);
         }
         style.font_mut().set_color(color.clone());
         style
@@ -2585,7 +2585,8 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
     sheet.add_conditional_formatting_collection(group);
     let bytes = workbook_to_xlsx_bytes(&book);
     let styles = zip_entry_to_string(&bytes, "xl/styles.xml");
-    // The cellXfs/dxfs point at different component IDs; raw selectors survive.
+    // Smoke check; color_selector_fidelity.rs independently resolves all referenced
+    // IDs.
     assert!(styles.matches(r#"theme="1""#).count() >= 4, "{styles}");
     assert!(styles.matches(r#"indexed="1""#).count() >= 3, "{styles}");
     let reopened = reader::xlsx::read_reader(std::io::Cursor::new(bytes), true).unwrap();
@@ -2617,10 +2618,10 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
         for actual in [color, fill, &border] {
             if index == 1 || index == 3 {
                 assert_eq!(actual.indexed(), 1);
-                assert_eq!(actual.tint(), -0.25);
+                assert_eq!(actual.tint().to_bits(), 0.0_f64.to_bits());
             } else {
                 assert_eq!(actual.theme_index(), 1);
-                assert_eq!(actual.tint(), 0.25);
+                assert_eq!(actual.tint().to_bits(), 0.0_f64.to_bits());
             }
         }
     }

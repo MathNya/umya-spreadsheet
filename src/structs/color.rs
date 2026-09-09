@@ -588,6 +588,33 @@ mod tests {
     }
 
     #[test]
+    fn selecting_a_color_clears_the_previous_selector() {
+        fn check(color: &Color, expected: &str) {
+            let mut writer = Writer::new(Cursor::new(Vec::new()));
+            color.write_to_color(&mut writer);
+            assert_eq!(
+                String::from_utf8(writer.into_inner().into_inner()).unwrap(),
+                expected
+            );
+        }
+        let mut color = Color::default();
+        color.set_automatic(true).set_indexed(1);
+        check(&color, r#"<color indexed="1"/>"#);
+        color.set_automatic(false).set_theme_index(2);
+        check(&color, r#"<color theme="2"/>"#);
+        color
+            .set_automatic(true)
+            .set_argb(Color::hex_to_argb8("FFFF0000").unwrap());
+        check(&color, r#"<color rgb="FFFF0000"/>"#);
+        color.set_automatic(true).set_argb_str("FFFFFFFF");
+        check(&color, r#"<color rgb="FFFFFFFF"/>"#);
+        color.set_automatic(false);
+        check(&color, r#"<color auto="0"/>"#);
+        color.set_automatic(true);
+        check(&color, r#"<color auto="1"/>"#);
+    }
+
+    #[test]
     fn parsing_resets_tint_and_handles_expanded_automatic_colours() {
         let mut color = Color::default();
         let mut reader = Reader::from_str(r#"<color rgb="FFC00000" tint="0.5"/>"#);
@@ -597,7 +624,7 @@ mod tests {
             _ => unreachable!(),
         };
         color.set_attributes(&mut reader, &first, true);
-        assert_eq!(color.tint(), 0.5);
+        assert_eq!(color.tint().to_bits(), 0.5_f64.to_bits());
 
         let mut reader = Reader::from_str(r#"<color auto="false"></color>"#);
         let second = match reader.read_event_into(&mut buf).unwrap() {
@@ -606,10 +633,13 @@ mod tests {
         };
         color.set_attributes(&mut reader, &second, false);
         assert!(!color.automatic());
-        assert_eq!(color.tint(), 0.0);
+        assert_eq!(color.tint().to_bits(), 0.0_f64.to_bits());
 
         let mut writer = Writer::new(Cursor::new(Vec::new()));
         color.write_to_color(&mut writer);
-        assert_eq!(String::from_utf8(writer.into_inner().into_inner()).unwrap(), r#"<color auto="0"/>"#);
+        assert_eq!(
+            String::from_utf8(writer.into_inner().into_inner()).unwrap(),
+            r#"<color auto="0"/>"#
+        );
     }
 }
