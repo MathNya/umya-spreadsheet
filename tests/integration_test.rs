@@ -2585,8 +2585,8 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
     sheet.add_conditional_formatting_collection(group);
     let bytes = workbook_to_xlsx_bytes(&book);
     let styles = zip_entry_to_string(&bytes, "xl/styles.xml");
-    // Smoke check; color_selector_fidelity.rs independently resolves all referenced
-    // IDs.
+    // Smoke check; color_selector_fidelity.rs independently resolves all
+    // referenced IDs.
     assert!(styles.matches(r#"theme="1""#).count() >= 4, "{styles}");
     assert!(styles.matches(r#"indexed="1""#).count() >= 3, "{styles}");
     let reopened = reader::xlsx::read_reader(std::io::Cursor::new(bytes), true).unwrap();

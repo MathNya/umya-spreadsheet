@@ -324,8 +324,9 @@ fn check(colors: Vec<Color>, wants: Vec<Attributes>) {
 }
 #[test]
 fn referenced_selector_and_tint_identities_survive_roundtrip() {
-    // Equal tint is essential: theme=1 and indexed=1 previously hashed identically.
-    // Themes 1/2 also exposed the border hash's omitted theme identity.
+    // Equal tint is essential: theme=1 and indexed=1 previously hashed
+    // identically. Themes 1/2 also exposed the border hash's omitted theme
+    // identity.
     let mut colors = vec![];
     let mut wants = vec![];
     for index in [1, 2] {
