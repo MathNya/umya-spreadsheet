@@ -2550,9 +2550,9 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
     for (style, theme) in [(&mut themed, true), (&mut indexed, false)] {
         let mut color = Color::default();
         if theme {
-            color.set_theme_index(1);
+            color.set_theme_index(1).set_tint(0.25);
         } else {
-            color.set_indexed(1);
+            color.set_indexed(1).set_tint(-0.25);
         }
         style.font_mut().set_color(color.clone());
         style
@@ -2590,42 +2590,150 @@ fn theme_and_indexed_styles_do_not_alias_in_cell_row_column_or_dxf() {
     assert!(styles.matches(r#"indexed="1""#).count() >= 3, "{styles}");
     let reopened = reader::xlsx::read_reader(std::io::Cursor::new(bytes), true).unwrap();
     let sheet = reopened.sheet(0).unwrap();
-    assert_eq!(sheet.style("A1").font().unwrap().color().theme_index(), 1);
-    assert_eq!(sheet.style("B1").font().unwrap().color().indexed(), 1);
-    assert_eq!(
-        sheet
-            .row_dimension(2)
-            .unwrap()
-            .style()
-            .font()
-            .unwrap()
-            .color()
-            .theme_index(),
-        1
-    );
-    assert_eq!(
+    let consumers = [
+        sheet.style("A1"),
+        sheet.style("B1"),
+        sheet.row_dimension(2).unwrap().style(),
         sheet
             .column_dimensions()
             .iter()
             .find(|c| c.col_num() == 3)
             .unwrap()
-            .style()
-            .font()
-            .unwrap()
-            .color()
-            .indexed(),
-        1
-    );
-    assert_eq!(
+            .style(),
         sheet.conditional_formatting_collection()[0].conditional_collection()[0]
             .style()
+            .unwrap(),
+    ];
+    for (index, style) in consumers.into_iter().enumerate() {
+        let color = style.font().unwrap().color();
+        let fill = style
+            .fill()
             .unwrap()
-            .font()
+            .pattern_fill()
             .unwrap()
-            .color()
-            .theme_index(),
-        1
-    );
+            .foreground_color()
+            .unwrap();
+        let border = style.borders().unwrap().left().color().unwrap();
+        for actual in [color, fill, &border] {
+            if index == 1 || index == 3 {
+                assert_eq!(actual.indexed(), 1);
+                assert_eq!(actual.tint(), -0.25);
+            } else {
+                assert_eq!(actual.theme_index(), 1);
+                assert_eq!(actual.tint(), 0.25);
+            }
+        }
+    }
+}
+
+#[test]
+fn expanded_font_and_fill_colours_survive_all_style_consumers() {
+    let mut book = new_file();
+    let mut style = Style::default();
+    let mut color = Color::default();
+    color.set_theme_index(1).set_tint(0.25);
+    style.font_mut().set_color(color.clone());
+    style
+        .fill_mut()
+        .pattern_fill_mut()
+        .set_foreground_color(color.clone());
+    style
+        .fill_mut()
+        .pattern_fill_mut()
+        .set_background_color(Color::default().set_indexed(1).set_tint(-0.25).to_owned());
+    style
+        .borders_mut()
+        .left_mut()
+        .set_border_style(Border::BORDER_THIN);
+    style.borders_mut().left_mut().set_color(color.clone());
+    let sheet = book.sheet_mut(0).unwrap();
+    sheet.cell_mut("A1").set_style(style.clone());
+    sheet.row_dimension_mut(2).set_style(style.clone());
+    sheet
+        .column_dimension_by_number_mut(3)
+        .set_style(style.clone());
+    let mut rule = ConditionalFormattingRule::default();
+    rule.set_type(ConditionalFormatValues::Expression)
+        .set_priority(1)
+        .set_style(style);
+    let mut formula = Formula::default();
+    formula.set_string_value("TRUE()");
+    rule.set_formula(formula);
+    let mut group = ConditionalFormatting::default();
+    group.sequence_of_references_mut().set_sqref("A1:B2");
+    group.add_conditional_collection(rule);
+    sheet.add_conditional_formatting_collection(group);
+    let input = workbook_to_xlsx_bytes(&book);
+    let mut archive = zip::ZipArchive::new(std::io::Cursor::new(input)).unwrap();
+    let mut out = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+    for index in 0..archive.len() {
+        let mut entry = archive.by_index(index).unwrap();
+        let mut data = Vec::new();
+        entry.read_to_end(&mut data).unwrap();
+        if entry.name() == "xl/styles.xml" {
+            data = String::from_utf8(data)
+                .unwrap()
+                .replace(
+                    r#"<color theme="1" tint="0.25"/>"#,
+                    r#"<color theme="1" tint="0.25"></color>"#,
+                )
+                .replace(
+                    r#"<fgColor theme="1" tint="0.25"/>"#,
+                    r#"<fgColor theme="1" tint="0.25"></fgColor>"#,
+                )
+                .replace(
+                    r#"<bgColor indexed="1" tint="-0.25"/>"#,
+                    r#"<bgColor indexed="1" tint="-0.25"></bgColor>"#,
+                )
+                .into_bytes();
+        }
+        out.start_file(entry.name(), zip::write::SimpleFileOptions::default())
+            .unwrap();
+        std::io::Write::write_all(&mut out, &data).unwrap();
+    }
+    let reopened = reader::xlsx::read_reader(
+        std::io::Cursor::new(out.finish().unwrap().into_inner()),
+        true,
+    )
+    .unwrap();
+    let sheet = reopened.sheet(0).unwrap();
+    for style in [
+        sheet.style("A1"),
+        sheet.row_dimension(2).unwrap().style(),
+        sheet
+            .column_dimensions()
+            .iter()
+            .find(|c| c.col_num() == 3)
+            .unwrap()
+            .style(),
+        sheet.conditional_formatting_collection()[0].conditional_collection()[0]
+            .style()
+            .unwrap(),
+    ] {
+        assert_eq!(style.font().unwrap().color().theme_index(), 1);
+        assert_eq!(
+            style
+                .fill()
+                .unwrap()
+                .pattern_fill()
+                .unwrap()
+                .foreground_color()
+                .unwrap()
+                .theme_index(),
+            1
+        );
+        assert_eq!(
+            style
+                .fill()
+                .unwrap()
+                .pattern_fill()
+                .unwrap()
+                .background_color()
+                .unwrap()
+                .indexed(),
+            1
+        );
+    }
 }
 
 #[test]

@@ -202,6 +202,21 @@ impl PatternFill {
                     _ => (),
                 }
             },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                    b"fgColor" => {
+                        let mut obj = Color::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_foreground_color(obj);
+                    }
+                    b"bgColor" => {
+                        let mut obj = Color::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_background_color(obj);
+                    }
+                    _ => (),
+                }
+            },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"patternFill" {
                     return
