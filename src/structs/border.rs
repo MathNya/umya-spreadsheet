@@ -110,7 +110,9 @@ impl Border {
         crate::helper::utils::md5_hash(format!(
             "{}{}",
             self.style.value_string(),
-            self.color().unwrap_or_default().argb_str()
+            self.color
+                .as_ref()
+                .map_or(String::new(), |color| color.hash_code())
         ))
     }
 
@@ -141,7 +143,16 @@ impl Border {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"color" {
-                    self.color.clone().unwrap_or_default().set_attributes(reader, e, true);
+                    let mut color = self.color.take().map(|color| *color).unwrap_or_default();
+                    color.set_attributes(reader, e, true);
+                    self.color = Some(Box::new(color));
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"color" {
+                    let mut color = self.color.take().map(|color| *color).unwrap_or_default();
+                    color.set_attributes(reader, e, false);
+                    self.color = Some(Box::new(color));
                 }
             },
             Event::End(ref e) => {

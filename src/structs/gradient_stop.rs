@@ -113,6 +113,13 @@ impl GradientStop {
                     self.set_color(obj);
                 }
             },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"color" {
+                    let mut obj = Color::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_color(obj);
+                }
+            },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"stop" {
                     return

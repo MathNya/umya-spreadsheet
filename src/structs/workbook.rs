@@ -524,10 +524,19 @@ impl Workbook {
     /// deserialize by all worksheet.
     #[inline]
     pub fn read_sheet_collection(&mut self) -> &mut Self {
+        if self
+            .work_sheet_collection
+            .iter()
+            .all(Worksheet::is_deserialized)
+        {
+            return self;
+        }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+            if !worksheet.is_deserialized() {
+                raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+            }
         }
         self
     }
@@ -535,6 +544,10 @@ impl Workbook {
     /// deserialize a worksheet.
     #[inline]
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
+        let is_deserialized = self.work_sheet_collection.get(index).unwrap().is_deserialized();
+        if is_deserialized {
+            return self;
+        }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
@@ -617,17 +630,20 @@ impl Workbook {
     /// * `index` - sheet index
     /// # Return value
     /// * `Result<&mut Worksheet, XlsxError>`.
-    #[allow(clippy::manual_inspect)]
     pub fn sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, XlsxError> {
+        let is_deserialized = self
+            .work_sheet_collection
+            .get(index)
+            .map(Worksheet::is_deserialized)
+            .ok_or(XlsxError::NotFound())?;
+        if is_deserialized {
+            return Ok(self.work_sheet_collection.get_mut(index).unwrap());
+        }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
-        self.work_sheet_collection
-            .get_mut(index)
-            .map(|v| {
-                raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
-                v
-            })
-            .ok_or(XlsxError::NotFound())
+        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
+        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+        Ok(worksheet)
     }
 
     #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]

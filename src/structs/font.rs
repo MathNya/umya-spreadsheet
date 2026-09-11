@@ -676,6 +676,11 @@ impl Font {
                     }
                     _ => (),
                 },
+                Ok(Event::Start(ref e)) => {
+                    if e.name().into_inner() == b"color" {
+                        self.color.set_attributes(reader, e, false);
+                    }
+                }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"font" | b"rPr" => return,
                     _ => (),
