@@ -49,6 +49,7 @@ pub(crate) mod vml_drawing;
 mod workbook;
 mod workbook_rels;
 pub(crate) mod worksheet;
+mod worksheet_namespace;
 
 /// read spreadsheet from arbitrary reader.
 /// # Arguments

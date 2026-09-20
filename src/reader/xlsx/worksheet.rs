@@ -84,7 +84,9 @@ fn read_from_reader<R: io::BufRead>(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Result<(), XlsxError> {
-    let mut reader = Reader::from_reader(data);
+    let mut reader = Reader::from_reader(
+        super::worksheet_namespace::WorksheetNamespaceReader::new(data),
+    );
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
     xml_read_loop!(
@@ -302,7 +304,9 @@ fn read_lite_from_reader<R: io::BufRead>(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Cells {
-    let mut reader = Reader::from_reader(data);
+    let mut reader = Reader::from_reader(
+        super::worksheet_namespace::WorksheetNamespaceReader::new(data),
+    );
     reader.config_mut().trim_text(true);
 
     let mut cells = Cells::default();
@@ -380,7 +384,9 @@ fn read_cells_stream_from_reader<R, F>(
     R: io::BufRead,
     F: FnMut(&Cell),
 {
-    let mut reader = Reader::from_reader(data);
+    let mut reader = Reader::from_reader(
+        super::worksheet_namespace::WorksheetNamespaceReader::new(data),
+    );
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
 
