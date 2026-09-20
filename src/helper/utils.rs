@@ -16,9 +16,19 @@ pub(crate) fn md5_hash(input: impl AsRef<[u8]>) -> String {
 
 pub(crate) fn unescape_xml_text(e: &quick_xml::events::BytesText<'_>) -> String {
     let decoded = e.decode().unwrap();
-    quick_xml::escape::unescape(decoded.as_ref())
-        .unwrap()
-        .into_owned()
+    let mut remaining = decoded.as_ref();
+    let mut output = String::with_capacity(remaining.len());
+    // read_text_into retains XML markup. CDATA contains literal characters,
+    // including ampersands that must neither be decoded nor rejected.
+    while let Some(start) = remaining.find("<![CDATA[") {
+        output.push_str(&quick_xml::escape::unescape(&remaining[..start]).unwrap());
+        let content = &remaining[start + 9..];
+        let end = content.find("]]>").expect("unterminated CDATA section");
+        output.push_str(&content[..end]);
+        remaining = &content[end + 3..];
+    }
+    output.push_str(&quick_xml::escape::unescape(remaining).unwrap());
+    output
 }
 
 /// A macro that implements the `From` trait for converting from one error type
