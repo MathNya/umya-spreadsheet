@@ -55,6 +55,11 @@ let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 ```rust
 let mut book = umya_spreadsheet::new_file();
 ```
+### Print margins
+`PageMargins::has_left()` (and `has_right`, `has_top`, `has_bottom`, `has_header`,
+`has_footer`) distinguishes an unset margin from an explicitly supplied zero.
+Writing preserves explicit values and uses Excel defaults only for unset margins.
+
 ### Write file
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");

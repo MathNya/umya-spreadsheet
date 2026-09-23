@@ -35,6 +35,13 @@ impl PageMargins {
         self.left()
     }
 
+    /// Whether the left margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_left(&self) -> bool {
+        self.left.has_value()
+    }
+
     #[inline]
     pub fn set_left(&mut self, value: f64) -> &mut Self {
         self.left.set_value(value);
@@ -52,6 +59,13 @@ impl PageMargins {
     #[deprecated(since = "3.0.0", note = "Use right()")]
     pub fn get_right(&self) -> f64 {
         self.right()
+    }
+
+    /// Whether the right margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_right(&self) -> bool {
+        self.right.has_value()
     }
 
     #[inline]
@@ -73,6 +87,13 @@ impl PageMargins {
         self.top()
     }
 
+    /// Whether the top margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_top(&self) -> bool {
+        self.top.has_value()
+    }
+
     #[inline]
     pub fn set_top(&mut self, value: f64) -> &mut Self {
         self.top.set_value(value);
@@ -90,6 +111,13 @@ impl PageMargins {
     #[deprecated(since = "3.0.0", note = "Use bottom()")]
     pub fn get_bottom(&self) -> f64 {
         self.bottom()
+    }
+
+    /// Whether the bottom margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_bottom(&self) -> bool {
+        self.bottom.has_value()
     }
 
     #[inline]
@@ -111,6 +139,13 @@ impl PageMargins {
         self.header()
     }
 
+    /// Whether the header margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_header(&self) -> bool {
+        self.header.has_value()
+    }
+
     #[inline]
     pub fn set_header(&mut self, value: f64) -> &mut Self {
         self.header.set_value(value);
@@ -128,6 +163,13 @@ impl PageMargins {
     #[deprecated(since = "3.0.0", note = "Use footer()")]
     pub fn get_footer(&self) -> f64 {
         self.footer()
+    }
+
+    /// Whether the footer margin was explicitly set, including zero.
+    #[inline]
+    #[must_use]
+    pub fn has_footer(&self) -> bool {
+        self.footer.has_value()
     }
 
     #[inline]
@@ -155,29 +197,20 @@ impl PageMargins {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // pageMargins
-        // If all margins are zero (common for minimal template sheets),
-        // use Excel-compatible defaults to avoid "Line 2, column 0" errors.
-        let is_all_zero = self.left.value() == 0.0
-            && self.right.value() == 0.0
-            && self.top.value() == 0.0
-            && self.bottom.value() == 0.0
-            && self.header.value() == 0.0
-            && self.footer.value() == 0.0;
-
-        let (left, right, top, bottom, header, footer) = if is_all_zero {
-            (
-                "0.7".to_string(),  "0.7".to_string(),
-                "0.75".to_string(), "0.75".to_string(),
-                "0.3".to_string(),  "0.3".to_string(),
-            )
-        } else {
-            (
-                self.left.value_string(),   self.right.value_string(),
-                self.top.value_string(),    self.bottom.value_string(),
-                self.header.value_string(), self.footer.value_string(),
-            )
+        // Numeric zero is a valid explicit margin, not an absence marker.
+        let value_or_default = |value: &DoubleValue, default: &str| -> String {
+            if value.has_value() {
+                value.value_string()
+            } else {
+                default.to_string()
+            }
         };
+        let left = value_or_default(&self.left, "0.7");
+        let right = value_or_default(&self.right, "0.7");
+        let top = value_or_default(&self.top, "0.75");
+        let bottom = value_or_default(&self.bottom, "0.75");
+        let header = value_or_default(&self.header, "0.3");
+        let footer = value_or_default(&self.footer, "0.3");
 
         let attributes: crate::structs::AttrCollection = vec![
             ("left", &left).into(),
