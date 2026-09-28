@@ -271,12 +271,7 @@ fn write_worksheet_features(
     }
 
     if let Some(v) = worksheet.auto_filter() {
-        write_start_tag(
-            writer,
-            "autoFilter",
-            vec![("ref", &v.range().range()).into()],
-            true,
-        );
+        v.write_to(writer);
     }
 
     worksheet.merge_cells_crate().write_to(writer);

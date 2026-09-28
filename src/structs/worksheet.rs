@@ -1035,6 +1035,11 @@ impl Worksheet {
         self.auto_filter = Some(auto_filter);
     }
 
+    #[inline]
+    pub(crate) fn set_auto_filter_obj(&mut self, value: AutoFilter) {
+        self.auto_filter = Some(value);
+    }
+
     // Remove Auto Filter.
     #[inline]
     pub fn remove_auto_filter(&mut self) {

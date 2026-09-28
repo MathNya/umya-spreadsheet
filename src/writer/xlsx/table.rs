@@ -68,7 +68,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(&mut writer, "table", attributes, false);
 
         // autoFilter
-        write_start_tag(&mut writer, "autoFilter", vec![("ref", &area).into()], true);
+        table.auto_filter().write_to(&mut writer);
 
         // tableColumns
         let cols = table.columns();

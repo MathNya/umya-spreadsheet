@@ -20,6 +20,7 @@ use super::{
     },
 };
 use crate::{
+    AutoFilter,
     helper::formula::FormulaToken,
     structs::{
         Cell,
@@ -134,7 +135,9 @@ fn read_from_reader<R: io::BufRead>(
                 worksheet.set_row_dimension(obj);
             }
             b"autoFilter" => {
-                worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
+                let mut obj = AutoFilter::default();
+                obj.set_attributes(&mut reader, e, false);
+                worksheet.set_auto_filter_obj(obj);
             }
             b"cols" => {
                 let mut obj = Columns::default();
@@ -232,7 +235,9 @@ fn read_from_reader<R: io::BufRead>(
                 worksheet.set_row_dimension(obj);
             }
             b"autoFilter" => {
-                worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
+                let mut obj = AutoFilter::default();
+                obj.set_attributes(&mut reader, e, true);
+                worksheet.set_auto_filter_obj(obj);
             }
             b"pageMargins" => {
                 worksheet

@@ -105,6 +105,9 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                         )));
                     }
                 }
+                b"autoFilter" => {
+                    table.auto_filter_mut().set_attributes(&mut reader, e, true);
+                }
                 _ => (),
             },
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
@@ -160,6 +163,11 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                             _ => {}
                         }
                     }
+                }
+                b"autoFilter" => {
+                    table
+                        .auto_filter_mut()
+                        .set_attributes(&mut reader, e, false);
                 }
                 _ => (),
             },

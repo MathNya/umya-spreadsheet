@@ -3263,3 +3263,11 @@ fn issue_343() {
     let out = std::path::Path::new("./tests/result_files/issue_343.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
 }
+
+#[test]
+fn issue_363() {
+    let path = std::path::Path::new("./tests/test_files/issue_363.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let out = std::path::Path::new("./tests/result_files/issue_363.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&book, out).unwrap();
+}

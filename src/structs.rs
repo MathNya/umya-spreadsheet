@@ -100,6 +100,7 @@ pub_mod_use![
     pub error,
     pub field,
     pub fill,
+    pub filter_column,
     pub font_char_set,
     pub font_family_numbering,
     pub font_name,
