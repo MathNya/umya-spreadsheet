@@ -284,11 +284,12 @@ impl Comment {
         let coordinate = get_attribute(e, b"ref").unwrap();
         self.coordinate_mut().set_coordinate(coordinate);
 
-        let author_id = get_attribute(e, b"authorId")
-            .unwrap()
-            .parse::<usize>()
-            .unwrap();
-        let author = authors.get(author_id).unwrap();
+        // A missing or out-of-range authorId leaves the comment without an
+        // author instead of aborting the read.
+        let author = get_attribute(e, b"authorId")
+            .and_then(|v| v.parse::<usize>().ok())
+            .and_then(|author_id| authors.get(author_id))
+            .map_or("", String::as_str);
         self.set_author(author);
 
         set_string_from_xml!(self, e, id, "id");

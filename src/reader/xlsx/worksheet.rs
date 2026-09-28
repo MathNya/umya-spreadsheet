@@ -470,8 +470,13 @@ fn get_hyperlink(
         hyperlink.set_tooltip(escape::unescape(&v).unwrap().to_string());
     }
     if let Some(v) = get_attribute(e, b"r:id") {
-        let relationship = raw_relationships.unwrap().relationship_by_rid(&v);
-        hyperlink.set_url(escape::unescape(relationship.target()).unwrap().to_string());
+        // A dangling r:id (no relationship, or no relationships part at all)
+        // leaves the hyperlink without a URL instead of aborting the read.
+        if let Some(relationship) =
+            raw_relationships.and_then(|rels| rels.find_relationship_by_rid(&v))
+        {
+            hyperlink.set_url(escape::unescape(relationship.target()).unwrap().to_string());
+        }
     }
     (coordition, hyperlink)
 }
