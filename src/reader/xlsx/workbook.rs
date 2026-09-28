@@ -41,6 +41,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     obj.set_attributes(&mut reader, e);
                     wb.set_workbook_view(obj);
                 }
+                b"workbookPr" => {
+                    if let Some(v) = get_attribute(e, b"date1904") {
+                        wb.set_date1904(v == "1" || v == "true");
+                    }
+                }
                 b"workbookProtection" => {
                     let mut obj = WorkbookProtection::default();
                     obj.set_attributes(&mut reader, e);
