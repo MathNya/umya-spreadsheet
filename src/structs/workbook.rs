@@ -1011,8 +1011,10 @@ impl Workbook {
 
     /// Whether the workbook uses the 1904 date system (`workbookPr/@date1904`).
     ///
-    /// In the 1904 system, serial 0 is 1904-01-01 instead of 1900-01-00, so the
-    /// same serial is a date 1,462 days later than in the default 1900 system.
+    /// In the 1904 system, serial 0 is 1904-01-01 and serial 1 is 1904-01-02;
+    /// in the default 1900 system, serial 1 is 1900-01-01. From 1900-03-01 on
+    /// (past Excel's fictitious 1900-02-29), the same serial is a date 1,462
+    /// days later in the 1904 system than in the 1900 system.
     #[inline]
     #[must_use]
     pub fn date1904(&self) -> bool {
