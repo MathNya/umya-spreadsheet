@@ -75,9 +75,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     for defined_name in &defined_names {
         if defined_name.has_local_sheet_id() {
             let local_sheet_id = defined_name.local_sheet_id() as usize;
-            wb.sheet_mut(local_sheet_id)
-                .unwrap()
-                .add_defined_names(defined_name.clone());
+            // A name scoped to a sheet that does not exist is dropped (Excel
+            // removes it when it repairs the file) instead of aborting the
+            // read.
+            if let Ok(sheet) = wb.sheet_mut(local_sheet_id) {
+                sheet.add_defined_names(defined_name.clone());
+            }
         } else {
             if let Some(v) = defined_name.address_obj().first() {
                 if let Ok(s) = wb.sheet_by_name_mut(v.sheet_name()) {
