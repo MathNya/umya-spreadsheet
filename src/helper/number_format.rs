@@ -126,8 +126,10 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
     if get_date_time_regex().is_match(&format).unwrap_or(false) {
         // datetime format
         value = date_formater::format_as_date(reparsed, &format);
-    } else if format.starts_with('"') && format.ends_with('"') {
-        let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
+    } else if let Some(conv_format) = (format.starts_with('"') && format.ends_with('"'))
+        .then(|| format.trim_matches('"').parse::<f64>().ok())
+        .flatten()
+    {
         value = Cow::Owned(conv_format.to_string());
     } else if get_percent_dollar_regex()
         .is_match(&format)
@@ -487,4 +489,15 @@ fn test_to_formatted_string_zero_section_with_only_escaped_literals() {
         to_formatted_string("0", r#""TRUE";"TRUE";"FALSE""#)
     );
     assert_eq!("", to_formatted_string("0", "0;-0;"));
+}
+
+#[test]
+fn test_to_formatted_string_quoted_text_around_a_placeholder() {
+    // Starts and ends with a quote but is not a quoted number: this used to
+    // panic on `parse::<f64>().unwrap()`.
+    assert_eq!("Qty 5 pcs", to_formatted_string("5", r#""Qty "0" pcs""#));
+    assert_eq!(
+        "Total: 1,234.50 EUR",
+        to_formatted_string("1234.5", r##""Total: "#,##0.00" EUR""##)
+    );
 }
