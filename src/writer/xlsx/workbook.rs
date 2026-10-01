@@ -83,6 +83,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // workbookPr
     let mut attributes: crate::structs::AttrCollection = Vec::new();
+    if wb.date1904() {
+        attributes.push(("date1904", "1").into());
+    }
     attributes.push(("filterPrivacy", "1").into());
     // attributes.push(("defaultThemeVersion", "124226").into());
     if wb.has_macros() {

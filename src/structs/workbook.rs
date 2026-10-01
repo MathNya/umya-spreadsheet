@@ -48,6 +48,7 @@ pub struct Workbook {
     pivot_caches:          Vec<(Box<str>, Box<str>, Box<str>)>,
     workbook_protection:   Option<Box<WorkbookProtection>>,
     defined_names:         Vec<DefinedName>,
+    date1904:              bool,
 }
 
 impl Workbook {
@@ -1005,6 +1006,28 @@ impl Workbook {
     #[inline]
     pub fn remove_workbook_protection(&mut self) -> &mut Self {
         self.workbook_protection = None;
+        self
+    }
+
+    /// Whether the workbook uses the 1904 date system (`workbookPr/@date1904`).
+    ///
+    /// In the 1904 system, serial 0 is 1904-01-01 and serial 1 is 1904-01-02;
+    /// in the default 1900 system, serial 1 is 1900-01-01. From 1900-03-01 on
+    /// (past Excel's fictitious 1900-02-29), the same serial is a date 1,462
+    /// days later in the 1904 system than in the 1900 system.
+    #[inline]
+    #[must_use]
+    pub fn date1904(&self) -> bool {
+        self.date1904
+    }
+
+    /// Set whether the workbook uses the 1904 date system.
+    ///
+    /// This only changes how serial numbers are interpreted as dates; the
+    /// stored cell values are not converted.
+    #[inline]
+    pub fn set_date1904(&mut self, value: bool) -> &mut Self {
+        self.date1904 = value;
         self
     }
 
