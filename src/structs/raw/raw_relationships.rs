@@ -95,10 +95,14 @@ impl RawRelationships {
     }
 
     pub(crate) fn relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
+        self.find_relationship_by_rid(r_id)
+            .unwrap_or_else(|| panic!("Not found relationship with ID: {r_id}."))
+    }
+
+    pub(crate) fn find_relationship_by_rid(&self, r_id: &str) -> Option<&RawRelationship> {
         self.relationship_list()
             .iter()
             .find(|relationship| relationship.id() == r_id)
-            .unwrap_or_else(|| panic!("Not found relationship with ID: {r_id}."))
     }
 
     #[deprecated(since = "3.0.0", note = "Use relationship_by_rid()")]

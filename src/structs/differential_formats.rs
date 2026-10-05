@@ -58,8 +58,14 @@ impl DifferentialFormats {
 
     #[inline]
     pub(crate) fn style(&self, id: usize) -> Style {
-        let differential_format = self.differential_format.get(id).unwrap().clone();
-        differential_format.style()
+        self.find_style(id)
+            .unwrap_or_else(|| panic!("Not found differential format with ID: {id}."))
+    }
+
+    pub(crate) fn find_style(&self, id: usize) -> Option<Style> {
+        self.differential_format
+            .get(id)
+            .map(|differential_format| differential_format.clone().style())
     }
 
     #[inline]

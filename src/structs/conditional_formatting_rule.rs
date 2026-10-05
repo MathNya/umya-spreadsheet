@@ -416,8 +416,12 @@ impl ConditionalFormattingRule {
         set_string_from_xml!(self, e, operator, "operator");
 
         if let Some(v) = get_attribute(e, b"dxfId") {
-            if let Ok(dxf_id) = v.parse::<usize>() {
-                let style = differential_formats.style(dxf_id);
+            // A dxfId past the stylesheet's differential formats is ignored.
+            if let Some(style) = v
+                .parse::<usize>()
+                .ok()
+                .and_then(|dxf_id| differential_formats.find_style(dxf_id))
+            {
                 self.set_style(style);
             }
         }
