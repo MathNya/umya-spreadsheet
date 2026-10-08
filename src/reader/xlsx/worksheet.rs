@@ -208,6 +208,11 @@ fn read_from_reader<R: io::BufRead>(
                     .tab_color_mut()
                     .set_attributes(&mut reader, e, true);
             }
+            b"pageSetUpPr" => {
+                if let Some(v) = get_attribute(e, b"fitToPage") {
+                    worksheet.page_setup_mut().set_fit_to_page_str(&v);
+                }
+            }
             b"sheetFormatPr" => {
                 worksheet
                     .sheet_format_properties_mut()
