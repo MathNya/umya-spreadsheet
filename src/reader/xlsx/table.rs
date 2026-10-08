@@ -87,23 +87,13 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                             _ => {}
                         }
                     }
-                    if name.is_empty() {
-                        table.set_style_info(Some(TableStyleInfo::new(
-                            &name,
-                            show_first_col,
-                            show_last_col,
-                            show_row_stripes,
-                            show_col_stripes,
-                        )));
-                    } else {
-                        table.set_style_info(Some(TableStyleInfo::new(
-                            &name,
-                            ShowColumn::Hide,
-                            ShowColumn::Hide,
-                            ShowStripes::Hide,
-                            ShowStripes::Hide,
-                        )));
-                    }
+                    table.set_style_info(Some(TableStyleInfo::new(
+                        &name,
+                        show_first_col,
+                        show_last_col,
+                        show_row_stripes,
+                        show_col_stripes,
+                    )));
                 }
                 b"autoFilter" => {
                     table.auto_filter_mut().set_attributes(&mut reader, e, true);
