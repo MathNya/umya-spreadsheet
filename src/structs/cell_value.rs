@@ -358,11 +358,10 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
-            "NAN" => CellRawValue::String(value.into()),
             _ => {
                 if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
                     CellRawValue::Error(error_type)
-                } else if let Ok(f) = value.parse::<f64>() {
+                } else if let Some(f) = value.parse::<f64>().ok().filter(|f| f.is_finite()) {
                     CellRawValue::Numeric(f)
                 } else {
                     CellRawValue::String(value.into())
