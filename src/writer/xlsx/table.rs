@@ -68,7 +68,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(&mut writer, "table", attributes, false);
 
         // autoFilter
-        table.auto_filter().write_to(&mut writer);
+        if !table.auto_filter().range().range().is_empty() {
+            table.auto_filter().write_to(&mut writer);
+        }
 
         // tableColumns
         let cols = table.columns();
