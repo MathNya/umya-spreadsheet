@@ -12,6 +12,7 @@ use crate::{
         set_string_from_xml,
     },
     structs::{
+        BooleanValue,
         EnumValue,
         OrientationValues,
         UInt32Value,
@@ -27,6 +28,7 @@ pub struct PageSetup {
     scale:          UInt32Value,
     fit_to_height:  UInt32Value,
     fit_to_width:   UInt32Value,
+    fit_to_page:    BooleanValue,
     horizontal_dpi: UInt32Value,
     vertical_dpi:   UInt32Value,
     object_data:    Option<Vec<u8>>,
@@ -125,6 +127,37 @@ impl PageSetup {
     #[inline]
     pub fn set_fit_to_width(&mut self, value: u32) -> &mut Self {
         self.fit_to_width.set_value(value);
+        self
+    }
+
+    /// Whether the sheet is scaled to `fit_to_width` x `fit_to_height` pages
+    /// instead of using `scale`. Stored as `<pageSetUpPr fitToPage="1"/>`
+    /// in the sheet properties.
+    #[inline]
+    #[must_use]
+    pub fn fit_to_page(&self) -> bool {
+        self.fit_to_page.value()
+    }
+
+    #[inline]
+    pub fn set_fit_to_page(&mut self, value: bool) -> &mut Self {
+        self.fit_to_page.set_value(value);
+        self
+    }
+
+    #[inline]
+    pub(crate) fn has_fit_to_page(&self) -> bool {
+        self.fit_to_page.has_value()
+    }
+
+    #[inline]
+    pub(crate) fn fit_to_page_str(&self) -> &str {
+        self.fit_to_page.value_string()
+    }
+
+    #[inline]
+    pub(crate) fn set_fit_to_page_str(&mut self, value: &str) -> &mut Self {
+        self.fit_to_page.set_value_string(value);
         self
     }
 

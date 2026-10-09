@@ -134,18 +134,27 @@ fn write_worksheet_properties(
         attributes.push(("codeName", code_name).into());
     }
 
-    match worksheet.tab_color() {
-        Some(v) => {
-            write_start_tag(writer, "sheetPr", attributes, false);
-            v.write_to_tab_color(writer);
-            write_end_tag(writer, "sheetPr");
+    let page_setup = worksheet.page_setup();
+    if worksheet.tab_color().is_none() && !page_setup.has_fit_to_page() {
+        if !attributes.is_empty() {
+            write_start_tag(writer, "sheetPr", attributes, true);
         }
-        None => {
-            if !attributes.is_empty() {
-                write_start_tag(writer, "sheetPr", attributes, true);
-            }
-        }
+        return;
     }
+
+    write_start_tag(writer, "sheetPr", attributes, false);
+    if let Some(v) = worksheet.tab_color() {
+        v.write_to_tab_color(writer);
+    }
+    if page_setup.has_fit_to_page() {
+        write_start_tag(
+            writer,
+            "pageSetUpPr",
+            vec![("fitToPage", page_setup.fit_to_page_str()).into()],
+            true,
+        );
+    }
+    write_end_tag(writer, "sheetPr");
 }
 
 /// Writes the worksheet dimension (used range) and sheet view settings.
