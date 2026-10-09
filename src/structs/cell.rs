@@ -318,6 +318,8 @@ impl Cell {
         self
     }
 
+    /// Set the cell's value as a number. NaN and infinity can't be stored in
+    /// xlsx, so they are written as the `#NUM!` error instead.
     #[inline]
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where

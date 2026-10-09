@@ -194,7 +194,7 @@ impl CellValue {
     where
         T: Into<f64>,
     {
-        self.raw_value = CellRawValue::Numeric(value.into());
+        self.raw_value = Self::numeric_raw_value(value.into());
         self.remove_formula();
         self
     }
@@ -283,7 +283,7 @@ impl CellValue {
     where
         T: Into<f64>,
     {
-        self.raw_value = CellRawValue::Numeric(value.into());
+        self.raw_value = Self::numeric_raw_value(value.into());
         self
     }
 
@@ -348,6 +348,17 @@ impl CellValue {
             self.set_rich_text(v.clone());
         }
         self
+    }
+
+    /// xlsx can't store NaN or infinity as a number, so they become `#NUM!`
+    /// like the result of an invalid calculation in Excel.
+    #[inline]
+    fn numeric_raw_value(value: f64) -> CellRawValue {
+        if value.is_finite() {
+            CellRawValue::Numeric(value)
+        } else {
+            CellRawValue::Error(CellErrorType::Num)
+        }
     }
 
     #[inline]
