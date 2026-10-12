@@ -1,24 +1,26 @@
 # Change Detail -> 3.1.1
 ### Bug Fixes and Improvements
-* [#299 Page scaling resets to the default setting](https://github.com/MathNya/umya-spreadsheet/issues/299)
-* [#357 Preserve t="str" on empty-string formula results](https://github.com/MathNya/umya-spreadsheet/pull/357)
-* [#358 fix: keep worksheet drawing r:id in sync with its rels](https://github.com/MathNya/umya-spreadsheet/pull/358)
-* [#359 fix: preserve row thickTop](https://github.com/MathNya/umya-spreadsheet/pull/359)
-* [#360 Fix Excel theme tint color matching](https://github.com/MathNya/umya-spreadsheet/pull/360)
-* [#361 Fix literal-only zero number format sections](https://github.com/MathNya/umya-spreadsheet/pull/361)
-* [#362 Preserve whitespace in literal-only number format sections](https://github.com/MathNya/umya-spreadsheet/pull/362)
-* [#363 autoFilter tag added to existing table objects regardless of what it was set to before.](https://github.com/MathNya/umya-spreadsheet/issues/363)
-* [#365 fix: preserve color selectors and avoid loaded-sheet style cloning](https://github.com/MathNya/umya-spreadsheet/pull/365)
-* [#367 Resolve workbook relationship namespace prefixes](https://github.com/MathNya/umya-spreadsheet/pull/367)
-* [#369 Fix CDATA decoding in XML text content](https://github.com/MathNya/umya-spreadsheet/pull/369)
-* [#370 Prefixed worksheet elements silently lose cells and header/footer content](https://github.com/MathNya/umya-spreadsheet/issues/370)
-* [#371 Resolve worksheet namespace prefixes in streaming readers](https://github.com/MathNya/umya-spreadsheet/pull/371)
-* [#373 Preserve explicit zero page margins and expose presence](https://github.com/MathNya/umya-spreadsheet/pull/373)
-* [#374 Panic when loading merged cell with hyperlink](https://github.com/MathNya/umya-spreadsheet/issues/374)
-* [#375 Keep the 1904 date system when reading and writing](https://github.com/MathNya/umya-spreadsheet/pull/375)
-* [#376 Don't panic on quoted text around a number placeholder](https://github.com/MathNya/umya-spreadsheet/pull/376)
-* [#377 Read files with dangling references instead of panicking](https://github.com/MathNya/umya-spreadsheet/pull/377)
-* [#379 Keep the fit to page scaling option when reading and writing](https://github.com/MathNya/umya-spreadsheet/pull/379)
+* [#299](https://github.com/MathNya/umya-spreadsheet/issues/299) Page scaling resets to the default setting
+* [#357](https://github.com/MathNya/umya-spreadsheet/pull/357) Preserve t="str" on empty-string formula results
+* [#358](https://github.com/MathNya/umya-spreadsheet/pull/358) fix: keep worksheet drawing r:id in sync with its rels
+* [#359](https://github.com/MathNya/umya-spreadsheet/pull/359) fix: preserve row thickTop
+* [#360](https://github.com/MathNya/umya-spreadsheet/pull/360) Fix Excel theme tint color matching
+* [#361](https://github.com/MathNya/umya-spreadsheet/pull/361) Fix literal-only zero number format sections
+* [#362](https://github.com/MathNya/umya-spreadsheet/pull/362) Preserve whitespace in literal-only number format sections
+* [#363](https://github.com/MathNya/umya-spreadsheet/issues/363) autoFilter tag added to existing table objects regardless of what it was set to before.
+* [#365](https://github.com/MathNya/umya-spreadsheet/pull/365) fix: preserve color selectors and avoid loaded-sheet style cloning
+* [#367](https://github.com/MathNya/umya-spreadsheet/pull/367) Resolve workbook relationship namespace prefixes
+* [#369](https://github.com/MathNya/umya-spreadsheet/pull/369) Fix CDATA decoding in XML text content
+* [#370](https://github.com/MathNya/umya-spreadsheet/issues/370) Prefixed worksheet elements silently lose cells and header/footer content
+* [#371](https://github.com/MathNya/umya-spreadsheet/pull/371) Resolve worksheet namespace prefixes in streaming readers
+* [#373](https://github.com/MathNya/umya-spreadsheet/pull/373) Preserve explicit zero page margins and expose presence
+* [#374](https://github.com/MathNya/umya-spreadsheet/issues/374) Panic when loading merged cell with hyperlink
+* [#375](https://github.com/MathNya/umya-spreadsheet/pull/375) Keep the 1904 date system when reading and writing
+* [#376](https://github.com/MathNya/umya-spreadsheet/pull/376) Don't panic on quoted text around a number placeholder
+* [#377](https://github.com/MathNya/umya-spreadsheet/pull/377) Read files with dangling references instead of panicking
+* [#378](https://github.com/MathNya/umya-spreadsheet/pull/378) Store non-finite number strings as text in set_value
+* [#379](https://github.com/MathNya/umya-spreadsheet/pull/379) Keep the fit to page scaling option when reading and writing
+* [#380](https://github.com/MathNya/umya-spreadsheet/pull/380) Don't write an empty autoFilter for tables
 
 # Change Detail -> 3.1.0
 

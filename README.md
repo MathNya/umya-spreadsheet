@@ -26,13 +26,13 @@ https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "3.1.0"
+umya-spreadsheet = "3.1.1"
 
 # WebAssembly support
-umya-spreadsheet = { version = "3.1.0", features = ["js"] }
+umya-spreadsheet = { version = "3.1.1", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "3.1.0", features = ["image/png"] }
+umya-spreadsheet = { version = "3.1.1", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
