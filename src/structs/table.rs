@@ -30,6 +30,8 @@ impl Table {
         let coord_beg = Self::cell_coord_to_coord(area.0);
         let coord_end = Self::cell_coord_to_coord(area.1);
         let name: Box<str> = name.into();
+        let mut auto_filter = AutoFilter::default();
+        auto_filter.set_range(format!("{coord_beg}:{coord_end}"));
         Self {
             area:             (coord_beg, coord_end),
             name:             name.clone(),
@@ -38,7 +40,7 @@ impl Table {
             style_info:       None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),
-            auto_filter:      AutoFilter::default(),
+            auto_filter,
         }
     }
 
