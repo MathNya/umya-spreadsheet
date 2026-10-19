@@ -24,7 +24,8 @@ fancy-regex = "0.18"
 hmac = "0.13"
 html5gum = "0.8"
 imagesize = "0.14"
-jiff = { version = "0.2", default-features = false }
+# Avoid optional defmt metadata keeping bitflags 1 in Cargo.lock beside ZIP 9's bitflags 2.
+jiff = { version = ">=0.2, <0.2.29", default-features = false }
 md-5 = "0.11"
 num-traits = "0.2.19"
 phf = { version = "0.14", features = ["macros"] }
@@ -33,7 +34,7 @@ rand = "0.10"
 rgb = "0.8"
 sha2 = "0.11"
 thousands = "0.2.0"
-zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
+zip = { version = "9.0.5", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 hex-literal = "1.1"

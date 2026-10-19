@@ -113,7 +113,7 @@ pub(crate) fn zip_by_name<'a, R: io::Read + io::Seek>(
     let normalized = name.replace('\\', "/").to_ascii_lowercase();
     for i in 0..arv.len() {
         let entry_name = match arv.by_index(i) {
-            Ok(f) => f.name().to_owned(),
+            Ok(f) => f.name()?.into_owned(),
             Err(_) => continue,
         };
         let entry_normalized = entry_name.replace('\\', "/").to_ascii_lowercase();
@@ -147,8 +147,8 @@ pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -
     }
 
     // 2. For namespaced keys like "r:id", fall back to matching the local name
-    //    ("id") against any attribute whose local name matches. Returns early
-    //    if ':' is not found.
+    //    ("id") against any attribute whose local name matches. Returns early if
+    //    ':' is not found.
     let local_name = {
         let pos = key.iter().position(|&b| b == b':')?;
         &key[pos + 1..]

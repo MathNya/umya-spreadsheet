@@ -33,7 +33,7 @@ fn patch(bytes: &[u8], pick: impl Fn(&str) -> bool, edit: impl Fn(String) -> Str
     let mut patched = false;
     for i in 0..archive.len() {
         let mut entry = archive.by_index(i).unwrap();
-        let name = entry.name().to_string();
+        let name = entry.name().unwrap().to_string();
         let mut data = Vec::new();
         entry.read_to_end(&mut data).unwrap();
         if pick(&name) {

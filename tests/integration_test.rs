@@ -2671,7 +2671,7 @@ fn expanded_font_and_fill_colours_survive_all_style_consumers() {
         let mut entry = archive.by_index(index).unwrap();
         let mut data = Vec::new();
         entry.read_to_end(&mut data).unwrap();
-        if entry.name() == "xl/styles.xml" {
+        if entry.name().unwrap() == "xl/styles.xml" {
             data = String::from_utf8(data)
                 .unwrap()
                 .replace(
@@ -2688,8 +2688,11 @@ fn expanded_font_and_fill_colours_survive_all_style_consumers() {
                 )
                 .into_bytes();
         }
-        out.start_file(entry.name(), zip::write::SimpleFileOptions::default())
-            .unwrap();
+        out.start_file(
+            entry.name().unwrap(),
+            zip::write::SimpleFileOptions::default(),
+        )
+        .unwrap();
         std::io::Write::write_all(&mut out, &data).unwrap();
     }
     let reopened = reader::xlsx::read_reader(
@@ -2760,7 +2763,7 @@ fn border_colours_import_on_all_sides_from_expanded_xml() {
         let mut entry = archive.by_index(index).unwrap();
         let mut data = Vec::new();
         entry.read_to_end(&mut data).unwrap();
-        if entry.name() == "xl/styles.xml" {
+        if entry.name().unwrap() == "xl/styles.xml" {
             data = String::from_utf8(data)
                 .unwrap()
                 .replace(
@@ -2769,8 +2772,11 @@ fn border_colours_import_on_all_sides_from_expanded_xml() {
                 )
                 .into_bytes();
         }
-        out.start_file(entry.name(), zip::write::SimpleFileOptions::default())
-            .unwrap();
+        out.start_file(
+            entry.name().unwrap(),
+            zip::write::SimpleFileOptions::default(),
+        )
+        .unwrap();
         std::io::Write::write_all(&mut out, &data).unwrap();
     }
     let reopened = reader::xlsx::read_reader(
@@ -3140,7 +3146,7 @@ fn chart_legend_absence_roundtrips() {
         let mut zout = zip::ZipWriter::new(std::fs::File::create(&fixture).unwrap());
         for i in 0..zin.len() {
             let mut e = zin.by_index(i).unwrap();
-            let name = e.name().to_string();
+            let name = e.name().unwrap().to_string();
             let mut buf = Vec::new();
             e.read_to_end(&mut buf).unwrap();
             if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
@@ -3163,7 +3169,7 @@ fn chart_legend_absence_roundtrips() {
         let mut out = Vec::new();
         for i in 0..zip.len() {
             let mut e = zip.by_index(i).unwrap();
-            let name = e.name().to_string();
+            let name = e.name().unwrap().to_string();
             if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
                 let mut s = String::new();
                 e.read_to_string(&mut s).unwrap();
@@ -3227,7 +3233,7 @@ fn set_legend_present_false_suppresses_legend() {
     let mut with_legend = 0;
     for i in 0..zip.len() {
         let mut e = zip.by_index(i).unwrap();
-        let name = e.name().to_string();
+        let name = e.name().unwrap().to_string();
         if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
             charts += 1;
             let mut s = String::new();

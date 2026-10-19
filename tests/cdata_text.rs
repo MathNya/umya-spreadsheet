@@ -34,7 +34,7 @@ fn workbook_with_header_text(content: &str) -> Vec<u8> {
         let mut part = source.by_index(index).unwrap();
         let mut bytes = Vec::new();
         part.read_to_end(&mut bytes).unwrap();
-        if part.name() == "xl/worksheets/sheet1.xml" {
+        if part.name().unwrap() == "xl/worksheets/sheet1.xml" {
             bytes = String::from_utf8(bytes)
                 .unwrap()
                 .replace("HEADER_PLACEHOLDER", content)
@@ -42,7 +42,7 @@ fn workbook_with_header_text(content: &str) -> Vec<u8> {
                 .into_bytes();
         }
         output
-            .start_file(part.name(), SimpleFileOptions::default())
+            .start_file(part.name().unwrap(), SimpleFileOptions::default())
             .unwrap();
         output.write_all(&bytes).unwrap();
     }

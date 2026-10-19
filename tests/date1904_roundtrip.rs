@@ -59,7 +59,7 @@ fn date1904_true_spelling_is_read() {
     let mut out = zip::ZipWriter::new(Cursor::new(Vec::new()));
     for i in 0..archive.len() {
         let mut entry = archive.by_index(i).unwrap();
-        let name = entry.name().to_string();
+        let name = entry.name().unwrap().to_string();
         let mut data = Vec::new();
         entry.read_to_end(&mut data).unwrap();
         if name == "xl/workbook.xml" {

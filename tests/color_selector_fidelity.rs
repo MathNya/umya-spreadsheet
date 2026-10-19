@@ -285,7 +285,7 @@ fn expanded_colors(bytes: &[u8]) -> Vec<u8> {
         let mut entry = archive.by_index(i).unwrap();
         let mut data = vec![];
         entry.read_to_end(&mut data).unwrap();
-        if entry.name() == "xl/styles.xml" {
+        if entry.name().unwrap() == "xl/styles.xml" {
             let mut reader = Reader::from_reader(data.as_slice());
             let mut writer = Writer::new(vec![]);
             loop {
@@ -305,7 +305,10 @@ fn expanded_colors(bytes: &[u8]) -> Vec<u8> {
             data = writer.into_inner();
         }
         output
-            .start_file(entry.name(), zip::write::SimpleFileOptions::default())
+            .start_file(
+                entry.name().unwrap(),
+                zip::write::SimpleFileOptions::default(),
+            )
             .unwrap();
         output.write_all(&data).unwrap();
     }

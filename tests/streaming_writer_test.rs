@@ -77,7 +77,7 @@ fn stream_to_bytes(book: Workbook, order: &[&str]) -> Vec<u8> {
 fn zip_part_names(bytes: &[u8]) -> Vec<String> {
     let mut zip = zip::ZipArchive::new(Cursor::new(bytes.to_vec())).expect("bytes are a valid zip");
     let mut names: Vec<String> = (0..zip.len())
-        .map(|i| zip.by_index(i).unwrap().name().to_string())
+        .map(|i| zip.by_index(i).unwrap().name().unwrap().to_string())
         .collect();
     names.sort();
     names
@@ -210,7 +210,7 @@ fn chart_legend_counts(bytes: &[u8]) -> (usize, usize) {
     let mut with_legend = 0;
     for i in 0..zip.len() {
         let mut e = zip.by_index(i).unwrap();
-        let name = e.name().to_string();
+        let name = e.name().unwrap().to_string();
         if name.starts_with("xl/charts/chart") && name.ends_with(".xml") {
             charts += 1;
             let mut s = String::new();

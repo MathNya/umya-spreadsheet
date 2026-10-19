@@ -123,7 +123,7 @@ fn absent_page_margins_remain_unset_after_reading() {
         let mut part = archive.by_index(index).unwrap();
         let mut bytes = Vec::new();
         part.read_to_end(&mut bytes).unwrap();
-        if part.name() == "xl/worksheets/sheet1.xml" {
+        if part.name().unwrap() == "xl/worksheets/sheet1.xml" {
             let mut xml = String::from_utf8(bytes).unwrap();
             let start = xml.find("<pageMargins ").unwrap();
             let end = start + xml[start..].find("/>").unwrap() + 2;
@@ -131,7 +131,10 @@ fn absent_page_margins_remain_unset_after_reading() {
             bytes = xml.into_bytes();
         }
         output
-            .start_file(part.name(), zip::write::SimpleFileOptions::default())
+            .start_file(
+                part.name().unwrap(),
+                zip::write::SimpleFileOptions::default(),
+            )
             .unwrap();
         output.write_all(&bytes).unwrap();
     }

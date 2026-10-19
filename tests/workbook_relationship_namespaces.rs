@@ -37,7 +37,7 @@ fn workbook_with_relationship_prefix(prefix: &str) -> Vec<u8> {
         let mut part = source.by_index(index).unwrap();
         let mut bytes = Vec::new();
         part.read_to_end(&mut bytes).unwrap();
-        if part.name() == "xl/_rels/workbook.xml.rels" && !prefix.is_empty() {
+        if part.name().unwrap() == "xl/_rels/workbook.xml.rels" && !prefix.is_empty() {
             let xml = String::from_utf8(bytes).unwrap();
             bytes = xml
                 .replace("<Relationship", &format!("<{prefix}:Relationship"))
@@ -46,7 +46,7 @@ fn workbook_with_relationship_prefix(prefix: &str) -> Vec<u8> {
                 .into_bytes();
         }
         output
-            .start_file(part.name(), SimpleFileOptions::default())
+            .start_file(part.name().unwrap(), SimpleFileOptions::default())
             .unwrap();
         output.write_all(&bytes).unwrap();
     }
