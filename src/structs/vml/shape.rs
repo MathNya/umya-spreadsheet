@@ -400,9 +400,9 @@ impl Shape {
         set_string_from_xml!(self, e, style, "style");
         set_string_from_xml!(self, e, filled, "filled");
         set_string_from_xml!(self, e, fill_color, "fillcolor");
-        set_string_from_xml!(self, e, stroked, "stoked");
-        set_string_from_xml!(self, e, stroke_color, "stokecolor");
-        set_string_from_xml!(self, e, stroke_weight, "stokeweight");
+        set_string_from_xml!(self, e, stroked, "stroked");
+        set_string_from_xml!(self, e, stroke_color, "strokecolor");
+        set_string_from_xml!(self, e, stroke_weight, "strokeweight");
         set_string_from_xml!(self, e, inset_mode, "o:insetmode");
         set_string_from_xml!(self, e, optional_number, "o:spt");
         set_string_from_xml!(self, e, coordinate_size, "coordsize");
