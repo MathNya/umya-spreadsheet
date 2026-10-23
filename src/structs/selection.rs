@@ -7,9 +7,12 @@ use quick_xml::{
 };
 
 use super::{
+    ColumnReference,
     Coordinate,
     EnumValue,
     PaneValues,
+    Range,
+    RowReference,
     SequenceOfReferences,
 };
 use crate::{
@@ -129,16 +132,13 @@ impl Selection {
         // selection
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        let mut active_cell_id = 0;
-        if let Some(active_cell) = &self.active_cell {
-            for range in self.sequence_of_references.range_collection() {
-                let range_str = range.range();
-                if range_str.contains(&active_cell.to_string()) {
-                    break;
-                }
-                active_cell_id += 1;
-            }
-        }
+        let active_cell_id = self.active_cell.as_ref().map_or(0, |active_cell| {
+            self.sequence_of_references
+                .range_collection()
+                .iter()
+                .position(|range| range_contains(range, active_cell))
+                .unwrap_or(0)
+        });
 
         if self.pane.has_value() {
             attributes.push(("pane", self.pane.value_string()).into());
@@ -164,4 +164,18 @@ impl Selection {
 
         write_start_tag(writer, "selection", attributes, true);
     }
+}
+
+fn range_contains(range: &Range, cell: &Coordinate) -> bool {
+    let start_col = range.coordinate_start_col().map(ColumnReference::num);
+    let start_row = range.coordinate_start_row().map(RowReference::num);
+    let end_col = range.coordinate_end_col().map(ColumnReference::num).or(start_col);
+    let end_row = range.coordinate_end_row().map(RowReference::num).or(start_row);
+
+    let col = cell.col_num();
+    let row = cell.row_num();
+    start_col.is_none_or(|v| v <= col)
+        && end_col.is_none_or(|v| col <= v)
+        && start_row.is_none_or(|v| v <= row)
+        && end_row.is_none_or(|v| row <= v)
 }
