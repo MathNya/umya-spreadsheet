@@ -28,13 +28,16 @@ fn replace_sheet_xml(bytes: Vec<u8>, edit: impl Fn(&mut String)) -> Vec<u8> {
         let mut part = archive.by_index(index).unwrap();
         let mut bytes = Vec::new();
         part.read_to_end(&mut bytes).unwrap();
-        if part.name() == "xl/worksheets/sheet1.xml" {
+        if part.name().unwrap() == "xl/worksheets/sheet1.xml" {
             let mut xml = String::from_utf8(bytes).unwrap();
             edit(&mut xml);
             bytes = xml.into_bytes();
         }
         output
-            .start_file(part.name(), zip::write::SimpleFileOptions::default())
+            .start_file(
+                part.name().unwrap(),
+                zip::write::SimpleFileOptions::default(),
+            )
             .unwrap();
         output.write_all(&bytes).unwrap();
     }
