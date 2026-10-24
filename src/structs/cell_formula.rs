@@ -399,7 +399,14 @@ impl CellFormula {
 
         #[allow(unused_assignments)]
         let mut reference_str = String::new();
-        if let Some((start_col, end_col)) = formula_shared_list.get(&self.shared_index.value())
+        if self.formula_type.value() == &CellFormulaValues::DataTable {
+            // A data table formula is only written in its first cell, and
+            // `ref` holds the range of cells it fills.
+            if self.reference.has_value() {
+                attributes.push(("ref", self.reference.value_str()).into());
+            }
+        } else if let Some((start_col, end_col)) =
+            formula_shared_list.get(&self.shared_index.value())
         {
             if coordinate == start_col {
                 reference_str = match end_col {
