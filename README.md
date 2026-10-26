@@ -15,11 +15,10 @@
 
 Please mention in issues if you have any questions.
 
-## Version 3.0.0 has been released
-This update contains breaking changes.
-Please refer to this page when upgrading from version 2.x to 3.x.
-https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md
-
+## Version 4.0.0-beta.1 has been released
+With the update to zip, the error types have been updated.
+We plan to update the section on error handling again later.
+For this reason, we are releasing this as a beta version for now.
 
 ## Usage
 ### Installation
@@ -195,6 +194,7 @@ We would like to express our heartfelt gratitude to them.
 [ggodlewski](https://github.com/ggodlewski), 
 [gitter-badger](https://github.com/gitter-badger), 
 [hackers267](https://github.com/hackers267), 
+[HiroyukiFuruno](https://github.com/HiroyukiFuruno), 
 [iancormac84](https://github.com/iancormac84), 
 [jimchan3301](https://github.com/jimchan3301), 
 [jmbrunskill](https://github.com/jmbrunskill), 

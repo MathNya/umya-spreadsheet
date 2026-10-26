@@ -1,3 +1,14 @@
+# Change Detail -> 4.0.0-beta.1
+### Breaking Changes
+There have been changes regarding errors related to ZIP files.
+
+### Bug Fixes and Improvements
+* [#381](https://github.com/MathNya/umya-spreadsheet/pull/381) Keep table style options when reading tables
+* [#382](https://github.com/MathNya/umya-spreadsheet/pull/382) Read stroke attributes of VML shapes
+* [#384](https://github.com/MathNya/umya-spreadsheet/pull/384) fix: migrate to ZIP 9 and retain strict dependency lint
+* [#385](https://github.com/MathNya/umya-spreadsheet/pull/385) Write a valid activeCellId for selections
+* [#386](https://github.com/MathNya/umya-spreadsheet/pull/386) Keep the range of data table formulas when writing
+
 # Change Detail -> 3.1.1
 ### Bug Fixes and Improvements
 * [#299](https://github.com/MathNya/umya-spreadsheet/issues/299) Page scaling resets to the default setting
