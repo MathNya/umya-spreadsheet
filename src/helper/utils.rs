@@ -1,5 +1,7 @@
 #![allow(unused_imports)]
 
+use std::fmt::Write as _;
+
 use md5::Digest as _;
 
 pub(crate) fn md5_hash(input: impl AsRef<[u8]>) -> String {
@@ -29,6 +31,70 @@ pub(crate) fn unescape_xml_text(e: &quick_xml::events::BytesText<'_>) -> String 
     }
     output.push_str(&quick_xml::escape::unescape(remaining).unwrap());
     output
+}
+
+/// Whether XML 1.0 forbids `c`: the control characters other than tab, line
+/// feed and carriage return, and U+FFFE and U+FFFF.
+fn is_forbidden_in_xml(c: char) -> bool {
+    matches!(c, '\u{0}'..='\u{8}' | '\u{b}' | '\u{c}' | '\u{e}'..='\u{1f}' | '\u{fffe}' | '\u{ffff}')
+}
+
+/// The length of the `_xHHHH_` escape at the start of `s`, if there is one.
+fn escape_len(s: &str) -> Option<usize> {
+    let bytes = s.as_bytes();
+    (bytes.len() >= 7
+        && bytes[0] == b'_'
+        && bytes[1] == b'x'
+        && bytes[2..6].iter().all(u8::is_ascii_hexdigit)
+        && bytes[6] == b'_')
+        .then_some(7)
+}
+
+/// Writes `value` as an `ST_Xstring`, the text of a string in `SpreadsheetML`:
+/// a character that XML 1.0 forbids becomes `_xHHHH_`, and the underscore of
+/// text that already reads as such an escape becomes `_x005F_`, so that the
+/// text reads back as it was written.
+pub(crate) fn escape_xstring(value: &str) -> std::borrow::Cow<'_, str> {
+    if !value.contains(|c: char| c == '_' || is_forbidden_in_xml(c)) {
+        return std::borrow::Cow::Borrowed(value);
+    }
+    let mut output = String::with_capacity(value.len());
+    for (i, c) in value.char_indices() {
+        if is_forbidden_in_xml(c) {
+            let _ = write!(output, "_x{:04X}_", u32::from(c));
+        } else if c == '_' && escape_len(&value[i..]).is_some() {
+            output.push_str("_x005F_");
+        } else {
+            output.push(c);
+        }
+    }
+    std::borrow::Cow::Owned(output)
+}
+
+/// Reads an `ST_Xstring`, replacing each `_xHHHH_` escape with its character.
+pub(crate) fn unescape_xstring(value: &str) -> std::borrow::Cow<'_, str> {
+    if !value.contains("_x") {
+        return std::borrow::Cow::Borrowed(value);
+    }
+    let mut output = String::with_capacity(value.len());
+    let mut i = 0;
+    while i < value.len() {
+        let rest = &value[i..];
+        if let Some(len) = escape_len(rest) {
+            if let Some(c) = u32::from_str_radix(&rest[2..6], 16)
+                .ok()
+                .and_then(char::from_u32)
+            {
+                output.push(c);
+                i += len;
+                continue;
+            }
+        }
+        let c = rest.chars().next().unwrap();
+        output.push(c);
+        i += c.len_utf8();
+    }
+    std::borrow::Cow::Owned(output)
 }
 
 /// A macro that implements the `From` trait for converting from one error type
