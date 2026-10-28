@@ -15,12 +15,13 @@ use super::{
     driver::{
         get_attribute,
         get_attribute_value,
-        xml_read_loop,
+        try_xml_read_loop,
         zip_by_name,
     },
 };
 use crate::{
     AutoFilter,
+    XlsxErrorKind,
     helper::formula::FormulaToken,
     structs::{
         Cell,
@@ -90,7 +91,7 @@ fn read_from_reader<R: io::BufRead>(
     );
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => match e.name().into_inner() {
             b"sheetPr" => {
@@ -168,11 +169,13 @@ fn read_from_reader<R: io::BufRead>(
             }
             b"oleObjects" => {
                 let mut obj = OleObjects::default();
-                obj.set_attributes(
-                    &mut reader,
-                    e,
-                    raw_data_of_worksheet.worksheet_relationships().unwrap(),
-                );
+                let relationships = raw_data_of_worksheet.worksheet_relationships().ok_or_else(|| {
+                    XlsxError::with_message(
+                        XlsxErrorKind::NotFound,
+                        "worksheet relationships for oleObjects",
+                    )
+                })?;
+                obj.set_attributes(&mut reader, e, relationships);
                 worksheet.set_ole_objects(obj);
             }
             b"headerFooter" => {
@@ -255,7 +258,7 @@ fn read_from_reader<R: io::BufRead>(
                 let (coor, hyperlink) = get_hyperlink(
                     e,
                     raw_data_of_worksheet.worksheet_relationships()
-                );
+                )?;
                 worksheet.cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {
@@ -290,16 +293,15 @@ pub(crate) fn read_lite(
     raw_data_of_worksheet: &RawWorksheet,
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
-) -> Cells {
+) -> Result<Cells, XlsxError> {
     if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file() {
         if !raw_data_of_worksheet.worksheet_file().has_file_data() {
-            let file = File::open(source_file).unwrap();
-            let mut archive = zip::read::ZipArchive::new(file).unwrap();
+            let file = File::open(source_file)?;
+            let mut archive = zip::read::ZipArchive::new(file)?;
             let source = zip_by_name(
                 &mut archive,
                 raw_data_of_worksheet.worksheet_file().file_target(),
-            )
-            .unwrap();
+            )?;
             let reader = io::BufReader::new(source);
             return read_lite_from_reader(reader, shared_string_table, stylesheet);
         }
@@ -313,7 +315,7 @@ fn read_lite_from_reader<R: io::BufRead>(
     data: R,
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
-) -> Cells {
+) -> Result<Cells, XlsxError> {
     let mut reader = Reader::from_reader(
         super::worksheet_namespace::WorksheetNamespaceReader::new(data),
     );
@@ -321,7 +323,7 @@ fn read_lite_from_reader<R: io::BufRead>(
 
     let mut cells = Cells::default();
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() == b"row" {
@@ -354,7 +356,7 @@ fn read_lite_from_reader<R: io::BufRead>(
         Event::Eof => break,
     );
 
-    cells
+    Ok(cells)
 }
 
 pub(crate) fn read_cells_stream<F>(
@@ -375,14 +377,17 @@ where
                 raw_data_of_worksheet.worksheet_file().file_target(),
             )?;
             let reader = io::BufReader::new(source);
-            read_cells_stream_from_reader(reader, shared_string_table, stylesheet, callback);
-            return Ok(());
+            return read_cells_stream_from_reader(
+                reader,
+                shared_string_table,
+                stylesheet,
+                callback,
+            );
         }
     }
 
     let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
-    read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback);
-    Ok(())
+    read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback)
 }
 
 fn read_cells_stream_from_reader<R, F>(
@@ -390,7 +395,8 @@ fn read_cells_stream_from_reader<R, F>(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
     mut callback: F,
-) where
+) -> Result<(), XlsxError>
+where
     R: io::BufRead,
     F: FnMut(&Cell),
 {
@@ -400,7 +406,7 @@ fn read_cells_stream_from_reader<R, F>(
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() == b"row" {
@@ -410,11 +416,13 @@ fn read_cells_stream_from_reader<R, F>(
                     stylesheet,
                     &mut formula_shared_list,
                     &mut callback,
-                );
+                )?;
             }
         },
         Event::Eof => break,
     );
+
+    Ok(())
 }
 
 fn read_row_cells_stream<R, F>(
@@ -423,11 +431,12 @@ fn read_row_cells_stream<R, F>(
     stylesheet: &Stylesheet,
     formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     callback: &mut F,
-) where
+) -> Result<(), XlsxError>
+where
     R: io::BufRead,
     F: FnMut(&Cell),
 {
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
             if e.name().into_inner() == b"c" {
@@ -459,26 +468,31 @@ fn read_row_cells_stream<R, F>(
         },
         Event::End(ref e) => {
             if e.name().into_inner() == b"row" {
-                return
+                return Ok(());
             }
         },
-        Event::Eof => panic!("Error: Could not find {} end element", "row")
+        Event::Eof => {
+            return Err(XlsxError::with_message(
+                XlsxErrorKind::Xml,
+                "could not find row end element",
+            ));
+        }
     );
 }
 
 fn get_hyperlink(
     e: &quick_xml::events::BytesStart<'_>,
     raw_relationships: Option<&RawRelationships>,
-) -> (String, Hyperlink) {
+) -> Result<(String, Hyperlink), XlsxError> {
     let mut hyperlink = Hyperlink::default();
 
     let coordition = get_attribute(e, b"ref").unwrap_or_default();
     if let Some(v) = get_attribute(e, b"location") {
-        hyperlink.set_url(escape::unescape(&v).unwrap().to_string());
+        hyperlink.set_url(escape::unescape(&v)?.to_string());
         hyperlink.set_location(true);
     }
     if let Some(v) = get_attribute(e, b"tooltip") {
-        hyperlink.set_tooltip(escape::unescape(&v).unwrap().to_string());
+        hyperlink.set_tooltip(escape::unescape(&v)?.to_string());
     }
     if let Some(v) = get_attribute(e, b"r:id") {
         // A dangling r:id (no relationship, or no relationships part at all)
@@ -486,8 +500,8 @@ fn get_hyperlink(
         if let Some(relationship) =
             raw_relationships.and_then(|rels| rels.find_relationship_by_rid(&v))
         {
-            hyperlink.set_url(escape::unescape(relationship.target()).unwrap().to_string());
+            hyperlink.set_url(escape::unescape(relationship.target())?.to_string());
         }
     }
-    (coordition, hyperlink)
+    Ok((coordition, hyperlink))
 }

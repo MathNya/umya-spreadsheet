@@ -6,7 +6,7 @@ use std::{
 };
 
 use umya_spreadsheet::{
-    XlsxError,
+    XlsxErrorKind,
     reader,
     writer,
 };
@@ -37,21 +37,42 @@ fn loaded_sheet_access_preserves_lazy_deserialization_and_errors() {
     writer::xlsx::write(&source, &path).unwrap();
 
     let mut book = reader::xlsx::lazy_read(&path).unwrap();
-    assert!(matches!(book.sheet(0), Err(XlsxError::NotDeserialized())));
-    assert!(matches!(
-        book.sheet_by_name("Second"),
-        Err(XlsxError::NotDeserialized())
-    ));
-    assert!(matches!(book.sheet_mut(2), Err(XlsxError::NotFound())));
+    assert_eq!(
+        book.sheet(0).unwrap_err().kind(),
+        XlsxErrorKind::NotDeserialized
+    );
+    assert_eq!(
+        book.sheet_by_name("Second").unwrap_err().kind(),
+        XlsxErrorKind::NotDeserialized
+    );
+    assert_eq!(
+        book.sheet_collection().unwrap_err().kind(),
+        XlsxErrorKind::NotDeserialized
+    );
+    assert_eq!(
+        book.sheet_mut(2).unwrap_err().kind(),
+        XlsxErrorKind::NotFound
+    );
+    assert_eq!(
+        book.read_sheet(2).unwrap_err().kind(),
+        XlsxErrorKind::NotFound
+    );
+    assert_eq!(
+        book.read_sheet_by_name("Missing").unwrap_err().kind(),
+        XlsxErrorKind::NotFound
+    );
 
     assert_eq!(book.sheet_mut(0).unwrap().value("A1"), "first");
     assert_eq!(book.sheet(0).unwrap().value("A1"), "first");
-    assert!(matches!(book.sheet(1), Err(XlsxError::NotDeserialized())));
+    assert_eq!(
+        book.sheet(1).unwrap_err().kind(),
+        XlsxErrorKind::NotDeserialized
+    );
 
-    book.read_sheet_by_name("Second");
+    book.read_sheet_by_name("Second").unwrap();
     assert_eq!(book.sheet_by_name("Second").unwrap().value("A1"), "second");
 
-    book.sheet_collection_mut();
-    assert_eq!(book.sheet_collection().len(), 2);
+    book.sheet_collection_mut().unwrap();
+    assert_eq!(book.sheet_collection().unwrap().len(), 2);
     fs::remove_file(path).unwrap();
 }

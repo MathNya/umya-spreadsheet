@@ -10,6 +10,11 @@ use std::{
 
 use quick_xml::events::attributes::Attribute;
 
+use crate::{
+    XlsxError,
+    XlsxErrorKind,
+};
+
 #[macro_export]
 macro_rules! xml_read_loop {
     ($reader:ident $(,$pat:pat => $result:expr)+ $(,)?) => {
@@ -31,6 +36,31 @@ macro_rules! xml_read_loop {
 }
 
 pub(crate) use crate::xml_read_loop;
+
+/// Same as `xml_read_loop!`, but returns the XML error from the enclosing
+/// function instead of panicking. The function must return
+/// `Result<_, XlsxError>`.
+#[macro_export]
+macro_rules! try_xml_read_loop {
+    ($reader:ident $(,$pat:pat => $result:expr)+ $(,)?) => {
+        let mut buf = Vec::new();
+        loop {
+            let ev = match $reader.read_event_into(&mut buf) {
+                Ok(v) => v,
+                Err(e) => return Err(e.into()),
+            };
+
+            match ev {
+                $($pat => $result,)+
+                _ => (),
+            }
+
+            buf.clear();
+        }
+    };
+}
+
+pub(crate) use crate::try_xml_read_loop;
 
 #[macro_export]
 macro_rules! set_string_from_xml {
@@ -131,6 +161,23 @@ pub(crate) fn zip_by_name<'a, R: io::Read + io::Seek>(
 /// This handles XLSX files that use non-standard namespace prefixes
 /// (e.g. `d3p1:id` instead of `r:id`).
 #[inline]
+/// Same as `get_attribute`, but returns an error if the attribute is missing.
+pub(crate) fn get_required_attribute(
+    e: &quick_xml::events::BytesStart<'_>,
+    key: &[u8],
+) -> Result<String, XlsxError> {
+    get_attribute(e, key).ok_or_else(|| {
+        XlsxError::with_message(
+            XlsxErrorKind::Xml,
+            format!(
+                "missing attribute '{}' in element '{}'",
+                String::from_utf8_lossy(key),
+                String::from_utf8_lossy(e.name().into_inner()),
+            ),
+        )
+    })
+}
+
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
     // 1. Exact match (fast path)
     let result = e

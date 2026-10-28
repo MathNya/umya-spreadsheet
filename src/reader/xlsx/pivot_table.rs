@@ -4,6 +4,8 @@ use quick_xml::{
 };
 
 use crate::{
+    XlsxError,
+    XlsxErrorKind,
     helper::const_str::{
         PIVOT_CACHE_DEF_NS,
         PIVOT_CACHE_REC_NS,
@@ -24,7 +26,7 @@ pub(crate) fn read(
     pivot_table_file: &RawFile,
     pivot_table_relationships: Option<&RawRelationships>,
     pivot_cache_relationships: Option<&RawRelationships>,
-) {
+) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(pivot_table_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
@@ -45,7 +47,7 @@ pub(crate) fn read(
                 }
             }
             Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Err(e) => return Err(e.into()),
             _ => (),
         }
         buf.clear();
@@ -62,12 +64,17 @@ pub(crate) fn read(
                 .map(|r| r.raw_file())
         });
 
-        pivot_cache::read(
-            rrs_list.relationship_by_type(PIVOT_CACHE_DEF_NS).raw_file(),
-            &mut pivot_table,
-            records_file,
-        );
+        let cache_definition = rrs_list
+            .find_relationship_by_type(PIVOT_CACHE_DEF_NS)
+            .ok_or_else(|| {
+                XlsxError::with_message(
+                    XlsxErrorKind::NotFound,
+                    format!("relationship with type {PIVOT_CACHE_DEF_NS}"),
+                )
+            })?;
+        pivot_cache::read(cache_definition.raw_file(), &mut pivot_table, records_file)?;
     }
 
     worksheet.add_pivot_table(pivot_table);
+    Ok(())
 }

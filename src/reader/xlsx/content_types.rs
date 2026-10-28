@@ -8,8 +8,8 @@ use quick_xml::{
 use super::{
     XlsxError,
     driver::{
-        get_attribute,
-        xml_read_loop,
+        get_required_attribute,
+        try_xml_read_loop,
     },
 };
 use crate::{
@@ -26,12 +26,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     reader.config_mut().trim_text(true);
     let mut list: Vec<(String, String)> = Vec::new();
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
             if e.name().into_inner() == b"Override" {
-                let part_name = get_attribute(e, b"PartName").unwrap();
-                let content_type = get_attribute(e, b"ContentType").unwrap();
+                let part_name = get_required_attribute(e, b"PartName")?;
+                let content_type = get_required_attribute(e, b"ContentType")?;
                 list.push((part_name, content_type));
             }
         },

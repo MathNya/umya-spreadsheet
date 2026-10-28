@@ -24,7 +24,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     option: &CsvWriterOption,
 ) -> Result<(), XlsxError> {
     // get worksheet.
-    let worksheet = wb.active_sheet();
+    let worksheet = wb.active_sheet()?;
 
     // get max column and row.
     let (max_column, max_row) = worksheet.highest_column_and_row();

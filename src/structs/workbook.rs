@@ -6,6 +6,7 @@ use std::sync::{
 use crate::{
     StringValue,
     XlsxError,
+    XlsxErrorKind,
     helper::{
         address::split_address,
         coordinate::column_index_from_string,
@@ -63,11 +64,15 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_row("Sheet1", 2, 3);
+    /// book.insert_new_row("Sheet1", 2, 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
+    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) -> Result<(), XlsxError> {
+        self.read_sheet_collection()?;
         self.adjustment_insert_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
+        Ok(())
     }
 
     /// Insert new columns.
@@ -78,11 +83,18 @@ impl Workbook {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column("Sheet1", "B", 3);
+    /// book.insert_new_column("Sheet1", "B", 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
-        self.insert_new_column_by_index(sheet_name, column_index_from_string(column), num_columns);
+    pub fn insert_new_column(
+        &mut self,
+        sheet_name: &str,
+        column: &str,
+        num_columns: u32,
+    ) -> Result<(), XlsxError> {
+        self.insert_new_column_by_index(sheet_name, column_index_from_string(column), num_columns)
     }
 
     /// Insert new columns.
@@ -93,16 +105,20 @@ impl Workbook {
     /// # Examples
     /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column_by_index("Sheet1", 2, 3);
+    /// book.insert_new_column_by_index("Sheet1", 2, 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
     pub fn insert_new_column_by_index(
         &mut self,
         sheet_name: &str,
         column_index: u32,
         num_columns: u32,
-    ) {
+    ) -> Result<(), XlsxError> {
+        self.read_sheet_collection()?;
         self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
+        Ok(())
     }
 
     /// Remove rows.
@@ -113,11 +129,15 @@ impl Workbook {
     /// # Examples
     /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_row("Sheet1", 2, 3);
+    /// book.remove_row("Sheet1", 2, 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
+    pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) -> Result<(), XlsxError> {
+        self.read_sheet_collection()?;
         self.adjustment_remove_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
+        Ok(())
     }
 
     /// Remove columns.
@@ -128,11 +148,18 @@ impl Workbook {
     /// # Examples
     /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column("Sheet1", "B", 3);
+    /// book.remove_column("Sheet1", "B", 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
-        self.remove_column_by_index(sheet_name, column_index_from_string(column), num_columns);
+    pub fn remove_column(
+        &mut self,
+        sheet_name: &str,
+        column: &str,
+        num_columns: u32,
+    ) -> Result<(), XlsxError> {
+        self.remove_column_by_index(sheet_name, column_index_from_string(column), num_columns)
     }
 
     /// Remove columns.
@@ -143,16 +170,20 @@ impl Workbook {
     /// # Examples
     /// ```rust
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column_by_index("Sheet1", 2, 3);
+    /// book.remove_column_by_index("Sheet1", 2, 3).unwrap();
     /// ```
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
     pub fn remove_column_by_index(
         &mut self,
         sheet_name: &str,
         column_index: u32,
         num_columns: u32,
-    ) {
+    ) -> Result<(), XlsxError> {
+        self.read_sheet_collection()?;
         self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
+        Ok(())
     }
 
     /// Gets the cell value by specifying an address.
@@ -460,21 +491,24 @@ impl Workbook {
     }
 
     /// Get Work Sheet List.
-    #[must_use]
-    pub fn sheet_collection(&self) -> &[Worksheet] {
-        for worksheet in &self.work_sheet_collection {
-            assert!(
-                worksheet.is_deserialized(),
-                "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: \
-                 usize);"
-            );
+    /// # Errors
+    /// Returns [`XlsxErrorKind::NotDeserialized`] if any worksheet has not been
+    /// deserialized yet. Use [`Workbook::read_sheet_collection`] or
+    /// [`Workbook::sheet_collection_no_check`].
+    pub fn sheet_collection(&self) -> Result<&[Worksheet], XlsxError> {
+        if self
+            .work_sheet_collection
+            .iter()
+            .all(Worksheet::is_deserialized)
+        {
+            Ok(&self.work_sheet_collection)
+        } else {
+            Err(XlsxError::new(XlsxErrorKind::NotDeserialized))
         }
-        &self.work_sheet_collection
     }
 
-    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use sheet_collection()")]
-    pub fn get_sheet_collection(&self) -> &[Worksheet] {
+    pub fn get_sheet_collection(&self) -> Result<&[Worksheet], XlsxError> {
         self.sheet_collection()
     }
 
@@ -494,15 +528,17 @@ impl Workbook {
     }
 
     /// Get Work Sheet List in mutable.
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn sheet_collection_mut(&mut self) -> &mut [Worksheet] {
-        self.read_sheet_collection();
-        &mut self.work_sheet_collection
+    pub fn sheet_collection_mut(&mut self) -> Result<&mut [Worksheet], XlsxError> {
+        self.read_sheet_collection()?;
+        Ok(&mut self.work_sheet_collection)
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet_collection_mut()")]
-    pub fn get_sheet_collection_mut(&mut self) -> &mut [Worksheet] {
+    pub fn get_sheet_collection_mut(&mut self) -> Result<&mut [Worksheet], XlsxError> {
         self.sheet_collection_mut()
     }
 
@@ -523,43 +559,55 @@ impl Workbook {
     }
 
     /// deserialize by all worksheet.
+    /// # Errors
+    /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn read_sheet_collection(&mut self) -> &mut Self {
+    pub fn read_sheet_collection(&mut self) -> Result<&mut Self, XlsxError> {
         if self
             .work_sheet_collection
             .iter()
             .all(Worksheet::is_deserialized)
         {
-            return self;
+            return Ok(self);
         }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
             if !worksheet.is_deserialized() {
-                raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+                raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet)?;
             }
         }
-        self
+        Ok(self)
     }
 
     /// deserialize a worksheet.
+    /// # Errors
+    /// Returns [`XlsxErrorKind::NotFound`] if `index` is out of range, or an
+    /// error if the worksheet cannot be deserialized.
     #[inline]
-    pub fn read_sheet(&mut self, index: usize) -> &mut Self {
-        let is_deserialized = self.work_sheet_collection.get(index).unwrap().is_deserialized();
+    pub fn read_sheet(&mut self, index: usize) -> Result<&mut Self, XlsxError> {
+        let is_deserialized = self
+            .work_sheet_collection
+            .get(index)
+            .map(Worksheet::is_deserialized)
+            .ok_or(XlsxError::new(XlsxErrorKind::NotFound))?;
         if is_deserialized {
-            return self;
+            return Ok(self);
         }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
-        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
-        self
+        let worksheet = &mut self.work_sheet_collection[index];
+        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet)?;
+        Ok(self)
     }
 
     /// deserialize a worksheet.
+    /// # Errors
+    /// Returns [`XlsxErrorKind::NotFound`] if no worksheet has `sheet_name`, or
+    /// an error if the worksheet cannot be deserialized.
     #[inline]
-    pub fn read_sheet_by_name(&mut self, sheet_name: &str) -> &mut Self {
-        let index = self.find_sheet_index_by_name(sheet_name).unwrap();
+    pub fn read_sheet_by_name(&mut self, sheet_name: &str) -> Result<&mut Self, XlsxError> {
+        let index = self.find_sheet_index_by_name(sheet_name)?;
         self.read_sheet(index)
     }
 
@@ -568,7 +616,7 @@ impl Workbook {
         self.work_sheet_collection
             .iter()
             .position(|sheet| sheet.name() == sheet_name)
-            .ok_or(XlsxError::NotFound())
+            .ok_or(XlsxError::new(XlsxErrorKind::NotFound))
     }
 
     /// Get Work Sheet.
@@ -583,10 +631,10 @@ impl Workbook {
                 if v.is_deserialized() {
                     Ok(v)
                 } else {
-                    Err(XlsxError::NotDeserialized())
+                    Err(XlsxError::new(XlsxErrorKind::NotDeserialized))
                 }
             }
-            None => Err(XlsxError::NotFound()),
+            None => Err(XlsxError::new(XlsxErrorKind::NotFound)),
         }
     }
 
@@ -617,8 +665,8 @@ impl Workbook {
         let shared_string_table = self.shared_string_table();
         self.work_sheet_collection
             .get(index)
-            .map(|v| v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet()))
-            .ok_or(XlsxError::NotFound())
+            .ok_or(XlsxError::new(XlsxErrorKind::NotFound))
+            .and_then(|v| v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet()))
     }
 
     #[deprecated(since = "3.0.0", note = "Use lazy_read_sheet_cells()")]
@@ -636,14 +684,14 @@ impl Workbook {
             .work_sheet_collection
             .get(index)
             .map(Worksheet::is_deserialized)
-            .ok_or(XlsxError::NotFound())?;
+            .ok_or(XlsxError::new(XlsxErrorKind::NotFound))?;
         if is_deserialized {
-            return Ok(self.work_sheet_collection.get_mut(index).unwrap());
+            return Ok(&mut self.work_sheet_collection[index]);
         }
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
-        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+        let worksheet = &mut self.work_sheet_collection[index];
+        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet)?;
         Ok(worksheet)
     }
 
@@ -677,33 +725,35 @@ impl Workbook {
 
     /// Get Active Work Sheet.
     /// # Return value
-    /// * `&Worksheet` - Work sheet.
+    /// * `Result<&Worksheet, XlsxError>`.
+    /// # Errors
+    /// Same as [`Workbook::sheet`].
     #[inline]
-    #[must_use]
-    pub fn active_sheet(&self) -> &Worksheet {
+    pub fn active_sheet(&self) -> Result<&Worksheet, XlsxError> {
         let index = self.workbook_view().active_tab();
-        self.sheet(index as usize).unwrap()
+        self.sheet(index as usize)
     }
 
     #[inline]
-    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use active_sheet()")]
-    pub fn get_active_sheet(&self) -> &Worksheet {
+    pub fn get_active_sheet(&self) -> Result<&Worksheet, XlsxError> {
         self.active_sheet()
     }
 
     /// Get Active Work Sheet in mutable.
     /// # Return value
-    /// * `&mut Worksheet` - Work sheet.
+    /// * `Result<&mut Worksheet, XlsxError>`.
+    /// # Errors
+    /// Same as [`Workbook::sheet_mut`].
     #[inline]
-    pub fn active_sheet_mut(&mut self) -> &mut Worksheet {
+    pub fn active_sheet_mut(&mut self) -> Result<&mut Worksheet, XlsxError> {
         let index = self.workbook_view().active_tab();
-        self.sheet_mut(index as usize).unwrap()
+        self.sheet_mut(index as usize)
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use active_sheet_mut()")]
-    pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
+    pub fn get_active_sheet_mut(&mut self) -> Result<&mut Worksheet, XlsxError> {
         self.active_sheet_mut()
     }
 
@@ -736,7 +786,7 @@ impl Workbook {
     #[inline]
     pub fn remove_sheet(&mut self, index: usize) -> Result<(), XlsxError> {
         if self.work_sheet_collection.len() <= index {
-            return Err(XlsxError::NotFound());
+            return Err(XlsxError::new(XlsxErrorKind::NotFound));
         }
         self.work_sheet_collection.remove(index);
         Ok(())
@@ -753,7 +803,7 @@ impl Workbook {
             .retain(|x| x.name() != sheet_name);
         let cnt_after = self.work_sheet_collection.len();
         if cnt_before == cnt_after {
-            return Err(XlsxError::NotFound());
+            return Err(XlsxError::new(XlsxErrorKind::NotFound));
         }
         Ok(())
     }
@@ -812,7 +862,7 @@ impl Workbook {
             .map(|sheet| {
                 sheet.set_name(sheet_name_str);
             })
-            .ok_or(XlsxError::NotFound())
+            .ok_or(XlsxError::new(XlsxErrorKind::NotFound))
     }
 
     /// (This method is crate only.)
@@ -823,7 +873,7 @@ impl Workbook {
             .iter()
             .any(|work_sheet| value == work_sheet.name())
         {
-            Err(XlsxError::NameDuplicate())
+            Err(XlsxError::new(XlsxErrorKind::NameDuplicate))
         } else {
             Ok(())
         }
@@ -1094,7 +1144,6 @@ impl AdjustmentCoordinateWithSheet for Workbook {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_insert_coordinate(
                 root_col_num,
@@ -1120,7 +1169,6 @@ impl AdjustmentCoordinateWithSheet for Workbook {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_remove_coordinate(
                 root_col_num,

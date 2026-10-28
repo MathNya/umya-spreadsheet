@@ -4,21 +4,22 @@ use quick_xml::{
 };
 
 use crate::{
+    XlsxError,
     structs::{
         Comment,
         Worksheet,
         raw::RawFile,
     },
-    xml_read_loop,
+    try_xml_read_loop,
 };
 
-pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
+pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
 
     let mut authors: Vec<String> = Vec::new();
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
             if e.name().into_inner() == b"author" {
@@ -34,10 +35,12 @@ pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
             if e.name().into_inner() ==  b"author" {
                 let mut buf = Vec::new();
                 let text = reader
-                    .read_text_into(e.name(), &mut buf).unwrap();
+                    .read_text_into(e.name(), &mut buf)?;
                 authors.push(crate::helper::utils::unescape_xml_text(&text).clone());
             }
         },
         Event::Eof => break,
     );
+
+    Ok(())
 }

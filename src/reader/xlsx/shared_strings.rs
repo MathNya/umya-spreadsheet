@@ -12,7 +12,7 @@ use crate::{
         SharedStringTable,
         Workbook,
     },
-    xml_read_loop,
+    try_xml_read_loop,
 };
 
 pub(crate) fn read<R: io::Read + io::Seek>(
@@ -31,7 +31,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(false);
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() == b"sst" {

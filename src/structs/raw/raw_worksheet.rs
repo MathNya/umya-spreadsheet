@@ -135,12 +135,12 @@ impl RawWorksheet {
         &mut self,
         arv: &mut zip::read::ZipArchive<R>,
         target: &str,
-    ) {
+    ) -> Result<(), XlsxError> {
         self.worksheet_file_mut().set_attributes(arv, "xl", target);
 
         let base_path = self.worksheet_file().path();
         let target = self.worksheet_file().make_rel_name();
-        self.read_rawrelationships(arv, &base_path, &target, None);
+        self.read_rawrelationships(arv, &base_path, &target, None)
     }
 
     pub(crate) fn read_lazy<R: io::Read + io::Seek, P: AsRef<Path>>(
@@ -148,7 +148,7 @@ impl RawWorksheet {
         arv: &mut zip::read::ZipArchive<R>,
         target: &str,
         source_file: P,
-    ) {
+    ) -> Result<(), XlsxError> {
         self.worksheet_file_mut().set_attributes_from_source(
             arv,
             "xl",
@@ -158,7 +158,7 @@ impl RawWorksheet {
 
         let base_path = self.worksheet_file().path();
         let target = self.worksheet_file().make_rel_name();
-        self.read_rawrelationships(arv, &base_path, &target, Some(source_file.as_ref()));
+        self.read_rawrelationships(arv, &base_path, &target, Some(source_file.as_ref()))
     }
 
     pub(crate) fn read_rawrelationships<R: io::Read + io::Seek>(
@@ -167,16 +167,17 @@ impl RawWorksheet {
         base_path: &str,
         target: &str,
         source_file: Option<&Path>,
-    ) {
+    ) -> Result<(), XlsxError> {
         let mut obj = RawRelationships::default();
-        if obj.set_attributes(arv, base_path, target, source_file) {
+        if obj.set_attributes(arv, base_path, target, source_file)? {
             for relationship in obj.relationship_list() {
                 let rels_base_path = relationship.raw_file().path();
                 let rels_target = relationship.raw_file().make_rel_name();
-                self.read_rawrelationships(arv, &rels_base_path, &rels_target, source_file);
+                self.read_rawrelationships(arv, &rels_base_path, &rels_target, source_file)?;
             }
             self.set_relationships(obj);
         }
+        Ok(())
     }
 
     pub(crate) fn load_file_data_from_source(&mut self) -> Result<(), XlsxError> {

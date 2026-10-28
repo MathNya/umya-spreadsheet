@@ -99,10 +99,14 @@ use super::{
     constants,
     key::create_iv,
 };
-use crate::writer::driver::{
-    write_end_tag,
-    write_new_line,
-    write_start_tag,
+use crate::{
+    XlsxError,
+    XlsxErrorKind,
+    writer::driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
 };
 
 /// Encrypts or decrypts package data using AES-256 in CBC mode.
@@ -125,7 +129,7 @@ pub(crate) fn crypt_package(
     salt: &[u8],
     key: &[u8],
     input: &[u8],
-) -> Vec<u8> {
+) -> Result<Vec<u8>, XlsxError> {
     let mut output_chunks: Vec<Vec<u8>> = Vec::new();
     let offset = if encrypt {
         0
@@ -154,7 +158,7 @@ pub(crate) fn crypt_package(
         let iv = create_iv(salt, block_size, &block_key_buffer);
 
         // Encrypt or decrypt the chunk
-        let output_chunk = crypt(encrypt, key, &iv, &input_chunk).unwrap();
+        let output_chunk = crypt(encrypt, key, &iv, &input_chunk)?;
         output_chunks.push(output_chunk);
 
         i += 1;
@@ -174,7 +178,7 @@ pub(crate) fn crypt_package(
         output.truncate(length);
     }
 
-    output
+    Ok(output)
 }
 
 /// Performs AES-256-CBC encryption or decryption on input data.
@@ -187,31 +191,37 @@ pub(crate) fn crypt_package(
 ///
 /// # Returns
 /// * `Ok(Vec<u8>)` - Encrypted/decrypted data
-/// * `Err(String)` - Error message if operation fails
-pub(crate) fn crypt(encrypt: bool, key: &[u8], iv: &[u8], input: &[u8]) -> Result<Vec<u8>, String> {
+/// * `Err(XlsxError)` - [`XlsxErrorKind::Crypto`] error if operation fails
+pub(crate) fn crypt(
+    encrypt: bool,
+    key: &[u8],
+    iv: &[u8],
+    input: &[u8],
+) -> Result<Vec<u8>, XlsxError> {
+    let crypto_err = |message: String| XlsxError::with_message(XlsxErrorKind::Crypto, message);
     match key.len() * 8 {
         256 => {
             if encrypt {
                 // Encrypt the input data
                 let cipher = Aes256CbcEnc::new_from_slices(key, iv)
-                    .map_err(|e| format!("Error creating cipher: {e}"))?;
+                    .map_err(|e| crypto_err(format!("Error creating cipher: {e}")))?;
                 let mut buffer = input.to_vec();
                 cipher
                     .encrypt_padded::<NoPadding>(&mut buffer, input.len())
-                    .map_err(|e| format!("Encryption error: {e}"))?;
+                    .map_err(|e| crypto_err(format!("Encryption error: {e}")))?;
                 Ok(buffer)
             } else {
                 // Decrypt the input data
                 let cipher = Aes256CbcDec::new_from_slices(key, iv)
-                    .map_err(|e| format!("Error creating cipher: {e}"))?;
+                    .map_err(|e| crypto_err(format!("Error creating cipher: {e}")))?;
                 let mut buffer = input.to_vec();
                 cipher
                     .decrypt_padded::<NoPadding>(&mut buffer)
-                    .map_err(|e| format!("Decryption error: {e}"))?;
+                    .map_err(|e| crypto_err(format!("Decryption error: {e}")))?;
                 Ok(buffer)
             }
         }
-        _ => Err("Key size not supported!".to_string()),
+        _ => Err(crypto_err("Key size not supported!".to_string())),
     }
 }
 

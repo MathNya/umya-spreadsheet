@@ -87,6 +87,7 @@ fn zip_part_names(bytes: &[u8]) -> Vec<String> {
 fn assert_book_contents(book: &Workbook) {
     let names: Vec<&str> = book
         .sheet_collection()
+        .unwrap()
         .iter()
         .map(Worksheet::name)
         .collect();
@@ -189,6 +190,7 @@ fn streaming_writer_respects_flush_order() {
 
     let names: Vec<&str> = book
         .sheet_collection()
+        .unwrap()
         .iter()
         .map(Worksheet::name)
         .collect();
@@ -248,6 +250,7 @@ fn streaming_writer_suppresses_legend_like_normal_writer() {
     // writer.
     let sheet_names: Vec<String> = book
         .sheet_collection()
+        .unwrap()
         .iter()
         .map(|ws| ws.name().to_string())
         .collect();

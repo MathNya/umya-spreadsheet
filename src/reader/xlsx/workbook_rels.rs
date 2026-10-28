@@ -12,8 +12,8 @@ use quick_xml::{
 use super::{
     XlsxError,
     driver::{
-        get_attribute,
-        xml_read_loop,
+        get_required_attribute,
+        try_xml_read_loop,
     },
 };
 use crate::{
@@ -35,16 +35,16 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     let mut result: Vec<(String, String, String)> = Vec::new();
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
             let (namespace, local_name) = reader.resolver().resolve_element(e.name());
             if namespace == ResolveResult::Bound(Namespace(REL_NS.as_bytes()))
                 && local_name.as_ref() == b"Relationship"
             {
-                let id_value = get_attribute(e, b"Id").unwrap();
-                let type_value = get_attribute(e, b"Type").unwrap();
-                let target_value = get_attribute(e, b"Target").unwrap();
+                let id_value = get_required_attribute(e, b"Id")?;
+                let type_value = get_required_attribute(e, b"Type")?;
+                let target_value = get_required_attribute(e, b"Target")?;
                 let target_value = target_value
                     .strip_prefix("/xl/")
                     .map(ToOwned::to_owned)

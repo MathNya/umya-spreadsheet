@@ -3,7 +3,10 @@ use std::{
     fs::File,
     io,
     io::Read,
-    path::Path,
+    path::{
+        Path,
+        PathBuf,
+    },
 };
 
 use super::driver;
@@ -236,14 +239,7 @@ pub fn write_writer_light<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<
 /// let _unused = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write<P: AsRef<Path>>(wb: &Workbook, path: P) -> Result<(), XlsxError> {
-    // Fix #328, add default extension
-    let extension = match path.as_ref().extension() {
-        Some(ext) => ext.to_str().unwrap_or("xlsx"),
-        None => "xlsx",
-    };
-    let path_tmp = path
-        .as_ref()
-        .with_extension(format!("{}{}", extension, "tmp"));
+    let path_tmp = make_tmp_path(path.as_ref());
     if let Err(v) = write_zip_to_writer(wb, io::BufWriter::new(File::create(&path_tmp)?), false) {
         fs::remove_file(path_tmp)?;
         return Err(v);
@@ -265,10 +261,7 @@ pub fn write<P: AsRef<Path>>(wb: &Workbook, path: P) -> Result<(), XlsxError> {
 /// let _unused = umya_spreadsheet::writer::xlsx::write_light(&book, path);
 /// ```
 pub fn write_light<P: AsRef<Path>>(wb: &Workbook, path: P) -> Result<(), XlsxError> {
-    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path
-        .as_ref()
-        .with_extension(format!("{}{}", extension, "tmp"));
+    let path_tmp = make_tmp_path(path.as_ref());
     if let Err(v) = write_zip_to_writer(wb, io::BufWriter::new(File::create(&path_tmp)?), true) {
         fs::remove_file(path_tmp)?;
         return Err(v);
@@ -295,20 +288,14 @@ pub fn write_with_password<P: AsRef<Path>>(
     path: P,
     password: &str,
 ) -> Result<(), XlsxError> {
-    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path
-        .as_ref()
-        .with_extension(format!("{}{}", extension, "tmp"));
-    let buffer = match make_buffer(wb, false) {
-        Ok(v) => v,
-        Err(v) => {
-            fs::remove_file(path_tmp)?;
-            return Err(v);
-        }
-    };
+    let path_tmp = make_tmp_path(path.as_ref());
+    let buffer = make_buffer(wb, false)?;
 
     // set password
-    encrypt(&path_tmp, &buffer, password);
+    if let Err(v) = encrypt(&path_tmp, &buffer, password) {
+        fs::remove_file(&path_tmp).ok();
+        return Err(v);
+    }
 
     fs::rename(path_tmp, path)?;
     Ok(())
@@ -333,20 +320,14 @@ pub fn write_with_password_light<P: AsRef<Path>>(
     path: P,
     password: &str,
 ) -> Result<(), XlsxError> {
-    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path
-        .as_ref()
-        .with_extension(format!("{}{}", extension, "tmp"));
-    let buffer = match make_buffer(wb, true) {
-        Ok(v) => v,
-        Err(v) => {
-            fs::remove_file(path_tmp)?;
-            return Err(v);
-        }
-    };
+    let path_tmp = make_tmp_path(path.as_ref());
+    let buffer = make_buffer(wb, true)?;
 
     // set password
-    encrypt(&path_tmp, &buffer, password);
+    if let Err(v) = encrypt(&path_tmp, &buffer, password) {
+        fs::remove_file(&path_tmp).ok();
+        return Err(v);
+    }
 
     fs::rename(path_tmp, path)?;
     Ok(())
@@ -370,12 +351,20 @@ pub fn set_password<P: AsRef<Path>>(
     to_path: P,
     password: &str,
 ) -> Result<(), XlsxError> {
-    let mut file = File::open(from_path).unwrap();
+    let mut file = File::open(from_path)?;
     let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer).unwrap();
+    file.read_to_end(&mut buffer)?;
 
     // set password
-    encrypt(&to_path, &buffer, password);
+    encrypt(&to_path, &buffer, password)
+}
 
-    Ok(())
+/// Returns the temporary path used while writing `path`.
+/// Fix #328, add default extension
+fn make_tmp_path(path: &Path) -> PathBuf {
+    let extension = path
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .unwrap_or("xlsx");
+    path.with_extension(format!("{extension}tmp"))
 }

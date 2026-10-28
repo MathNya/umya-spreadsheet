@@ -5,6 +5,7 @@ use quick_xml::{
 
 use crate::{
     PivotTable,
+    XlsxError,
     structs::{
         PivotCacheDefinition,
         raw::RawFile,
@@ -15,7 +16,7 @@ pub(crate) fn read(
     raw_file: &RawFile,
     pivot_table: &mut PivotTable,
     raw_cache_records: Option<&RawFile>,
-) {
+) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(raw_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
@@ -35,7 +36,7 @@ pub(crate) fn read(
                 }
             }
             Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Err(e) => return Err(e.into()),
             _ => (),
         }
         buf.clear();
@@ -47,4 +48,5 @@ pub(crate) fn read(
     }
 
     pivot_table.set_pivot_cache_definition(pivot_cache_def);
+    Ok(())
 }

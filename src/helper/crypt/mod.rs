@@ -27,6 +27,7 @@ use std::{
 use crate::structs::{
     SheetProtection,
     WorkbookProtection,
+    XlsxError,
 };
 
 pub(crate) mod algo;
@@ -155,14 +156,6 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 /// This function may return errors related to file I/O or cryptographic
 /// operations. Ensure to handle these errors appropriately in your application.
 ///
-/// # Panics
-///
-/// This function may panic if:
-/// - The underlying file operations fail (e.g., if the file cannot be created
-///   or written to).
-/// - Any cryptographic operation fails, such as key generation or encryption,
-///   due to invalid parameters or internal errors.
-///
 /// # Example
 ///
 /// ```rust
@@ -171,7 +164,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 /// let password = "securepassword";
 /// let filepath = "encrypted_data.bin";
 ///
-/// encrypt(&filepath, data, password);
+/// encrypt(&filepath, data, password).unwrap();
 /// ```
 ///
 /// # Note
@@ -179,7 +172,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 /// The encryption process involves multiple cryptographic operations, including
 /// key generation, HMAC creation, and data encryption. Ensure that the password
 /// used is strong and kept secure.
-pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
+pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) -> Result<(), XlsxError> {
     generate_random_bytes!(hmac_key, 64);
     generate_random_bytes!(key_salt, 16);
     generate_random_bytes!(package_key, 32);
@@ -193,7 +186,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &package_salt,
         &package_key,
         data,
-    );
+    )?;
 
     // Generate HMAC key and encrypt it
     let hmac_key_iv = key::create_iv(
@@ -201,7 +194,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         constants::PACKAGE_BLOCK_SIZE,
         &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
     );
-    let encrypted_hmac_key = algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
+    let encrypted_hmac_key = algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key)?;
 
     // Generate HMAC value and encrypt it
     let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
@@ -210,8 +203,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         constants::PACKAGE_BLOCK_SIZE,
         &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
     );
-    let encrypted_hmac_value =
-        algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
+    let encrypted_hmac_value = algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value)?;
 
     // Convert the password to a key
     let key = key::convert_password_to_key(
@@ -221,7 +213,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         constants::KEY_BITLENGTH,
         &constants::BLOCK_KEYS_KEY,
     );
-    let encrypted_key_value = algo::crypt(true, &key, &key_salt, &package_key).unwrap();
+    let encrypted_key_value = algo::crypt(true, &key, &key_salt, &package_key)?;
 
     // Generate verifier hash input and encrypt it
     let verifier_hash_input_key = key::convert_password_to_key(
@@ -236,8 +228,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &verifier_hash_input_key,
         &key_salt,
         &verifier_hash_input,
-    )
-    .unwrap();
+    )?;
 
     // Generate verifier hash value and encrypt it
     let verifier_hash_value = utils::hash_concatenated(&[&verifier_hash_input]);
@@ -253,8 +244,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &verifier_hash_value_key,
         &key_salt,
         &verifier_hash_value,
-    )
-    .unwrap();
+    )?;
 
     // Build the encryption info XML data
     let encryption_info_buffer = algo::build_encryption_info(
@@ -268,15 +258,16 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     );
 
     // Create compound file and write streams
-    let mut comp = cfb::create(filepath).unwrap();
+    let mut comp = cfb::create(filepath)?;
     {
-        let mut stream_info = comp.create_stream("EncryptionInfo").unwrap();
-        stream_info.write_all(&encryption_info_buffer).unwrap();
+        let mut stream_info = comp.create_stream("EncryptionInfo")?;
+        stream_info.write_all(&encryption_info_buffer)?;
     }
     {
-        let mut stream_package = comp.create_stream("EncryptedPackage").unwrap();
-        stream_package.write_all(&encrypted_package).unwrap();
+        let mut stream_package = comp.create_stream("EncryptedPackage")?;
+        stream_package.write_all(&encrypted_package)?;
     }
+    Ok(())
 }
 
 #[allow(unused_imports)]
@@ -312,7 +303,8 @@ mod tests {
             &package_salt,
             &package_key,
             &data,
-        );
+        )
+        .unwrap();
 
         assert_sha256!(
             &encrypted_package,
@@ -365,7 +357,8 @@ mod tests {
             &hex!("4c251b321d85cecfcb6d952ba6d81846"), // package_salt
             &hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf"), /* package_key */
             &data,
-        );
+        )
+        .unwrap();
 
         let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
         assert_eq!(

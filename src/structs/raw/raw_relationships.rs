@@ -17,7 +17,7 @@ use crate::{
     helper::const_str::REL_NS,
     reader::driver::{
         join_paths,
-        xml_read_loop,
+        try_xml_read_loop,
         zip_by_name,
     },
     structs::{
@@ -111,10 +111,14 @@ impl RawRelationships {
     }
 
     pub(crate) fn relationship_by_type(&self, rtype: &str) -> &RawRelationship {
+        self.find_relationship_by_type(rtype)
+            .unwrap_or_else(|| panic!("Not found relationship with Type: {rtype}."))
+    }
+
+    pub(crate) fn find_relationship_by_type(&self, rtype: &str) -> Option<&RawRelationship> {
         self.relationship_list()
             .iter()
             .find(|relationship| relationship.get_type() == rtype)
-            .unwrap_or_else(|| panic!("Not found relationship with Type: {rtype}."))
     }
 
     #[inline]
@@ -129,22 +133,22 @@ impl RawRelationships {
         base_path: &str,
         target: &str,
         source_file: Option<&Path>,
-    ) -> bool {
+    ) -> Result<bool, XlsxError> {
         let data = {
             let path_str = join_paths(base_path, target);
             let Ok(file_path) = zip_by_name(arv, &path_str) else {
-                return false;
+                return Ok(false);
             };
             self.set_file_target(path_str);
             let mut r = io::BufReader::new(file_path);
             let mut buf = Vec::new();
-            r.read_to_end(&mut buf).unwrap();
+            r.read_to_end(&mut buf)?;
             io::Cursor::new(buf)
         };
         let mut reader = Reader::from_reader(data);
         reader.config_mut().trim_text(true);
 
-        xml_read_loop!(
+        try_xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"Relationship" {
@@ -156,7 +160,7 @@ impl RawRelationships {
             Event::Eof => break
         );
 
-        true
+        Ok(true)
     }
 
     pub(crate) fn write_to<W: io::Seek + io::Write>(

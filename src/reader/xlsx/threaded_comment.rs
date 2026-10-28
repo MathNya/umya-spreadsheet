@@ -4,20 +4,21 @@ use quick_xml::{
 };
 
 use crate::{
+    XlsxError,
     office2019::threaded_comment::ThreadedComment,
     structs::{
         Worksheet,
         raw::RawFile,
     },
-    xml_read_loop,
+    try_xml_read_loop,
 };
 
-pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
+pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() ==  b"threadedComment" {
@@ -28,4 +29,6 @@ pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
         },
         Event::Eof => break,
     );
+
+    Ok(())
 }

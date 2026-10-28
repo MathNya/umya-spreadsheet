@@ -35,7 +35,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 }
             }
             Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Err(e) => return Err(e.into()),
             _ => (),
         }
         buf.clear();

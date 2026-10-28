@@ -146,22 +146,22 @@
 //! let mut book = new_file();
 //!
 //! // Insert rows
-//! book.insert_new_row("Sheet1", 2, 3);
+//! book.insert_new_row("Sheet1", 2, 3).unwrap();
 //!
 //! // Insert columns by column name
-//! book.insert_new_column("Sheet1", "B", 3);
+//! book.insert_new_column("Sheet1", "B", 3).unwrap();
 //!
 //! // Insert columns by index
-//! book.insert_new_column_by_index("Sheet1", 2, 3);
+//! book.insert_new_column_by_index("Sheet1", 2, 3).unwrap();
 //!
 //! // Remove rows
-//! book.remove_row("Sheet1", 6, 2);
+//! book.remove_row("Sheet1", 6, 2).unwrap();
 //!
 //! // Remove columns by column name
-//! book.remove_column("Sheet1", "F", 2);
+//! book.remove_column("Sheet1", "F", 2).unwrap();
 //!
 //! // Remove columns by index
-//! book.remove_column_by_index("Sheet1", 6, 2);
+//! book.remove_column_by_index("Sheet1", 6, 2).unwrap();
 //! ```
 //!
 //! ### Writer

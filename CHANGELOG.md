@@ -1,3 +1,16 @@
+# Change Detail -> Unreleased
+### Breaking Changes
+* [#271](https://github.com/MathNya/umya-spreadsheet/issues/271) Gracefully handle errors and reduce panics.
+  * `XlsxError` is now an opaque struct. Use `XlsxError::kind()` to get the `XlsxErrorKind`, and `std::error::Error::source()` to get the underlying error.
+    `XlsxErrorKind` is `#[non_exhaustive]`, so new kinds can be added without breaking changes.
+  * The following functions now return `Result` instead of panicking:
+    `Workbook::active_sheet`, `active_sheet_mut`, `sheet_collection`, `sheet_collection_mut`, `read_sheet`, `read_sheet_by_name`, `read_sheet_collection`,
+    `insert_new_row`, `insert_new_column`, `insert_new_column_by_index`, `remove_row`, `remove_column`, `remove_column_by_index`,
+    `helper::crypt::encrypt`.
+  * `Worksheet::add_defined_name` returns `Result<(), XlsxError>` instead of `Result<(), &str>`.
+  * Reading a file no longer panics on broken XML, missing required attributes or ZIP read errors in the workbook-level parts, relationships, comments, drawings and pivot tables; an `XlsxError` is returned instead.
+  * `writer::xlsx::write_light`, `write_with_password`, `write_with_password_light` and `set_password` no longer panic on a path without extension or on I/O errors.
+
 # Change Detail -> 4.0.0-beta.1
 ### Breaking Changes
 There have been changes regarding errors related to ZIP files.

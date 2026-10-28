@@ -12,7 +12,7 @@ use crate::{
         Stylesheet,
         Workbook,
     },
-    xml_read_loop,
+    try_xml_read_loop,
 };
 
 pub fn read<R: io::Read + io::Seek>(
@@ -31,7 +31,7 @@ pub fn read<R: io::Read + io::Seek>(
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() == b"styleSheet" {

@@ -7,7 +7,10 @@ use quick_xml::{
 
 use super::{
     XlsxError,
-    driver::get_attribute,
+    driver::{
+        get_attribute,
+        get_required_attribute,
+    },
 };
 use crate::{
     helper::const_str::PKG_WORKBOOK,
@@ -18,7 +21,7 @@ use crate::{
         WorkbookView,
         Worksheet,
     },
-    xml_read_loop,
+    try_xml_read_loop,
 };
 
 pub(crate) fn read<R: io::Read + io::Seek>(
@@ -31,7 +34,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     let mut defined_names: Vec<DefinedName> = Vec::new();
 
-    xml_read_loop!(
+    try_xml_read_loop!(
         reader,
         ref n @ (Event::Empty(ref e) | Event::Start(ref e)) => {
             let is_empty = matches!(n, Event::Empty(_));
@@ -54,11 +57,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 b"sheet" => {
                     let mut worksheet = Worksheet::default();
                     worksheet.set_attributes_from_wookbook(&mut reader, e, is_empty);
-                    wb.add_sheet(worksheet).unwrap();
+                    wb.add_sheet(worksheet)?;
                 }
                 b"pivotCache" => {
-                    let cache_id = get_attribute(e, b"cacheId").unwrap();
-                    let r_id = get_attribute(e, b"r:id").unwrap();
+                    let cache_id = get_required_attribute(e, b"cacheId")?;
+                    let r_id = get_required_attribute(e, b"r:id")?;
                     wb.add_pivot_caches((r_id, cache_id, String::new()));
                 }
                 b"definedName" => {

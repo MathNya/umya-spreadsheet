@@ -107,7 +107,7 @@ fn assert_worksheet_contents(prefix: &str) {
     for with_sheet_read in [false, true] {
         let mut book =
             reader::xlsx::read_reader(Cursor::new(bytes.clone()), with_sheet_read).unwrap();
-        book.read_sheet(0);
+        book.read_sheet(0).unwrap();
         assert_book_contents(&book);
         let mut rewritten = Vec::new();
         writer::xlsx::write_writer(&book, &mut rewritten).unwrap();
@@ -158,7 +158,7 @@ fn prefixed_worksheet_lazy_file_and_cell_stream_preserve_values() {
             .collect();
         lite_values.sort();
         assert_eq!(lite_values, vec!["240", "Quarterly report"]);
-        book.read_sheet(0);
+        book.read_sheet(0).unwrap();
         assert_book_contents(&book);
         let mut values = Vec::new();
         reader::xlsx::read_sheet_by_name_stream(&path, "Sheet1", |cell| {

@@ -8,6 +8,7 @@ use std::{
 use super::driver;
 use crate::{
     XlsxError,
+    XlsxErrorKind,
     helper::const_str::{
         COMMENTS_NS,
         DRAWINGS_NS,
@@ -90,22 +91,22 @@ fn read_reader_with_source<R: io::Read + io::Seek>(
     shared_strings::read(&mut arv, &mut book)?;
     styles::read(&mut arv, &mut book)?;
 
-    for sheet in book.sheet_collection_mut() {
+    for sheet in book.sheet_collection_mut()? {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheet.r_id() != rel_id {
                 continue;
             }
             let mut raw_worksheet = RawWorksheet::default();
             match source_file {
-                Some(source_file) => raw_worksheet.read_lazy(&mut arv, rel_target, source_file),
-                None => raw_worksheet.read(&mut arv, rel_target),
+                Some(source_file) => raw_worksheet.read_lazy(&mut arv, rel_target, source_file)?,
+                None => raw_worksheet.read(&mut arv, rel_target)?,
             }
             sheet.set_raw_data_of_worksheet(raw_worksheet);
         }
     }
 
     if with_sheet_read {
-        book.read_sheet_collection();
+        book.read_sheet_collection()?;
     }
 
     Ok(book)
@@ -166,9 +167,10 @@ where
         .iter()
         .find(|worksheet| worksheet.name() == sheet_name)
     else {
-        return Err(XlsxError::CellError(format!(
-            "Worksheet '{sheet_name}' not found."
-        )));
+        return Err(XlsxError::with_message(
+            XlsxErrorKind::NotFound,
+            format!("worksheet '{sheet_name}'"),
+        ));
     };
     let shared_string_table = book.shared_string_table();
     let shared_string_table = &*shared_string_table.read().unwrap();
@@ -184,9 +186,9 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
     shared_string_table: &RwLock<SharedStringTable>,
     stylesheet: &Stylesheet,
-) {
+) -> Result<(), XlsxError> {
     if worksheet.is_deserialized() {
-        return;
+        return Ok(());
     }
 
     let mut raw_data_of_worksheet = worksheet.take_raw_data_of_worksheet();
@@ -196,11 +198,8 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         &raw_data_of_worksheet,
         shared_string_table,
         stylesheet,
-    )
-    .unwrap();
-    raw_data_of_worksheet
-        .load_relationship_file_data_from_source()
-        .unwrap();
+    )?;
+    raw_data_of_worksheet.load_relationship_file_data_from_source()?;
 
     if let Some(v) = raw_data_of_worksheet.worksheet_relationships() {
         for relationship in v.relationship_list() {
@@ -211,19 +210,19 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         worksheet,
                         relationship.raw_file(),
                         raw_data_of_worksheet.drawing_relationships(),
-                    );
+                    )?;
                 }
                 // comment
                 COMMENTS_NS => {
-                    comment::read(worksheet, relationship.raw_file());
+                    comment::read(worksheet, relationship.raw_file())?;
                 }
                 // threaded_comment
                 THREADED_COMMENT_NS => {
-                    threaded_comment::read(worksheet, relationship.raw_file());
+                    threaded_comment::read(worksheet, relationship.raw_file())?;
                 }
                 // table
                 TABLE_NS => {
-                    table::read(worksheet, relationship.raw_file()).unwrap();
+                    table::read(worksheet, relationship.raw_file())?;
                 }
                 // pivot table, pivot cache
                 PIVOT_TABLE_NS => {
@@ -232,7 +231,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         relationship.raw_file(),
                         raw_data_of_worksheet.pivot_table_relationships(),
                         raw_data_of_worksheet.pivot_cache_relationships(),
-                    );
+                    )?;
                 }
                 _ => {}
             }
@@ -244,8 +243,10 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                     worksheet,
                     relationship.raw_file(),
                     raw_data_of_worksheet.vml_drawing_relationships(),
-                );
+                )?;
             }
         }
     }
+
+    Ok(())
 }
