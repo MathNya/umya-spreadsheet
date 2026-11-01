@@ -145,19 +145,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // calcPr
-    write_start_tag(
-        &mut writer,
-        "calcPr",
-        vec![
-            ("calcId", "122211").into(),
-            //("calcId", "999999"),
-            //("calcMode", "auto"),
-            //("calcCompleted", if recalc_required {"1"} else {"0"}),
-            //("fullCalcOnLoad", if recalc_required {"0"} else {"1"}),
-            //("forceFullCalc", if recalc_required {"0"} else {"1"}),
-        ],
-        true,
-    );
+    wb.calculation_properties().write_to(&mut writer);
 
     // pivotCaches
     let pivot_cache_definition_collection = wb.pivot_caches();

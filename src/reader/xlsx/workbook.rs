@@ -15,6 +15,7 @@ use super::{
 use crate::{
     helper::const_str::PKG_WORKBOOK,
     structs::{
+        CalculationProperties,
         DefinedName,
         Workbook,
         WorkbookProtection,
@@ -58,6 +59,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let mut worksheet = Worksheet::default();
                     worksheet.set_attributes_from_wookbook(&mut reader, e, is_empty);
                     wb.add_sheet(worksheet)?;
+                }
+                b"calcPr" => {
+                    let mut obj = CalculationProperties::default();
+                    obj.set_attributes(&mut reader, e);
+                    wb.set_calculation_properties(obj);
                 }
                 b"pivotCache" => {
                     let cache_id = get_required_attribute(e, b"cacheId")?;
