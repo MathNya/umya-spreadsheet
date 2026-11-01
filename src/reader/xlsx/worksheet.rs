@@ -22,7 +22,13 @@ use super::{
 use crate::{
     AutoFilter,
     XlsxErrorKind,
-    helper::formula::FormulaToken,
+    helper::{
+        coordinate::{
+            CellCoordinates,
+            index_from_coordinate,
+        },
+        formula::FormulaToken,
+    },
     structs::{
         Cell,
         Cells,
@@ -255,11 +261,12 @@ fn read_from_reader<R: io::BufRead>(
                     .set_attributes(&mut reader, e);
             }
             b"hyperlink" => {
-                let (coor, hyperlink) = get_hyperlink(
+                if let Some((coor, hyperlink)) = get_hyperlink(
                     e,
                     raw_data_of_worksheet.worksheet_relationships()
-                )?;
-                worksheet.cell_mut(coor).set_hyperlink(hyperlink);
+                )? {
+                    worksheet.cell_mut(coor).set_hyperlink(hyperlink);
+                }
             }
             b"printOptions" => {
                 worksheet
@@ -480,13 +487,20 @@ where
     );
 }
 
+/// Reads a hyperlink and the cell it belongs to. `ref` can be a range, such as
+/// the area of a merged cell, so the hyperlink is kept on its top-left cell. A
+/// hyperlink without a cell reference is skipped.
 fn get_hyperlink(
     e: &quick_xml::events::BytesStart<'_>,
     raw_relationships: Option<&RawRelationships>,
-) -> Result<(String, Hyperlink), XlsxError> {
+) -> Result<Option<(CellCoordinates, Hyperlink)>, XlsxError> {
     let mut hyperlink = Hyperlink::default();
 
-    let coordition = get_attribute(e, b"ref").unwrap_or_default();
+    let reference = get_attribute(e, b"ref").unwrap_or_default().to_uppercase();
+    let top_left = reference.split(':').next().unwrap_or_default();
+    let (Some(col), Some(row), ..) = index_from_coordinate(top_left) else {
+        return Ok(None);
+    };
     if let Some(v) = get_attribute(e, b"location") {
         hyperlink.set_url(escape::unescape(&v)?.to_string());
         hyperlink.set_location(true);
@@ -503,5 +517,5 @@ fn get_hyperlink(
             hyperlink.set_url(escape::unescape(relationship.target())?.to_string());
         }
     }
-    Ok((coordition, hyperlink))
+    Ok(Some(((col, row).into(), hyperlink)))
 }
