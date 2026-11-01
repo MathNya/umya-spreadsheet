@@ -350,7 +350,7 @@ fn handle_in_string(
             obj.set_token_type(FormulaTokenTypes::Operand);
             obj.set_token_sub_type(FormulaTokenSubTypes::Text);
             tokens.push(obj);
-            *value = String::new();
+            value.clear();
         }
     } else {
         value.push(formula.chars().nth(*index).unwrap());
@@ -404,7 +404,7 @@ fn handle_in_error(
         obj.set_token_type(FormulaTokenTypes::Operand);
         obj.set_token_sub_type(FormulaTokenSubTypes::Error);
         tokens.push(obj);
-        *value = String::new();
+        value.clear();
     }
 }
 
