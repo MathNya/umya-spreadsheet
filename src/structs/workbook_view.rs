@@ -6,8 +6,13 @@ use quick_xml::{
     events::BytesStart,
 };
 
-use super::Int32Value;
-use super::UInt32Value;
+use super::{
+    BooleanValue,
+    EnumValue,
+    Int32Value,
+    UInt32Value,
+    VisibilityValues,
+};
 use crate::{
     reader::driver::{
         get_attribute,
@@ -24,6 +29,13 @@ pub struct WorkbookView {
     window_width: Int32Value,
     window_height: Int32Value,
     tab_ratio: Int32Value,
+    visibility: EnumValue<VisibilityValues>,
+    minimized: BooleanValue,
+    show_horizontal_scroll: BooleanValue,
+    show_vertical_scroll: BooleanValue,
+    show_sheet_tabs: BooleanValue,
+    first_sheet: UInt32Value,
+    auto_filter_date_grouping: BooleanValue,
 }
 impl Default for WorkbookView {
     #[inline]
@@ -43,6 +55,13 @@ impl Default for WorkbookView {
             window_width,
             window_height,
             tab_ratio: Int32Value::default(),
+            visibility: EnumValue::default(),
+            minimized: BooleanValue::default(),
+            show_horizontal_scroll: BooleanValue::default(),
+            show_vertical_scroll: BooleanValue::default(),
+            show_sheet_tabs: BooleanValue::default(),
+            first_sheet: UInt32Value::default(),
+            auto_filter_date_grouping: BooleanValue::default(),
         }
     }
 }
@@ -161,6 +180,102 @@ impl WorkbookView {
         self
     }
 
+    /// Visibility of the workbook window (`visibility`). Defaults to
+    /// `Visible`.
+    #[inline]
+    #[must_use]
+    pub fn visibility(&self) -> &VisibilityValues {
+        self.visibility.value()
+    }
+
+    #[inline]
+    pub fn set_visibility(&mut self, value: VisibilityValues) -> &mut Self {
+        self.visibility.set_value(value);
+        self
+    }
+
+    /// Whether the workbook window is minimized (`minimized`).
+    #[inline]
+    #[must_use]
+    pub fn minimized(&self) -> bool {
+        self.minimized.value()
+    }
+
+    #[inline]
+    pub fn set_minimized(&mut self, value: bool) -> &mut Self {
+        self.minimized.set_value(value);
+        self
+    }
+
+    /// Whether the horizontal scroll bar is shown (`showHorizontalScroll`).
+    /// Defaults to `true`.
+    #[inline]
+    #[must_use]
+    pub fn show_horizontal_scroll(&self) -> bool {
+        !self.show_horizontal_scroll.has_value() || self.show_horizontal_scroll.value()
+    }
+
+    #[inline]
+    pub fn set_show_horizontal_scroll(&mut self, value: bool) -> &mut Self {
+        self.show_horizontal_scroll.set_value(value);
+        self
+    }
+
+    /// Whether the vertical scroll bar is shown (`showVerticalScroll`).
+    /// Defaults to `true`.
+    #[inline]
+    #[must_use]
+    pub fn show_vertical_scroll(&self) -> bool {
+        !self.show_vertical_scroll.has_value() || self.show_vertical_scroll.value()
+    }
+
+    #[inline]
+    pub fn set_show_vertical_scroll(&mut self, value: bool) -> &mut Self {
+        self.show_vertical_scroll.set_value(value);
+        self
+    }
+
+    /// Whether the sheet tabs are shown (`showSheetTabs`). Defaults to
+    /// `true`.
+    #[inline]
+    #[must_use]
+    pub fn show_sheet_tabs(&self) -> bool {
+        !self.show_sheet_tabs.has_value() || self.show_sheet_tabs.value()
+    }
+
+    #[inline]
+    pub fn set_show_sheet_tabs(&mut self, value: bool) -> &mut Self {
+        self.show_sheet_tabs.set_value(value);
+        self
+    }
+
+    /// Index of the first sheet shown in the tab bar (`firstSheet`).
+    #[inline]
+    #[must_use]
+    pub fn first_sheet(&self) -> u32 {
+        self.first_sheet.value()
+    }
+
+    #[inline]
+    pub fn set_first_sheet(&mut self, value: u32) -> &mut Self {
+        self.first_sheet.set_value(value);
+        self
+    }
+
+    /// Whether dates are grouped in the filter menus
+    /// (`autoFilterDateGrouping`). Defaults to `true`.
+    #[inline]
+    #[must_use]
+    pub fn auto_filter_date_grouping(&self) -> bool {
+        !self.auto_filter_date_grouping.has_value() || self.auto_filter_date_grouping.value()
+    }
+
+    #[inline]
+    pub fn set_auto_filter_date_grouping(&mut self, value: bool) -> &mut Self {
+        self.auto_filter_date_grouping.set_value(value);
+        self
+    }
+
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -173,6 +288,13 @@ impl WorkbookView {
         set_string_from_xml!(self, e, window_width, "windowWidth");
         set_string_from_xml!(self, e, window_height, "windowHeight");
         set_string_from_xml!(self, e, tab_ratio, "tabRatio");
+        set_string_from_xml!(self, e, visibility, "visibility");
+        set_string_from_xml!(self, e, minimized, "minimized");
+        set_string_from_xml!(self, e, show_horizontal_scroll, "showHorizontalScroll");
+        set_string_from_xml!(self, e, show_vertical_scroll, "showVerticalScroll");
+        set_string_from_xml!(self, e, show_sheet_tabs, "showSheetTabs");
+        set_string_from_xml!(self, e, first_sheet, "firstSheet");
+        set_string_from_xml!(self, e, auto_filter_date_grouping, "autoFilterDateGrouping");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -207,6 +329,41 @@ impl WorkbookView {
         let tab_ratio = self.tab_ratio.value_string();
         if self.tab_ratio.has_value() {
             attributes.push(("tabRatio", &tab_ratio).into());
+        }
+
+        let visibility = self.visibility.value_string();
+        if self.visibility.has_value() {
+            attributes.push(("visibility", visibility).into());
+        }
+
+        let minimized = self.minimized.value_string();
+        if self.minimized.has_value() {
+            attributes.push(("minimized", minimized).into());
+        }
+
+        let show_horizontal_scroll = self.show_horizontal_scroll.value_string();
+        if self.show_horizontal_scroll.has_value() {
+            attributes.push(("showHorizontalScroll", show_horizontal_scroll).into());
+        }
+
+        let show_vertical_scroll = self.show_vertical_scroll.value_string();
+        if self.show_vertical_scroll.has_value() {
+            attributes.push(("showVerticalScroll", show_vertical_scroll).into());
+        }
+
+        let show_sheet_tabs = self.show_sheet_tabs.value_string();
+        if self.show_sheet_tabs.has_value() {
+            attributes.push(("showSheetTabs", show_sheet_tabs).into());
+        }
+
+        let first_sheet = self.first_sheet.value_string();
+        if self.first_sheet.has_value() {
+            attributes.push(("firstSheet", &first_sheet).into());
+        }
+
+        let auto_filter_date_grouping = self.auto_filter_date_grouping.value_string();
+        if self.auto_filter_date_grouping.has_value() {
+            attributes.push(("autoFilterDateGrouping", auto_filter_date_grouping).into());
         }
 
         // workbookView
