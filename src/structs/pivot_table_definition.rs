@@ -11,15 +11,18 @@ use quick_xml::{
 };
 
 use crate::{
-    RowFields, helper::const_str::{
+    RowFields,
+    helper::const_str::{
         MC_NS,
         SHEET_MAIN_NS,
         SHEET_MS_REVISION_NS,
-    }, reader::driver::{
+    },
+    reader::driver::{
         get_attribute,
         set_string_from_xml,
         xml_read_loop,
-    }, structs::{
+    },
+    structs::{
         BooleanValue,
         ByteValue,
         ColumnFields,
@@ -31,10 +34,11 @@ use crate::{
         RowItems,
         StringValue,
         UInt32Value,
-    }, writer::driver::{
+    },
+    writer::driver::{
         write_end_tag,
         write_start_tag,
-    }
+    },
 };
 
 #[derive(Clone, Default, Debug)]
@@ -199,7 +203,7 @@ impl PivotTableDefinition {
     pub fn get_use_auto_formatting(&self) -> bool {
         self.use_auto_formatting()
     }
-    
+
     #[inline]
     pub fn set_use_auto_formatting(&mut self, value: bool) -> &mut Self {
         self.use_auto_formatting.set_value(value);
@@ -237,7 +241,7 @@ impl PivotTableDefinition {
     pub fn get_outline(&self) -> bool {
         self.outline()
     }
-    
+
     #[inline]
     pub fn set_outline(&mut self, value: bool) -> &mut Self {
         self.outline.set_value(value);
@@ -722,7 +726,11 @@ impl PivotTableDefinition {
     }
 
     /// Create a new minimal pivot table definition with required fields
-    pub fn new_simple(name: impl Into<String>, cache_id: u32, destination: impl Into<String>) -> Self {
+    pub fn new_simple(
+        name: impl Into<String>,
+        cache_id: u32,
+        destination: impl Into<String>,
+    ) -> Self {
         let mut pivot_def = Self::default();
 
         // Set required fields
@@ -874,13 +882,7 @@ impl PivotTableDefinition {
             );
         }
         if self.apply_font_formats.has_value() {
-            attributes.push(
-                (
-                    "applyFontFormats",
-                    self.apply_font_formats.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("applyFontFormats", self.apply_font_formats.value_string()).into());
         }
         if self.apply_pattern_formats.has_value() {
             attributes.push(
@@ -918,22 +920,10 @@ impl PivotTableDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(
-                (
-                    "minRefreshableVersion",
-                    &min_refreshable_version_str,
-                )
-                    .into(),
-            );
+            attributes.push(("minRefreshableVersion", &min_refreshable_version_str).into());
         }
         if self.use_auto_formatting.has_value() {
-            attributes.push(
-                (
-                    "useAutoFormatting",
-                    self.use_auto_formatting.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("useAutoFormatting", self.use_auto_formatting.value_string()).into());
         }
         if self.item_print_titles.has_value() {
             attributes.push(("itemPrintTitles", self.item_print_titles.value_string()).into());
@@ -962,40 +952,16 @@ impl PivotTableDefinition {
             );
         }
         if self.refresh_on_load.has_value() {
-            attributes.push(
-                (
-                    "refreshOnLoad",
-                    self.refresh_on_load.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("refreshOnLoad", self.refresh_on_load.value_string()).into());
         }
         if self.row_grand_totals.has_value() {
-            attributes.push(
-                (
-                    "rowGrandTotals",
-                    self.row_grand_totals.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("rowGrandTotals", self.row_grand_totals.value_string()).into());
         }
         if self.col_grand_totals.has_value() {
-            attributes.push(
-                (
-                    "colGrandTotals",
-                    self.col_grand_totals.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("colGrandTotals", self.col_grand_totals.value_string()).into());
         }
         if self.compact_data.has_value() {
-            attributes.push(
-                (
-                    "compactData",
-                    self.compact_data.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("compactData", self.compact_data.value_string()).into());
         }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 
@@ -1111,8 +1077,7 @@ mod tests {
         assert_eq!(
             xml.matches("<x ").count(),
             2,
-            "Expected 2 <x> elements (one per row field), XML: {}",
-            xml
+            "Expected 2 <x> elements (one per row field), XML: {xml}",
         );
         assert!(xml.contains("v=\"0\""));
         assert!(xml.contains("v=\"1\""));

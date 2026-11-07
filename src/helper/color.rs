@@ -316,6 +316,10 @@ mod tests {
     }
 
     #[test]
+    #[expect(
+        clippy::float_cmp,
+        reason = "the test intends to test the exact value and thresholding is not suitable"
+    )]
     fn excel_encoded_percent_tints_are_recovered_before_hls_math() {
         let measured = [
             ("000000", 0.499_984_740_745_262, "808080"),
