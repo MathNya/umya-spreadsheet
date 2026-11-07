@@ -9,12 +9,6 @@
 ## Description
 **umya-spreadsheet** is a library written in pure Rust to read and write xlsx file.
 
-## Chatting
-### The chat will be closed.
-(Maybe I didn't set it up right, but it's because I no longer get notifications when new messages come in and I don't notice them anymore.)
-
-Please mention in issues if you have any questions.
-
 ## Version 4.0.0-beta.1 has been released
 With the update to zip, the error types have been updated.
 We plan to update the section on error handling again later.
@@ -240,3 +234,16 @@ We would like to express our heartfelt gratitude to them.
 Community projects built with `umya-spreadsheet` (not endorsements).
 - [spreadsheet-mcp](https://github.com/PSU3D0/spreadsheet-mcp) - MCP server for spreadsheet analysis/editing (xlsx/xlsm via `umya-spreadsheet`)
 - [formualizer](https://github.com/PSU3D0/formualizer) - Arrow-backed spreadsheet engine and formula parser with excel parity (xlsx/xlsm via `umya-spreadsheet`)
+
+<details>
+<summary>Previous Chat</summary>
+
+## Chatting
+
+### The chat will be closed.
+
+(Maybe I didn't set it up right, but it's because I no longer get notifications when new messages come in and I don't notice them anymore.)
+
+Please mention in issues if you have any questions.
+
+</details>
