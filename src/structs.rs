@@ -192,6 +192,7 @@ pub_mod_use![
     pub vertical_alignment_run_values,
     pub vertical_alignment_values,
     pub vertical_text_alignment,
+    pub visibility_values,
     pub workbook_protection,
     pub workbook_view,
     pub workbook,
