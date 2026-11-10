@@ -2,13 +2,13 @@
 name = "umya-spreadsheet"
 version = "4.0.0"
 authors = ["MathNya <umya.net.info@gmail.com>"]
-repository = "https://github.com/MathNya/umya-spreadsheet"
-keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
 categories = ["parser-implementations", "encoding", "text-processing"]
-license = "MIT"
-description = "umya-spreadsheet is a library written in pure Rust to read and write xlsx file."
 edition = "2021"
+keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
+license = "MIT"
+repository = "https://github.com/MathNya/umya-spreadsheet"
 rust-version = "1.89.0"
+description = "umya-spreadsheet is a library written in pure Rust to read and write xlsx file."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -24,8 +24,7 @@ fancy-regex = "0.18"
 hmac = "0.13"
 html5gum = "0.8"
 imagesize = "0.14"
-# Avoid optional defmt metadata keeping bitflags 1 in Cargo.lock beside ZIP 9's bitflags 2.
-jiff = { version = ">=0.2, <0.2.29", default-features = false }
+jiff = { version = "0.2", default-features = false }
 md-5 = "0.11"
 num-traits = "0.2.19"
 phf = { version = "0.14", features = ["macros"] }
@@ -39,6 +38,5 @@ zip = { version = "9.0.5", default-features = false, features = ["deflate"] }
 [dev-dependencies]
 hex-literal = "1.1"
 rstest = { version = "0.26.1", default-features = false }
-
 
 [features]
