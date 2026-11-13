@@ -39,6 +39,11 @@ pub struct DataValidation {
     allow_blank:            BooleanValue,
     show_input_message:     BooleanValue,
     show_error_message:     BooleanValue,
+    /// A boolean value indicating whether to display a dropdown combo box for a
+    /// list type data validation. Note that it has an inverted logic, false
+    /// shows the dropdown list and true will render the dropdown as plain text
+    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    show_drop_down:         BooleanValue,
     prompt_title:           StringValue,
     prompt:                 StringValue,
     error_title:            StringValue,
@@ -293,6 +298,22 @@ impl DataValidation {
         self
     }
 
+    /// A boolean value indicating whether to display a dropdown combo box for a
+    /// list type data validation. Note that it has an inverted logic, false
+    /// shows the dropdown list and true will render the dropdown as plain text
+    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    #[inline]
+    #[must_use]
+    pub fn show_drop_down(&self) -> bool {
+        self.show_drop_down.value()
+    }
+
+    #[inline]
+    pub fn set_show_drop_down(&mut self, value: bool) -> &mut Self {
+        self.show_drop_down.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -341,6 +362,10 @@ impl DataValidation {
 
         if let Some(v) = get_attribute(e, b"sqref") {
             self.sequence_of_references.set_sqref(v);
+        }
+
+        if let Some(v) = get_attribute(e, b"showDropDown") {
+            self.show_drop_down.set_value_string(v);
         }
 
         if empty_flg {
@@ -434,6 +459,10 @@ impl DataValidation {
         let sequence_of_references = &self.sequence_of_references.get_sqref();
         if !sequence_of_references.is_empty() {
             attributes.push(("sqref", sequence_of_references).into());
+        }
+
+        if self.show_drop_down.has_value() {
+            attributes.push(("showDropDown", self.show_drop_down.value_string()).into());
         }
 
         write_start_tag(writer, "dataValidation", attributes, !is_inner);
