@@ -12,6 +12,7 @@ use quick_xml::{
 
 use super::{
     BooleanValue,
+    DataValidationErrorStyleValues,
     DataValidationOperatorValues,
     DataValidationValues,
     EnumValue,
@@ -42,6 +43,7 @@ pub struct DataValidation {
     prompt:                 StringValue,
     error_title:            StringValue,
     error_messsage:         StringValue,
+    error_style:            EnumValue<DataValidationErrorStyleValues>,
     sequence_of_references: SequenceOfReferences,
     formula1:               Box<Formula1>,
     formula2:               Box<Formula2>,
@@ -194,6 +196,18 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
+    pub fn error_style(&self) -> &DataValidationErrorStyleValues {
+        self.error_style.value()
+    }
+
+    #[inline]
+    pub fn set_error_style(&mut self, value: DataValidationErrorStyleValues) -> &mut Self {
+        self.error_style.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn prompt(&self) -> &str {
         self.prompt.value_str()
     }
@@ -313,6 +327,10 @@ impl DataValidation {
             self.error_messsage.set_value_string(v);
         }
 
+        if let Some(v) = get_attribute(e, b"errorStyle") {
+            self.error_style.set_value_string(v);
+        }
+
         if let Some(v) = get_attribute(e, b"promptTitle") {
             self.prompt_title.set_value_string(v);
         }
@@ -399,6 +417,10 @@ impl DataValidation {
 
         if self.error_messsage.has_value() {
             attributes.push(("error", self.error_messsage.value_str()).into());
+        }
+
+        if self.error_style.has_value() {
+            attributes.push(("errorStyle", self.error_style.value_string()).into());
         }
 
         if self.prompt_title.has_value() {
