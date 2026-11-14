@@ -621,14 +621,17 @@ impl Cell {
                             }
                         }
                         let mut buf = Vec::new();
-                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
                         self.set_value_string_crate(text);
                         reader.config_mut().trim_text(true);
-
                     }
                     b"v" => {
                         let mut buf = Vec::new();
-                        let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                        let text = crate::helper::utils::unescape_xml_text(
+                            &reader.read_text_into(e.name(), &mut buf).unwrap(),
+                        );
                         match type_value.as_str() {
                             "str" => {
                                 self.set_value_string_crate(text);
@@ -663,9 +666,10 @@ impl Cell {
                         obj.set_attributes(reader, e, true, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
                     }
-                    // A self-closing `<v/>` (written by Excel/LibreOffice for an
-                    // empty cached value) still carries the cell's declared type, so
-                    // an empty-string formula result must keep `t="str"` on write.
+                    // A self-closing `<v/>` (written by Excel/LibreOffice for
+                    // an empty cached value) still carries the cell's declared
+                    // type, so an empty-string formula result must keep
+                    // `t="str"` on write.
                     b"v" => match type_value.as_str() {
                         "str" => {
                             self.set_value_string_crate(String::new());
@@ -683,7 +687,11 @@ impl Cell {
                     },
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => if e.name().into_inner() == b"c" { return },
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"c" {
+                        return;
+                    }
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "c"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
@@ -880,7 +888,8 @@ mod tests {
 
     #[test]
     fn empty_string_formula_result_keeps_str_type() {
-        // Excel/LibreOffice write an empty cached result as a self-closing `<v/>`.
+        // Excel/LibreOffice write an empty cached result as a self-closing
+        // `<v/>`.
         let mut reader = Reader::from_str(r#"<c r="A1" t="str"><f>IF(TRUE,"","x")</f><v/></c>"#);
         let cell_start = match reader.read_event().unwrap() {
             Event::Start(event) => event,
@@ -900,8 +909,9 @@ mod tests {
 
         assert_eq!(cell.formula(), "IF(TRUE,\"\",\"x\")");
         assert_eq!(cell.value(), "");
-        // The writer emits `t` from `data_type_crate`; it must stay "str" so the
-        // empty-string result is not silently downgraded to a blank/untyped cell.
+        // The writer emits `t` from `data_type_crate`; it must stay "str" so
+        // the empty-string result is not silently downgraded to a blank/untyped
+        // cell.
         assert_eq!(cell.data_type_crate(), "str");
     }
 }

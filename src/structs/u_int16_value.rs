@@ -7,13 +7,13 @@ impl UInt16Value {
     pub(crate) fn value(&self) -> u16 {
         self.value.unwrap_or(0)
     }
-    
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use value()")]
     pub(crate) fn get_value(&self) -> u16 {
         self.value()
     }
-    
+
     #[inline]
     pub(crate) fn value_string(&self) -> String {
         self.value().to_string()

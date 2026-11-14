@@ -95,7 +95,7 @@ impl Anchor {
     pub fn get_right_column(&self) -> u32 {
         self.right_column()
     }
-    
+
     #[inline]
     pub fn set_right_column(&mut self, value: u32) {
         self.right_column = value;

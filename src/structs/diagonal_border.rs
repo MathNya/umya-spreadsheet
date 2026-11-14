@@ -1,12 +1,21 @@
-use super::BorderStyleValues;
-use super::Color;
-use super::EnumValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use reader::driver::*;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+use reader::driver::*;
 use writer::driver::*;
+
+use super::{
+    BorderStyleValues,
+    Color,
+    EnumValue,
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct DiagonalBorder {
@@ -14,6 +23,22 @@ pub struct DiagonalBorder {
     style: EnumValue<BorderStyleValues>,
 }
 impl DiagonalBorder {
+    pub const BORDER_DASHDOT: &'static str = "dashDot";
+    pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
+    pub const BORDER_DASHED: &'static str = "dashed";
+    pub const BORDER_DOTTED: &'static str = "dotted";
+    pub const BORDER_DOUBLE: &'static str = "double";
+    pub const BORDER_HAIR: &'static str = "hair";
+    pub const BORDER_MEDIUM: &'static str = "medium";
+    pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
+    pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
+    pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
+    // Border style
+    pub const BORDER_NONE: &'static str = "none";
+    pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
+    pub const BORDER_THICK: &'static str = "thick";
+    pub const BORDER_THIN: &'static str = "thin";
+
     #[inline]
     pub fn color(&self) -> &Color {
         &self.color
@@ -58,22 +83,6 @@ impl DiagonalBorder {
         self.style.set_value(value);
         self
     }
-
-    // Border style
-    pub const BORDER_NONE: &'static str = "none";
-    pub const BORDER_DASHDOT: &'static str = "dashDot";
-    pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
-    pub const BORDER_DASHED: &'static str = "dashed";
-    pub const BORDER_DOTTED: &'static str = "dotted";
-    pub const BORDER_DOUBLE: &'static str = "double";
-    pub const BORDER_HAIR: &'static str = "hair";
-    pub const BORDER_MEDIUM: &'static str = "medium";
-    pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
-    pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
-    pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
-    pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
-    pub const BORDER_THICK: &'static str = "thick";
-    pub const BORDER_THIN: &'static str = "thin";
 
     #[inline]
     pub fn border_style(&self) -> &str {

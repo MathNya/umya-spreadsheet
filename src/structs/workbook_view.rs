@@ -23,18 +23,18 @@ use crate::{
 
 #[derive(Clone, Debug)]
 pub struct WorkbookView {
-    active_tab: UInt32Value,
-    x_window: Int32Value,
-    y_window: Int32Value,
-    window_width: Int32Value,
-    window_height: Int32Value,
-    tab_ratio: Int32Value,
-    visibility: EnumValue<VisibilityValues>,
-    minimized: BooleanValue,
-    show_horizontal_scroll: BooleanValue,
-    show_vertical_scroll: BooleanValue,
-    show_sheet_tabs: BooleanValue,
-    first_sheet: UInt32Value,
+    active_tab:                UInt32Value,
+    x_window:                  Int32Value,
+    y_window:                  Int32Value,
+    window_width:              Int32Value,
+    window_height:             Int32Value,
+    tab_ratio:                 Int32Value,
+    visibility:                EnumValue<VisibilityValues>,
+    minimized:                 BooleanValue,
+    show_horizontal_scroll:    BooleanValue,
+    show_vertical_scroll:      BooleanValue,
+    show_sheet_tabs:           BooleanValue,
+    first_sheet:               UInt32Value,
     auto_filter_date_grouping: BooleanValue,
 }
 impl Default for WorkbookView {

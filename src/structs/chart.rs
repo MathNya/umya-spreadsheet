@@ -1,6 +1,15 @@
 use crate::{
-    drawing::charts::{NumericValue, RichText}, office2010::drawing::charts::Style, structs::{
+    drawing::charts::{
+        NumericValue,
+        RichText,
+    },
+    office2010::drawing::charts::Style,
+    structs::{
+        ChartType,
         drawing::{
+            Paragraph,
+            Run,
+            RunProperties,
             charts::{
                 Area3DChart,
                 AreaChart,
@@ -55,16 +64,18 @@ use crate::{
                 View3D,
                 XValues,
                 YValues,
-            }, spreadsheet::{
+            },
+            spreadsheet::{
                 GraphicFrame,
                 MarkerType,
                 TwoCellAnchor,
-            }, Paragraph, Run, RunProperties
-        }, ChartType
-    }, traits::{
+            },
+        },
+    },
+    traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
-    }
+    },
 };
 
 /// ## Supported chart types

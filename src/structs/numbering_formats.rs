@@ -168,21 +168,15 @@ mod tests {
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
-        style
-            .number_format_mut()
-            .set_format_code("test-yyyy-mm-dd");
+        style.number_format_mut().set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
-        style
-            .number_format_mut()
-            .set_format_code("test-yyyy/mm/dd");
+        style.number_format_mut().set_format_code("test-yyyy/mm/dd");
         assert_eq!(obj.set_style(&style), 177);
 
         let mut style = Style::default();
-        style
-            .number_format_mut()
-            .set_format_code("test-yyyy-mm-dd");
+        style.number_format_mut().set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();

@@ -75,7 +75,7 @@ impl SharedStringItem {
     pub(crate) fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
-    
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use rich_text()")]
     pub(crate) fn get_rich_text(&self) -> Option<&RichText> {

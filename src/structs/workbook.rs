@@ -36,21 +36,21 @@ use crate::{
 /// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
 pub struct Workbook {
-    properties:            Properties,
-    work_sheet_collection: Vec<Worksheet>,
-    macros_code:           Option<Vec<u8>>,
-    jsa_macros_code:       Option<Vec<u8>>,
-    code_name:             StringValue,
-    ribbon_xml_data:       StringValue,
-    theme:                 Theme,
-    stylesheet:            Stylesheet,
-    shared_string_table:   Arc<RwLock<SharedStringTable>>,
-    workbook_view:         WorkbookView,
-    backup_context_types:  Vec<(Box<str>, Box<str>)>,
-    pivot_caches:          Vec<(Box<str>, Box<str>, Box<str>)>,
-    workbook_protection:   Option<Box<WorkbookProtection>>,
-    defined_names:         Vec<DefinedName>,
-    date1904:              bool,
+    properties:             Properties,
+    work_sheet_collection:  Vec<Worksheet>,
+    macros_code:            Option<Vec<u8>>,
+    jsa_macros_code:        Option<Vec<u8>>,
+    code_name:              StringValue,
+    ribbon_xml_data:        StringValue,
+    theme:                  Theme,
+    stylesheet:             Stylesheet,
+    shared_string_table:    Arc<RwLock<SharedStringTable>>,
+    workbook_view:          WorkbookView,
+    backup_context_types:   Vec<(Box<str>, Box<str>)>,
+    pivot_caches:           Vec<(Box<str>, Box<str>, Box<str>)>,
+    workbook_protection:    Option<Box<WorkbookProtection>>,
+    defined_names:          Vec<DefinedName>,
+    date1904:               bool,
     calculation_properties: CalculationProperties,
 }
 
@@ -71,7 +71,12 @@ impl Workbook {
     /// # Errors
     /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) -> Result<(), XlsxError> {
+    pub fn insert_new_row(
+        &mut self,
+        sheet_name: &str,
+        row_index: u32,
+        num_rows: u32,
+    ) -> Result<(), XlsxError> {
         self.read_sheet_collection()?;
         self.adjustment_insert_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
         Ok(())
@@ -136,7 +141,12 @@ impl Workbook {
     /// # Errors
     /// Returns an error if a worksheet cannot be deserialized.
     #[inline]
-    pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) -> Result<(), XlsxError> {
+    pub fn remove_row(
+        &mut self,
+        sheet_name: &str,
+        row_index: u32,
+        num_rows: u32,
+    ) -> Result<(), XlsxError> {
         self.read_sheet_collection()?;
         self.adjustment_remove_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
         Ok(())
@@ -965,8 +975,8 @@ impl Workbook {
         for (val1, val2, val3) in &self.pivot_caches {
             let val3_up = format!("xl/{val3}");
 
-            // Check if this cache is referenced by any worksheet's pivot cache definitions
-            // (for existing files)
+            // Check if this cache is referenced by any worksheet's pivot cache
+            // definitions (for existing files)
             let mut found_in_raw_data = false;
             for worksheet in self.sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.pivot_cache_definition_collection() {
@@ -983,8 +993,8 @@ impl Workbook {
                 }
             }
 
-            // If not found in raw data, check if any worksheet has pivot tables (for newly
-            // created pivot tables)
+            // If not found in raw data, check if any worksheet has pivot tables
+            // (for newly created pivot tables)
             if !found_in_raw_data {
                 for worksheet in self.sheet_collection_no_check() {
                     if !worksheet.pivot_tables().is_empty()
