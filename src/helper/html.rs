@@ -278,7 +278,7 @@ impl HfdElement {
     #[inline]
     #[must_use]
     pub fn contains_class(&self, class: &str) -> bool {
-        self.classes.contains(&class.to_string())
+        self.classes.iter().any(|c| c == class)
     }
 }
 
