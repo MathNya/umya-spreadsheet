@@ -108,7 +108,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
                     .worksheet_drawing()
                     .chart_collection()
                     .iter()
-                    .map(|chart| chart::write(chart.chart_space(), wb, &mut writer_manager))
+                    .map(|chart| chart::write(chart.chart_space()?, wb, &mut writer_manager))
                     .collect();
 
                 let chart_no_list = chart_no_list?;

@@ -1,6 +1,17 @@
 use crate::{
-    drawing::charts::{NumericValue, RichText}, office2010::drawing::charts::Style, structs::{
+    XlsxError,
+    XlsxErrorKind,
+    drawing::charts::{
+        NumericValue,
+        RichText,
+    },
+    office2010::drawing::charts::Style,
+    structs::{
+        ChartType,
         drawing::{
+            Paragraph,
+            Run,
+            RunProperties,
             charts::{
                 Area3DChart,
                 AreaChart,
@@ -55,16 +66,18 @@ use crate::{
                 View3D,
                 XValues,
                 YValues,
-            }, spreadsheet::{
+            },
+            spreadsheet::{
                 GraphicFrame,
                 MarkerType,
                 TwoCellAnchor,
-            }, Paragraph, Run, RunProperties
-        }, ChartType
-    }, traits::{
+            },
+        },
+    },
+    traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
-    }
+    },
 };
 
 /// ## Supported chart types
@@ -294,27 +307,30 @@ impl Chart {
     }
 
     #[inline]
-    #[must_use]
-    pub fn chart_space(&self) -> &ChartSpace {
-        self.two_cell_anchor
+    pub fn chart_space(&self) -> Result<&ChartSpace, XlsxError> {
+        Ok(self
+            .two_cell_anchor
             .graphic_frame()
-            .expect("Non-ChartSpace.")
+            .ok_or_else(|| XlsxError::with_message(XlsxErrorKind::NotFound, "Non-ChartSpace"))?
             .graphic()
             .graphic_data()
-            .chart_space()
+            .chart_space())
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use chart_space()")]
     pub fn get_chart_space(&self) -> &ChartSpace {
-        self.chart_space()
+        self.chart_space().expect(
+            "keeping panic in deprecated version of the function instead of breaking the API",
+        )
     }
 
     #[inline]
     pub fn chart_space_mut(&mut self) -> &mut ChartSpace {
         self.two_cell_anchor
             .graphic_frame_mut()
+            // TODO (c-git): Change to return a result
             .expect("Non-ChartSpace.")
             .graphic_mut()
             .graphic_data_mut()

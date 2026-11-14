@@ -181,7 +181,7 @@ impl<W: io::Write + io::Seek> StreamingWriter<W> {
             .iter()
             .map(|chart| {
                 chart::write(
-                    chart.chart_space(),
+                    chart.chart_space()?,
                     &self.work_book,
                     &mut self.writer_manager,
                 )
