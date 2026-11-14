@@ -53,7 +53,7 @@ macro_rules! border_const {
 
 border_const! {
     BORDER_DASHDOT => "dashDot",
-    BORDER_DASHDOTDOT => "dashDotDot", 
+    BORDER_DASHDOTDOT => "dashDotDot",
     BORDER_DASHED => "dashed",
     BORDER_DOTTED => "dotted",
     BORDER_DOUBLE => "double",
@@ -69,7 +69,6 @@ border_const! {
 }
 
 impl Borders {
-
     #[inline]
     pub fn left(&self) -> &Border {
         &self.data[BordersIndex::Left as usize]
@@ -540,7 +539,7 @@ impl Borders {
     ) {
         set_string_from_xml!(self, e, diagonal_up, "diagonalUp");
         set_string_from_xml!(self, e, diagonal_down, "diagonalDown");
-        
+
         if empty_flg {
             return;
         }
@@ -560,16 +559,20 @@ impl Borders {
                         self.data[BordersIndex::Top as usize].set_attributes(reader, e, is_empty);
                     }
                     b"bottom" => {
-                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, is_empty);
+                        self.data[BordersIndex::Bottom as usize]
+                            .set_attributes(reader, e, is_empty);
                     }
                     b"diagonal" => {
-                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, is_empty);
+                        self.data[BordersIndex::Diagonal as usize]
+                            .set_attributes(reader, e, is_empty);
                     }
                     b"vertical" => {
-                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, is_empty);
+                        self.data[BordersIndex::Vertical as usize]
+                            .set_attributes(reader, e, is_empty);
                     }
                     b"horizontal" => {
-                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, is_empty);
+                        self.data[BordersIndex::Horizontal as usize]
+                            .set_attributes(reader, e, is_empty);
                     }
                     _ => (),
                 }
@@ -611,14 +614,13 @@ impl Borders {
         self.data[BordersIndex::Diagonal as usize].write_to_diagonal(writer);
 
         // vertical
-        if self.data[BordersIndex::Vertical as usize].hash_code()
-            != Border::default().hash_code()
-        {
+        if self.data[BordersIndex::Vertical as usize].hash_code() != Border::default().hash_code() {
             self.data[BordersIndex::Vertical as usize].write_to_vertical(writer);
         }
 
         // horizontal
-        if self.data[BordersIndex::Horizontal as usize].hash_code() != Border::default().hash_code() {
+        if self.data[BordersIndex::Horizontal as usize].hash_code() != Border::default().hash_code()
+        {
             self.data[BordersIndex::Horizontal as usize].write_to_horizontal(writer);
         }
 

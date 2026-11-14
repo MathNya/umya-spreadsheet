@@ -213,7 +213,7 @@ impl CellFormula {
     pub fn get_r2(&self) -> &str {
         self.r2()
     }
-    
+
     #[inline]
     pub fn set_r2<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r2.set_value(value);
@@ -309,9 +309,9 @@ impl CellFormula {
 
         if !is_empty {
             let mut buf = Vec::new();
-            let text = reader
-                    .read_text_into(e.name(), &mut buf).unwrap();
-            self.text.set_value(crate::helper::utils::unescape_xml_text(&text));
+            let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+            self.text
+                .set_value(crate::helper::utils::unescape_xml_text(&text));
         }
 
         // Shared

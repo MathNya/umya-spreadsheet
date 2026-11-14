@@ -61,10 +61,13 @@ impl MediaObject {
         rel_list
             .iter()
             .position(|(k, v)| k == "IMAGE" && v == &*self.name)
-            .map_or_else(|| {
-                rel_list.push((String::from("IMAGE"), self.name.to_string()));
-                rel_list.len() as u32
-            }, |index| (index + 1) as u32)
+            .map_or_else(
+                || {
+                    rel_list.push((String::from("IMAGE"), self.name.to_string()));
+                    rel_list.len() as u32
+                },
+                |index| (index + 1) as u32,
+            )
     }
 
     #[deprecated(since = "3.0.0", note = "Use rid()")]

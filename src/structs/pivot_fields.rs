@@ -47,7 +47,7 @@ impl PivotFields {
     pub fn get_list_mut(&mut self) -> &mut Vec<PivotField> {
         self.list_mut()
     }
-    
+
     #[inline]
     pub fn add_list_mut(&mut self, value: PivotField) -> &mut Self {
         self.list.push(value);

@@ -215,8 +215,7 @@ impl DefinedName {
         set_string_from_xml!(self, e, hidden, "hidden");
 
         let mut buf = Vec::new();
-        let text = reader
-                .read_text_into(e.name(), &mut buf).unwrap();
+        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
         self.set_address(crate::helper::utils::unescape_xml_text(&text));
     }
 

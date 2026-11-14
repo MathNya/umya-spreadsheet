@@ -22,8 +22,8 @@ use crate::{
     Formula1,
     Formula2,
     reader::driver::{
-        xml_read_loop,
         get_attribute,
+        xml_read_loop,
     },
     writer::driver::{
         write_end_tag,
@@ -370,13 +370,7 @@ impl DataValidation {
         }
 
         if self.show_input_message.has_value() {
-            attributes.push(
-                (
-                    "showInputMessage",
-                    self.show_input_message.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("showInputMessage", self.show_input_message.value_string()).into());
         }
 
         if self.operator.has_value() {
@@ -384,13 +378,7 @@ impl DataValidation {
         }
 
         if self.show_error_message.has_value() {
-            attributes.push(
-                (
-                    "showErrorMessage",
-                    self.show_error_message.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("showErrorMessage", self.show_error_message.value_string()).into());
         }
 
         if self.error_title.has_value() {
@@ -431,13 +419,15 @@ impl DataValidation {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use quick_xml::Reader;
+
+    use super::*;
 
     #[test]
     fn formula1_preserves_numeric_character_references() {
         // Excel/LibreOffice may emit en-dashes as `&#8211;`. quick-xml surfaces
-        // those as GeneralRef events between Text fragments; we must append both.
+        // those as GeneralRef events between Text fragments; we must append
+        // both.
         let xml = concat!(
             r#"<dataValidation type="list" sqref="D41" allowBlank="1">"#,
             r#"<formula1>"0&#8211;3 years ago,4&#8211;5 years ago,6&#8211;7 years ago"</formula1>"#,

@@ -16,10 +16,7 @@ use crate::structs::{
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut style = book
-///     .sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .style_mut("D2");
+/// let mut style = book.sheet_by_name_mut("Sheet1").unwrap().style_mut("D2");
 ///
 /// // add bottom border
 /// style
@@ -49,10 +46,7 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book
-///     .sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .style_mut("A1");
+/// let mut style = book.sheet_by_name_mut("Sheet1").unwrap().style_mut("A1");
 ///
 /// // fill color on red.
 /// style.set_background_color(Color::COLOR_RED_STR);
@@ -64,16 +58,10 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book
-///     .sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .style_mut("A1");
+/// let mut style = book.sheet_by_name_mut("Sheet1").unwrap().style_mut("A1");
 ///
 /// // font color on red.
-/// style
-///     .font_mut()
-///     .color_mut()
-///     .set_argb(Color::COLOR_RED);
+/// style.font_mut().color_mut().set_argb(Color::COLOR_RED);
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
@@ -171,7 +159,7 @@ impl Style {
     pub fn get_background_color(&self) -> Option<&Color> {
         self.background_color()
     }
-    
+
     #[inline]
     pub fn set_background_color<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
         self.set_background_color_solid(color);

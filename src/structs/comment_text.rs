@@ -1,18 +1,32 @@
 // text
-use super::PhoneticRun;
-use super::RichText;
-use super::Text;
-use super::TextElement;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    PhoneticRun,
+    RichText,
+    Text,
+    TextElement,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CommentText {
-    text: Option<Text>,
+    text:      Option<Text>,
     rich_text: Option<RichText>,
 }
 

@@ -21,7 +21,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct FilterColumn {
-    column_id: UInt32Value,
+    column_id:     UInt32Value,
     hidden_button: BooleanValue,
 }
 
@@ -69,11 +69,6 @@ impl FilterColumn {
         }
 
         // filterColumn
-        write_start_tag(
-            writer,
-            "filterColumn",
-            attributes,
-            true,
-        );
+        write_start_tag(writer, "filterColumn", attributes, true);
     }
 }
