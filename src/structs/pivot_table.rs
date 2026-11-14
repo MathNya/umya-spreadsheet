@@ -25,9 +25,9 @@ impl PivotTable {
 
     #[inline]
     pub fn pivot_table_definition_mut(&mut self) -> &mut PivotTableDefinition {
-        &mut self.
-        pivot_table_definition
+        &mut self.pivot_table_definition
     }
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use pivot_table_definition_mut()")]
     pub fn get_pivot_table_definition_mut(&mut self) -> &mut PivotTableDefinition {

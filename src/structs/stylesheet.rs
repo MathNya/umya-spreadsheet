@@ -103,7 +103,7 @@ impl Stylesheet {
     pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
         self.fonts_mut()
     }
-    
+
     #[inline]
     pub(crate) fn set_fonts(&mut self, value: Fonts) -> &mut Self {
         self.fonts = value;

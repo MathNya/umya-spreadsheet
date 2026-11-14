@@ -1,17 +1,14 @@
 use std::collections::HashMap;
+
 use quick_xml::{
-    escape,
     Reader,
-    events::BytesStart,
-    events::Event,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
+    escape,
+    events::{
+        BytesStart,
+        Event,
     },
-    xml_read_loop,
 };
+
 use crate::{
     StringValue,
     XlsxError,
@@ -28,7 +25,13 @@ use crate::{
             get_start_and_end_point,
         },
     },
-    reader::xlsx::worksheet::read_lite,
+    reader::{
+        driver::{
+            get_attribute,
+            set_string_from_xml,
+        },
+        xlsx::worksheet::read_lite,
+    },
     structs::{
         AutoFilter,
         Cell,
@@ -77,6 +80,7 @@ use crate::{
         AdjustmentCoordinateWithSheet,
         AdjustmentValue,
     },
+    xml_read_loop,
 };
 
 /// A Worksheet Object.
@@ -2748,8 +2752,8 @@ impl Worksheet {
         column: i32,
         is_move: bool,
     ) -> &mut Self {
-        // Check to ensure coordinates to move are within range (eg: moving A1 cells to
-        // the left is impossible)
+        // Check to ensure coordinates to move are within range (eg: moving A1
+        // cells to the left is impossible)
         let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range);
         if (num_traits::cast::<_, i32>(col_start).unwrap() + column) < 1
             || (num_traits::cast::<_, i32>(row_start).unwrap() + row) < 1
@@ -2918,7 +2922,6 @@ impl Worksheet {
             Event::Eof => panic!("Error: Could not find {} end element", "sheet")
         );
     }
-
 }
 impl AdjustmentCoordinate for Worksheet {
     fn adjustment_insert_coordinate(

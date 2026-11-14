@@ -1,4 +1,7 @@
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{
+    BTreeSet,
+    HashMap,
+};
 
 use super::{
     Cell,
@@ -23,8 +26,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
     map:                HashMap<(u32, u32), Box<Cell>>,
-    row_column_index: BTreeSet<(u32, u32)>,
-    column_row_index: BTreeSet<(u32, u32)>,
+    row_column_index:   BTreeSet<(u32, u32)>,
+    column_row_index:   BTreeSet<(u32, u32)>,
     default_cell_value: CellValue,
     default_style:      Style,
 }
@@ -477,9 +480,7 @@ impl Cells {
         range: &str,
     ) -> impl Iterator<Item = &CellValue> + '_ {
         self.iter_all_coordinates_by_range_sorted_by_row(range)
-            .map(|coordinate| {
-                coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c))
-            })
+            .map(|coordinate| coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c)))
     }
 
     pub fn iter_all_coordinates_by_range_sorted_by_column(
@@ -525,9 +526,7 @@ impl Cells {
         range: &str,
     ) -> impl Iterator<Item = &CellValue> + '_ {
         self.iter_all_coordinates_by_range_sorted_by_column(range)
-            .map(|coordinate| {
-                coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c))
-            })
+            .map(|coordinate| coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c)))
     }
 
     #[must_use]
@@ -575,23 +574,20 @@ impl Cells {
             .iter_mut()
             .map(|(_, cell)| {
                 (
-                    (
-                        cell.coordinate().row_num(),
-                        cell.coordinate().col_num(),
-                    ),
+                    (cell.coordinate().row_num(), cell.coordinate().col_num()),
                     std::mem::take(cell),
                 )
             })
             .collect();
 
-            self.row_column_index = self.map.keys().copied().collect();
+        self.row_column_index = self.map.keys().copied().collect();
 
-            self.column_row_index = self
-                .map
-                .keys()
-                .copied()
-                .map(|(col, row)| (row, col))
-                .collect();
+        self.column_row_index = self
+            .map
+            .keys()
+            .copied()
+            .map(|(col, row)| (row, col))
+            .collect();
     }
 }
 impl AdjustmentCoordinate for Cells {

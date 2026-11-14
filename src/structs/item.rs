@@ -22,8 +22,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Item {
-    index:                 UInt32Value,
-    item_type:             EnumValue<ItemValues>,
+    index:     UInt32Value,
+    item_type: EnumValue<ItemValues>,
 }
 impl Item {
     #[inline]

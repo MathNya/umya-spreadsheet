@@ -89,13 +89,7 @@ impl PrintOptions {
                 );
             }
             if self.vertical_centered.has_value() {
-                attributes.push(
-                    (
-                        "verticalCentered",
-                        self.vertical_centered.value_string(),
-                    )
-                        .into(),
-                );
+                attributes.push(("verticalCentered", self.vertical_centered.value_string()).into());
             }
             write_start_tag(writer, "printOptions", attributes, true);
         }

@@ -238,12 +238,7 @@ impl CalculationProperties {
         set_string_from_xml!(self, e, calc_completed, "calcCompleted");
         set_string_from_xml!(self, e, calc_on_save, "calcOnSave");
         set_string_from_xml!(self, e, concurrent_calc, "concurrentCalc");
-        set_string_from_xml!(
-            self,
-            e,
-            concurrent_manual_count,
-            "concurrentManualCount"
-        );
+        set_string_from_xml!(self, e, concurrent_manual_count, "concurrentManualCount");
         set_string_from_xml!(self, e, force_full_calc, "forceFullCalc");
     }
 

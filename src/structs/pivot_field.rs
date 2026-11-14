@@ -4,18 +4,29 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::{BytesStart, Event},
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
-    EnumValue, PivotTableAxisValues, reader::driver::{
+    EnumValue,
+    PivotTableAxisValues,
+    reader::driver::{
         get_attribute,
         set_string_from_xml,
-    }, structs::{
+    },
+    structs::{
         BooleanValue,
         Items,
         UInt32Value,
-    }, writer::driver::{write_end_tag, write_start_tag}, xml_read_loop
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
@@ -158,12 +169,7 @@ impl PivotField {
             let val = self.missing_items_limit.value_string();
             attributes.push(("missingItemsLimit", &val).into());
         }
-        write_start_tag(
-            writer,
-            "pivotField",
-            attributes,
-            empty_flg,
-        );
+        write_start_tag(writer, "pivotField", attributes, empty_flg);
         if !empty_flg {
             self.items.write_to(writer);
             write_end_tag(writer, "pivotField");

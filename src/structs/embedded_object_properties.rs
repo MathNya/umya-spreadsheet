@@ -186,10 +186,8 @@ impl EmbeddedObjectProperties {
         let r_id = get_attribute(e, b"r:id").unwrap();
         let attached_file = relationships.relationship_by_rid(&r_id).raw_file();
 
-        self.image_mut()
-            .set_image_name(attached_file.file_name());
-        self.image_mut()
-            .set_image_data(attached_file.file_data());
+        self.image_mut().set_image_name(attached_file.file_name());
+        self.image_mut().set_image_data(attached_file.file_data());
 
         set_string_from_xml!(self, e, default_size, "defaultSize");
         set_string_from_xml!(self, e, auto_pict, "autoPict");

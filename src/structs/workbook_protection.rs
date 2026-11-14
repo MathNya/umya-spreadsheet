@@ -345,22 +345,10 @@ impl WorkbookProtection {
             );
         }
         if self.workbook_hash_value.has_value() {
-            attributes.push(
-                (
-                    "workbookHashValue",
-                    self.workbook_hash_value.value_str(),
-                )
-                    .into(),
-            );
+            attributes.push(("workbookHashValue", self.workbook_hash_value.value_str()).into());
         }
         if self.workbook_salt_value.has_value() {
-            attributes.push(
-                (
-                    "workbookSaltValue",
-                    self.workbook_salt_value.value_str(),
-                )
-                    .into(),
-            );
+            attributes.push(("workbookSaltValue", self.workbook_salt_value.value_str()).into());
         }
         let workbook_spin_count = self.workbook_spin_count.value_string();
         if self.workbook_spin_count.has_value() {
@@ -379,22 +367,10 @@ impl WorkbookProtection {
             );
         }
         if self.revisions_hash_value.has_value() {
-            attributes.push(
-                (
-                    "revisionsHashValue",
-                    self.revisions_hash_value.value_str(),
-                )
-                    .into(),
-            );
+            attributes.push(("revisionsHashValue", self.revisions_hash_value.value_str()).into());
         }
         if self.revisions_salt_value.has_value() {
-            attributes.push(
-                (
-                    "revisionsSaltValue",
-                    self.revisions_salt_value.value_str(),
-                )
-                    .into(),
-            );
+            attributes.push(("revisionsSaltValue", self.revisions_salt_value.value_str()).into());
         }
         let revisions_spin_count = self.revisions_spin_count.value_string();
         if self.revisions_spin_count.has_value() {

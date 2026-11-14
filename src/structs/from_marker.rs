@@ -142,22 +142,30 @@ impl FromMarker {
             Event::Start(ref e) => match e.name().into_inner() {
                 b"xdr:col" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.col = text.parse::<usize>().unwrap();
                 }
                 b"xdr:colOff" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.col_off = text.parse::<usize>().unwrap();
                 }
                 b"xdr:row" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.row = text.parse::<usize>().unwrap();
                 }
                 b"xdr:rowOff" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.row_off = text.parse::<usize>().unwrap();
                 }
                 _ => (),
