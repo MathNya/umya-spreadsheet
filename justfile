@@ -14,7 +14,7 @@ gitclean:
 
 test:
     #!/usr/bin/env sh
-    if cargo nextest --help &> /dev/null; then
+    if cargo nextest --help </dev/null >/dev/null 2>&1; then
         # If successful, run 'cargo nextest run'
         cargo nextest run
     else
