@@ -90,6 +90,7 @@ pub_mod_use![
     pub data_field,
     pub data_fields,
     pub date_time_value,
+    pub data_validation_error_style_values,
     pub data_validation_operator_values,
     pub data_validation_values,
     pub data_validation,

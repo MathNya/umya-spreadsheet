@@ -12,6 +12,7 @@ use quick_xml::{
 
 use super::{
     BooleanValue,
+    DataValidationErrorStyleValues,
     DataValidationOperatorValues,
     DataValidationValues,
     EnumValue,
@@ -38,10 +39,16 @@ pub struct DataValidation {
     allow_blank:            BooleanValue,
     show_input_message:     BooleanValue,
     show_error_message:     BooleanValue,
+    /// A boolean value indicating whether to display a dropdown combo box for a
+    /// list type data validation. Note that it has an inverted logic, false
+    /// shows the dropdown list and true will render the dropdown as plain text
+    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    show_drop_down:         BooleanValue,
     prompt_title:           StringValue,
     prompt:                 StringValue,
     error_title:            StringValue,
     error_messsage:         StringValue,
+    error_style:            EnumValue<DataValidationErrorStyleValues>,
     sequence_of_references: SequenceOfReferences,
     formula1:               Box<Formula1>,
     formula2:               Box<Formula2>,
@@ -194,6 +201,18 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
+    pub fn error_style(&self) -> &DataValidationErrorStyleValues {
+        self.error_style.value()
+    }
+
+    #[inline]
+    pub fn set_error_style(&mut self, value: DataValidationErrorStyleValues) -> &mut Self {
+        self.error_style.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn prompt(&self) -> &str {
         self.prompt.value_str()
     }
@@ -279,6 +298,22 @@ impl DataValidation {
         self
     }
 
+    /// A boolean value indicating whether to display a dropdown combo box for a
+    /// list type data validation. Note that it has an inverted logic, false
+    /// shows the dropdown list and true will render the dropdown as plain text
+    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    #[inline]
+    #[must_use]
+    pub fn show_drop_down(&self) -> bool {
+        self.show_drop_down.value()
+    }
+
+    #[inline]
+    pub fn set_show_drop_down(&mut self, value: bool) -> &mut Self {
+        self.show_drop_down.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -313,6 +348,10 @@ impl DataValidation {
             self.error_messsage.set_value_string(v);
         }
 
+        if let Some(v) = get_attribute(e, b"errorStyle") {
+            self.error_style.set_value_string(v);
+        }
+
         if let Some(v) = get_attribute(e, b"promptTitle") {
             self.prompt_title.set_value_string(v);
         }
@@ -323,6 +362,10 @@ impl DataValidation {
 
         if let Some(v) = get_attribute(e, b"sqref") {
             self.sequence_of_references.set_sqref(v);
+        }
+
+        if let Some(v) = get_attribute(e, b"showDropDown") {
+            self.show_drop_down.set_value_string(v);
         }
 
         if empty_flg {
@@ -401,6 +444,10 @@ impl DataValidation {
             attributes.push(("error", self.error_messsage.value_str()).into());
         }
 
+        if self.error_style.has_value() {
+            attributes.push(("errorStyle", self.error_style.value_string()).into());
+        }
+
         if self.prompt_title.has_value() {
             attributes.push(("promptTitle", self.prompt_title.value_str()).into());
         }
@@ -412,6 +459,10 @@ impl DataValidation {
         let sequence_of_references = &self.sequence_of_references.get_sqref();
         if !sequence_of_references.is_empty() {
             attributes.push(("sqref", sequence_of_references).into());
+        }
+
+        if self.show_drop_down.has_value() {
+            attributes.push(("showDropDown", self.show_drop_down.value_string()).into());
         }
 
         write_start_tag(writer, "dataValidation", attributes, !is_inner);
