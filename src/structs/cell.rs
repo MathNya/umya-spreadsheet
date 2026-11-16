@@ -878,6 +878,58 @@ mod tests {
         assert!(cell.value_number().is_none());
     }
 
+    fn read_cell(xml: &str) -> Cell {
+        let mut reader = Reader::from_str(xml);
+        let cell_start = match reader.read_event().unwrap() {
+            Event::Start(event) => event,
+            event => panic!("expected cell start event, got {event:?}"),
+        };
+        let mut cell = Cell::default();
+        cell.set_attributes(
+            &mut reader,
+            &cell_start,
+            &SharedStringTable::default(),
+            &Stylesheet::default(),
+            false,
+            &mut HashMap::new(),
+        );
+        cell
+    }
+
+    #[test]
+    fn an_error_cell_stays_an_error_whatever_its_token() {
+        for (xml, token) in [
+            (r#"<c r="A1" t="e"><v>#N/A</v></c>"#, "#N/A"),
+            (r#"<c r="A1" t="e"><v>#SPILL!</v></c>"#, "#SPILL!"),
+            (r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#, "#CALC!"),
+        ] {
+            let cell = read_cell(xml);
+            assert!(cell.raw_value().is_error(), "{xml}");
+            assert_eq!(cell.value(), token, "{xml}");
+            assert_eq!(cell.data_type(), "e", "{xml}");
+        }
+        assert_eq!(
+            read_cell(r#"<c r="A1" t="e"><v>#SPILL!</v></c>"#).raw_value(),
+            &CellRawValue::Error(crate::CellErrorType::Other("#SPILL!".into()))
+        );
+        assert_eq!(
+            read_cell(r#"<c r="A1" t="e"><v>#N/A</v></c>"#).raw_value(),
+            &CellRawValue::Error(crate::CellErrorType::NA),
+            "a known token keeps its name"
+        );
+        assert!(
+            read_cell(r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#).is_formula(),
+            "the formula is kept beside its error"
+        );
+    }
+
+    #[test]
+    fn text_that_looks_like_an_unknown_error_stays_text() {
+        let mut cell = Cell::default();
+        cell.set_value("#SPILL!");
+        assert_eq!(cell.data_type(), "s");
+    }
+
     #[test]
     fn empty_string_formula_result_keeps_str_type() {
         // Excel/LibreOffice write an empty cached result as a self-closing `<v/>`.
