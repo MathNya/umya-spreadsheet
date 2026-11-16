@@ -99,7 +99,12 @@ impl Formula {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:f
         write_start_tag(writer, "c:f", vec![], false);
-        write_text_node_no_escape(writer, self.address_str());
+        let value = if self.string_value.has_value() {
+            self.string_value.value_str().to_string()
+        } else {
+            self.address.address_ptn2()
+        };
+        write_text_node_no_escape(writer, value);
         write_end_tag(writer, "c:f");
     }
 }
