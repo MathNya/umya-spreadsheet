@@ -66,6 +66,7 @@ use crate::{
         printer_settings,
         rels,
         shared_strings,
+        sheet_metadata,
         styles,
         table,
         theme,
@@ -124,6 +125,7 @@ impl<W: io::Write + io::Seek> StreamingWriter<W> {
         doc_props_custom::write(&self.work_book, &mut self.writer_manager)?;
         vba_project_bin::write(&self.work_book, &mut self.writer_manager)?;
         jsa_project_bin::write(&self.work_book, &mut self.writer_manager)?;
+        sheet_metadata::write(&self.work_book, &mut self.writer_manager)?;
         rels::write(&self.work_book, &mut self.writer_manager)?;
         theme::write(self.work_book.theme(), &mut self.writer_manager)?;
         person::write(&self.work_book, &mut self.writer_manager)?;
@@ -171,6 +173,7 @@ impl<W: io::Write + io::Seek> StreamingWriter<W> {
             &self.work_book.shared_string_table(),
             &mut self.stylesheet,
             self.has_macros,
+            self.work_book.has_sheet_metadata(),
             &mut self.writer_manager,
         )?;
 
