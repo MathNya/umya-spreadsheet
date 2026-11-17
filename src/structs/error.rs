@@ -26,12 +26,16 @@ pub enum CellErrorType {
     Null,
     /// Getting data
     Data,
+    /// Any other error a cell holds, as written: one this enum has no name for, such as
+    /// `#SPILL!` or `#CALC!` from a newer Excel. Kept so reading and writing a workbook
+    /// never turns an error into text.
+    Other(Box<str>),
 }
 
 impl fmt::Display for CellErrorType {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
-        match *self {
+        match self {
             CellErrorType::Div0 => write!(f, "#DIV/0!"),
             CellErrorType::NA => write!(f, "#N/A"),
             CellErrorType::Name => write!(f, "#NAME?"),
@@ -40,6 +44,7 @@ impl fmt::Display for CellErrorType {
             CellErrorType::Ref => write!(f, "#REF!"),
             CellErrorType::Value => write!(f, "#VALUE!"),
             CellErrorType::Data => write!(f, "#DATA!"),
+            CellErrorType::Other(token) => write!(f, "{token}"),
         }
     }
 }

@@ -327,9 +327,20 @@ impl CellValue {
         self
     }
 
+    /// Set an error value: one of [`CellErrorType`]'s names (in any case), or any
+    /// other token as [`CellErrorType::Other`], so a cell a workbook declares an error
+    /// (`t="e"`) stays an error whatever its token. An empty value leaves the cell empty.
     #[inline]
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value_crate(value);
+        let value = value.into();
+        self.raw_value = if value.is_empty() {
+            CellRawValue::Empty
+        } else {
+            CellRawValue::Error(
+                CellErrorType::from_str(&value.to_uppercase())
+                    .unwrap_or_else(|_| CellErrorType::Other(value.into_boxed_str())),
+            )
+        };
         self
     }
 
