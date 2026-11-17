@@ -42,7 +42,7 @@ pub struct DataValidation {
     /// A boolean value indicating whether to display a dropdown combo box for a
     /// list type data validation. Note that it has an inverted logic, false
     /// shows the dropdown list and true will render the dropdown as plain text
-    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    /// instead. See `<https://openpyxl.readthedocs.io/en/stable/validation.html>`
     show_drop_down:         BooleanValue,
     prompt_title:           StringValue,
     prompt:                 StringValue,
@@ -301,7 +301,7 @@ impl DataValidation {
     /// A boolean value indicating whether to display a dropdown combo box for a
     /// list type data validation. Note that it has an inverted logic, false
     /// shows the dropdown list and true will render the dropdown as plain text
-    /// instead. See https://openpyxl.readthedocs.io/en/stable/validation.html
+    /// instead. See `<https://openpyxl.readthedocs.io/en/stable/validation.html>`
     #[inline]
     #[must_use]
     pub fn show_drop_down(&self) -> bool {
