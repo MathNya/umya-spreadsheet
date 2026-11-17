@@ -698,6 +698,7 @@ impl Cell {
         shared_string_table: &RwLock<SharedStringTable>,
         stylesheet: &mut Stylesheet,
         formula_shared_list: &HashMap<u32, (String, Option<String>)>,
+        has_sheet_metadata: bool,
     ) {
         let empty_flag_value = self.cell_value.is_empty();
         let empty_flag_style = self.style.is_empty();
@@ -723,11 +724,13 @@ impl Cell {
             attributes.push(("s", &xf_index_str).into());
         }
 
-        // NOT SUPPORTED
-        // let cell_meta_index_str = self.cell_meta_index.get_value_string();
-        // if self.cell_meta_index.has_value() {
-        //    attributes.push(("cm", &cell_meta_index_str).into());
-        // }
+        // A formula's cell metadata index (a dynamic array formula's, as Excel
+        // writes it), only while the part it points into is written too and the
+        // cell still holds a formula.
+        let cell_meta_index_str = self.cell_meta_index.value_string();
+        if has_sheet_metadata && self.cell_meta_index.has_value() && self.is_formula() {
+            attributes.push(("cm", &cell_meta_index_str).into());
+        }
 
         if empty_flag_value {
             write_start_tag(writer, "c", attributes, true);

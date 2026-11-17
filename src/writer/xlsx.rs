@@ -29,6 +29,7 @@ pub(crate) mod drawing;
 pub(crate) mod drawing_rels;
 pub(crate) mod embeddings;
 pub(crate) mod jsa_project_bin;
+pub(crate) mod sheet_metadata;
 pub(crate) mod media;
 pub(crate) mod person;
 pub(crate) mod pivot_cache;
@@ -64,6 +65,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
         doc_props_custom::write(wb, &mut writer_manager)?;
         vba_project_bin::write(wb, &mut writer_manager)?;
         jsa_project_bin::write(wb, &mut writer_manager)?;
+        sheet_metadata::write(wb, &mut writer_manager)?;
         rels::write(wb, &mut writer_manager)?;
         theme::write(wb.theme(), &mut writer_manager)?;
         person::write(wb, &mut writer_manager)?;
@@ -84,6 +86,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
                         &shared_string_table,
                         &mut stylesheet,
                         wb.has_macros(),
+                        wb.has_sheet_metadata(),
                         &mut writer_manager,
                     )
                 } else {

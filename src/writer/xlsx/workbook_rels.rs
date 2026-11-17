@@ -25,6 +25,7 @@ use crate::{
         PKG_WORKBOOK_RELS,
         REL_NS,
         SHARED_STRINGS_NS,
+        SHEET_METADATA_NS,
         STYLES_NS,
         THEME_NS,
         VBA_PROJECT_NS,
@@ -124,6 +125,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &index.to_string(),
             JSA_PROJECT_NS,
             "jsaProject.bin",
+            "",
+        );
+        index += 1;
+    }
+
+    // relationship for the cell metadata part, if read
+    if wb.has_sheet_metadata() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            SHEET_METADATA_NS,
+            "metadata.xml",
             "",
         );
         index += 1;
