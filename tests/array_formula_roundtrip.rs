@@ -1,8 +1,9 @@
 //! An array formula and its cell metadata survive reading and writing: the
-//! formula keeps `t="array"` and its `ref`, a dynamic array formula's cell keeps
-//! its `cm` index, and the cell metadata part it points into (`xl/metadata.xml`)
-//! is written back with its relationship and content type. Writing the marker
-//! without the part made Excel repair the file (#206); now both are kept.
+//! formula keeps `t="array"` and its `ref`, a dynamic array formula's cell
+//! keeps its `cm` index, and the cell metadata part it points into
+//! (`xl/metadata.xml`) is written back with its relationship and content type.
+//! Writing the marker without the part made Excel repair the file (#206); now
+//! both are kept.
 use std::io::{
     Cursor,
     Read,
@@ -48,9 +49,16 @@ fn a_dynamic_array_formula_keeps_its_marker_its_range_and_its_metadata() {
     let j24 = &sheet[sheet.find(r#"<c r="J24""#).unwrap()..];
     let j24 = &j24[..j24.find("</c>").unwrap()];
     assert!(j24.contains(r#"cm="1""#), "{j24}");
-    assert!(j24.contains(r#"<f t="array" ref="J24">SUMPRODUCT($F$23:$I$23*F24:I24)</f>"#), "{j24}");
+    assert!(
+        j24.contains(r#"<f t="array" ref="J24">SUMPRODUCT($F$23:$I$23*F24:I24)</f>"#),
+        "{j24}"
+    );
 
-    assert_eq!(part(&mut out, "xl/metadata.xml").as_deref(), Some(metadata.as_slice()), "the part as read");
+    assert_eq!(
+        part(&mut out, "xl/metadata.xml").as_deref(),
+        Some(metadata.as_slice()),
+        "the part as read"
+    );
     assert!(text(&mut out, "xl/_rels/workbook.xml.rels").contains(
         r#"Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sheetMetadata" Target="metadata.xml""#
     ));
@@ -72,7 +80,10 @@ fn a_cell_metadata_index_is_written_only_with_its_part_and_its_formula() {
 
     // A value written over the formula leaves no `cm` behind.
     let mut book = reader::xlsx::read(std::path::Path::new(SOURCE)).unwrap();
-    book.sheet_mut(0).unwrap().cell_mut("J24").set_value_number(7);
+    book.sheet_mut(0)
+        .unwrap()
+        .cell_mut("J24")
+        .set_value_number(7);
     let mut out = written(&book);
     let sheet = text(&mut out, "xl/worksheets/sheet1.xml");
     assert!(!sheet.contains(" cm="), "no cm once the formula is gone");

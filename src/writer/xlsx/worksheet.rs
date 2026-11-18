@@ -70,7 +70,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_worksheet_header(&mut writer);
     write_worksheet_properties(&mut writer, worksheet, has_macros);
     write_dimension_and_views(&mut writer, worksheet);
-    write_columns_and_rows(&mut writer, worksheet, shared_string_table, stylesheet, has_sheet_metadata);
+    write_columns_and_rows(
+        &mut writer,
+        worksheet,
+        shared_string_table,
+        stylesheet,
+        has_sheet_metadata,
+    );
     write_worksheet_features(&mut writer, worksheet, stylesheet);
     write_worksheet_extensions(&mut writer, worksheet);
 
@@ -196,7 +202,13 @@ fn write_columns_and_rows(
         .calculation_auto_width(worksheet.cells_crate(), worksheet.merge_cells_crate());
     column_dimensions.write_to(writer, stylesheet);
 
-    write_sheet_data(writer, worksheet, shared_string_table, stylesheet, has_sheet_metadata);
+    write_sheet_data(
+        writer,
+        worksheet,
+        shared_string_table,
+        stylesheet,
+        has_sheet_metadata,
+    );
 }
 
 /// Writes the sheet data section containing rows and cells.
@@ -398,7 +410,13 @@ fn write_row_with_cells(
         row.write_to(writer, stylesheet, &spans, false);
 
         for cell in cells_in_row {
-            cell.write_to(writer, shared_string_table, stylesheet, formula_shared_list, has_sheet_metadata);
+            cell.write_to(
+                writer,
+                shared_string_table,
+                stylesheet,
+                formula_shared_list,
+                has_sheet_metadata,
+            );
         }
 
         write_end_tag(writer, "row");
