@@ -185,6 +185,21 @@ impl XlsxError {
         err
     }
 
+    /// Creates an error of the given kind caused by `source` with an additional
+    /// message.
+    #[inline]
+    #[must_use]
+    pub fn with_source_and_message<E, M>(kind: XlsxErrorKind, source: E, message: M) -> Self
+    where
+        E: Into<Box<dyn StdError + Send + Sync + 'static>>,
+        M: Into<Cow<'static, str>>,
+    {
+        let mut err = Self::new(kind);
+        err.inner.source = Some(source.into());
+        err.inner.message = Some(message.into());
+        err
+    }
+
     /// Returns the category of this error.
     #[inline]
     #[must_use]
