@@ -1,4 +1,5 @@
-//! Inserting or removing rows through the workbook used to move the cells of every sheet.
+//! Inserting or removing rows through the workbook used to move the cells of
+//! every sheet.
 
 use umya_spreadsheet::new_file;
 
@@ -12,7 +13,10 @@ fn book() -> umya_spreadsheet::Workbook {
             sheet.cell_mut((1, row)).set_value(format!("{prefix}{row}"));
         }
     }
-    book.sheet_by_name_mut("Data").unwrap().cell_mut("B1").set_formula("Budget!A4");
+    book.sheet_by_name_mut("Data")
+        .unwrap()
+        .cell_mut("B1")
+        .set_formula("Budget!A4");
     book
 }
 
