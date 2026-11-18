@@ -7,7 +7,6 @@ use crate::{
         coordinate::{
             adjustment_insert_coordinate,
             adjustment_remove_coordinate,
-            coordinate_from_index_with_lock,
             index_from_coordinate,
             string_from_column_index,
         },
@@ -938,6 +937,33 @@ pub fn adjustment_formula_coordinate(
     }
 }
 
+/// Moves the unlocked column and row of one coordinate. Whole-column (`A`) and
+/// whole-row (`3`) references have only one part, and only that part moves.
+fn shift_coordinate(coordinate: &str, shift: impl Fn(u32, bool) -> u32) -> String {
+    let (col_num, row_num, is_lock_col, is_lock_row) = index_from_coordinate(coordinate);
+    if col_num.is_none() && row_num.is_none() {
+        return coordinate.to_string();
+    }
+    let mut new_coordinate = String::new();
+    if let Some(col_num) = col_num {
+        let is_lock_col = is_lock_col.unwrap_or(false);
+        if is_lock_col {
+            new_coordinate.push('$');
+        }
+        let col_num = if is_lock_col { col_num } else { shift(col_num, true) };
+        new_coordinate.push_str(&string_from_column_index(col_num));
+    }
+    if let Some(row_num) = row_num {
+        let is_lock_row = is_lock_row.unwrap_or(false);
+        if is_lock_row {
+            new_coordinate.push('$');
+        }
+        let row_num = if is_lock_row { row_num } else { shift(row_num, false) };
+        new_coordinate.push_str(&row_num.to_string());
+    }
+    new_coordinate
+}
+
 #[allow(clippy::too_many_arguments)]
 pub fn adjustment_insert_formula_coordinate(
     token_list: &mut [FormulaToken],
@@ -961,40 +987,13 @@ pub fn adjustment_insert_formula_coordinate(
                 let mut coordinate_list_new: Vec<String> = Vec::new();
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
-                    let cell = index_from_coordinate(coordinate);
-                    if let Some(cell_0) = cell.0 {
-                        if let Some(cell_1) = cell.1 {
-                            let mut col_num = cell_0;
-                            let mut row_num = cell_1;
-                            let is_lock_col = cell.2.unwrap_or(false);
-                            let is_lock_row = cell.3.unwrap_or(false);
-                            if !is_lock_col {
-                                col_num = adjustment_insert_coordinate(
-                                    col_num,
-                                    root_col_num,
-                                    offset_col_num,
-                                );
-                            }
-                            if !is_lock_row {
-                                row_num = adjustment_insert_coordinate(
-                                    row_num,
-                                    root_row_num,
-                                    offset_row_num,
-                                );
-                            }
-                            let new_corrdinate = coordinate_from_index_with_lock(
-                                col_num,
-                                row_num,
-                                is_lock_col,
-                                is_lock_row,
-                            );
-                            coordinate_list_new.push(new_corrdinate);
+                    coordinate_list_new.push(shift_coordinate(coordinate, |num, is_col| {
+                        if is_col {
+                            adjustment_insert_coordinate(num, root_col_num, offset_col_num)
                         } else {
-                            coordinate_list_new.push((*coordinate).to_string());
+                            adjustment_insert_coordinate(num, root_row_num, offset_row_num)
                         }
-                    } else {
-                        coordinate_list_new.push((*coordinate).to_string());
-                    }
+                    }));
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
                 token.set_value(new_value);
@@ -1027,30 +1026,13 @@ pub fn adjustment_remove_formula_coordinate(
                 let mut coordinate_list_new: Vec<String> = Vec::new();
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
-                    let cell = index_from_coordinate(coordinate);
-                    if let Some(cell_0) = cell.0 {
-                        let mut col_num = cell_0;
-                        let mut row_num = cell.1.unwrap();
-                        let is_lock_col = cell.2.unwrap();
-                        let is_lock_row = cell.3.unwrap();
-                        if !is_lock_col {
-                            col_num =
-                                adjustment_remove_coordinate(col_num, root_col_num, offset_col_num);
+                    coordinate_list_new.push(shift_coordinate(coordinate, |num, is_col| {
+                        if is_col {
+                            adjustment_remove_coordinate(num, root_col_num, offset_col_num)
+                        } else {
+                            adjustment_remove_coordinate(num, root_row_num, offset_row_num)
                         }
-                        if !is_lock_row {
-                            row_num =
-                                adjustment_remove_coordinate(row_num, root_row_num, offset_row_num);
-                        }
-                        let new_corrdinate = coordinate_from_index_with_lock(
-                            col_num,
-                            row_num,
-                            is_lock_col,
-                            is_lock_row,
-                        );
-                        coordinate_list_new.push(new_corrdinate);
-                    } else {
-                        coordinate_list_new.push((*coordinate).to_string());
-                    }
+                    }));
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
                 token.set_value(new_value);
