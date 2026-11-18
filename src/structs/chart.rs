@@ -307,7 +307,7 @@ impl Chart {
     }
 
     #[inline]
-    pub fn chart_space(&self) -> Result<&ChartSpace, XlsxError> {
+    pub fn chart_space(&self) -> crate::Result<&ChartSpace> {
         Ok(self
             .two_cell_anchor
             .graphic_frame()
