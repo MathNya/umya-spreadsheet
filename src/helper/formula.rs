@@ -950,7 +950,11 @@ fn shift_coordinate(coordinate: &str, shift: impl Fn(u32, bool) -> u32) -> Strin
         if is_lock_col {
             new_coordinate.push('$');
         }
-        let col_num = if is_lock_col { col_num } else { shift(col_num, true) };
+        let col_num = if is_lock_col {
+            col_num
+        } else {
+            shift(col_num, true)
+        };
         new_coordinate.push_str(&string_from_column_index(col_num));
     }
     if let Some(row_num) = row_num {
@@ -958,7 +962,11 @@ fn shift_coordinate(coordinate: &str, shift: impl Fn(u32, bool) -> u32) -> Strin
         if is_lock_row {
             new_coordinate.push('$');
         }
-        let row_num = if is_lock_row { row_num } else { shift(row_num, false) };
+        let row_num = if is_lock_row {
+            row_num
+        } else {
+            shift(row_num, false)
+        };
         new_coordinate.push_str(&row_num.to_string());
     }
     new_coordinate

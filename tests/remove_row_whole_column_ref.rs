@@ -1,5 +1,5 @@
-//! Whole-column and whole-row references: removing a row or column used to panic on
-//! them, and neither inserts nor removals moved them.
+//! Whole-column and whole-row references: removing a row or column used to
+//! panic on them, and neither inserts nor removals moved them.
 
 use umya_spreadsheet::new_file;
 
@@ -14,7 +14,12 @@ fn book_with(formula: &str) -> umya_spreadsheet::Workbook {
 }
 
 fn formula(book: &umya_spreadsheet::Workbook, cell: &str) -> String {
-    book.sheet(0).unwrap().cell(cell).unwrap().formula().to_string()
+    book.sheet(0)
+        .unwrap()
+        .cell(cell)
+        .unwrap()
+        .formula()
+        .to_string()
 }
 
 #[test]
