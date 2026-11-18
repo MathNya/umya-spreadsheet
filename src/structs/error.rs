@@ -26,9 +26,9 @@ pub enum CellErrorType {
     Null,
     /// Getting data
     Data,
-    /// Any other error a cell holds, as written: one this enum has no name for, such as
-    /// `#SPILL!` or `#CALC!` from a newer Excel. Kept so reading and writing a workbook
-    /// never turns an error into text.
+    /// Any other error a cell holds, as written: one this enum has no name for,
+    /// such as `#SPILL!` or `#CALC!` from a newer Excel. Kept so reading
+    /// and writing a workbook never turns an error into text.
     Other(Box<str>),
 }
 
