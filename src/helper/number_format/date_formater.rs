@@ -2,10 +2,9 @@ use std::borrow::Cow;
 
 use fancy_regex::Captures;
 
-use crate::helper::{
-    date::excel_to_date_time_jiff,
-    utils::compile_regex,
-};
+#[cfg(feature = "jiff")]
+use crate::helper::date::excel_to_date_time_jiff;
+use crate::helper::utils::compile_regex;
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
@@ -56,6 +55,7 @@ const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H"
 
 const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] = &[("hh", "%I"), ("h", "%-I")];
 
+#[cfg(feature = "jiff")]
 pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<'_, str> {
     let format = Cow::Borrowed(format);
 

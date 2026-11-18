@@ -176,7 +176,8 @@
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
 //! let _unused = writer::xlsx::write(&book, path);
 //! ```
-
+//! # Feature Flags
+#![doc = document_features::document_features!()]
 #![deny(
     explicit_outlives_requirements,
     let_underscore_drop,
@@ -216,7 +217,6 @@
     clippy::collapsible_match
 )]
 
-extern crate chrono;
 extern crate fancy_regex;
 extern crate imagesize;
 extern crate md5;

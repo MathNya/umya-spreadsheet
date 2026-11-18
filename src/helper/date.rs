@@ -1,7 +1,9 @@
+#[cfg(feature = "chrono")]
 use chrono::{
     Duration,
     NaiveDateTime,
 };
+#[cfg(feature = "jiff")]
 use jiff::ToSpan as _;
 use num_traits::cast;
 
@@ -50,6 +52,7 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 /// assert_eq!(date_time.minute(), 0);
 /// ```
 #[must_use]
+#[cfg(feature = "chrono")]
 pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
     let base_date = if excel_timestamp < 61f64 {
         // Allow adjustment for 1900 Leap Year in MS Excel
@@ -130,6 +133,7 @@ pub fn excel_to_date_time_chrono(excel_timestamp: f64) -> NaiveDateTime {
 /// assert_eq!(days, 20);
 /// assert_eq!(time, 0.40625);
 /// ```
+#[cfg(feature = "jiff")]
 #[must_use]
 pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64, f64) {
     let base_date = if excel_timestamp < 61f64 {
@@ -198,6 +202,7 @@ pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64
 /// assert_eq!(date_time.minute(), 0);
 /// ```
 #[must_use]
+#[cfg(feature = "jiff")]
 pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
     excel_to_date_time_jiff_checked(excel_timestamp).expect("input was out of supported range")
 }
@@ -210,9 +215,11 @@ pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
 /// This returns an error when the input causes the number of days since the
 /// `base_date` to be outside of the supported range for `jiff` spans. See
 /// [`jiff::Span::days`] for relevant bounds.
+#[cfg(feature = "jiff")]
 pub fn excel_to_date_time_jiff_checked(
     excel_timestamp: f64,
 ) -> Result<jiff::civil::DateTime, jiff::Error> {
+    // TODO (c-git): Change to use the library result type
     let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
     let seconds: i64 = cast((time * (24.0 * 60.0 * 60.0)).round())
         .expect("this cast should never fail because `time` should be a value between 0 and 1");
@@ -261,6 +268,7 @@ pub fn excel_to_date_time_jiff_checked(
 /// );
 /// ```
 #[must_use]
+#[cfg(feature = "jiff")]
 pub fn excel_to_date_time_jiff_millisecond(excel_timestamp: f64) -> jiff::civil::DateTime {
     let (base_date, days, time) = excel_to_date_time_parts(excel_timestamp);
     let milliseconds: i64 = cast(time * 24.0 * 60.0 * 60.0 * 1000.0).unwrap();
@@ -294,6 +302,7 @@ pub fn excel_to_date_time_jiff_millisecond(excel_timestamp: f64) -> jiff::civil:
 ///   at 00:00. This function will return a negative number for earlier dates
 ///   which is not valid in excel.
 #[must_use]
+#[cfg(feature = "jiff")]
 pub fn jiff_date_time_to_excel(value: jiff::civil::DateTime) -> f64 {
     // Effective epoch is different depending on the date because Excel treats
     // 1900 as a leap year but it wasn't and thus the epoch is moved back a
@@ -322,6 +331,7 @@ pub fn jiff_date_time_to_excel(value: jiff::civil::DateTime) -> f64 {
     since = "3.0.0",
     note = "Please use `excel_to_date_time_jiff` or `excel_to_date_time_chrono` instead"
 )]
+#[cfg(feature = "chrono")]
 pub fn excel_to_date_time_object(
     excel_timestamp: f64,
     _time_zone: Option<String>,
@@ -608,6 +618,7 @@ mod tests {
     #[case(1900, 7, 18, 0, 0, 0, 200.0)]
     #[case(2021, 1, 1, 12, 0, 0, 44197.5)]
     #[case(2016, 12, 31, 12, 0, 0, 42735.5)]
+    #[cfg(feature = "jiff")]
     fn test_convert_date_windows_1900(
         #[case] year: i32,
         #[case] month: i32,
@@ -700,6 +711,7 @@ mod tests {
     #[case(200.0, "1900-07-18 00:00:00")]
     #[case(44197.5, "2021-01-01 12:00:00")]
     #[case(42735.5, "2016-12-31 12:00:00")]
+    #[cfg(feature = "chrono")]
     fn excel_to_date_time(#[case] excel_timestamp: f64, #[case] expected: &str) {
         let actual = excel_to_date_time_jiff(excel_timestamp);
         assert_eq!(
