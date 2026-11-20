@@ -1376,7 +1376,9 @@ impl Worksheet {
         row_index: u32,
         num_rows: u32,
     ) {
-        self.adjustment_insert_coordinate(0, 0, row_index, num_rows);
+        if sheet_name == &*self.title {
+            self.adjustment_insert_coordinate(0, 0, row_index, num_rows);
+        }
         self.adjustment_insert_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
 
@@ -1435,7 +1437,9 @@ impl Worksheet {
         column_index: u32,
         num_columns: u32,
     ) {
-        self.adjustment_insert_coordinate(column_index, num_columns, 0, 0);
+        if sheet_name == &*self.title {
+            self.adjustment_insert_coordinate(column_index, num_columns, 0, 0);
+        }
         self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
     }
 
@@ -1459,7 +1463,9 @@ impl Worksheet {
     /// Adjust for references to other sheets.
     #[inline]
     pub fn remove_row_from_other_sheet(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
-        self.adjustment_remove_coordinate(0, 0, row_index, num_rows);
+        if sheet_name == &*self.title {
+            self.adjustment_remove_coordinate(0, 0, row_index, num_rows);
+        }
         self.adjustment_remove_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
 
@@ -1519,7 +1525,9 @@ impl Worksheet {
         column_index: u32,
         num_columns: u32,
     ) {
-        self.adjustment_remove_coordinate(column_index, num_columns, 0, 0);
+        if sheet_name == &*self.title {
+            self.adjustment_remove_coordinate(column_index, num_columns, 0, 0);
+        }
         self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
     }
 
