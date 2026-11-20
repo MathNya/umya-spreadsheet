@@ -6,7 +6,10 @@ use super::{
     UInt32Value,
     coordinate::Coordinate,
 };
-use crate::{AutoFilter, helper::coordinate::CellCoordinates};
+use crate::{
+    AutoFilter,
+    helper::coordinate::CellCoordinates,
+};
 
 // use reader::driver::*;
 
@@ -33,11 +36,11 @@ impl Table {
         let mut auto_filter = AutoFilter::default();
         auto_filter.set_range(format!("{coord_beg}:{coord_end}"));
         Self {
-            area:             (coord_beg, coord_end),
-            name:             name.clone(),
-            display_name:     name,
-            columns:          Vec::<TableColumn>::default(),
-            style_info:       None,
+            area: (coord_beg, coord_end),
+            name: name.clone(),
+            display_name: name,
+            columns: Vec::<TableColumn>::default(),
+            style_info: None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),
             auto_filter,

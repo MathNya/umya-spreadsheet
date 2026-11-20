@@ -2,6 +2,7 @@
 
 fmt:
     cargo +nightly fmt --all
+    rustfmt +nightly --edition 2021 --config skip_children=true src/structs/*.rs
 
 clippy:
     cargo +nightly clippy

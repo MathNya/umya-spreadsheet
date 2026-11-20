@@ -158,7 +158,13 @@ impl Image {
         let file = File::open(path).unwrap();
         BufReader::new(file).read_to_end(&mut buf).unwrap();
 
-        self.new_image_with_dimensions(size.height as u32, size.width as u32, image_name, buf, marker);
+        self.new_image_with_dimensions(
+            size.height as u32,
+            size.width as u32,
+            image_name,
+            buf,
+            marker,
+        );
     }
 
     pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
@@ -208,9 +214,7 @@ impl Image {
         one_cell_anchor
             .extent_mut()
             .set_cy(i64::from(height) * 9525);
-        one_cell_anchor
-            .extent_mut()
-            .set_cx(i64::from(width) * 9525);
+        one_cell_anchor.extent_mut().set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
     }

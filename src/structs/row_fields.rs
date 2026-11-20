@@ -11,10 +11,12 @@ use quick_xml::{
 };
 
 use crate::{
-    Field, reader::driver::xml_read_loop, writer::driver::{
+    Field,
+    reader::driver::xml_read_loop,
+    writer::driver::{
         write_end_tag,
         write_start_tag,
-    }
+    },
 };
 
 #[derive(Clone, Default, Debug)]
@@ -45,7 +47,7 @@ impl RowFields {
     pub fn get_list_mut(&mut self) -> &mut Vec<Field> {
         self.list_mut()
     }
-    
+
     #[inline]
     pub fn add_list_mut(&mut self, value: Field) -> &mut Self {
         self.list.push(value);

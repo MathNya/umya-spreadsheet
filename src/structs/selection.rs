@@ -169,8 +169,14 @@ impl Selection {
 fn range_contains(range: &Range, cell: &Coordinate) -> bool {
     let start_col = range.coordinate_start_col().map(ColumnReference::num);
     let start_row = range.coordinate_start_row().map(RowReference::num);
-    let end_col = range.coordinate_end_col().map(ColumnReference::num).or(start_col);
-    let end_row = range.coordinate_end_row().map(RowReference::num).or(start_row);
+    let end_col = range
+        .coordinate_end_col()
+        .map(ColumnReference::num)
+        .or(start_col);
+    let end_row = range
+        .coordinate_end_row()
+        .map(RowReference::num)
+        .or(start_row);
 
     let col = cell.col_num();
     let row = cell.row_num();

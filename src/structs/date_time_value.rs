@@ -31,7 +31,8 @@ impl DateTimeValue {
         self
     }
 
-    ///works same as `set_value()` as the value in the struct is already a string
+    /// works same as `set_value()` as the value in the struct is already a
+    /// string
     #[inline]
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value(value.into())

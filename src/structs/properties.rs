@@ -362,67 +362,93 @@ impl Properties {
             Event::Start(ref e) => match e.name().into_inner() {
                 b"dc:title" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_title(text);
                 },
                 b"dc:subject" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_subject(text);
                 },
                 b"dc:creator" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_creator(text);
                 },
                 b"cp:keywords" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_keywords(text);
                 },
                 b"dc:description" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_description(text);
                 },
                 b"cp:lastModifiedBy" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_last_modified_by(text);
                 },
                 b"cp:revision" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_revision(text);
                 },
                 b"dcterms:created" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_created(text);
                 },
                 b"dcterms:modified" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_modified(text);
                 },
                 b"cp:category" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_category(text);
                 },
                 b"cp:version" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_version(text);
                 },
                 b"Manager" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_manager(text);
                 },
                 b"Company" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_company(text);
                 },
                 _ => {}
@@ -441,12 +467,16 @@ impl Properties {
             Event::Start(ref e) => match e.name().into_inner() {
                 b"Manager" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_manager(text);
                 }
                 b"Company" => {
                     let mut buf = Vec::new();
-                    let text = crate::helper::utils::unescape_xml_text(&reader.read_text_into(e.name(), &mut buf).unwrap());
+                    let text = crate::helper::utils::unescape_xml_text(
+                        &reader.read_text_into(e.name(), &mut buf).unwrap()
+                    );
                     self.set_company(text);
                 }
                 _ =>{}

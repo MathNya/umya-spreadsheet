@@ -395,13 +395,7 @@ impl CellFormat {
             attributes.push(("applyFont", self.apply_font.value_string()).into());
         }
         if self.apply_number_format.has_value() {
-            attributes.push(
-                (
-                    "applyNumberFormat",
-                    self.apply_number_format.value_string(),
-                )
-                    .into(),
-            );
+            attributes.push(("applyNumberFormat", self.apply_number_format.value_string()).into());
         }
         if self.apply_fill.has_value() {
             attributes.push(("applyFill", self.apply_fill.value_string()).into());
@@ -464,7 +458,9 @@ mod tests {
     // rewrote each xfId as 0.
     #[test]
     fn reads_the_xf_id() {
-        let obj = read_xf(r#"<xf numFmtId="9" fontId="6" fillId="0" borderId="0" xfId="6" applyFont="1"/>"#);
+        let obj = read_xf(
+            r#"<xf numFmtId="9" fontId="6" fillId="0" borderId="0" xfId="6" applyFont="1"/>"#,
+        );
         assert_eq!(obj.format_id(), 6);
         assert_eq!(obj.number_format_id(), 9);
     }

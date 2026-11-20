@@ -63,8 +63,7 @@ impl OddHeader {
         e: &BytesStart,
     ) {
         let mut buf = Vec::new();
-        let text = reader
-                    .read_text_into(e.name(), &mut buf).unwrap();
+        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
         self.set_value(crate::helper::utils::unescape_xml_text(&text));
     }
 

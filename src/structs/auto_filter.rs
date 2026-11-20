@@ -1,7 +1,6 @@
 // autoFilter
 use std::io::Cursor;
-use super::Range;
-use crate::{FilterColumn, traits::AdjustmentCoordinate};
+
 use quick_xml::{
     Reader,
     Writer,
@@ -10,11 +9,15 @@ use quick_xml::{
         Event,
     },
 };
+
+use super::Range;
 use crate::{
+    FilterColumn,
     reader::driver::{
         get_attribute,
         xml_read_loop,
     },
+    traits::AdjustmentCoordinate,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -23,7 +26,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct AutoFilter {
-    range: Range,
+    range:          Range,
     filter_columns: Vec<FilterColumn>,
 }
 
@@ -86,7 +89,7 @@ impl AutoFilter {
         if let Some(v) = get_attribute(e, b"ref") {
             self.range.set_range(v);
         }
-        
+
         if empty_flg {
             return;
         }
@@ -115,9 +118,7 @@ impl AutoFilter {
         let empty_flg = self.filter_columns.is_empty();
 
         // autoFilter
-        let attributes: crate::structs::AttrCollection = vec![
-            ("ref", self.range.range()).into(),
-        ];
+        let attributes: crate::structs::AttrCollection = vec![("ref", self.range.range()).into()];
         write_start_tag(writer, "autoFilter", attributes, empty_flg);
         if empty_flg {
             return;
@@ -129,7 +130,6 @@ impl AutoFilter {
 
         write_end_tag(writer, "autoFilter");
     }
-
 }
 impl AdjustmentCoordinate for AutoFilter {
     #[inline]

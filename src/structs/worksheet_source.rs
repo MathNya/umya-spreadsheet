@@ -1,5 +1,6 @@
 // worksheetSource
 use std::io::Cursor;
+
 use quick_xml::{
     Reader,
     Writer,
@@ -7,13 +8,17 @@ use quick_xml::{
 };
 
 use crate::{
-    StringValue, reader::driver::get_attribute, set_string_from_xml, structs::Address, writer::driver::write_start_tag
+    StringValue,
+    reader::driver::get_attribute,
+    set_string_from_xml,
+    structs::Address,
+    writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetSource {
     address: Address,
-    name: StringValue,
+    name:    StringValue,
 }
 
 impl WorksheetSource {
@@ -27,7 +32,7 @@ impl WorksheetSource {
     pub fn get_address(&self) -> &Address {
         self.address()
     }
-    
+
     pub fn address_mut(&mut self) -> &mut Address {
         &mut self.address
     }
@@ -66,7 +71,11 @@ impl WorksheetSource {
 
     #[inline]
     pub(crate) fn hash_code(&self) -> String {
-        crate::helper::utils::md5_hash(format!("{}{}", self.address.address(), self.name.value_str()))
+        crate::helper::utils::md5_hash(format!(
+            "{}{}",
+            self.address.address(),
+            self.name.value_str()
+        ))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -82,7 +91,7 @@ impl WorksheetSource {
             address.set_sheet_name(v);
         }
         self.set_address(address);
-        
+
         set_string_from_xml!(self, e, name, "name");
     }
 

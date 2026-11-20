@@ -354,16 +354,14 @@ impl AdjustmentValue for Row {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.value() >= root_num {
-            self.row_num
-                .set_value(self.row_num.value() + offset_num);
+            self.row_num.set_value(self.row_num.value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.value() >= root_num {
-            self.row_num
-                .set_value(self.row_num.value() - offset_num);
+            self.row_num.set_value(self.row_num.value() - offset_num);
         }
     }
 

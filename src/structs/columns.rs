@@ -58,9 +58,7 @@ impl Columns {
 
     #[inline]
     pub(crate) fn column(&self, value: u32) -> Option<&Column> {
-        self.column
-            .iter()
-            .find(|&column| value == column.col_num())
+        self.column.iter().find(|&column| value == column.col_num())
     }
 
     #[inline]
@@ -83,7 +81,7 @@ impl Columns {
         }
         panic!("Column not found.");
     }
-    
+
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use column_mut()")]
     pub(crate) fn get_column_mut(&mut self, value: u32) -> &mut Column {

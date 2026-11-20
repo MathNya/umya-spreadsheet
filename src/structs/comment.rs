@@ -10,8 +10,8 @@ use quick_xml::{
 };
 
 use super::{
-    Coordinate,
     CommentText,
+    Coordinate,
     vml::{
         Fill as VmlFill,
         Path,
@@ -28,13 +28,19 @@ use super::{
     },
 };
 use crate::{
-    helper::coordinate::CellCoordinates, reader::driver::{
+    StringValue,
+    helper::coordinate::CellCoordinates,
+    reader::driver::{
         get_attribute,
         set_string_from_xml,
-    }, structs::vml::Shape, traits::AdjustmentCoordinate, writer::driver::{
+    },
+    structs::vml::Shape,
+    traits::AdjustmentCoordinate,
+    writer::driver::{
         write_end_tag,
         write_start_tag,
-    }, xml_read_loop, StringValue
+    },
+    xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
