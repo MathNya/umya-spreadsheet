@@ -40,6 +40,7 @@ pub struct Workbook {
     work_sheet_collection:  Vec<Worksheet>,
     macros_code:            Option<Vec<u8>>,
     jsa_macros_code:        Option<Vec<u8>>,
+    sheet_metadata:         Option<Vec<u8>>,
     code_name:              StringValue,
     ribbon_xml_data:        StringValue,
     theme:                  Theme,
@@ -407,6 +408,38 @@ impl Workbook {
     #[deprecated(since = "3.0.0", note = "Use has_jsa_macros()")]
     pub fn get_has_jsa_macros(&self) -> bool {
         self.has_jsa_macros()
+    }
+
+    /// Get the cell metadata part (`xl/metadata.xml`), as read.
+    ///
+    /// Excel records a dynamic array formula's cell metadata there; a cell's
+    /// `cm` index points into it. It is kept as raw data and written back as
+    /// read, so those cells keep their meaning.
+    #[inline]
+    #[must_use]
+    pub fn sheet_metadata(&self) -> Option<&[u8]> {
+        self.sheet_metadata.as_deref()
+    }
+
+    /// Set the cell metadata part's raw data.
+    #[inline]
+    pub fn set_sheet_metadata(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
+        self.sheet_metadata = Some(value.into());
+        self
+    }
+
+    /// Remove the cell metadata part.
+    #[inline]
+    pub fn remove_sheet_metadata(&mut self) -> &mut Self {
+        self.sheet_metadata = None;
+        self
+    }
+
+    /// Has a cell metadata part.
+    #[inline]
+    #[must_use]
+    pub fn has_sheet_metadata(&self) -> bool {
+        self.sheet_metadata.is_some()
     }
 
     /// Set codeName property of workbook

@@ -36,6 +36,7 @@ pub(crate) mod pivot_table;
 pub(crate) mod printer_settings;
 pub(crate) mod rels;
 pub(crate) mod shared_strings;
+pub(crate) mod sheet_metadata;
 pub(crate) mod styles;
 pub(crate) mod table;
 pub(crate) mod theme;
@@ -64,6 +65,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
         doc_props_custom::write(wb, &mut writer_manager)?;
         vba_project_bin::write(wb, &mut writer_manager)?;
         jsa_project_bin::write(wb, &mut writer_manager)?;
+        sheet_metadata::write(wb, &mut writer_manager)?;
         rels::write(wb, &mut writer_manager)?;
         theme::write(wb.theme(), &mut writer_manager)?;
         person::write(wb, &mut writer_manager)?;
@@ -84,6 +86,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
                         &shared_string_table,
                         &mut stylesheet,
                         wb.has_macros(),
+                        wb.has_sheet_metadata(),
                         &mut writer_manager,
                     )
                 } else {
@@ -108,7 +111,7 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
                     .worksheet_drawing()
                     .chart_collection()
                     .iter()
-                    .map(|chart| chart::write(chart.chart_space(), wb, &mut writer_manager))
+                    .map(|chart| chart::write(chart.chart_space()?, wb, &mut writer_manager))
                     .collect();
 
                 let chart_no_list = chart_no_list?;

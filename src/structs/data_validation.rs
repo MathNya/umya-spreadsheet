@@ -399,7 +399,7 @@ impl DataValidation {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let is_inner = self.formula1.text().is_empty() || self.formula2.text().is_empty();
+        let is_inner = !self.formula1.text().is_empty() || !self.formula2.text().is_empty();
 
         // dataValidation
         let mut attributes: crate::structs::AttrCollection = Vec::new();
@@ -517,5 +517,20 @@ mod tests {
         let mut dv = DataValidation::default();
         dv.set_attributes(&mut reader, &e, false);
         assert_eq!(dv.formula1(), "\"petrol,diesel,LPG,electric\"");
+    }
+
+    #[test]
+    fn write_keeps_both_formulas() {
+        let mut dv = DataValidation::default();
+        dv.set_type(DataValidationValues::Whole)
+            .set_operator(DataValidationOperatorValues::Between)
+            .set_formula1("1")
+            .set_formula2("10");
+        dv.sequence_of_references_mut().set_sqref("A1");
+
+        let mut writer = Writer::new(Cursor::new(Vec::new()));
+        dv.write_to(&mut writer);
+        let xml = String::from_utf8(writer.into_inner().into_inner()).unwrap();
+        assert!(xml.contains("<formula1>1</formula1><formula2>10</formula2>"), "{xml}");
     }
 }

@@ -78,7 +78,9 @@ pub fn is_address<S: AsRef<str>>(input: S) -> bool {
     let regex = compile_regex!(
         r"^([^\:\\\?\[\]\/\*]+\!)?(\$?[A-Z]{1,3}\$?[0-9]+)(\:\$?[A-Z]{1,3}\$?[0-9]+)?$"
     );
-    regex.is_match(input.as_ref()).unwrap()
+    regex
+        .is_match(input.as_ref())
+        .expect("invalid regex but should be tested in the example to be valid regex")
 }
 
 #[test]

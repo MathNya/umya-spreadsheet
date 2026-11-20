@@ -392,10 +392,7 @@ impl CellFormula {
 
         let formula_type_str = self.formula_type.value_string();
         if self.formula_type.has_value() {
-            // Not SUPPORT Array
-            if self.formula_type.value() != &CellFormulaValues::Array {
-                attributes.push(("t", formula_type_str).into());
-            }
+            attributes.push(("t", formula_type_str).into());
         }
 
         let input_1deleted_str = self.input_1deleted.value_string();
@@ -436,6 +433,11 @@ impl CellFormula {
                 };
                 attributes.push(("ref", &reference_str).into());
             }
+        }
+
+        // An array formula's range, as read.
+        if self.formula_type.value() == &CellFormulaValues::Array && self.reference.has_value() {
+            attributes.push(("ref", self.reference.value_str()).into());
         }
 
         let shared_index_str = self.shared_index.value_string();

@@ -1,0 +1,31 @@
+use std::{
+    io,
+    io::Read,
+};
+
+use super::XlsxError;
+use crate::{
+    helper::const_str::PKG_SHEET_METADATA,
+    structs::Workbook,
+};
+
+pub(crate) fn read<R: Read + io::Seek>(
+    arv: &mut zip::ZipArchive<R>,
+    wb: &mut Workbook,
+) -> Result<(), XlsxError> {
+    let mut r = io::BufReader::new(match super::driver::zip_by_name(arv, PKG_SHEET_METADATA) {
+        Ok(v) => v,
+        Err(zip::result::ZipError::FileNotFound) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e.into());
+        }
+    });
+    let mut buf = Vec::new();
+    r.read_to_end(&mut buf)?;
+
+    wb.set_sheet_metadata(buf);
+
+    Ok(())
+}

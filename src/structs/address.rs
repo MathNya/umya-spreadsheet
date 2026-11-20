@@ -72,7 +72,7 @@ impl Address {
         let (sheet_name, range) = split_address(&org_value);
         self.range.set_range(range);
         if !sheet_name.is_empty() {
-            self.sheet_name = sheet_name.into();
+            self.sheet_name = sheet_name.replace("''", "'").into();
         }
         self
     }

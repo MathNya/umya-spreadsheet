@@ -706,6 +706,7 @@ impl Cell {
         shared_string_table: &RwLock<SharedStringTable>,
         stylesheet: &mut Stylesheet,
         formula_shared_list: &HashMap<u32, (String, Option<String>)>,
+        has_sheet_metadata: bool,
     ) {
         let empty_flag_value = self.cell_value.is_empty();
         let empty_flag_style = self.style.is_empty();
@@ -731,11 +732,13 @@ impl Cell {
             attributes.push(("s", &xf_index_str).into());
         }
 
-        // NOT SUPPORTED
-        // let cell_meta_index_str = self.cell_meta_index.get_value_string();
-        // if self.cell_meta_index.has_value() {
-        //    attributes.push(("cm", &cell_meta_index_str).into());
-        // }
+        // A formula's cell metadata index (a dynamic array formula's, as Excel
+        // writes it), only while the part it points into is written too and the
+        // cell still holds a formula.
+        let cell_meta_index_str = self.cell_meta_index.value_string();
+        if has_sheet_metadata && self.cell_meta_index.has_value() && self.is_formula() {
+            attributes.push(("cm", &cell_meta_index_str).into());
+        }
 
         if empty_flag_value {
             write_start_tag(writer, "c", attributes, true);
@@ -884,6 +887,58 @@ mod tests {
         assert_eq!(cell.formatted_value(), "0050");
         assert_eq!(cell.data_type(), "s");
         assert!(cell.value_number().is_none());
+    }
+
+    fn read_cell(xml: &str) -> Cell {
+        let mut reader = Reader::from_str(xml);
+        let cell_start = match reader.read_event().unwrap() {
+            Event::Start(event) => event,
+            event => panic!("expected cell start event, got {event:?}"),
+        };
+        let mut cell = Cell::default();
+        cell.set_attributes(
+            &mut reader,
+            &cell_start,
+            &SharedStringTable::default(),
+            &Stylesheet::default(),
+            false,
+            &mut HashMap::new(),
+        );
+        cell
+    }
+
+    #[test]
+    fn an_error_cell_stays_an_error_whatever_its_token() {
+        for (xml, token) in [
+            (r#"<c r="A1" t="e"><v>#N/A</v></c>"#, "#N/A"),
+            (r#"<c r="A1" t="e"><v>#SPILL!</v></c>"#, "#SPILL!"),
+            (r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#, "#CALC!"),
+        ] {
+            let cell = read_cell(xml);
+            assert!(cell.raw_value().is_error(), "{xml}");
+            assert_eq!(cell.value(), token, "{xml}");
+            assert_eq!(cell.data_type(), "e", "{xml}");
+        }
+        assert_eq!(
+            read_cell(r#"<c r="A1" t="e"><v>#SPILL!</v></c>"#).raw_value(),
+            &CellRawValue::Error(crate::CellErrorType::Other("#SPILL!".into()))
+        );
+        assert_eq!(
+            read_cell(r#"<c r="A1" t="e"><v>#N/A</v></c>"#).raw_value(),
+            &CellRawValue::Error(crate::CellErrorType::NA),
+            "a known token keeps its name"
+        );
+        assert!(
+            read_cell(r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#).is_formula(),
+            "the formula is kept beside its error"
+        );
+    }
+
+    #[test]
+    fn text_that_looks_like_an_unknown_error_stays_text() {
+        let mut cell = Cell::default();
+        cell.set_value("#SPILL!");
+        assert_eq!(cell.data_type(), "s");
     }
 
     #[test]

@@ -245,6 +245,7 @@ pub mod writer;
 pub use version::*;
 
 pub use self::structs::*;
+pub type Result<T> = core::result::Result<T, XlsxError>;
 
 /// Creates a new workbook with default settings.
 ///

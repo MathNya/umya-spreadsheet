@@ -41,6 +41,7 @@ mod pivot_cache;
 mod pivot_table;
 mod rels;
 mod shared_strings;
+mod sheet_metadata;
 mod styles;
 pub(crate) mod table;
 mod theme;
@@ -77,6 +78,7 @@ fn read_reader_with_source<R: io::Read + io::Seek>(
     doc_props_custom::read(&mut arv, &mut book)?;
     vba_project_bin::read(&mut arv, &mut book)?;
     jsa_project_bin::read(&mut arv, &mut book)?;
+    sheet_metadata::read(&mut arv, &mut book)?;
     content_types::read(&mut arv, &mut book)?;
     let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;
 
