@@ -18,13 +18,14 @@ base64 = "0.22.1"
 byteorder = "1.5"
 cbc = "0.2"
 cfb = "0.14"
-chrono = { version = "0.4", default-features = false, features = ["clock"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"], optional = true }
+document-features = "0.2.11"
 encoding_rs = "0.8.35"
 fancy-regex = "0.18"
 hmac = "0.13"
 html5gum = "0.8"
 imagesize = "0.14"
-jiff = { version = "0.2", default-features = false }
+jiff = { version = "1", default-features = false, optional = true }
 md-5 = "0.11"
 num-traits = "0.2.19"
 phf = { version = "0.14", features = ["macros"] }
@@ -40,3 +41,10 @@ hex-literal = "1.1"
 rstest = { version = "0.26.1", default-features = false }
 
 [features]
+default = ["jiff"]
+
+## Enables jiff support and related functions
+jiff = ["dep:jiff"]
+
+## Enables chrono support and related functions
+chrono = ["dep:chrono"]
