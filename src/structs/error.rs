@@ -26,9 +26,9 @@ pub enum CellErrorType {
     Null,
     /// Getting data
     Data,
-    /// Any other error a cell holds, as written: one this enum has no name for, such as
-    /// `#SPILL!` or `#CALC!` from a newer Excel. Kept so reading and writing a workbook
-    /// never turns an error into text.
+    /// Any other error a cell holds, as written: one this enum has no name for,
+    /// such as `#SPILL!` or `#CALC!` from a newer Excel. Kept so reading
+    /// and writing a workbook never turns an error into text.
     Other(Box<str>),
 }
 
@@ -182,6 +182,21 @@ impl XlsxError {
     {
         let mut err = Self::new(kind);
         err.inner.source = Some(source.into());
+        err
+    }
+
+    /// Creates an error of the given kind caused by `source` with an additional
+    /// message.
+    #[inline]
+    #[must_use]
+    pub fn with_source_and_message<E, M>(kind: XlsxErrorKind, source: E, message: M) -> Self
+    where
+        E: Into<Box<dyn StdError + Send + Sync + 'static>>,
+        M: Into<Cow<'static, str>>,
+    {
+        let mut err = Self::new(kind);
+        err.inner.source = Some(source.into());
+        err.inner.message = Some(message.into());
         err
     }
 
