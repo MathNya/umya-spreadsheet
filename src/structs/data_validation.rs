@@ -26,6 +26,7 @@ use crate::{
         get_attribute,
         xml_read_loop,
     },
+    traits::AdjustmentCoordinate,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -465,6 +466,56 @@ impl DataValidation {
             }
             write_end_tag(writer, "dataValidation");
         }
+    }
+}
+
+impl AdjustmentCoordinate for DataValidation {
+    #[inline]
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.sequence_of_references.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    #[inline]
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.sequence_of_references.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    #[inline]
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) -> bool {
+        self.sequence_of_references.is_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        )
     }
 }
 

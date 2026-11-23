@@ -3000,6 +3000,18 @@ impl AdjustmentCoordinate for Worksheet {
             );
         }
 
+        // data validations
+        if let Some(v) = self.data_validations_mut() {
+            for data_validation in v.data_validation_list_mut() {
+                data_validation.adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+        }
+
         // merge cells
         for merge_cell in self.merge_cells_mut() {
             merge_cell.adjustment_insert_coordinate(
@@ -3104,6 +3116,21 @@ impl AdjustmentCoordinate for Worksheet {
                 root_row_num,
                 offset_row_num,
             );
+        }
+
+        // data validations
+        if let Some(v) = self.data_validations_mut() {
+            v.data_validation_list_mut().retain(|x| {
+                !x.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num)
+            });
+            for data_validation in v.data_validation_list_mut() {
+                data_validation.adjustment_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
         }
 
         // merge cells
