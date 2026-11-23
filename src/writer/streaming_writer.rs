@@ -3,7 +3,7 @@
 //! one at a time. This is useful in situation where a file has a large number
 //! of Worksheet, that cannot all fit into memory.
 //!
-//! Limitiation: a `WorkSheet`, once flushed, cannot be modified or read back
+//! Limitation: a `WorkSheet`, once flushed, cannot be modified or read back
 //! into memory.
 //!
 //! # Example
@@ -81,7 +81,7 @@ use crate::{
     },
 };
 
-// StreamingWriter manage the stream writting process. The Streaming Writer is
+// StreamingWriter manage the stream writing process. The Streaming Writer is
 // essentially all the functions defined in writer/xlsx.rs, but re-wrap as a
 // struct method here, because we need a stateful, long-lived struct to keep
 // track of the sheets we dumped / not dumped to our zip archive.

@@ -124,4 +124,4 @@ declare_const_strings! {
     CONTENT_TYPES        => "[Content_Types].xml"
 }
 
-// Ths file is ignored by rustfmt.
+// This file is ignored by rustfmt.
