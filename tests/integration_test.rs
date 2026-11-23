@@ -160,11 +160,11 @@ fn profile_input_path() -> PathBuf {
 }
 
 #[test]
-fn read_and_wite() {
+fn read_and_write() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
-    read_and_wite_method(&mut book);
+    read_and_write_method(&mut book);
 
     book.sheet_by_name("Sheet1")
         .unwrap()
@@ -184,11 +184,11 @@ fn read_and_wite() {
 }
 
 #[test]
-fn read_and_wite_with_password() {
+fn read_and_write_with_password() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
-    read_and_wite_method(&mut book);
+    read_and_write_method(&mut book);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_password.xlsx");
@@ -196,7 +196,7 @@ fn read_and_wite_with_password() {
 }
 
 #[test]
-fn wite_with_password() {
+fn write_with_password() {
     // writer
     let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let to_path = std::path::Path::new("./tests/result_files/bbb_password2.xlsx");
@@ -204,11 +204,11 @@ fn wite_with_password() {
 }
 
 #[test]
-fn lazy_read_and_wite() {
+fn lazy_read_and_write() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = reader::xlsx::lazy_read(path).unwrap();
-    read_and_wite_method(&mut book);
+    read_and_write_method(&mut book);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_lazy.xlsx");
@@ -216,7 +216,7 @@ fn lazy_read_and_wite() {
 }
 
 #[test]
-fn read_and_wite_libre2() {
+fn read_and_write_libre2() {
     // reader
     let path = std::path::Path::new("./tests/test_files/libre2.xlsx");
     let book = reader::xlsx::read(path).unwrap();
@@ -235,7 +235,7 @@ fn read_large_string() {
 }
 
 #[test]
-fn lazy_read_and_wite_large_string() {
+fn lazy_read_and_write_large_string() {
     // reader
     let start = Instant::now();
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
@@ -329,7 +329,7 @@ fn profile_large_string_stream_memory() {
 }
 
 #[test]
-fn lazy_read_and_wite_no_edit() {
+fn lazy_read_and_write_no_edit() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let book = reader::xlsx::lazy_read(path).unwrap();
@@ -343,7 +343,7 @@ fn lazy_read_and_wite_no_edit() {
     let _unused = writer::xlsx::write(&book, path);
 }
 
-fn read_and_wite_method(book: &mut Workbook) {
+fn read_and_write_method(book: &mut Workbook) {
     let _unused = book.sheet_mut(0).unwrap().cell_mut("A1").set_value("TEST1");
     let a1_value = book.sheet(0).unwrap().value("A1");
     assert_eq!("TEST1", a1_value);
@@ -439,7 +439,7 @@ fn read_and_wite_method(book: &mut Workbook) {
 }
 
 #[test]
-fn read_and_wite_by_empty() {
+fn read_and_write_by_empty() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_empty.xlsx");
     let book = reader::xlsx::read(path).unwrap();
@@ -450,7 +450,7 @@ fn read_and_wite_by_empty() {
 }
 
 #[test]
-fn lazy_read_and_wite_by_empty() {
+fn lazy_read_and_write_by_empty() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_empty.xlsx");
     let book = reader::xlsx::lazy_read(path).unwrap();
@@ -461,11 +461,11 @@ fn lazy_read_and_wite_by_empty() {
 }
 
 #[test]
-fn read_and_wite_xlsm() {
+fn read_and_write_xlsm() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
     let mut book = reader::xlsx::read(path).unwrap();
-    read_and_wite_xlsm_method(&mut book);
+    read_and_write_xlsm_method(&mut book);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsm");
@@ -473,11 +473,11 @@ fn read_and_wite_xlsm() {
 }
 
 #[test]
-fn lazy_read_and_wite_xlsm() {
+fn lazy_read_and_write_xlsm() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
     let mut book = reader::xlsx::lazy_read(path).unwrap();
-    read_and_wite_xlsm_method(&mut book);
+    read_and_write_xlsm_method(&mut book);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_lazy.xlsm");
@@ -485,7 +485,7 @@ fn lazy_read_and_wite_xlsm() {
 }
 
 #[test]
-fn lazy_read_and_wite_xlsm2() {
+fn lazy_read_and_write_xlsm2() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
     let mut book = reader::xlsx::lazy_read(path).unwrap();
@@ -500,7 +500,7 @@ fn lazy_read_and_wite_xlsm2() {
 }
 
 #[test]
-fn lazy_read_and_wite_xlsm_no_edit() {
+fn lazy_read_and_write_xlsm_no_edit() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
     let book = reader::xlsx::lazy_read(path).unwrap();
@@ -510,7 +510,7 @@ fn lazy_read_and_wite_xlsm_no_edit() {
     let _unused = writer::xlsx::write(&book, path);
 }
 
-fn read_and_wite_xlsm_method(book: &mut Workbook) {
+fn read_and_write_xlsm_method(book: &mut Workbook) {
     let _unused = book
         .sheet_mut(0)
         .unwrap()
@@ -1246,7 +1246,7 @@ fn new_file_and_edit() {
 }
 
 #[test]
-fn new_and_wite() {
+fn new_and_write() {
     // new file.
     let book = new_file();
 
@@ -1321,7 +1321,7 @@ fn libre() {
 }
 
 #[test]
-fn read_and_wite_theme() {
+fn read_and_write_theme() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_theme.xlsx");
     let book = reader::xlsx::read(path).unwrap();
@@ -1345,7 +1345,7 @@ fn openpyxl() {
 }
 
 #[test]
-fn read_and_wite_2() {
+fn read_and_write_2() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_2.xlsx");
     let book = reader::xlsx::read(path).unwrap();
