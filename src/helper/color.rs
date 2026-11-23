@@ -316,7 +316,7 @@ mod tests {
     }
 
     #[test]
-    #[expect(
+    #[allow(
         clippy::float_cmp,
         reason = "the test intends to test the exact value and thresholding is not suitable"
     )]
