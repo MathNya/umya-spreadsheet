@@ -33,7 +33,7 @@ jobs:
           cargo clippy --version
       - name: Run Lint & Tests
         run: |
-          cargo clippy -- -D warnings
+          cargo clippy --all-features --all-targets -- -D warnings # Includes test when `all-targets` is set and `all-features` to test with features enabled
           cargo test --all-features
           cargo test --all-features --doc
   formatting:
