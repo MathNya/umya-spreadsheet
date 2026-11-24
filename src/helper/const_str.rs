@@ -14,7 +14,7 @@ declare_const_strings! {
     COMMENTS_TYPE        => "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",
     THREADED_COMMENT_NS  => "http://schemas.microsoft.com/office/2017/10/relationships/threadedComment",
     THREADED_COMMENTS_NS => "http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments",
-    PERSION_NS           => "http://schemas.microsoft.com/office/2017/10/relationships/person",
+    PERSON_NS           => "http://schemas.microsoft.com/office/2017/10/relationships/person",
     PKG_PERSON           => "xl/persons/person.xml",
     CONTYPES_NS          => "http://schemas.openxmlformats.org/package/2006/content-types",
     CORE_PROPS_TYPE      => "application/vnd.openxmlformats-package.core-properties+xml",
