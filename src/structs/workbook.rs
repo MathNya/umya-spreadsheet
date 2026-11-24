@@ -508,7 +508,7 @@ impl Workbook {
     /// Set Default Value Stylesheet.
     #[inline]
     pub(crate) fn set_stylesheet_default_value(&mut self) -> &mut Self {
-        self.stylesheet.set_defalut_value();
+        self.stylesheet.set_default_value();
         self
     }
 
@@ -884,7 +884,7 @@ impl Workbook {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
         worksheet.set_name(sheet_title.into());
-        worksheet.sheet_format_properties_mut().set_defalut_value();
+        worksheet.sheet_format_properties_mut().set_default_value();
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }

@@ -203,12 +203,12 @@ impl Theme {
         def.theme_elements_mut()
             .font_scheme_mut()
             .major_font_mut()
-            .set_defalut_value_major();
+            .set_default_value_major();
 
         def.theme_elements_mut()
             .font_scheme_mut()
             .minor_font_mut()
-            .set_defalut_value_minor();
+            .set_default_value_minor();
 
         // format_scheme
         def.theme_elements_mut()

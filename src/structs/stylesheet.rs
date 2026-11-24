@@ -511,7 +511,7 @@ impl Stylesheet {
         index
     }
 
-    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
+    pub(crate) fn set_default_value(&mut self) -> &mut Self {
         let style = Style::default_value();
         self.set_style(&style);
         let style = Style::default_value_2();
