@@ -1,0 +1,9 @@
+[default]
+
+[default.extend-words]
+Gost = "Gost"
+BA = "BA"
+DAA = "DAA"
+LOV = "LOV"
+THA = "THA"
+Beng = "Beng"
