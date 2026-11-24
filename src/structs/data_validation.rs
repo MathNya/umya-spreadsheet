@@ -47,7 +47,7 @@ pub struct DataValidation {
     prompt_title:           StringValue,
     prompt:                 StringValue,
     error_title:            StringValue,
-    error_messsage:         StringValue,
+    error_message:          StringValue,
     error_style:            EnumValue<DataValidationErrorStyleValues>,
     sequence_of_references: SequenceOfReferences,
     formula1:               Box<Formula1>,
@@ -183,7 +183,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn error_message(&self) -> &str {
-        self.error_messsage.value_str()
+        self.error_message.value_str()
     }
 
     #[inline]
@@ -195,7 +195,7 @@ impl DataValidation {
 
     #[inline]
     pub fn set_error_message<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.error_messsage.set_value(value);
+        self.error_message.set_value(value);
         self
     }
 
@@ -345,7 +345,7 @@ impl DataValidation {
         }
 
         if let Some(v) = get_attribute(e, b"error") {
-            self.error_messsage.set_value_string(v);
+            self.error_message.set_value_string(v);
         }
 
         if let Some(v) = get_attribute(e, b"errorStyle") {
@@ -428,8 +428,8 @@ impl DataValidation {
             attributes.push(("errorTitle", self.error_title.value_str()).into());
         }
 
-        if self.error_messsage.has_value() {
-            attributes.push(("error", self.error_messsage.value_str()).into());
+        if self.error_message.has_value() {
+            attributes.push(("error", self.error_message.value_str()).into());
         }
 
         if self.error_style.has_value() {
