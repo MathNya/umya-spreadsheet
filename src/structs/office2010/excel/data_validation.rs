@@ -20,8 +20,8 @@ use crate::{
         StringValue,
         office::excel::ReferenceSequence,
         office2010::excel::{
-            DataValidationForumla1,
-            DataValidationForumla2,
+            DataValidationFormula1,
+            DataValidationFormula2,
         },
     },
     writer::driver::{
@@ -40,8 +40,8 @@ pub struct DataValidation {
     prompt_title:       StringValue,
     prompt:             StringValue,
     reference_sequence: ReferenceSequence,
-    formula1:           Option<Box<DataValidationForumla1>>,
-    formula2:           Option<Box<DataValidationForumla2>>,
+    formula1:           Option<Box<DataValidationFormula1>>,
+    formula2:           Option<Box<DataValidationFormula2>>,
 }
 impl DataValidation {
     #[inline]
@@ -202,30 +202,30 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn formula1(&self) -> Option<&DataValidationForumla1> {
+    pub fn formula1(&self) -> Option<&DataValidationFormula1> {
         self.formula1.as_deref()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use formula1()")]
-    pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
+    pub fn get_formula1(&self) -> Option<&DataValidationFormula1> {
         self.formula1()
     }
 
     #[inline]
-    pub fn formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
+    pub fn formula1_mut(&mut self) -> Option<&mut DataValidationFormula1> {
         self.formula1.as_deref_mut()
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use formula1_mut()")]
-    pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
+    pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationFormula1> {
         self.formula1_mut()
     }
 
     #[inline]
-    pub fn set_formula1(&mut self, value: DataValidationForumla1) -> &mut Self {
+    pub fn set_formula1(&mut self, value: DataValidationFormula1) -> &mut Self {
         self.formula1 = Some(Box::new(value));
         self
     }
@@ -238,30 +238,30 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn formula2(&self) -> Option<&DataValidationForumla2> {
+    pub fn formula2(&self) -> Option<&DataValidationFormula2> {
         self.formula2.as_deref()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use formula2()")]
-    pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
+    pub fn get_formula2(&self) -> Option<&DataValidationFormula2> {
         self.formula2()
     }
 
     #[inline]
-    pub fn formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
+    pub fn formula2_mut(&mut self) -> Option<&mut DataValidationFormula2> {
         self.formula2.as_deref_mut()
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use formula2_mut()")]
-    pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
+    pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationFormula2> {
         self.formula2_mut()
     }
 
     #[inline]
-    pub fn set_formula2(&mut self, value: DataValidationForumla2) -> &mut Self {
+    pub fn set_formula2(&mut self, value: DataValidationFormula2) -> &mut Self {
         self.formula2 = Some(Box::new(value));
         self
     }
@@ -315,12 +315,12 @@ impl DataValidation {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"x14:formula1" => {
-                        let mut obj = DataValidationForumla1::default();
+                        let mut obj = DataValidationFormula1::default();
                         obj.set_attributes(reader, e);
                         self.formula1 = Some(Box::new(obj));
                     }
                     b"x14:formula2" => {
-                        let mut obj = DataValidationForumla2::default();
+                        let mut obj = DataValidationFormula2::default();
                         obj.set_attributes(reader, e);
                         self.formula2 = Some(Box::new(obj));
                     }
