@@ -166,7 +166,7 @@ impl RawRelationships {
     pub(crate) fn write_to<W: io::Seek + io::Write>(
         &self,
         writer_mng: &mut WriterManager<W>,
-        ather_target: Option<&str>,
+        other_target: Option<&str>,
     ) -> Result<(), XlsxError> {
         if self.relationship_list().is_empty() {
             return Ok(());
@@ -197,7 +197,7 @@ impl RawRelationships {
 
         write_end_tag(&mut writer, "Relationships");
 
-        let target = match ather_target {
+        let target = match other_target {
             Some(v) => v,
             None => self.file_target(),
         };

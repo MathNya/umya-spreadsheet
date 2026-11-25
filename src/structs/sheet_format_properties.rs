@@ -207,7 +207,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
+    pub(crate) fn set_default_value(&mut self) -> &mut Self {
         self.default_row_height.set_value(13.5);
         self.dy_descent.set_value(0.15);
         self

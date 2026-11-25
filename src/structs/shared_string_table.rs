@@ -30,7 +30,7 @@ use crate::{
 pub(crate) struct SharedStringTable {
     shared_string_item: Vec<SharedStringItem>,
     map:                HashMap<u64, usize>,
-    regist_count:       usize,
+    register_count:     usize,
 }
 
 impl SharedStringTable {
@@ -70,7 +70,7 @@ impl SharedStringTable {
     }
 
     pub(crate) fn set_cell(&mut self, value: &CellValue) -> usize {
-        self.regist_count += 1;
+        self.register_count += 1;
 
         let mut shared_string_item = SharedStringItem::default();
 
@@ -129,7 +129,7 @@ impl SharedStringTable {
             "sst",
             vec![
                 ("xmlns", SHEET_MAIN_NS).into(),
-                ("count", self.regist_count.to_string()).into(),
+                ("count", self.register_count.to_string()).into(),
                 ("uniqueCount", &self.shared_string_item.len().to_string()).into(),
             ],
             false,

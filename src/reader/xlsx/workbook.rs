@@ -57,7 +57,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 }
                 b"sheet" => {
                     let mut worksheet = Worksheet::default();
-                    worksheet.set_attributes_from_wookbook(&mut reader, e, is_empty);
+                    worksheet.set_attributes_from_workbook(&mut reader, e, is_empty);
                     wb.add_sheet(worksheet)?;
                 }
                 b"calcPr" => {

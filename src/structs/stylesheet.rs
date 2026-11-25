@@ -48,7 +48,7 @@ pub(crate) struct Stylesheet {
     cell_styles:          CellStyles,
     differential_formats: DifferentialFormats,
     colors:               Colors,
-    maked_style_list:     Vec<Style>,
+    marker_style_list:    Vec<Style>,
 }
 
 impl Stylesheet {
@@ -312,7 +312,7 @@ impl Stylesheet {
 
     #[inline]
     pub(crate) fn style(&self, id: usize) -> Style {
-        self.maked_style_list.get(id).cloned().unwrap_or_default()
+        self.marker_style_list.get(id).cloned().unwrap_or_default()
     }
 
     #[inline]
@@ -332,7 +332,7 @@ impl Stylesheet {
 
             let mut style = Style::default();
             self.style_by_cell_format(&mut style, &def_cell_format, cell_format);
-            self.maked_style_list.push(style);
+            self.marker_style_list.push(style);
         }
 
         self
@@ -460,8 +460,8 @@ impl Stylesheet {
         if style == &def_style {
             return index;
         }
-        for maked_style in &self.maked_style_list {
-            if style == maked_style {
+        for marker_style in &self.marker_style_list {
+            if style == marker_style {
                 return index;
             }
             index += 1;
@@ -506,12 +506,12 @@ impl Stylesheet {
             cell_format.set_apply_protection(true);
         }
 
-        self.maked_style_list.push(style.clone());
+        self.marker_style_list.push(style.clone());
         self.cell_formats.set_cell_format(cell_format);
         index
     }
 
-    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
+    pub(crate) fn set_default_value(&mut self) -> &mut Self {
         let style = Style::default_value();
         self.set_style(&style);
         let style = Style::default_value_2();

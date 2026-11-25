@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use super::fraction_formater::format_as_fraction;
+use super::fraction_formatter::format_as_fraction;
 use crate::helper::utils::compile_regex;
 
 pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {

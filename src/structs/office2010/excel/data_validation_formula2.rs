@@ -22,10 +22,10 @@ use crate::{
 };
 
 #[derive(Default, Debug, Clone)]
-pub struct DataValidationForumla2 {
+pub struct DataValidationFormula2 {
     value: Formula,
 }
-impl DataValidationForumla2 {
+impl DataValidationFormula2 {
     #[inline]
     #[must_use]
     pub fn value(&self) -> &Formula {

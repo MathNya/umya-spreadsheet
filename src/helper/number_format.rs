@@ -1,7 +1,7 @@
-mod date_formater;
-mod fraction_formater;
-mod number_formater;
-mod percentage_formater;
+mod date_formatter;
+mod fraction_formatter;
+mod number_formatter;
+mod percentage_formatter;
 
 use std::borrow::Cow;
 
@@ -125,7 +125,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     if get_date_time_regex().is_match(&format).unwrap_or(false) {
         // datetime format
-        value = date_formater::format_as_date(reparsed, &format);
+        value = date_formatter::format_as_date(reparsed, &format);
     } else if let Some(conv_format) = (format.starts_with('"') && format.ends_with('"'))
         .then(|| format.trim_matches('"').parse::<f64>().ok())
         .flatten()
@@ -136,9 +136,9 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
         .unwrap_or(false)
     {
         // % number format
-        value = percentage_formater::format_as_percentage(reparsed, &format);
+        value = percentage_formatter::format_as_percentage(reparsed, &format);
     } else {
-        value = number_formater::format_as_number(reparsed, &format);
+        value = number_formatter::format_as_number(reparsed, &format);
     }
     value.trim().to_string()
 }

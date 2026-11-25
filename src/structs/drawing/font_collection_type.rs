@@ -157,7 +157,7 @@ impl FontCollectionType {
         self
     }
 
-    pub(crate) fn set_defalut_value_major(&mut self) -> &mut Self {
+    pub(crate) fn set_default_value_major(&mut self) -> &mut Self {
         self.latin_font.set_typeface("Calibri Light");
         self.latin_font.set_panose("020F0302020204030204");
         self.east_asian_font.set_typeface("");
@@ -170,7 +170,7 @@ impl FontCollectionType {
         self
     }
 
-    pub(crate) fn set_defalut_value_minor(&mut self) -> &mut Self {
+    pub(crate) fn set_default_value_minor(&mut self) -> &mut Self {
         self.latin_font.set_typeface("Calibri");
         self.latin_font.set_panose("020F0502020204030204");
         self.east_asian_font.set_typeface("");

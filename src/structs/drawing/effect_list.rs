@@ -174,7 +174,7 @@ impl EffectList {
                 v.write_to(writer);
             }
 
-            // a:outerShdow
+            // a:outerShdw
             if let Some(v) = &self.outer_shadow {
                 v.write_to(writer);
             }

@@ -1,7 +1,7 @@
 //! Cryptographic constants and parameters for Excel document encryption.
 //!
-//! This module defines the standard constants used in the Office Open XML (OOXML)
-//! encryption process, including:
+//! This module defines the standard constants used in the Office Open XML
+//! (OOXML) encryption process, including:
 //!
 //! - Encryption format version identifiers
 //! - Block keys for various encryption stages
@@ -64,4 +64,4 @@ pub const KEY_HASH_ALGORITHM: &str = "SHA-512";
 pub const KEY_HASH_SIZE: usize = 64;
 pub const KEY_SPIN_COUNT: usize = 100_000;
 
-// Ths file is ignored by rustfmt.
+// This file is ignored by rustfmt.

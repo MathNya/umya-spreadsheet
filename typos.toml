@@ -1,0 +1,18 @@
+[default]
+# Start a comment with the following line to allow an intentional spelling mistake that should only be allowed on one line not everywhere
+# "spellchecker:ignore-next-line because "
+extend-ignore-re = [
+  '''(?xs)
+  //\s*spellchecker:ignore-next-line\ because\ [^\n]*\n*  # 1. First indicator line (with mandatory "because" reason)
+  (\s*//[^\n]*\n*)*                                       # 2. Optional continuing comment lines
+  [^\n]*                                                  # 3. The code line itself to ignore
+  ''',
+]
+
+[default.extend-words]
+Gost = "Gost"
+BA = "BA"
+DAA = "DAA"
+LOV = "LOV"
+THA = "THA"
+Beng = "Beng"

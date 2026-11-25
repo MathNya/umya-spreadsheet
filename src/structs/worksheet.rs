@@ -2902,7 +2902,7 @@ impl Worksheet {
         }
     }
 
-    pub(crate) fn set_attributes_from_wookbook<R: std::io::BufRead>(
+    pub(crate) fn set_attributes_from_workbook<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,

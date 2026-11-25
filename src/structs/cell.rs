@@ -512,9 +512,9 @@ impl Cell {
         value.split('\n').fold(0f64, |mut acc, value| {
             let mut point = 0f64;
             for chr in value.chars() {
-                let clen = if chr.len_utf8() > 1 { 1.5 } else { 1.0 };
+                let chr_len = if chr.len_utf8() > 1 { 1.5 } else { 1.0 };
 
-                point += clen;
+                point += chr_len;
             }
             if point > acc {
                 acc = point;
