@@ -165,7 +165,7 @@ Contributions by way of pull requests are welcome!  Please make sure your code u
 * [clippy](https://github.com/rust-lang/rust-clippy)
 ```rust
 cargo +nightly fmt --all
-cargo clippy -- -D warnings
+cargo clippy --all-features --all-targets -- -D warnings
 ```
 
 ## Acknowledgements

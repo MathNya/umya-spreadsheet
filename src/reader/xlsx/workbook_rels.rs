@@ -117,7 +117,7 @@ mod tests {
     #[case("<Other/>")]
     fn unrelated_relationship_names_are_not_interpreted(#[case] child: &str) {
         let xml = format!(r#"<Relationships xmlns="{REL_NS}">{child}</Relationships>"#);
-        assert!(relationships(&xml).is_empty());
+        assert_eq!(relationships(&xml), []);
     }
 
     #[test]
