@@ -2990,9 +2990,17 @@ impl AdjustmentCoordinate for Worksheet {
             );
         }
 
+        let title = self.title.to_string();
         // conditional styles
         for conditional_styles in &mut self.conditional_formatting_collection {
             conditional_styles.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+            conditional_styles.adjustment_insert_formulas(
+                &title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -3004,6 +3012,13 @@ impl AdjustmentCoordinate for Worksheet {
         if let Some(v) = self.data_validations_mut() {
             for data_validation in v.data_validation_list_mut() {
                 data_validation.adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+                data_validation.adjustment_insert_formulas(
+                    &title,
                     root_col_num,
                     offset_col_num,
                     root_row_num,
@@ -3105,12 +3120,20 @@ impl AdjustmentCoordinate for Worksheet {
             );
         }
 
+        let title = self.title.to_string();
         // conditional styles
         self.conditional_formatting_collection.retain(|x| {
             !x.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num)
         });
         for conditional_styles in &mut self.conditional_formatting_collection {
             conditional_styles.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+            conditional_styles.adjustment_remove_formulas(
+                &title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -3125,6 +3148,13 @@ impl AdjustmentCoordinate for Worksheet {
             });
             for data_validation in v.data_validation_list_mut() {
                 data_validation.adjustment_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+                data_validation.adjustment_remove_formulas(
+                    &title,
                     root_col_num,
                     offset_col_num,
                     root_row_num,

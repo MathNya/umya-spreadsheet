@@ -394,6 +394,11 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    pub(crate) fn formula_mut(&mut self) -> Option<&mut Formula> {
+        self.formula.as_deref_mut()
+    }
+
+    #[inline]
     pub fn set_formula(&mut self, value: Formula) -> &mut Self {
         self.formula = Some(Box::new(value));
         self

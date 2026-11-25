@@ -156,6 +156,58 @@ impl ConditionalFormatting {
         }
     }
 }
+impl ConditionalFormatting {
+    /// Moves the references in the rule formulas of a conditional format on `sheet_name`.
+    pub(crate) fn adjustment_insert_formulas(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.adjust_formulas(|text| {
+            crate::helper::formula::adjustment_insert_rule_formula(
+                text,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            )
+        });
+    }
+
+    pub(crate) fn adjustment_remove_formulas(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.adjust_formulas(|text| {
+            crate::helper::formula::adjustment_remove_rule_formula(
+                text,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            )
+        });
+    }
+
+    fn adjust_formulas(&mut self, adjust: impl Fn(&str) -> String) {
+        for rule in &mut self.conditional_collection {
+            if let Some(formula) = rule.formula_mut() {
+                let text = adjust(&formula.address_str());
+                formula.set_address_str(text);
+            }
+        }
+    }
+}
+
 impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn adjustment_insert_coordinate(
