@@ -15,7 +15,6 @@ use quick_xml::{
 use crate::{
     reader::driver::{
         get_attribute,
-        set_string_from_xml,
         xml_read_loop,
     },
     structs::{
@@ -157,8 +156,12 @@ impl CustomDocumentProperty {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        set_string_from_xml!(self, e, name, "name");
-        set_string_from_xml!(self, e, link_target, "linkTarget");
+        for (attr, field) in [("name", &mut self.name), ("linkTarget", &mut self.link_target)] {
+            if let Some(raw) = get_attribute(e, attr.as_bytes()) {
+                let value = quick_xml::escape::unescape(&raw).unwrap_or(Cow::Borrowed(&raw));
+                field.set_value_string(value.into_owned());
+            }
+        }
 
         if empty_flag {
             return;
