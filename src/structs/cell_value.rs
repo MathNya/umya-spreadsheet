@@ -327,9 +327,10 @@ impl CellValue {
         self
     }
 
-    /// Set an error value: one of [`CellErrorType`]'s names (in any case), or any
-    /// other token as [`CellErrorType::Other`], so a cell a workbook declares an error
-    /// (`t="e"`) stays an error whatever its token. An empty value leaves the cell empty.
+    /// Set an error value: one of [`CellErrorType`]'s names (in any case), or
+    /// any other token as [`CellErrorType::Other`], so a cell a workbook
+    /// declares an error (`t="e"`) stays an error whatever its token. An empty
+    /// value leaves the cell empty.
     #[inline]
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let value = value.into();

@@ -156,7 +156,10 @@ impl CustomDocumentProperty {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        for (attr, field) in [("name", &mut self.name), ("linkTarget", &mut self.link_target)] {
+        for (attr, field) in [
+            ("name", &mut self.name),
+            ("linkTarget", &mut self.link_target),
+        ] {
             if let Some(raw) = get_attribute(e, attr.as_bytes()) {
                 let value = quick_xml::escape::unescape(&raw).unwrap_or(Cow::Borrowed(&raw));
                 field.set_value_string(value.into_owned());
