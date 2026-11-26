@@ -133,8 +133,8 @@ fn write_worksheet_properties(
 ) {
     let mut attributes: crate::structs::AttrCollection = Vec::new();
     if has_macros {
-        let code_name = if worksheet.has_code_name() {
-            worksheet.code_name().as_ref().unwrap()
+        let code_name = if let Some(&value) = worksheet.code_name().as_ref() {
+            value
         } else {
             worksheet.name()
         };
