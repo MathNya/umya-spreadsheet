@@ -84,11 +84,11 @@ pub(crate) fn unescape_xstring(value: &str) -> std::borrow::Cow<'_, str> {
             && let Some(c) = u32::from_str_radix(&rest[2..6], 16)
                 .ok()
                 .and_then(char::from_u32)
-            {
-                output.push(c);
-                i += len;
-                continue;
-            }
+        {
+            output.push(c);
+            i += len;
+            continue;
+        }
         let c = rest.chars().next().unwrap();
         output.push(c);
         i += c.len_utf8();

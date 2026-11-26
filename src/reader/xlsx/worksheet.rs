@@ -57,22 +57,23 @@ pub(crate) fn read(
     stylesheet: &Stylesheet,
 ) -> Result<(), XlsxError> {
     if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file()
-        && !raw_data_of_worksheet.worksheet_file().has_file_data() {
-            let file = File::open(source_file)?;
-            let mut archive = zip::read::ZipArchive::new(file)?;
-            let source = zip_by_name(
-                &mut archive,
-                raw_data_of_worksheet.worksheet_file().file_target(),
-            )?;
-            let reader = io::BufReader::new(source);
-            return read_from_reader(
-                worksheet,
-                reader,
-                raw_data_of_worksheet,
-                shared_string_table,
-                stylesheet,
-            );
-        }
+        && !raw_data_of_worksheet.worksheet_file().has_file_data()
+    {
+        let file = File::open(source_file)?;
+        let mut archive = zip::read::ZipArchive::new(file)?;
+        let source = zip_by_name(
+            &mut archive,
+            raw_data_of_worksheet.worksheet_file().file_target(),
+        )?;
+        let reader = io::BufReader::new(source);
+        return read_from_reader(
+            worksheet,
+            reader,
+            raw_data_of_worksheet,
+            shared_string_table,
+            stylesheet,
+        );
+    }
 
     let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
     read_from_reader(
@@ -301,16 +302,17 @@ pub(crate) fn read_lite(
     stylesheet: &Stylesheet,
 ) -> Result<Cells, XlsxError> {
     if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file()
-        && !raw_data_of_worksheet.worksheet_file().has_file_data() {
-            let file = File::open(source_file)?;
-            let mut archive = zip::read::ZipArchive::new(file)?;
-            let source = zip_by_name(
-                &mut archive,
-                raw_data_of_worksheet.worksheet_file().file_target(),
-            )?;
-            let reader = io::BufReader::new(source);
-            return read_lite_from_reader(reader, shared_string_table, stylesheet);
-        }
+        && !raw_data_of_worksheet.worksheet_file().has_file_data()
+    {
+        let file = File::open(source_file)?;
+        let mut archive = zip::read::ZipArchive::new(file)?;
+        let source = zip_by_name(
+            &mut archive,
+            raw_data_of_worksheet.worksheet_file().file_target(),
+        )?;
+        let reader = io::BufReader::new(source);
+        return read_lite_from_reader(reader, shared_string_table, stylesheet);
+    }
 
     let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
     read_lite_from_reader(data, shared_string_table, stylesheet)
@@ -374,21 +376,17 @@ where
     F: FnMut(&Cell),
 {
     if let Some(source_file) = raw_data_of_worksheet.worksheet_file().source_file()
-        && !raw_data_of_worksheet.worksheet_file().has_file_data() {
-            let file = File::open(source_file)?;
-            let mut archive = zip::read::ZipArchive::new(file)?;
-            let source = zip_by_name(
-                &mut archive,
-                raw_data_of_worksheet.worksheet_file().file_target(),
-            )?;
-            let reader = io::BufReader::new(source);
-            return read_cells_stream_from_reader(
-                reader,
-                shared_string_table,
-                stylesheet,
-                callback,
-            );
-        }
+        && !raw_data_of_worksheet.worksheet_file().has_file_data()
+    {
+        let file = File::open(source_file)?;
+        let mut archive = zip::read::ZipArchive::new(file)?;
+        let source = zip_by_name(
+            &mut archive,
+            raw_data_of_worksheet.worksheet_file().file_target(),
+        )?;
+        let reader = io::BufReader::new(source);
+        return read_cells_stream_from_reader(reader, shared_string_table, stylesheet, callback);
+    }
 
     let data = io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
     read_cells_stream_from_reader(data, shared_string_table, stylesheet, callback)

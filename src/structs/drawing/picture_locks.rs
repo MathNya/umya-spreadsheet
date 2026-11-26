@@ -44,9 +44,10 @@ impl PictureLocks {
         e: &BytesStart,
     ) {
         if let Some(v) = get_attribute(e, b"noChangeAspect")
-            && v == "1" {
-                self.set_no_change_aspect(true);
-            }
+            && v == "1"
+        {
+            self.set_no_change_aspect(true);
+        }
     }
 
     #[inline]
