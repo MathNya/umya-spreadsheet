@@ -259,11 +259,10 @@ impl Color {
 
     #[must_use]
     pub fn argb(&self) -> ARGB8 {
-        if let Some(idx) = self.indexed {
-            if let Some(v) = INDEX_TO_COLOR.get(&idx) {
+        if let Some(idx) = self.indexed
+            && let Some(v) = INDEX_TO_COLOR.get(&idx) {
                 return *v;
             }
-        }
         self.argb.unwrap_or_default()
     }
 
@@ -285,8 +284,8 @@ impl Color {
         if self.indexed.is_some() {
             return self.argb_str().into();
         }
-        if let Some(key) = self.theme_index {
-            if let Some(v) = theme
+        if let Some(key) = self.theme_index
+            && let Some(v) = theme
                 .theme_elements()
                 .color_scheme()
                 .color_map()
@@ -297,7 +296,6 @@ impl Color {
                 }
                 return v.clone().into();
             }
-        }
         self.argb_str().clone().into()
     }
 
@@ -461,18 +459,16 @@ impl Color {
                     }
                 }
                 b"indexed" => {
-                    if let Ok(v) = get_attribute_value(&attr) {
-                        if let Ok(num) = v.parse() {
+                    if let Ok(v) = get_attribute_value(&attr)
+                        && let Ok(num) = v.parse() {
                             self.indexed = Some(num);
                         }
-                    }
                 }
                 b"theme" => {
-                    if let Ok(v) = get_attribute_value(&attr) {
-                        if let Ok(num) = v.parse() {
+                    if let Ok(v) = get_attribute_value(&attr)
+                        && let Ok(num) = v.parse() {
                             self.theme_index = Some(num);
                         }
-                    }
                 }
                 b"rgb" => {
                     if let Ok(v) = get_attribute_value(&attr) {
@@ -480,11 +476,10 @@ impl Color {
                     }
                 }
                 b"tint" => {
-                    if let Ok(v) = get_attribute_value(&attr) {
-                        if let Ok(num) = v.parse() {
+                    if let Ok(v) = get_attribute_value(&attr)
+                        && let Ok(num) = v.parse() {
                             self.tint = Some(num);
                         }
-                    }
                 }
                 _ => {}
             }

@@ -43,11 +43,10 @@ impl PictureLocks {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        if let Some(v) = get_attribute(e, b"noChangeAspect") {
-            if v == "1" {
+        if let Some(v) = get_attribute(e, b"noChangeAspect")
+            && v == "1" {
                 self.set_no_change_aspect(true);
             }
-        }
     }
 
     #[inline]

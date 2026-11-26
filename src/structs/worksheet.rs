@@ -2582,8 +2582,8 @@ impl Worksheet {
             }
         }
         for ole_objects in self.ole_objects().ole_object() {
-            if let Some(fill) = ole_objects.shape().fill() {
-                if let Some(media_object) = fill.image() {
+            if let Some(fill) = ole_objects.shape().fill()
+                && let Some(media_object) = fill.image() {
                     let is_new = !list
                         .iter()
                         .any(|v| v.image_name() == media_object.image_name());
@@ -2591,11 +2591,10 @@ impl Worksheet {
                         list.push(media_object);
                     }
                 }
-            }
         }
         for comment in self.comments() {
-            if let Some(fill) = comment.shape().fill() {
-                if let Some(media_object) = fill.image() {
+            if let Some(fill) = comment.shape().fill()
+                && let Some(media_object) = fill.image() {
                     let is_new = !list
                         .iter()
                         .any(|v| v.image_name() == media_object.image_name());
@@ -2603,7 +2602,6 @@ impl Worksheet {
                         list.push(media_object);
                     }
                 }
-            }
         }
 
         list

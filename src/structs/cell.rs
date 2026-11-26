@@ -470,11 +470,10 @@ impl Cell {
     #[inline]
     #[must_use]
     pub fn formula_shared_index(&self) -> Option<u32> {
-        if let Some(v) = self.formula_obj() {
-            if v.formula_type() == &CellFormulaValues::Shared {
+        if let Some(v) = self.formula_obj()
+            && v.formula_type() == &CellFormulaValues::Shared {
                 return Some(v.shared_index());
             }
-        }
         None
     }
 
@@ -540,11 +539,11 @@ impl Cell {
         }
 
         // convert value
-        let result = match self.style().number_format() {
+        
+        match self.style().number_format() {
             Some(number_format) => to_formatted_string(&value, number_format.format_code()),
             None => to_formatted_string(&value, NumberingFormat::FORMAT_GENERAL),
-        };
-        result
+        }
     }
 
     #[must_use]
@@ -586,12 +585,11 @@ impl Cell {
             self.coordinate.set_coordinate(&cell_reference);
         }
 
-        if let Some(v) = get_attribute(e, b"s") {
-            if let Ok(id) = v.parse::<usize>() {
+        if let Some(v) = get_attribute(e, b"s")
+            && let Ok(id) = v.parse::<usize>() {
                 let style = stylesheet.style(id);
                 self.set_style(style);
             }
-        }
 
         if let Some(v) = get_attribute(e, b"t") {
             type_value = v;
@@ -613,13 +611,12 @@ impl Cell {
                         self.cell_value.set_formula_obj(obj);
                     }
                     b"t" => {
-                        if let Some(Ok(attribute)) = e.attributes().next() {
-                            if attribute.key.into_inner() == b"xml:space"
+                        if let Some(Ok(attribute)) = e.attributes().next()
+                            && attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
                                 reader.config_mut().trim_text(false);
                             }
-                        }
                         let mut buf = Vec::new();
                         let text = crate::helper::utils::unescape_xml_text(
                             &reader.read_text_into(e.name(), &mut buf).unwrap(),
@@ -637,13 +634,12 @@ impl Cell {
                                 self.set_value_string_crate(text);
                             }
                             "s" => {
-                                if let Ok(index) = text.parse::<usize>() {
-                                    if let Some(shared_string_item) =
+                                if let Ok(index) = text.parse::<usize>()
+                                    && let Some(shared_string_item) =
                                         shared_string_table.shared_string_item().get(index)
                                     {
                                         self.set_shared_string_item(shared_string_item);
                                     }
-                                }
                             }
                             "b" => {
                                 let prm = text == "1";

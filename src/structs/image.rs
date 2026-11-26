@@ -362,16 +362,14 @@ impl Image {
             if let Some(v) = anchor.picture() {
                 result.push(v.blip_fill().blip().image());
             }
-            if let Some(v) = anchor.shape() {
-                if let Some(bf) = v.shape_properties().blip_fill() {
+            if let Some(v) = anchor.shape()
+                && let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.blip().image());
                 }
-            }
-            if let Some(v) = anchor.connection_shape() {
-                if let Some(bf) = v.shape_properties().blip_fill() {
+            if let Some(v) = anchor.connection_shape()
+                && let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.blip().image());
                 }
-            }
             if let Some(v) = anchor.group_shape() {
                 for pic in v.picture_collection() {
                     result.push(pic.blip_fill().blip().image());
@@ -387,11 +385,10 @@ impl Image {
             if let Some(v) = anchor.picture() {
                 result.push(v.blip_fill().blip().image());
             }
-            if let Some(v) = anchor.shape() {
-                if let Some(bf) = v.shape_properties().blip_fill() {
+            if let Some(v) = anchor.shape()
+                && let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.blip().image());
                 }
-            }
             if let Some(v) = anchor.group_shape() {
                 for pic in v.picture_collection() {
                     result.push(pic.blip_fill().blip().image());

@@ -247,11 +247,10 @@ impl Row {
         set_string_from_xml!(self, e, custom_height, "customHeight");
         set_string_from_xml!(self, e, hidden, "hidden");
 
-        if let Some(v) = get_attribute(e, b"x14ac:dyDescent") {
-            if !v.is_empty() {
+        if let Some(v) = get_attribute(e, b"x14ac:dyDescent")
+            && !v.is_empty() {
                 self.descent.set_value_string(v);
             }
-        }
 
         if let Some(v) = get_attribute(e, b"s") {
             let style = stylesheet.style(v.parse::<usize>().unwrap());
