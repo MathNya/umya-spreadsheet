@@ -296,6 +296,15 @@ where
     }
 }
 
+impl<T> XlsxErrorContext<T> for Option<T> {
+    fn context<C: Into<Cow<'static, str>>>(self, message: C) -> crate::Result<T> {
+        match self {
+            Some(value) => Ok(value),
+            None => Err(XlsxError::with_message(XlsxErrorKind::NotFound, message)),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -327,7 +336,7 @@ mod tests {
     }
 
     #[test]
-    fn context() {
+    fn context_wrap_err() {
         let invalid_value = "#FOO!";
         let msg = "failed when parsing [static description of input]";
         let err = invalid_value
@@ -343,6 +352,25 @@ mod tests {
         assert!(
             source_err_msg.contains(invalid_value),
             "Expected source error message to contain {invalid_value:?} but found {source_err_msg}"
+        );
+    }
+
+    #[test]
+    fn context_wrap_option() {
+        let empty: Option<()> = None;
+        let msg = "we left it empty";
+        let err = empty.context(msg).unwrap_err();
+
+        // Test message is saved
+        assert_eq!(err.message(), Some(msg));
+
+        // Test kind
+        assert_eq!(err.kind(), XlsxErrorKind::NotFound);
+
+        // Test no source
+        assert!(
+            err.source().is_none(),
+            "not expecting a source when wrapping an option"
         );
     }
 }
