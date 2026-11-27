@@ -937,8 +937,9 @@ pub fn adjustment_formula_coordinate(
     }
 }
 
-/// Moves the unlocked column and row of one coordinate. Whole-column (`A`) and
-/// whole-row (`3`) references have only one part, and only that part moves.
+/// Moves the column and row of one coordinate, keeping any `$`: inserting or
+/// removing cells moves locked references too, as in Excel. Whole-column (`A`)
+/// and whole-row (`3`) references have only one part, and only that part moves.
 fn shift_coordinate(coordinate: &str, shift: impl Fn(u32, bool) -> u32) -> String {
     let (col_num, row_num, is_lock_col, is_lock_row) = index_from_coordinate(coordinate);
     if col_num.is_none() && row_num.is_none() {
@@ -950,24 +951,14 @@ fn shift_coordinate(coordinate: &str, shift: impl Fn(u32, bool) -> u32) -> Strin
         if is_lock_col {
             new_coordinate.push('$');
         }
-        let col_num = if is_lock_col {
-            col_num
-        } else {
-            shift(col_num, true)
-        };
-        new_coordinate.push_str(&string_from_column_index(col_num));
+        new_coordinate.push_str(&string_from_column_index(shift(col_num, true)));
     }
     if let Some(row_num) = row_num {
         let is_lock_row = is_lock_row.unwrap_or(false);
         if is_lock_row {
             new_coordinate.push('$');
         }
-        let row_num = if is_lock_row {
-            row_num
-        } else {
-            shift(row_num, false)
-        };
-        new_coordinate.push_str(&row_num.to_string());
+        new_coordinate.push_str(&shift(row_num, false).to_string());
     }
     new_coordinate
 }
@@ -1139,12 +1130,23 @@ mod shared_formula_quoted_sheet_tests {
         let mut tokens = parse_to_tokens(r#"=IF(A2=1,'(1)'!$E$38&"-x","")"#);
         let out = adjustment_insert_formula_coordinate(&mut tokens, 0, 0, 2, 1, "", "Main", true);
         assert!(
-            out.contains("'(1)'!$E$38"),
+            out.contains("'(1)'!$E$39"),
             "quoted sheet ref corrupted: {out}"
         );
         assert!(
-            !out.contains("(1)!$E$38"),
+            !out.contains("(1)!$E$39"),
             "sheet name lost its quotes: {out}"
         );
+    }
+
+    #[test]
+    fn insert_and_remove_move_absolute_refs() {
+        let mut tokens = parse_to_tokens("=SUM($H$1:$H$2)+H1");
+        let out = adjustment_insert_formula_coordinate(&mut tokens, 0, 0, 1, 2, "", "Main", true);
+        assert_eq!(out, "SUM($H$3:$H$4)+H3");
+
+        let mut tokens = parse_to_tokens("=VLOOKUP(2,$G$2:$H$5,2,FALSE)+$H$4");
+        let out = adjustment_remove_formula_coordinate(&mut tokens, 0, 0, 3, 1, "", "Main", true);
+        assert_eq!(out, "VLOOKUP(2,$G$2:$H$4,2,FALSE)+$H$3");
     }
 }
