@@ -78,14 +78,14 @@ impl ImageData {
         e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        if let Some(relid) = get_attribute(e, b"o:relid") {
-            if let Some(rel) = drawing_relationships {
-                let relationship = rel.relationship_by_rid(&relid);
-                let mut obj = MediaObject::default();
-                obj.set_image_name(relationship.raw_file().file_name());
-                obj.set_image_data(relationship.raw_file().file_data());
-                self.set_image(obj);
-            }
+        if let Some(relid) = get_attribute(e, b"o:relid")
+            && let Some(rel) = drawing_relationships
+        {
+            let relationship = rel.relationship_by_rid(&relid);
+            let mut obj = MediaObject::default();
+            obj.set_image_name(relationship.raw_file().file_name());
+            obj.set_image_data(relationship.raw_file().file_data());
+            self.set_image(obj);
         }
 
         set_string_from_xml!(self, e, title, "o:title");

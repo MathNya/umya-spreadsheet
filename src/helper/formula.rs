@@ -408,17 +408,16 @@ fn handle_in_error(
 }
 
 fn handle_scientific_notation(formula: &str, index: &mut usize, value: &mut String) -> bool {
-    if let Some(current_char) = formula.chars().nth(*index) {
-        if OPERATORS_SN.contains(current_char)
-            && value.len() > 1
-            && compile_regex!(r"/^[1-9]{1}(\\.\\d+)?E{1}$/")
-                .is_match(&current_char.to_string())
-                .unwrap_or(false)
-        {
-            value.push(current_char);
-            *index += 1;
-            return true;
-        }
+    if let Some(current_char) = formula.chars().nth(*index)
+        && OPERATORS_SN.contains(current_char)
+        && value.len() > 1
+        && compile_regex!(r"/^[1-9]{1}(\\.\\d+)?E{1}$/")
+            .is_match(&current_char.to_string())
+            .unwrap_or(false)
+    {
+        value.push(current_char);
+        *index += 1;
+        return true;
     }
     false
 }
@@ -771,15 +770,15 @@ fn cleanup_tokens(tokens1: &[FormulaToken], tokens2: &mut Vec<FormulaToken>) {
             next_token = tokens1.get(i + 1);
         }
 
-        if let Some(p) = previous_token {
-            if !is_operand_or_close(p) {
-                continue;
-            }
+        if let Some(p) = previous_token
+            && !is_operand_or_close(p)
+        {
+            continue;
         }
-        if let Some(n) = next_token {
-            if !is_operand_or_open(n) {
-                continue;
-            }
+        if let Some(n) = next_token
+            && !is_operand_or_open(n)
+        {
+            continue;
         }
         tokens2.push(token!(
             value.clone(),
@@ -788,10 +787,10 @@ fn cleanup_tokens(tokens1: &[FormulaToken], tokens2: &mut Vec<FormulaToken>) {
         ));
         value.clear();
 
-        if let Some(n) = next_token {
-            if !is_operand_or_open(n) {
-                continue;
-            }
+        if let Some(n) = next_token
+            && !is_operand_or_open(n)
+        {
+            continue;
         }
         tokens2.push(token!(
             value.clone(),
@@ -886,27 +885,27 @@ pub fn adjustment_formula_coordinate(
                 let (mut col_num, mut row_num, is_lock_col, is_lock_row) =
                     index_from_coordinate(coordinate);
                 if col_num.is_some() || row_num.is_some() {
-                    if let Some(col_num) = col_num.as_mut() {
-                        if !is_lock_col.unwrap_or_default() {
-                            let calc_col_num =
-                                num_traits::cast::<_, i32>(*col_num).unwrap() + offset_col_num;
-                            if calc_col_num < 1 {
-                                has_error = true;
-                                break;
-                            }
-                            *col_num = num_traits::cast::<_, u32>(calc_col_num).unwrap();
+                    if let Some(col_num) = col_num.as_mut()
+                        && !is_lock_col.unwrap_or_default()
+                    {
+                        let calc_col_num =
+                            num_traits::cast::<_, i32>(*col_num).unwrap() + offset_col_num;
+                        if calc_col_num < 1 {
+                            has_error = true;
+                            break;
                         }
+                        *col_num = num_traits::cast::<_, u32>(calc_col_num).unwrap();
                     }
-                    if let Some(row_num) = row_num.as_mut() {
-                        if !is_lock_row.unwrap_or_default() {
-                            let calc_row_num =
-                                num_traits::cast::<_, i32>(*row_num).unwrap() + offset_row_num;
-                            if calc_row_num < 1 {
-                                has_error = true;
-                                break;
-                            }
-                            *row_num = num_traits::cast::<_, u32>(calc_row_num).unwrap();
+                    if let Some(row_num) = row_num.as_mut()
+                        && !is_lock_row.unwrap_or_default()
+                    {
+                        let calc_row_num =
+                            num_traits::cast::<_, i32>(*row_num).unwrap() + offset_row_num;
+                        if calc_row_num < 1 {
+                            has_error = true;
+                            break;
                         }
+                        *row_num = num_traits::cast::<_, u32>(calc_row_num).unwrap();
                     }
                     let mut new_coordinate = String::new();
                     if let Some(col_num) = col_num {

@@ -232,24 +232,22 @@ impl SharedItems {
                         }
                     },
                     b"e" => {
-                        if let Some(v) = get_attribute(e, b"v") {
-                            if let Ok(e) = CellErrorType::from_str(&v) {
+                        if let Some(v) = get_attribute(e, b"v")
+                            && let Ok(e) = CellErrorType::from_str(&v) {
                                 let obj = SharedItemValue::Error(e);
                                 self.items.push(obj);
                             }
-                        }
                     },
                     b"m" => {
                         let obj = SharedItemValue::Empty;
                         self.items.push(obj);
                     },
                     b"n" => {
-                        if let Some(v) = get_attribute(e, b"v") {
-                            if let Ok(f) = v.parse::<f64>() {
+                        if let Some(v) = get_attribute(e, b"v")
+                            && let Ok(f) = v.parse::<f64>() {
                                 let obj = SharedItemValue::Numeric(f);
                                 self.items.push(obj);
                            }
-                        }
                     },
                     b"s" => {
                         if let Some(v) = get_attribute(e, b"v") {

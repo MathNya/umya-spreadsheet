@@ -435,10 +435,10 @@ impl AreaChartSeries {
     pub fn formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
 
-        if let Some(v) = &mut self.category_axis_data {
-            if let Some(h) = v.string_reference_mut() {
-                result.push(h.formula_mut());
-            }
+        if let Some(v) = &mut self.category_axis_data
+            && let Some(h) = v.string_reference_mut()
+        {
+            result.push(h.formula_mut());
         }
         if let Some(v) = &mut self.values {
             result.push(v.number_reference_mut().formula_mut());

@@ -148,15 +148,15 @@ impl Fill {
         set_string_from_xml!(self, e, on, "on");
         set_string_from_xml!(self, e, focus_size, "focussize");
 
-        if let Some(relid) = get_attribute(e, b"o:relid") {
-            if let Some(rel) = drawing_relationships {
-                let relationship = rel.relationship_by_rid(&relid);
-                let mut obj = MediaObject::default();
-                obj.set_image_title(get_attribute(e, b"o:title").unwrap());
-                obj.set_image_name(relationship.raw_file().file_name());
-                obj.set_image_data(relationship.raw_file().file_data());
-                self.set_image(obj);
-            }
+        if let Some(relid) = get_attribute(e, b"o:relid")
+            && let Some(rel) = drawing_relationships
+        {
+            let relationship = rel.relationship_by_rid(&relid);
+            let mut obj = MediaObject::default();
+            obj.set_image_title(get_attribute(e, b"o:title").unwrap());
+            obj.set_image_name(relationship.raw_file().file_name());
+            obj.set_image_data(relationship.raw_file().file_data());
+            self.set_image(obj);
         }
     }
 

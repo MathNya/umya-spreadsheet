@@ -423,8 +423,7 @@ impl CellFormula {
             }
         } else if let Some((start_col, end_col)) =
             formula_shared_list.get(&self.shared_index.value())
-        {
-            if coordinate == start_col {
+            && coordinate == start_col {
                 reference_str = match end_col {
                     Some(v) => {
                         format!("{start_col}:{v}")
@@ -433,7 +432,6 @@ impl CellFormula {
                 };
                 attributes.push(("ref", &reference_str).into());
             }
-        }
 
         // An array formula's range, as read.
         if self.formula_type.value() == &CellFormulaValues::Array && self.reference.has_value() {

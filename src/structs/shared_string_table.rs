@@ -82,15 +82,15 @@ impl SharedStringTable {
         }
 
         let hash_code = shared_string_item.hash_u64();
-        let n = if let Some(v) = self.map.get(&hash_code) {
+        
+        if let Some(v) = self.map.get(&hash_code) {
             *v
         } else {
             let n = self.shared_string_item.len();
             self.map.insert(hash_code, n);
             self.set_shared_string_item(shared_string_item);
             n
-        };
-        n
+        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
