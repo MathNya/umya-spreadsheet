@@ -912,7 +912,10 @@ mod tests {
         for (xml, token) in [
             (r#"<c r="A1" t="e"><v>#N/A</v></c>"#, "#N/A"),
             (r#"<c r="A1" t="e"><v>#SPILL!</v></c>"#, "#SPILL!"),
-            (r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#, "#CALC!"),
+            (
+                r#"<c r="A1" t="e"><f>SEQUENCE(3)</f><v>#CALC!</v></c>"#,
+                "#CALC!",
+            ),
         ] {
             let cell = read_cell(xml);
             assert!(cell.raw_value().is_error(), "{xml}");

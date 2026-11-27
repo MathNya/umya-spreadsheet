@@ -13,15 +13,12 @@ use quick_xml::{
 use super::{
     BooleanValue,
     DataValidationErrorStyleValues,
-    DataValidationOperatorValues,
-    DataValidationValues,
+    DataValidationType,
     EnumValue,
     SequenceOfReferences,
     StringValue,
 };
 use crate::{
-    Formula1,
-    Formula2,
     reader::driver::{
         get_attribute,
         xml_read_loop,
@@ -30,13 +27,13 @@ use crate::{
     writer::driver::{
         write_end_tag,
         write_start_tag,
+        write_text_node,
     },
 };
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type:                 EnumValue<DataValidationValues>,
-    operator:               EnumValue<DataValidationOperatorValues>,
+    r#type:                 DataValidationType,
     allow_blank:            BooleanValue,
     show_input_message:     BooleanValue,
     show_error_message:     BooleanValue,
@@ -51,38 +48,17 @@ pub struct DataValidation {
     error_message:          StringValue,
     error_style:            EnumValue<DataValidationErrorStyleValues>,
     sequence_of_references: SequenceOfReferences,
-    formula1:               Box<Formula1>,
-    formula2:               Box<Formula2>,
 }
 impl DataValidation {
     #[inline]
     #[must_use]
-    pub fn get_type(&self) -> &DataValidationValues {
-        self.r#type.value()
+    pub fn get_type(&self) -> &DataValidationType {
+        &self.r#type
     }
 
     #[inline]
-    pub fn set_type(&mut self, value: DataValidationValues) -> &mut Self {
-        self.r#type.set_value(value);
-        self
-    }
-
-    #[inline]
-    #[must_use]
-    pub fn operator(&self) -> &DataValidationOperatorValues {
-        self.operator.value()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use operator()")]
-    pub fn get_operator(&self) -> &DataValidationOperatorValues {
-        self.operator()
-    }
-
-    #[inline]
-    pub fn set_operator(&mut self, value: DataValidationOperatorValues) -> &mut Self {
-        self.operator.set_value(value);
+    pub fn set_type(&mut self, value: DataValidationType) -> &mut Self {
+        self.r#type = value;
         self
     }
 
@@ -261,44 +237,6 @@ impl DataValidation {
         self
     }
 
-    #[inline]
-    #[must_use]
-    pub fn formula1(&self) -> &str {
-        self.formula1.text()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use formula1()")]
-    pub fn get_formula1(&self) -> &str {
-        self.formula1()
-    }
-
-    #[inline]
-    pub fn set_formula1<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula1.set_text(value);
-        self
-    }
-
-    #[inline]
-    #[must_use]
-    pub fn formula2(&self) -> &str {
-        self.formula2.text()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use formula2()")]
-    pub fn get_formula2(&self) -> &str {
-        self.formula2()
-    }
-
-    #[inline]
-    pub fn set_formula2<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula2.set_text(value);
-        self
-    }
-
     /// A boolean value indicating whether to display a dropdown combo box for a
     /// list type data validation. Note that it has an inverted logic, false
     /// shows the dropdown list and true will render the dropdown as plain text
@@ -321,13 +259,8 @@ impl DataValidation {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        if let Some(v) = get_attribute(e, b"type") {
-            self.r#type.set_value_string(v);
-        }
-
-        if let Some(v) = get_attribute(e, b"operator") {
-            self.operator.set_value_string(v);
-        }
+        let r#type = get_attribute(e, b"type");
+        let operator = get_attribute(e, b"operator");
 
         if let Some(v) = get_attribute(e, b"allowBlank") {
             self.allow_blank.set_value_string(v);
@@ -369,29 +302,40 @@ impl DataValidation {
             self.show_drop_down.set_value_string(v);
         }
 
+        let type_parser =
+            DataValidationType::with_type_and_operator(r#type.as_deref(), operator.as_deref());
+
         if empty_flg {
+            self.r#type = type_parser
+                .apply(None, None)
+                .unwrap_or_else(|err| panic!("Data validation error: {err}"));
             return;
         }
+
+        let mut formula1 = None;
+        let mut formula2 = None;
 
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
                     b"formula1" => {
-                        let mut obj = Formula1::default();
-                        obj.set_attributes(reader, e);
-                        *self.formula1 = obj;
+                        let mut buf = Vec::new();
+                        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+                        formula1 = Some(crate::helper::utils::unescape_xml_text(&text));
                     }
                     b"formula2" => {
-                        let mut obj = Formula2::default();
-                        obj.set_attributes(reader, e);
-                        *self.formula2 = obj;
+                        let mut buf = Vec::new();
+                        let text = reader.read_text_into(e.name(), &mut buf).unwrap();
+                        formula2 = Some(crate::helper::utils::unescape_xml_text(&text));
                     }
                     _ => (),
                 }
             },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"dataValidation" {
+                    let t = type_parser.apply(formula1, formula2).unwrap_or_else(|err| panic!("Data validation error: {err}"));
+                    self.r#type = t;
                     return
                 }
             },
@@ -400,14 +344,13 @@ impl DataValidation {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let is_inner = !self.formula1.text().is_empty() || !self.formula2.text().is_empty();
-
         // dataValidation
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.value_string()).into());
-        }
+        let type_writer = self.r#type.attrs_and_formulas();
+        let has_formulas = type_writer.has_formulas();
+
+        attributes.push(("type", type_writer.r#type).into());
 
         if self.allow_blank.has_value() {
             attributes.push(("allowBlank", self.allow_blank.value_string()).into());
@@ -417,8 +360,8 @@ impl DataValidation {
             attributes.push(("showInputMessage", self.show_input_message.value_string()).into());
         }
 
-        if self.operator.has_value() {
-            attributes.push(("operator", self.operator.value_string()).into());
+        if let Some(v) = type_writer.operator {
+            attributes.push(("operator", v).into());
         }
 
         if self.show_error_message.has_value() {
@@ -454,15 +397,23 @@ impl DataValidation {
             attributes.push(("showDropDown", self.show_drop_down.value_string()).into());
         }
 
-        write_start_tag(writer, "dataValidation", attributes, !is_inner);
-        if is_inner {
+        write_start_tag(writer, "dataValidation", attributes, !has_formulas);
+        if has_formulas {
             // formula1
-            if !self.formula1.text().is_empty() {
-                self.formula1.write_to(writer);
+            if let Some(formula1) = type_writer.formula1 {
+                if !formula1.is_empty() {
+                    write_start_tag(writer, "formula1", vec![], false);
+                    write_text_node(writer, formula1);
+                    write_end_tag(writer, "formula1");
+                }
             }
             // formula2
-            if !self.formula2.text().is_empty() {
-                self.formula2.write_to(writer);
+            if let Some(formula2) = type_writer.formula2 {
+                if !formula2.is_empty() {
+                    write_start_tag(writer, "formula2", vec![], false);
+                    write_text_node(writer, formula2);
+                    write_end_tag(writer, "formula2");
+                }
             }
             write_end_tag(writer, "dataValidation");
         }
@@ -524,6 +475,10 @@ mod tests {
     use quick_xml::Reader;
 
     use super::*;
+    use crate::{
+        DataValidationExpression,
+        DataValidationListOrRange,
+    };
 
     #[test]
     fn formula1_preserves_numeric_character_references() {
@@ -543,13 +498,15 @@ mod tests {
         };
         let mut dv = DataValidation::default();
         dv.set_attributes(&mut reader, &e, false);
-        assert_eq!(
-            dv.formula1(),
-            "\"0–3 years ago,4–5 years ago,6–7 years ago\"",
-            "full list formula must survive entity split"
-        );
         assert_eq!(dv.sequence_of_references().get_sqref(), "D41");
-        assert_eq!(dv.get_type(), &DataValidationValues::List);
+        assert_eq!(
+            dv.get_type(),
+            &DataValidationType::List(DataValidationListOrRange::List(vec![
+                "0–3 years ago".into(),
+                "4–5 years ago".into(),
+                "6–7 years ago".into()
+            ]))
+        );
     }
 
     #[test]
@@ -567,21 +524,31 @@ mod tests {
         };
         let mut dv = DataValidation::default();
         dv.set_attributes(&mut reader, &e, false);
-        assert_eq!(dv.formula1(), "\"petrol,diesel,LPG,electric\"");
+        assert_eq!(
+            dv.get_type(),
+            &DataValidationType::List(DataValidationListOrRange::List(vec![
+                "petrol".into(),
+                "diesel".into(),
+                "LPG".into(),
+                "electric".into()
+            ]))
+        );
     }
 
     #[test]
     fn write_keeps_both_formulas() {
         let mut dv = DataValidation::default();
-        dv.set_type(DataValidationValues::Whole)
-            .set_operator(DataValidationOperatorValues::Between)
-            .set_formula1("1")
-            .set_formula2("10");
+        dv.set_type(DataValidationType::Whole(
+            DataValidationExpression::Between("1".into(), "10".into()),
+        ));
         dv.sequence_of_references_mut().set_sqref("A1");
 
         let mut writer = Writer::new(Cursor::new(Vec::new()));
         dv.write_to(&mut writer);
         let xml = String::from_utf8(writer.into_inner().into_inner()).unwrap();
-        assert!(xml.contains("<formula1>1</formula1><formula2>10</formula2>"), "{xml}");
+        assert!(
+            xml.contains("<formula1>1</formula1><formula2>10</formula2>"),
+            "{xml}"
+        );
     }
 }
