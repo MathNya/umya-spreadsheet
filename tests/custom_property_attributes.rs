@@ -1,5 +1,10 @@
 use std::io::Cursor;
-use umya_spreadsheet::{custom_properties::CustomDocumentProperty, reader, writer};
+
+use umya_spreadsheet::{
+    custom_properties::CustomDocumentProperty,
+    reader,
+    writer,
+};
 
 #[test]
 fn round_trip_custom_property_attributes() {

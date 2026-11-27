@@ -389,3 +389,41 @@ impl DataValidation {
         write_end_tag(writer, "x14:dataValidation");
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::structs::{
+        Address,
+        office::excel::Formula,
+    };
+
+    fn formula(address: &str) -> Formula {
+        let mut a = Address::default();
+        a.set_address(address);
+        let mut f = Formula::default();
+        f.set_value(a);
+        f
+    }
+
+    #[test]
+    fn write_uses_correct_formula_tags() {
+        let mut dv = DataValidation::default();
+        let mut f1 = DataValidationFormula1::default();
+        f1.set_value(formula("Sheet1!$A$1"));
+        let mut f2 = DataValidationFormula2::default();
+        f2.set_value(formula("Sheet1!$B$1"));
+        dv.set_formula1(f1).set_formula2(f2);
+
+        let mut writer = Writer::new(Cursor::new(Vec::new()));
+        dv.write_to(&mut writer);
+        let xml = String::from_utf8(writer.into_inner().into_inner()).unwrap();
+        assert!(
+            xml.contains(
+                "<x14:formula1><xm:f>Sheet1!$A$1</xm:f></x14:formula1><x14:formula2><xm:f>Sheet1!\
+                 $B$1</xm:f></x14:formula2>"
+            ),
+            "{xml}"
+        );
+    }
+}
