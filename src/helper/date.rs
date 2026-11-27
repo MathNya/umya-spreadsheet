@@ -204,6 +204,8 @@ pub fn excel_to_date_time_parts(excel_timestamp: f64) -> (jiff::civil::Date, i64
 #[must_use]
 #[cfg(feature = "jiff")]
 pub fn excel_to_date_time_jiff(excel_timestamp: f64) -> jiff::civil::DateTime {
+    // TODO (c-git): This expect has been checked awaiting response to decide on
+    // direction to proceed https://github.com/MathNya/umya-spreadsheet/issues/271#issuecomment-7218102351
     excel_to_date_time_jiff_checked(excel_timestamp).expect("input was out of supported range")
 }
 
