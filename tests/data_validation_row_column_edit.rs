@@ -44,3 +44,41 @@ fn column_edits_move_data_validations() {
     book.insert_new_column("Sheet1", "A", 1).unwrap();
     assert_eq!(sqref(&book), "D4:D8");
 }
+
+#[test]
+fn row_edits_move_data_validation_formulas() {
+    let mut book = book_with_validation("A1:A5");
+    book.sheet_mut(0)
+        .unwrap()
+        .data_validations_mut()
+        .unwrap()
+        .data_validation_list_mut()[0]
+        .set_formula1("$H$1:$H$3");
+    book.insert_new_row("Sheet1", 1, 2).unwrap();
+    let validation = &book
+        .sheet(0)
+        .unwrap()
+        .data_validations()
+        .unwrap()
+        .data_validation_list()[0];
+    assert_eq!(validation.formula1(), "$H$3:$H$5");
+}
+
+#[test]
+fn row_edits_move_sheet_qualified_validation_formulas() {
+    let mut book = book_with_validation("A1:A5");
+    book.sheet_mut(0)
+        .unwrap()
+        .data_validations_mut()
+        .unwrap()
+        .data_validation_list_mut()[0]
+        .set_formula1("Sheet1!$H$1:$H$3");
+    book.insert_new_row("Sheet1", 1, 2).unwrap();
+    let validation = &book
+        .sheet(0)
+        .unwrap()
+        .data_validations()
+        .unwrap()
+        .data_validation_list()[0];
+    assert_eq!(validation.formula1(), "Sheet1!$H$3:$H$5");
+}

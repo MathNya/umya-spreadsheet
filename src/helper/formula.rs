@@ -1041,6 +1041,59 @@ pub fn adjustment_remove_formula_coordinate(
     render(token_list)
 }
 
+/// Moves the references of a rule formula (data validation, conditional
+/// formatting) for an insert; the text has no leading `=`.
+pub(crate) fn adjustment_insert_rule_formula(
+    formula: &str,
+    sheet_name: &str,
+    root_col_num: u32,
+    offset_col_num: u32,
+    root_row_num: u32,
+    offset_row_num: u32,
+) -> String {
+    // A literal list ("a,b,c") has no references
+    if formula.is_empty() || formula.starts_with('"') {
+        return formula.to_string();
+    }
+    let mut tokens = parse_to_tokens(format!("={formula}"));
+    adjustment_insert_formula_coordinate(
+        &mut tokens,
+        root_col_num,
+        offset_col_num,
+        root_row_num,
+        offset_row_num,
+        sheet_name,
+        sheet_name,
+        false,
+    )
+}
+
+/// Same as [`adjustment_insert_rule_formula`] for a remove.
+pub(crate) fn adjustment_remove_rule_formula(
+    formula: &str,
+    sheet_name: &str,
+    root_col_num: u32,
+    offset_col_num: u32,
+    root_row_num: u32,
+    offset_row_num: u32,
+) -> String {
+    // A literal list ("a,b,c") has no references
+    if formula.is_empty() || formula.starts_with('"') {
+        return formula.to_string();
+    }
+    let mut tokens = parse_to_tokens(format!("={formula}"));
+    adjustment_remove_formula_coordinate(
+        &mut tokens,
+        root_col_num,
+        offset_col_num,
+        root_row_num,
+        offset_row_num,
+        sheet_name,
+        sheet_name,
+        false,
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1136,6 +1189,31 @@ mod shared_formula_quoted_sheet_tests {
         assert!(
             !out.contains("(1)!$E$39"),
             "sheet name lost its quotes: {out}"
+        );
+    }
+
+    #[test]
+    fn rule_formulas_move_on_insert() {
+        assert_eq!(
+            adjustment_insert_rule_formula("$H$1:$H$3", "Sheet1", 0, 0, 1, 2),
+            "$H$3:$H$5"
+        );
+        assert_eq!(
+            adjustment_insert_rule_formula("$B1>$F$1", "Sheet1", 0, 0, 1, 2),
+            "$B3>$F$3"
+        );
+        assert_eq!(adjustment_insert_rule_formula("", "Sheet1", 0, 0, 1, 2), "");
+        assert_eq!(
+            adjustment_insert_rule_formula("Sheet1!$H$1:$H$3", "Sheet1", 0, 0, 1, 2),
+            "Sheet1!$H$3:$H$5"
+        );
+        assert_eq!(
+            adjustment_insert_rule_formula("Sheet2!$H$1", "Sheet1", 0, 0, 1, 2),
+            "Sheet2!$H$1"
+        );
+        assert_eq!(
+            adjustment_insert_rule_formula(r#""a""b,c""#, "Sheet1", 0, 0, 1, 2),
+            r#""a""b,c""#
         );
     }
 

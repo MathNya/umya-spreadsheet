@@ -469,6 +469,60 @@ impl DataValidation {
     }
 }
 
+impl DataValidation {
+    /// Moves the references in formula1 and formula2 of a validation on `sheet_name`.
+    pub(crate) fn adjustment_insert_formulas(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.adjust_formulas(|text| {
+            crate::helper::formula::adjustment_insert_rule_formula(
+                text,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            )
+        });
+    }
+
+    pub(crate) fn adjustment_remove_formulas(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
+    ) {
+        self.adjust_formulas(|text| {
+            crate::helper::formula::adjustment_remove_rule_formula(
+                text,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            )
+        });
+    }
+
+    fn adjust_formulas(&mut self, adjust: impl Fn(&str) -> String) {
+        if !self.formula1.text().is_empty() {
+            let formula1 = adjust(self.formula1.text());
+            self.formula1.set_text(formula1);
+        }
+        if !self.formula2.text().is_empty() {
+            let formula2 = adjust(self.formula2.text());
+            self.formula2.set_text(formula2);
+        }
+    }
+}
+
 impl AdjustmentCoordinate for DataValidation {
     #[inline]
     fn adjustment_insert_coordinate(
