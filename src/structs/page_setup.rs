@@ -13,8 +13,11 @@ use crate::{
     },
     structs::{
         BooleanValue,
+        CellCommentsValues,
         EnumValue,
         OrientationValues,
+        PageOrderValues,
+        PrintErrorValues,
         UInt32Value,
         raw::RawRelationships,
     },
@@ -23,15 +26,23 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
-    paper_size:     UInt32Value,
-    orientation:    EnumValue<OrientationValues>,
-    scale:          UInt32Value,
-    fit_to_height:  UInt32Value,
-    fit_to_width:   UInt32Value,
-    fit_to_page:    BooleanValue,
-    horizontal_dpi: UInt32Value,
-    vertical_dpi:   UInt32Value,
-    object_data:    Option<Vec<u8>>,
+    paper_size:            UInt32Value,
+    orientation:           EnumValue<OrientationValues>,
+    scale:                 UInt32Value,
+    first_page_number:     UInt32Value,
+    use_first_page_number: BooleanValue,
+    fit_to_height:         UInt32Value,
+    fit_to_width:          UInt32Value,
+    fit_to_page:           BooleanValue,
+    page_order:            EnumValue<PageOrderValues>,
+    black_and_white:       BooleanValue,
+    draft:                 BooleanValue,
+    cell_comments:         EnumValue<CellCommentsValues>,
+    errors:                EnumValue<PrintErrorValues>,
+    horizontal_dpi:        UInt32Value,
+    vertical_dpi:          UInt32Value,
+    copies:                UInt32Value,
+    object_data:           Option<Vec<u8>>,
 }
 
 impl PageSetup {
@@ -89,6 +100,38 @@ impl PageSetup {
     #[inline]
     pub fn set_scale(&mut self, value: u32) -> &mut Self {
         self.scale.set_value(value);
+        self
+    }
+
+    /// The page number of the first printed page (`firstPageNumber`).
+    /// Only used when `use_first_page_number` is `true`. Defaults to `1`.
+    #[inline]
+    #[must_use]
+    pub fn first_page_number(&self) -> u32 {
+        if self.first_page_number.has_value() {
+            self.first_page_number.value()
+        } else {
+            1
+        }
+    }
+
+    #[inline]
+    pub fn set_first_page_number(&mut self, value: u32) -> &mut Self {
+        self.first_page_number.set_value(value);
+        self
+    }
+
+    /// Whether `first_page_number` is used instead of starting at page 1
+    /// (`useFirstPageNumber`).
+    #[inline]
+    #[must_use]
+    pub fn use_first_page_number(&self) -> bool {
+        self.use_first_page_number.value()
+    }
+
+    #[inline]
+    pub fn set_use_first_page_number(&mut self, value: bool) -> &mut Self {
+        self.use_first_page_number.set_value(value);
         self
     }
 
@@ -161,6 +204,71 @@ impl PageSetup {
         self
     }
 
+    /// The order in which the pages are printed (`pageOrder`).
+    #[inline]
+    #[must_use]
+    pub fn page_order(&self) -> &PageOrderValues {
+        self.page_order.value()
+    }
+
+    #[inline]
+    pub fn set_page_order(&mut self, value: PageOrderValues) -> &mut Self {
+        self.page_order.set_value(value);
+        self
+    }
+
+    /// Whether the sheet is printed in black and white (`blackAndWhite`).
+    #[inline]
+    #[must_use]
+    pub fn black_and_white(&self) -> bool {
+        self.black_and_white.value()
+    }
+
+    #[inline]
+    pub fn set_black_and_white(&mut self, value: bool) -> &mut Self {
+        self.black_and_white.set_value(value);
+        self
+    }
+
+    /// Whether the sheet is printed in draft quality (`draft`).
+    #[inline]
+    #[must_use]
+    pub fn draft(&self) -> bool {
+        self.draft.value()
+    }
+
+    #[inline]
+    pub fn set_draft(&mut self, value: bool) -> &mut Self {
+        self.draft.set_value(value);
+        self
+    }
+
+    /// How the cell comments are printed (`cellComments`).
+    #[inline]
+    #[must_use]
+    pub fn cell_comments(&self) -> &CellCommentsValues {
+        self.cell_comments.value()
+    }
+
+    #[inline]
+    pub fn set_cell_comments(&mut self, value: CellCommentsValues) -> &mut Self {
+        self.cell_comments.set_value(value);
+        self
+    }
+
+    /// How cells with errors are printed (`errors`).
+    #[inline]
+    #[must_use]
+    pub fn errors(&self) -> &PrintErrorValues {
+        self.errors.value()
+    }
+
+    #[inline]
+    pub fn set_errors(&mut self, value: PrintErrorValues) -> &mut Self {
+        self.errors.set_value(value);
+        self
+    }
+
     #[inline]
     #[must_use]
     pub fn horizontal_dpi(&self) -> u32 {
@@ -199,6 +307,23 @@ impl PageSetup {
         self
     }
 
+    /// The number of copies to print (`copies`). Defaults to `1`.
+    #[inline]
+    #[must_use]
+    pub fn copies(&self) -> u32 {
+        if self.copies.has_value() {
+            self.copies.value()
+        } else {
+            1
+        }
+    }
+
+    #[inline]
+    pub fn set_copies(&mut self, value: u32) -> &mut Self {
+        self.copies.set_value(value);
+        self
+    }
+
     #[inline]
     #[must_use]
     pub fn object_data(&self) -> Option<&[u8]> {
@@ -234,10 +359,18 @@ impl PageSetup {
         self.paper_size.has_value()
             || self.orientation.has_value()
             || self.scale.has_value()
+            || self.first_page_number.has_value()
+            || self.use_first_page_number.has_value()
             || self.fit_to_height.has_value()
             || self.fit_to_width.has_value()
+            || self.page_order.has_value()
+            || self.black_and_white.has_value()
+            || self.draft.has_value()
+            || self.cell_comments.has_value()
+            || self.errors.has_value()
             || self.horizontal_dpi.has_value()
             || self.vertical_dpi.has_value()
+            || self.copies.has_value()
             || self.object_data.is_some()
     }
 
@@ -250,10 +383,18 @@ impl PageSetup {
         set_string_from_xml!(self, e, paper_size, "paperSize");
         set_string_from_xml!(self, e, orientation, "orientation");
         set_string_from_xml!(self, e, scale, "scale");
+        set_string_from_xml!(self, e, first_page_number, "firstPageNumber");
         set_string_from_xml!(self, e, fit_to_height, "fitToHeight");
         set_string_from_xml!(self, e, fit_to_width, "fitToWidth");
+        set_string_from_xml!(self, e, page_order, "pageOrder");
+        set_string_from_xml!(self, e, black_and_white, "blackAndWhite");
+        set_string_from_xml!(self, e, draft, "draft");
+        set_string_from_xml!(self, e, cell_comments, "cellComments");
+        set_string_from_xml!(self, e, use_first_page_number, "useFirstPageNumber");
+        set_string_from_xml!(self, e, errors, "errors");
         set_string_from_xml!(self, e, horizontal_dpi, "horizontalDpi");
         set_string_from_xml!(self, e, vertical_dpi, "verticalDpi");
+        set_string_from_xml!(self, e, copies, "copies");
 
         if let Some(r_id) = get_attribute(e, b"r:id") {
             let attached_file = relationships.unwrap().relationship_by_rid(&r_id).raw_file();
@@ -274,6 +415,10 @@ impl PageSetup {
             if self.scale.has_value() {
                 attributes.push(("scale", &scale).into());
             }
+            let first_page_number = self.first_page_number.value_string();
+            if self.first_page_number.has_value() {
+                attributes.push(("firstPageNumber", &first_page_number).into());
+            }
             let orientation = self.orientation.value_string();
             if self.orientation.has_value() {
                 attributes.push(("orientation", orientation).into());
@@ -286,6 +431,30 @@ impl PageSetup {
             if self.fit_to_width.has_value() {
                 attributes.push(("fitToWidth", &fit_to_width).into());
             }
+            if self.page_order.has_value() {
+                attributes.push(("pageOrder", self.page_order.value_string()).into());
+            }
+            if self.black_and_white.has_value() {
+                attributes.push(("blackAndWhite", self.black_and_white.value_string()).into());
+            }
+            if self.draft.has_value() {
+                attributes.push(("draft", self.draft.value_string()).into());
+            }
+            if self.cell_comments.has_value() {
+                attributes.push(("cellComments", self.cell_comments.value_string()).into());
+            }
+            if self.use_first_page_number.has_value() {
+                attributes.push(
+                    (
+                        "useFirstPageNumber",
+                        self.use_first_page_number.value_string(),
+                    )
+                        .into(),
+                );
+            }
+            if self.errors.has_value() {
+                attributes.push(("errors", self.errors.value_string()).into());
+            }
             let horizontal_dpi = self.horizontal_dpi.value_string();
             if self.horizontal_dpi.has_value() {
                 attributes.push(("horizontalDpi", &horizontal_dpi).into());
@@ -293,6 +462,10 @@ impl PageSetup {
             let vertical_dpi = self.vertical_dpi.value_string();
             if self.vertical_dpi.has_value() {
                 attributes.push(("verticalDpi", &vertical_dpi).into());
+            }
+            let copies = self.copies.value_string();
+            if self.copies.has_value() {
+                attributes.push(("copies", &copies).into());
             }
             if self.object_data.is_some() {
                 attributes.push(("r:id", &r_id_str).into());
