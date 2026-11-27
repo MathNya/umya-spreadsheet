@@ -98,6 +98,8 @@ pub enum XlsxErrorKind {
     InvalidArgument,
     /// An encryption or decryption operation failed.
     Crypto,
+    /// A wrapped error we added a context message to.
+    Context,
 }
 
 impl XlsxErrorKind {
@@ -115,6 +117,7 @@ impl XlsxErrorKind {
             Self::NameDuplicate => "name is duplicated",
             Self::InvalidArgument => "invalid argument",
             Self::Crypto => "cryptographic operation failed",
+            Self::Context => "wrapped error with context message",
         }
     }
 }
@@ -278,6 +281,21 @@ impl StdError for XlsxError {
     }
 }
 
+pub trait XlsxErrorContext<T> {
+    fn context<C: Into<Cow<'static, str>>>(self, message: C) -> crate::Result<T>;
+}
+
+impl<T, E> XlsxErrorContext<T> for Result<T, E>
+where
+    E: StdError + Send + Sync + 'static,
+{
+    fn context<C: Into<Cow<'static, str>>>(self, message: C) -> crate::Result<T> {
+        self.map_err(|source| {
+            XlsxError::with_source_and_message(XlsxErrorKind::Context, source, message.into())
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -306,5 +324,25 @@ mod tests {
     fn cell_error_type_from_str() {
         let err = "#FOO!".parse::<CellErrorType>().unwrap_err();
         assert_eq!(err.kind(), XlsxErrorKind::InvalidCellErrorValue);
+    }
+
+    #[test]
+    fn context() {
+        let invalid_value = "#FOO!";
+        let msg = "failed when parsing [static description of input]";
+        let err = invalid_value
+            .parse::<CellErrorType>()
+            .context(msg)
+            .unwrap_err();
+
+        // Test message is saved
+        assert_eq!(err.message(), Some(msg));
+
+        // Test access to source
+        let source_err_msg = err.source().unwrap().to_string();
+        assert!(
+            source_err_msg.contains(invalid_value),
+            "Expected source error message to contain {invalid_value:?} but found {source_err_msg}"
+        );
     }
 }
