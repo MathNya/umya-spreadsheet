@@ -39,6 +39,7 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
         }
     } else {
         value = (value.parse::<f64>().unwrap_or(0.0) / scale).to_string();
+        let min_integer_digits = min_integer_digits(&square_bracket_regex.replace_all(&format, ""));
         format = format.replace('#', "0");
         format = format.replace('\\', "");
         format = format.replace("[$-.*]", "");
@@ -56,6 +57,7 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
                 &format,
                 &item,
                 use_thousands,
+                min_integer_digits,
                 r"(0+)(\.?)(0*)",
             );
 
@@ -113,11 +115,24 @@ fn replace_skip_width_placeholders(literal: &str) -> String {
     result
 }
 
+/// Count the `0` placeholders in the integer part of the first number in
+/// `format`: Excel pads the integer part to that many digits (`00000` shows
+/// 501 as 00501), while `#` only shows significant digits.
+fn min_integer_digits(format: &str) -> usize {
+    format
+        .chars()
+        .skip_while(|c| !matches!(c, '0' | '#'))
+        .take_while(|c| matches!(c, '0' | '#' | ','))
+        .filter(|&c| c == '0')
+        .count()
+}
+
 fn format_straight_numeric_value(
     value: &str,
     _format: &str,
     matches: &[String],
     use_thousands: bool,
+    min_integer_digits: usize,
     _number_regex: &str,
 ) -> String {
     let empty = String::new();
@@ -128,6 +143,16 @@ fn format_straight_numeric_value(
     // routing ties back through binary floats corrupts them
     // (39.105 * 100 = 3910.4999… would round down).
     let value = round_decimal_string(value, right.len());
+    let (sign, digits) = value.split_at(usize::from(value.starts_with('-')));
+    let integer_len = digits.find('.').unwrap_or(digits.len());
+    let value = if integer_len < min_integer_digits {
+        format!(
+            "{sign}{}{digits}",
+            "0".repeat(min_integer_digits - integer_len)
+        )
+    } else {
+        value
+    };
 
     if use_thousands {
         return group_thousands(&value);
@@ -372,6 +397,16 @@ mod tests {
     fn format_as_number_keeps_currency_prefix() {
         assert_eq!(format_as_number(39.1, "$0.00"), "$39.10");
         assert_eq!(format_as_number(107_310.6, "$#,##0"), "$107,311");
+    }
+
+    #[test]
+    fn format_as_number_pads_integer_to_zero_placeholders() {
+        // A ZIP code format: 501 printed as "501", losing the leading zeros.
+        assert_eq!(format_as_number(501.0, "00000"), "00501");
+        assert_eq!(format_as_number(1.0, "0000"), "0001");
+        assert_eq!(format_as_number(5.5, "000.00"), "005.50");
+        assert_eq!(format_as_number(-7.0, "000"), "-007");
+        assert_eq!(format_as_number(5.0, "#,##0"), "5");
     }
 
     #[test]
