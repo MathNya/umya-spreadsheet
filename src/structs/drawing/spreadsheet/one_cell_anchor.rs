@@ -19,7 +19,10 @@ use super::{
 };
 use crate::{
     reader::driver::xml_read_loop,
-    structs::raw::RawRelationships,
+    structs::{
+        DrawingRelationship,
+        raw::RawRelationships,
+    },
     traits::AdjustmentCoordinate,
     writer::driver::{
         write_end_tag,
@@ -237,10 +240,10 @@ impl OneCellAnchor {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // xdr:oneCellAnchor
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);

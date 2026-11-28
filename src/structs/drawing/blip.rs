@@ -20,6 +20,7 @@ use crate::{
         xml_read_loop,
     },
     structs::{
+        DrawingRelationship,
         MediaObject,
         raw::RawRelationships,
     },
@@ -118,10 +119,10 @@ impl Blip {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // a:blip
         let r_id = self.image.rid(rel_list);

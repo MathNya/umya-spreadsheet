@@ -12,6 +12,7 @@ use crate::{
         set_string_from_xml,
     },
     structs::{
+        DrawingRelationship,
         MediaObject,
         StringValue,
         TrueFalseValue,
@@ -165,10 +166,10 @@ impl Fill {
     /// Some()` is necessary to avoid lifetime errors.
     #[inline]
     #[allow(unused_assignments)]
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // v:fill
         let mut attributes: crate::structs::AttrCollection = Vec::new();

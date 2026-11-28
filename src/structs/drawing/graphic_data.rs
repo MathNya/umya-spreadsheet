@@ -23,7 +23,10 @@ use crate::{
         },
         xlsx::chart,
     },
-    structs::raw::RawRelationships,
+    structs::{
+        DrawingRelationship,
+        raw::RawRelationships,
+    },
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
         write_end_tag,
@@ -95,7 +98,7 @@ impl GraphicData {
 
     pub(crate) fn write_to(
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'_>>,
     ) {
         // a:graphicData
         write_start_tag(
@@ -106,7 +109,7 @@ impl GraphicData {
         );
 
         // c:chart
-        rel_list.push((String::from("CHART"), String::new()));
+        rel_list.push(DrawingRelationship::Chart);
         write_start_tag(
             writer,
             "c:chart",

@@ -1,3 +1,16 @@
+use sha2::{Digest, Sha256};
+
+#[derive(Clone, Hash, PartialEq, Eq)]
+pub(crate) struct MediaPart {
+    pub(crate) name: Box<str>,
+    digest: [u8; 32],
+}
+
+pub(crate) enum DrawingRelationship<'a> {
+    Chart,
+    Image { part: MediaPart, bytes: &'a [u8] },
+}
+
 #[derive(Clone, Default, Debug)]
 pub struct MediaObject {
     title: Box<str>,
@@ -56,14 +69,25 @@ impl MediaObject {
         self
     }
 
+    pub(crate) fn media_part(&self) -> MediaPart {
+        MediaPart {
+            name: self.name.clone(),
+            digest: Sha256::digest(&self.data).into(),
+        }
+    }
+
     #[allow(clippy::cast_possible_truncation)]
-    pub(crate) fn rid(&self, rel_list: &mut Vec<(String, String)>) -> u32 {
+    pub(crate) fn rid<'a>(&'a self, rel_list: &mut Vec<DrawingRelationship<'a>>) -> u32 {
+        let part = self.media_part();
         rel_list
             .iter()
-            .position(|(k, v)| k == "IMAGE" && v == &*self.name)
+            .position(|rel| matches!(rel, DrawingRelationship::Image { part: target, .. } if *target == part))
             .map_or_else(
                 || {
-                    rel_list.push((String::from("IMAGE"), self.name.to_string()));
+                    rel_list.push(DrawingRelationship::Image {
+                        part,
+                        bytes: self.image_data(),
+                    });
                     rel_list.len() as u32
                 },
                 |index| (index + 1) as u32,
@@ -71,7 +95,7 @@ impl MediaObject {
     }
 
     #[deprecated(since = "3.0.0", note = "Use rid()")]
-    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> u32 {
+    pub(crate) fn get_rid<'a>(&'a self, rel_list: &mut Vec<DrawingRelationship<'a>>) -> u32 {
         self.rid(rel_list)
     }
 }

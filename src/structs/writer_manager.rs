@@ -1,4 +1,8 @@
 use std::{
+    collections::{
+        HashMap,
+        HashSet,
+    },
     fs::File,
     io,
     io::Cursor,
@@ -22,6 +26,7 @@ use crate::{
         PKG_CHARTS,
         PKG_DRAWINGS,
         PKG_EMBEDDINGS,
+        PKG_MEDIA,
         PKG_PRNTR_SETTINGS,
         PKG_TABLES,
         SHARED_STRINGS_TYPE,
@@ -37,6 +42,7 @@ use crate::{
     },
     reader::driver::zip_by_name,
     structs::{
+        MediaPart,
         Workbook,
         XlsxError,
     },
@@ -52,6 +58,9 @@ pub struct WriterManager<W: io::Seek + io::Write> {
     table_no:              i32,
     pivot_table_no:        i32,
     pivot_cache_hash_list: Vec<String>,
+    media_parts:           HashMap<MediaPart, String>,
+    media_part_names:      HashSet<String>,
+    next_media_part:       usize,
 }
 
 impl<W: io::Seek + io::Write> WriterManager<W> {
@@ -64,6 +73,9 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             table_no: 0,
             pivot_table_no: 0,
             pivot_cache_hash_list: Vec::new(),
+            media_parts: HashMap::new(),
+            media_part_names: HashSet::new(),
+            next_media_part: 0,
         }
     }
 
@@ -135,6 +147,43 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             self.files.push(target.to_string());
         }
         Ok(())
+    }
+
+    pub(crate) fn add_media_part(
+        &mut self,
+        part: &MediaPart,
+        bytes: &[u8],
+    ) -> Result<String, XlsxError> {
+        let name = self.media_part_name(part).to_owned();
+        self.add_bin(&format!("{PKG_MEDIA}/{name}"), bytes)?;
+        Ok(name)
+    }
+
+    fn media_part_name(&mut self, part: &MediaPart) -> &str {
+        self.media_parts
+            .entry(part.clone())
+            .or_insert_with(|| {
+                let mut reserve = |name: &str| {
+                    let target = format!("{PKG_MEDIA}/{name}");
+                    !self.files.iter().any(|file| file.eq_ignore_ascii_case(&target))
+                        && self.media_part_names.insert(name.to_ascii_lowercase())
+                };
+                let image_name = part.name.as_ref();
+                if !image_name.contains(' ') && reserve(image_name) {
+                    return image_name.to_owned();
+                }
+
+                // Picture names stay in the drawing. Package paths must be
+                // valid part names and share a namespace with copied sheets.
+                let extension = image_name.rfind('.').map_or("", |dot| &image_name[dot..]);
+                loop {
+                    self.next_media_part += 1;
+                    let name = format!("image{}{extension}", self.next_media_part);
+                    if reserve(&name) {
+                        break name;
+                    }
+                }
+            })
     }
 
     #[inline]

@@ -29,7 +29,6 @@ pub(crate) mod drawing;
 pub(crate) mod drawing_rels;
 pub(crate) mod embeddings;
 pub(crate) mod jsa_project_bin;
-pub(crate) mod media;
 pub(crate) mod person;
 pub(crate) mod pivot_cache;
 pub(crate) mod pivot_table;
@@ -145,9 +144,6 @@ fn write_zip_to_writer<W: io::Write + io::Seek>(
                 // Add ole_object and excel
                 let (ole_object_no_list, excel_no_list) =
                     embeddings::write(worksheet, &mut writer_manager)?;
-
-                // Add Media
-                media::write(worksheet, &mut writer_manager)?;
 
                 // Add printer settings
                 let printer_settings_no = worksheet

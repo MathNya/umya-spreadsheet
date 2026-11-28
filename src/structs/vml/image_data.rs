@@ -12,6 +12,7 @@ use crate::{
         set_string_from_xml,
     },
     structs::{
+        DrawingRelationship,
         MediaObject,
         StringValue,
         raw::RawRelationships,
@@ -91,10 +92,10 @@ impl ImageData {
         set_string_from_xml!(self, e, title, "o:title");
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // v:imagedata
         let mut attributes: crate::structs::AttrCollection = Vec::new();

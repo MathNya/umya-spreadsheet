@@ -16,16 +16,17 @@ use crate::{
         VML_NS,
     },
     structs::{
+        DrawingRelationship,
         Worksheet,
         WriterManager,
     },
 };
 
-pub(crate) fn write<W: io::Seek + io::Write>(
-    worksheet: &Worksheet,
+pub(crate) fn write<'a, W: io::Seek + io::Write>(
+    worksheet: &'a Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> Result<(String, Vec<(String, String)>), XlsxError> {
-    let mut rel_list: Vec<(String, String)> = Vec::new();
+) -> Result<(String, Vec<DrawingRelationship<'a>>), XlsxError> {
+    let mut rel_list = Vec::new();
     if !worksheet.has_legacy_drawing() {
         return Ok((String::new(), rel_list));
     }

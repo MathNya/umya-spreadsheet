@@ -59,7 +59,6 @@ use crate::{
         drawing_rels,
         embeddings,
         jsa_project_bin,
-        media,
         person,
         pivot_cache,
         pivot_table,
@@ -221,9 +220,6 @@ impl<W: io::Write + io::Seek> StreamingWriter<W> {
         // Add ole_object and excel
         let (ole_object_no_list, excel_no_list) =
             embeddings::write(&worksheet, &mut self.writer_manager)?;
-
-        // Add Media
-        media::write(&worksheet, &mut self.writer_manager)?;
 
         // Add printer settings
         let printer_settings_no = worksheet
