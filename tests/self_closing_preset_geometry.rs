@@ -9,7 +9,8 @@ use umya_spreadsheet::{
 };
 use zip::ZipArchive;
 
-// openpyxl writes the picture geometry as a self-closing <a:prstGeom prst="rect"/>.
+// openpyxl writes the picture geometry as a self-closing <a:prstGeom
+// prst="rect"/>.
 #[test]
 fn self_closing_preset_geometry_keeps_prst() {
     let book = reader::xlsx::read("./tests/test_files/openpyxl_image.xlsx").unwrap();
