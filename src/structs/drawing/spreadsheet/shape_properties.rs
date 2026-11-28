@@ -395,10 +395,18 @@ impl ShapeProperties {
                 }
             },
             Event::Empty(ref e) => {
-                if e.name().into_inner() == b"a:noFill" {
-                    let obj = NoFill::default();
-                    NoFill::set_attributes(reader, e, true);
-                    self.set_no_fill(obj);
+                match e.name().into_inner() {
+                    b"a:noFill" => {
+                        let obj = NoFill::default();
+                        NoFill::set_attributes(reader, e, true);
+                        self.set_no_fill(obj);
+                    }
+                    // written self-closing by openpyxl: <a:prstGeom prst="rect"/>
+                    b"a:prstGeom" => {
+                        self.preset_geometry
+                            .set_geometry(get_attribute(e, b"prst").unwrap_or_default());
+                    }
+                    _ => (),
                 }
             },
             Event::End(ref e) => {
