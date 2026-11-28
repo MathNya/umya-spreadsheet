@@ -32,6 +32,7 @@ use crate::{
     },
     structs::{
         BooleanValue,
+        DrawingRelationship,
         raw::RawRelationships,
     },
     traits::{
@@ -385,10 +386,10 @@ impl TwoCellAnchor {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
         ole_id: usize,
     ) {
         if self.is_alternate_content() {

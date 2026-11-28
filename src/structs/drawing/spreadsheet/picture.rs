@@ -17,7 +17,10 @@ use super::{
 };
 use crate::{
     reader::driver::xml_read_loop,
-    structs::raw::RawRelationships,
+    structs::{
+        DrawingRelationship,
+        raw::RawRelationships,
+    },
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -151,10 +154,10 @@ impl Picture {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // xdr:pic
         write_start_tag(writer, "xdr:pic", vec![], false);

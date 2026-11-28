@@ -186,7 +186,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id += 1;
         }
 
-        let image_name = ole_object.embedded_object_properties().image().image_name();
+        let image = ole_object.embedded_object_properties().image();
+        let image_name = writer_mng.add_media_part(&image.media_part(), image.image_data())?;
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),

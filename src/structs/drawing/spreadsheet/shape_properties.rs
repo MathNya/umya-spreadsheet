@@ -31,7 +31,10 @@ use crate::{
         set_string_from_xml,
         xml_read_loop,
     },
-    structs::raw::RawRelationships,
+    structs::{
+        DrawingRelationship,
+        raw::RawRelationships,
+    },
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -410,10 +413,10 @@ impl ShapeProperties {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // xdr:spPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();

@@ -26,6 +26,7 @@ use crate::{
         xml_read_loop,
     },
     structs::{
+        DrawingRelationship,
         EnumValue,
         Int32Value,
         StringValue,
@@ -463,11 +464,11 @@ impl Shape {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
+    pub(crate) fn write_to<'a>(
+        &'a self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         id: usize,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'a>>,
     ) {
         // v:shape
         let id_str = format!("_x0000_s{id}");

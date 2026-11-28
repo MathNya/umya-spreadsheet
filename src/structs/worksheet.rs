@@ -50,7 +50,6 @@ use crate::{
         HeaderFooter,
         Hyperlink,
         Image,
-        MediaObject,
         MergeCells,
         OleObjects,
         PageMargins,
@@ -2555,61 +2554,6 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         self.charts_mut(coordinate)
-    }
-
-    /// Outputs all media contained in the worksheet.
-    /// # Return value
-    /// * `Vec<&MediaObject>` - Media Object List.
-    pub(crate) fn media_object_collection(&self) -> Vec<&MediaObject> {
-        let mut list: Vec<&MediaObject> = Vec::new();
-        for image in self.worksheet_drawing().image_collection() {
-            for media_object in image.media_object() {
-                let is_new = !list
-                    .iter()
-                    .any(|v| v.image_name() == media_object.image_name());
-                if is_new {
-                    list.push(media_object);
-                }
-            }
-        }
-        for ole_objects in self.ole_objects().ole_object() {
-            let media_object = ole_objects.embedded_object_properties().image();
-            let is_new = !list
-                .iter()
-                .any(|v| v.image_name() == media_object.image_name());
-            if is_new {
-                list.push(media_object);
-            }
-        }
-        for ole_objects in self.ole_objects().ole_object() {
-            if let Some(fill) = ole_objects.shape().fill()
-                && let Some(media_object) = fill.image() {
-                    let is_new = !list
-                        .iter()
-                        .any(|v| v.image_name() == media_object.image_name());
-                    if is_new {
-                        list.push(media_object);
-                    }
-                }
-        }
-        for comment in self.comments() {
-            if let Some(fill) = comment.shape().fill()
-                && let Some(media_object) = fill.image() {
-                    let is_new = !list
-                        .iter()
-                        .any(|v| v.image_name() == media_object.image_name());
-                    if is_new {
-                        list.push(media_object);
-                    }
-                }
-        }
-
-        list
-    }
-
-    #[deprecated(since = "3.0.0", note = "Use media_object_collection()")]
-    pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
-        self.media_object_collection()
     }
 
     pub(crate) fn pivot_cache_definition_collection(&self) -> Vec<&str> {

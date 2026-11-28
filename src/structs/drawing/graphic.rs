@@ -13,7 +13,10 @@ use quick_xml::{
 use super::GraphicData;
 use crate::{
     reader::driver::xml_read_loop,
-    structs::raw::RawRelationships,
+    structs::{
+        DrawingRelationship,
+        raw::RawRelationships,
+    },
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
         write_end_tag,
@@ -82,7 +85,7 @@ impl Graphic {
 
     pub(crate) fn write_to(
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut Vec<DrawingRelationship<'_>>,
     ) {
         // a:graphic
         write_start_tag(writer, "a:graphic", vec![], false);

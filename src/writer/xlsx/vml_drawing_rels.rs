@@ -23,6 +23,7 @@ use crate::{
         REL_NS,
     },
     structs::{
+        DrawingRelationship,
         Worksheet,
         WriterManager,
     },
@@ -31,7 +32,7 @@ use crate::{
 pub(crate) fn write<W: io::Seek + io::Write>(
     _worksheet: &Worksheet,
     vml_drawing_no: &str,
-    rel_list: &[(String, String)],
+    rel_list: &[DrawingRelationship<'_>],
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
@@ -55,13 +56,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         false,
     );
 
-    for (r_id, (key, value)) in (1..).zip(rel_list.iter()) {
-        if key == "IMAGE" {
+    for (r_id, relationship) in (1..).zip(rel_list.iter()) {
+        if let DrawingRelationship::Image { part, bytes } = relationship {
+            let name = writer_mng.add_media_part(part, bytes)?;
             is_write = write_relationship(
                 &mut writer,
                 r_id,
                 IMAGE_NS,
-                format!("../media/{value}").as_str(),
+                format!("../media/{name}").as_str(),
                 "",
             );
         }
